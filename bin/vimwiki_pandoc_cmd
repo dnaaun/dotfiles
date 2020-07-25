@@ -1,0 +1,25 @@
+#!/bin/bash
+force=$1
+#syntax=$2
+extension=$3
+output_dir=$4
+input_file=$5
+#css_file=$6
+template_path=$7
+template_default=$8
+template_ext=$9
+root_path=${10}
+custom_args=${11}
+
+# Use only default template for now
+final_template_file="$template_path/$template_default$template_ext"
+
+output_file_basename=`basename "$input_file" ".$extension"`
+final_output_file="$output_dir/$output_file_basename.html"
+
+if [[ "$force" == 0 ]] && [[ -f "final_output_file" ]]; then
+    echo "File exists, not overwriting" >> /dev/stderr
+    exit
+fi
+
+pandoc --mathjax --template "$final_template_file" -o "$final_output_file" "$input_file"

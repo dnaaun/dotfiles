@@ -1,0 +1,17 @@
+#!/usr/bin/bash
+
+ctrl_c() {
+    echo "Ctrl C clicked. exiting."
+    exit $?
+}
+
+trap ctrl_c SIGINT
+
+if [[ -z "$1" ]]; then
+    echo USAGE: $0 cmd arg1 arg2 . . . 
+    exit 1
+fi
+
+while :; do
+    "$@"
+done

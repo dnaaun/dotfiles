@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Cron helper file
+
+cd "$1"
+git add -A *
+git commit -m "Daily commit"
+$PERSONAL_SCRIPTS/bin/log "git_add_and_commit|Committed $1"

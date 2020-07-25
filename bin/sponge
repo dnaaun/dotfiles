@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Finish reading from stdin before writing it out to a specified file, or to
+# stdout
+
+tmp_file=`mktemp`
+
+while read line; do
+    echo $line >> "$tmp_file"
+done  < /dev/stdin
+
+if [[ -z "$1" ]]; then
+    out_file=/dev/stdout
+else
+    out_file="$1"
+fi
+
+cat "$tmp_file" > "$out_file"
+rm "$tmp_file"

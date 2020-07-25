@@ -1,0 +1,13 @@
+#!/bin/bash
+# This script is supposed to be 'source'd
+# Very imperfect, uses the existence of a PID to detect if ssh_agent is running
+
+if [[ -f /tmp/ssh_agent_details ]]; then
+    source /tmp/ssh_agent_details
+fi
+
+if [ -z "$SSH_AGENT_PID" ] || [ -z "`ps --no-headers -p $SSH_AGENT_PID`" ]; then
+    ssh-agent > /tmp/ssh_agent_details
+    source /tmp/ssh_agent_details
+    ssh-add
+fi

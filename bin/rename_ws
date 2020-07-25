@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+WsNum=$(i3-msg -t get_workspaces |
+	jq ".[] | if .focused == true then .num else empty end"
+)
+i3-input -F "rename workspace to \"$WsNum: %s\"" -P "New name: "

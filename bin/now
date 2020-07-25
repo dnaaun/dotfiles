@@ -1,0 +1,3 @@
+#!/bin/sh
+# Display date
+date +%Y%m%d_%H:%M:%S.%N

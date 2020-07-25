@@ -1,0 +1,12 @@
+#!/bin/bash
+# 
+# A personalized logging tool
+#
+
+mkdir -p ~/.tmp
+
+LOG_FILE=~/.tmp/personal.log
+
+line_to_log="`~/PersonalScripts/bin/now`|$*"
+
+echo $line_to_log >> $LOG_FILE
