@@ -54,7 +54,7 @@ Plug 'junegunn/fzf.vim'
 
 
 " My own tiny touches
-Plug '$HOME/dotfiles/conf/david.vim'
+Plug '$HOME/git/dotfiles/conf/david.vim'
 
 call plug#end()
 

@@ -38,7 +38,7 @@ function setup() {
   ln -s "$THIS_DIR/conf/flake8" ~/.config/flake8
 
   # Setup global gitignore
-  git config --global core.excludesfile ~/dotfiles/conf/gitignore
+  git config --global core.excludesfile ~/git/dotfiles/conf/gitignore
 
   echo "Setting up vim plug  ... "
   curl -fLo ~/.vim/autoload/plug.vim --create-dirs \

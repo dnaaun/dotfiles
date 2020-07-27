@@ -232,8 +232,8 @@ PATH=/project/llamagrp/davidat/scripts/:$PATH
 alias python=python3
 
 # Source customizations that differ across machines
-if [[ -f ~/PersonalScripts/conf/bashrc_specific  ]]; then
-    source ~/PersonalScripts/conf/bashrc_specific 
+if [[ -f ~/.bashrc_specific  ]]; then
+    source ~/.bashrc_specific
 fi
 
 # Own stubs for Python 3rd party libs

@@ -1,83 +1,29 @@
-[mypy-ray.*]
-ignore_missing_imports = True
+[mypy]
+namespace_packages = True
+no_silence_site_packages = True
 
-[mypy-nose.*]
-ignore_missing_imports = True
+disallow_any_unimported = True
+# disallow_any_expr = True
+disallow_any_decorated = True
+disallow_any_explicit = True
+disallow_any_generics = True
+disallow_subclassing_any = True
 
-[mypy-torch_geometric.*]
-ignore_missing_imports = True
+disallow_untyped_calls = True
+disallow_untyped_defs = True
+disallow_incomplete_defs = True
+check_untyped_defs = True
+disallow_untyped_decorators = True
 
-[mypy-allennlp.*]
-ignore_missing_imports = True
+no_implicit_optional = True
 
-[mypy-seaborn.*]
-ignore_missing_imports = True
+warn_redundant_casts = True
+warn_unsued_ignores = True
+warn_return_any = True
+warn_unreachable = True
 
-[mypy-string_grouper.*]
-ignore_missing_imports = True
+strict_equality = True
 
-[mypy-percache.*]
-ignore_missing_imports = True
+show_column_numbers = True
+show_error_codes = True
 
-[mypy-agate.*]
-ignore_missing_imports = True
-
-[mypy-embeddings.*]
-ignore_missing_imports = True
-
-[mypy-more_itertools.*]
-ignore_missing_imports = True
-
-[mypy-nltk.*]
-ignore_missing_imports = True
-
-[mypy-ibm_watson.*]
-ignore_missing_imports = True
-
-[mypy-ibm_cloud_sdk_core.*]
-ignore_missing_imports = True
-
-[mypy-gensim.*]
-ignore_missing_imports = True
-
-[mypy-transformers.*]
-ignore_missing_imports = True
-
-[mypy-newspaper.*]
-ignore_missing_imports = True
-
-[mypy-spacy.*]
-ignore_missing_imports = True
-
-[mypy-numpy.*]
-ignore_missing_imports = True
-
-[mypy-pandas.*]
-ignore_missing_imports = True
-
-[mypy-sklearn.*]
-ignore_missing_imports = True
-
-[mypy-matplotlib.*]
-ignore_missing_imports = True
-
-[mypy-scipy.*]
-ignore_missing_imports = True
-
-[mypy-torch.*]
-ignore_missing_imports = True
-
-[mypy-tensorboardX.*]
-ignore_missing_imports = True
-
-[mypy-tqdm.*]
-ignore_missing_imports = True
-
-[mypy-apex.*]
-ignore_missing_imports = True
-
-[mypy-ptvsd.*]
-ignore_missing_imports = True
-
-[mypy-tensorflow.*]
-ignore_missing_imports = True
