@@ -1,22 +1,24 @@
 call plug#begin()
+Plug 'embear/vim-localvimrc'
+
 Plug 'christoomey/vim-tmux-navigator'
 
 "Docker
-Plug 'ekalinin/Dockerfile.vim'
-Plug 'chr4/nginx.vim'
 
 " Vim for frontend
-Plug 'pangloss/vim-javascript'
-Plug 'AndrewRadev/tagalong.vim'
-Plug 'mattn/emmet-vim'
-Plug 'shime/vim-livedown'
-Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['html', 'javascript', 'css']}
+Plug 'pangloss/vim-javascript', {'for': ['javascript'] }
+Plug 'AndrewRadev/tagalong.vim', {'for': ['html'] }
+Plug 'mattn/emmet-vim', { 'for': ['html'] }
+Plug 'shime/vim-livedown', { 'for': ['markdown'] }
 
 
 " Markdown
-Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'godlygeek/tabular', { 'for': ['markdown'] }
+Plug 'plasticboy/vim-markdown', { 'for': ['markdown'] }
+Plug 'iamcco/markdown-preview.nvim', {
+            \ 'for': ['markdown'],
+            \ 'do': { -> mkdp#util#install() },
+            \ }
 
 
 " Tpope's plugins are to ViM, what ViM is to Vi
@@ -26,7 +28,8 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-dispatch'
+" Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-repeat'
 
 " File browsing
 " Plug 'francoiscabrol/ranger.vim'
@@ -37,17 +40,17 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'chriskempson/base16-vim'
 
 " Coding
-Plug 'davidhalter/jedi-vim'
+Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
 Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-Plug 'dense-analysis/ale'
+" Plug 'honza/vim-snippets'
+Plug '$HOME/git/ale'
+Plug 'deoplete-plugins/deoplete-jedi'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+
 Plug 'ervandew/supertab'
 Plug 'majutsushi/tagbar'
 Plug '5long/pytest-vim-compiler'
 
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'Shougo/echodoc.vim'
-Plug 'deoplete-plugins/deoplete-jedi', { 'for': 'python' }
 "
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
@@ -58,26 +61,55 @@ Plug '$HOME/git/dotfiles/conf/david.vim'
 
 call plug#end()
 
+
+" Enable nvimrc as the local initialization file
+let g:localvimrc_name=['.lnvimrc']
+" Whitelist everything in home directory
+" https://stackoverflow.com/a/48519356
+let g:localvimrc_whitelist = fnamemodify('~', ':p')
+
+" Disable "sandbox" mode
+let g:localvimrc_sandbox=0
+
 "" Frontend customization
 let g:tagalong_verbose = 1
 
 " allow % to match HTML blocks
 packadd! matchit
 
+" Ultisnips
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+
+" Supertab, do context senstive selection of what to ocmplete
+let g:SuperTabDefaultCompletionType = "<c-n>"
+" let g:SuperTabDefaultCompletionType = '<C-x><C-o>'
+" Preseclt the first compleition and allow enter to select it
+" Show compleition menu even when only one match is there, and also show
+" preview window. Look right below for why 'longest' is here.
+" set completeopt=menuone,preview,longest
+
+" Trusting this promise from SuperTab docs:
+
+" close compleition window
+" let g:SuperTabClosePreviewOnPopupClose = 1
+
+" ALE settings
+" Use ale for omnifunc
+" setlocal omnifunc=ale#completion#OmniFunc
+" let g:ale_completion_autoimport=1
+
+let g:ale_open_list = 0
+let g:ale_virtual_text_cursor = 1
+let g:ale_virtualtext_delay = 0
+let g:ale_echo_cursor = 1
+
 " Jedi takes over a bunch of key mappings if I don't do this
 let g:jedi#auto_initialization = 0
-" Stop jedi from opening a split with documentation after autocomplete
-set completeopt-=preview
-
-" Show call signatures
-" let g:jedi#show_call_signatures = "1"
-" let g:jedi#show_call_signatures_delay = 0
-" call jedi#configure_call_signatures()
 
 
-" Use deoplete.  
-let g:jedi#completions_enabled = 0
-let g:deoplete#enable_at_startup = 0
+
 
 " Disable indenting lines more than necessary when typing :
 " This doens't work in ftplugin/python.vim or after/python.vim.
@@ -89,17 +121,7 @@ autocmd FileType python setlocal indentkeys-=:
 autocmd FileType markdown set fo-=r
 autocmd FileType markdown set fo+=oc
 
-" Start echo doc at startup
-let g:echodoc#type = 'floating'
-let g:echodoc#enable_at_startup = 1 
 
-" Remnant from YCM, not sure what to do with it now.
-let g:SuperTabDefaultCompletionType = '<C-l>'
-
-" " better key bindings for UltiSnipsExpandTrigger
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
 "Relative line numbers!
 set rnu
@@ -114,13 +136,17 @@ augroup END
 " Bash
 autocmd FileType sh setlocal makeprg=bash\ %
 
-let g:ale_fix_on_save = 1
+let g:ale_fix_on_save = 0
 let g:lint_on_enter = 1
+let g:ale_hover_to_preview = 1
+" Show ale balloons quicker
+set updatetime=100
+
 
 
 " Don't check if AST after formatting is equivalent
 " to AST before.
-"let g:ale_python_black_options = '--fast'
+let g:ale_python_black_options = '--fast'
 
 " Bandit options
 " Stop warning about asserts
@@ -150,13 +176,14 @@ set backspace=indent,eol,start
 set number
 
 " Base16 autopickup
-if filereadable(expand("~/.vimrc_background"))
+if filereadable(expand('~/.vimrc_background'))
   let base16colorspace=256
     source ~/.vimrc_background
 endif
 set bg=dark
 
 
+let session_file=".Session.vim"
 " https://github.com/tpope/vim-obsession/issues/17
 augroup ObsessionGroup
   autocmd!
@@ -170,18 +197,16 @@ augroup ObsessionGroup
   " that's why we check if v:this_session is empty.
   autocmd VimEnter * nested
       \ if !&modified |
-      \   if !argc() && filereadable('Session.vim') |
-      \   source Session.vim |
-      \   echo "Existing session sourced, recording session" |
+      \   if !argc() && filereadable(session_file) |
+      \   execute "source" session_file |
       \   elseif empty(v:this_session) |
-      \     Obsession |
-      \     echo "Started new session" |
+      \     execute "Obsession" session_file|
       \   endif |
       \ endif
 augroup END
 
-" Status line theme
-let g:airline_theme='base16_monokai'
+" Status line theme is whatever base16 theme I am using
+let g:airline_theme='base16'
 
 
 " Resize vim splists with a mouse when inside tmux
@@ -190,13 +215,13 @@ set mouse+=a
 " Draw a line at wrapwidth
 set colorcolumn=+1
 
-" Dispatch related shortcuts
-nnoremap <Leader>q :Copen<CR>
-nnoremap m<CR>  :Make!<CR>
 
 " Netrw
 " Allow netrw to remove non-empty local directories
 let g:netrw_localrmdir='rm -r'
+
+" Make netrw moving work 
+let g:netrw_keepdir=1
 
 
 " Start markdown preview as soon as I enter a markdown file
@@ -208,21 +233,31 @@ let g:markdown_fenced_languages = ['json', 'javascript', 'html', 'python', 'bash
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
 
-" Make netrw moving work 
-let g:netrw_keepdir=0
 
 """""" Mappings
 """"""
 " Change leader
 let mapleader = ","
 
+" close  preview/quickfix/locationlist windows all at once.
+nnoremap <Leader>c :cclose <bar> pclose <bar> lclose<CR>
+
+" Dispatch related shortcuts
+" open and close quickfix
+nnoremap <Leader>qo :copen<CR>
+" make using compiler in bg
+nnoremap m<CR>  :Make!<CR>
+
+" Same pattern for loclist
+nnoremap <Leader>lo :lopen<CR>
+nnoremap <Leader>lc :lclose<CR>
+
+" Save easier
+noremap <Leader>s :update<CR>
+
 augroup MarkdownRelated
 	au BufEnter,BufRead,BufNewFile *.md nmap <Leader>m <Plug>MarkdownPreviewToggle
 augroup END
-
-
-" Toggle quickfix
-nnoremap <Leader>q :call QuickfixToggle()<CR>
 
 
 " fzf shortcuts
@@ -248,18 +283,11 @@ nnoremap <Leader>h/ :History/<CR>
 nnoremap <Leader>b :Buffers<CR> 
 
 
-
-" TODO: Move this to a ftplugin file
-nnoremap <Leader>tt :TableFormat<CR>
-
-" Resize splits more quickly
-nnoremap <silent> <Leader>a :exe "resize +2" <CR>
-nnoremap <silent> <Leader>aa :exe "resize -2" <CR>
-
-" Open netranger in directory of current file when pressing - 0
-nnoremap - :e %:p:h<CR>
-
 " Neovim's terminal mode, escape with Ctrl-P which happens to
 " be my Tmux "leader" key, which works great cuz I don't see
 " a reason to use Neovim's :terminal inside tmux.
 tnoremap <C-p> <C-\><C-n>
+
+" ALE mappings
+nnoremap <Leader>ah :ALEHover<CR>
+nnoremap <Leader>af :ALEFix<CR>

@@ -144,33 +144,6 @@ export pb=/projectnb/llamagrp/davidat
 
 export LD_LIBRARY_PATH=/usr/lib64
 
-# The next line updates PATH for the Google Cloud SDK.
-# if [ -f '/usr3/graduate/davidat/google-cloud-sdk/path.bash.inc' ]; then . '/usr3/graduate/davidat/google-cloud-sdk/path.bash.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-# if [ -f '/usr3/graduate/davidat/google-cloud-sdk/completion.bash.inc' ]; then . '/usr3/graduate/davidat/google-cloud-sdk/completion.bash.inc'; fi
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-# __conda_setup="$('/projectnb/llamagrp/davidat/conda/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-# if [ $? -eq 0 ]; then
-#     # eval "$__conda_setup"
-#     :
-# else
-#     if [ -f "/projectnb/llamagrp/davidat/conda/etc/profile.d/conda.sh" ]; then
-#         #. "/projectnb/llamagrp/davidat/conda/etc/profile.d/conda.sh"
-#         :
-#     else
-#         #export PATH="/projectnb/llamagrp/davidat/conda/bin:$PATH"
-#         :
-#     fi
-# fi
-# unset __conda_setup
-# <<< conda initialize <<<
-
-
-# alias tmux="TERM=screen-256color tmux"
-
 # Vim everywhere
 set -o vi
 
@@ -193,9 +166,6 @@ if [[ "$HOSTNAME" =~ "scc" ]]; then
 fi
 # module load "pytorch/1.1"
 
-# Path
-export PATH=$PERSONAL_SCRIPTS/bin:~/.local/bin:$PATH
-
 
 # Shorter PS1 please
 PROMPT_DIRTRIM=3
@@ -217,30 +187,13 @@ export HISTFILE=~/.bash_eternal_history
 # http://superuser.com/questions/20900/bash-history-loss
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
-if echo $HOSTNAME | grep 'scc-.' > /dev/null; then
-    if [[ ! -e /tmp/stopnotifyingme ]]; then
-        curl -s "https://api.simplepush.io/send/bUvKq5/Logged into $HOSTNAME//event/scclogin" > /dev/null &
-	touch /tmp/stopnotifyingme
-    fi
-fi
-
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-
-# My git-tracked scripts
-PATH=/project/llamagrp/davidat/scripts/:$PATH
-
-alias python=python3
 
 # Source customizations that differ across machines
 if [[ -f ~/.bashrc_specific  ]]; then
     source ~/.bashrc_specific
 fi
 
-# Own stubs for Python 3rd party libs
-# export MYPYPATH=/home/davidat/git/stubs/
+# Use Neovim instead of vim
 alias vi=nvim
 alias vim=nvim
-
-# Poetry
-export PATH=$PATH:$HOME/.poetry/bin
-

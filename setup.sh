@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -24,6 +24,11 @@ function setup() {
   mkdir -p ~/.config/i3 
   rm -f ~/.config/i3/config
   ln -s "$THIS_DIR/conf/i3_config" ~/.config/i3/config
+
+  mkdir -p ~/.config/sway 
+  rm -f ~/.config/sway/config
+  ln -s "$THIS_DIR/conf/i3_config" ~/.config/sway/config
+
 
   rm -f ~/.bashrc
   ln -s "$THIS_DIR/conf/bashrc" ~/.bashrc

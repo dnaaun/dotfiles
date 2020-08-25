@@ -32,7 +32,7 @@ font pango:DejaVu Sans Mono Bold 9
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec gnome-terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -159,9 +159,9 @@ bar {
 
 # Keyboard control
 # # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec "amixer -q sset Master,0 1+ unmute"
-bindsym XF86AudioLowerVolume exec "amixer -q sset Master,0 1- unmute"
-bindsym XF86AudioMute exec "amixer -D pulse set Master 1+ toggle"
+bindsym Mod2+F1 exec "amixer -D pulse set Master 1+ toggle"
+bindsym Mod2+F2 exec "amixer -q sset Master,0 1- unmute"
+bindsym Mod2+F3 exec "amixer -q sset Master,0 1+ unmute"
 
 # Sreen brightness controls
 # bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
@@ -186,19 +186,28 @@ bindsym $alt+Shift+Right exec playerctl position 60+
 
 
 
-# window gap
-# gaps inner 5
-
-# Background
-# output "*" bg /home/davidat/Bilder/bg.jpg fill
-exec --no-startup-id sh ~/.fehbg
 
 
 # Remove title bars
-# default_border none
+default_border none
 
 # Start redshift
 exec redshift-gtk
 
 # Make CAPS an Esc
 exec setxkbmap -option caps:swapescape
+
+#### Sway WM specific settings ####
+# window gap
+gaps inner 2
+
+# Background
+# output "*" bg /home/davidat/Bilder/bg.jpg fill
+exec --no-startup-id sh ~/.fehbg
+
+# Swap escape and CAPS lock
+# input * {
+	# xkb_options "caps:swapescape"
+# }
+
+
