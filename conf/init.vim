@@ -1,3 +1,11 @@
+" Make ultisnips use other triggers so mucomplete can do it's thing
+let g:UltiSnipsExpandTrigger = "<c-t>"        " Do not use <tab>
+let g:UltiSnipsJumpForwardTrigger = "<c-f>"   " Do not use <c-j>
+let g:UltiSnipsJumpBackwardTrigger = "<c-b>"
+
+" Prevent the wrapper mappings of mucomplete to facilitate autoimport by ALE
+let g:mucomplete#no_popup_mappings = 0
+
 call plug#begin()
 Plug 'embear/vim-localvimrc'
 
@@ -10,6 +18,7 @@ Plug 'pangloss/vim-javascript', {'for': ['javascript'] }
 Plug 'AndrewRadev/tagalong.vim', {'for': ['html'] }
 Plug 'mattn/emmet-vim', { 'for': ['html'] }
 Plug 'shime/vim-livedown', { 'for': ['markdown'] }
+Plug 'dkarter/bullets.vim',  { 'for': ['markdown'] }
 
 
 " Markdown
@@ -28,11 +37,7 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-fugitive'
-" Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-repeat'
-
-" File browsing
-" Plug 'francoiscabrol/ranger.vim'
 
 " Colors
 Plug 'vim-airline/vim-airline'
@@ -42,14 +47,9 @@ Plug 'chriskempson/base16-vim'
 " Coding
 Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
 Plug 'SirVer/ultisnips'
-" Plug 'honza/vim-snippets'
 Plug '$HOME/git/ale'
-Plug 'deoplete-plugins/deoplete-jedi'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-
-Plug 'ervandew/supertab'
+Plug 'lifepillar/vim-mucomplete'
 Plug 'majutsushi/tagbar'
-Plug '5long/pytest-vim-compiler'
 
 "
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -58,7 +58,6 @@ Plug 'junegunn/fzf.vim'
 
 " My own tiny touches
 Plug '$HOME/git/dotfiles/conf/david.vim'
-
 call plug#end()
 
 
@@ -77,33 +76,6 @@ let g:tagalong_verbose = 1
 " allow % to match HTML blocks
 packadd! matchit
 
-" Ultisnips
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
-
-" Supertab, do context senstive selection of what to ocmplete
-let g:SuperTabDefaultCompletionType = "<c-n>"
-" let g:SuperTabDefaultCompletionType = '<C-x><C-o>'
-" Preseclt the first compleition and allow enter to select it
-" Show compleition menu even when only one match is there, and also show
-" preview window. Look right below for why 'longest' is here.
-" set completeopt=menuone,preview,longest
-
-" Trusting this promise from SuperTab docs:
-
-" close compleition window
-" let g:SuperTabClosePreviewOnPopupClose = 1
-
-" ALE settings
-" Use ale for omnifunc
-" setlocal omnifunc=ale#completion#OmniFunc
-" let g:ale_completion_autoimport=1
-
-let g:ale_open_list = 0
-let g:ale_virtual_text_cursor = 1
-let g:ale_virtualtext_delay = 0
-let g:ale_echo_cursor = 1
 
 " Jedi takes over a bunch of key mappings if I don't do this
 let g:jedi#auto_initialization = 0
@@ -136,11 +108,6 @@ augroup END
 " Bash
 autocmd FileType sh setlocal makeprg=bash\ %
 
-let g:ale_fix_on_save = 0
-let g:lint_on_enter = 1
-let g:ale_hover_to_preview = 1
-" Show ale balloons quicker
-set updatetime=100
 
 
 

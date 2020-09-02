@@ -1,3 +1,5 @@
+" Text iwidth
+set tw=88
 
 set expandtab
 " show existing tab with 2 spaces width
