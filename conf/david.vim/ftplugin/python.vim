@@ -26,6 +26,6 @@ augroup END
 setlocal omnifunc=jedi#completions
 
 set noshowmode " jedi docs say we need this for the below.
-let g:jedi#show_call_signatures=2
+let g:jedi#show_call_signatures=1
 " auto_initialization is 0, so we gotta do this for call signatures.
 call jedi#configure_call_signatures()

@@ -189,6 +189,11 @@ PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
+# Scripts in dotfiles/bin/
+if [[ -d ~/git/dotfiles/bin/  ]]; then
+    export PATH=~/git/dotfiles/bin/:$PATH
+fi
+
 # Source customizations that differ across machines
 if [[ -f ~/.bashrc_specific  ]]; then
     source ~/.bashrc_specific

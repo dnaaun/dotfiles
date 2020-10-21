@@ -1,5 +1,8 @@
+" Use non-venv python for pynvim always
+let g:python3_host_prog='/usr/bin/python3'
+
 " Make ultisnips use other triggers so mucomplete can do it's thing
-let g:UltiSnipsExpandTrigger = "<c-t>"        " Do not use <tab>
+let g:UltiSnipsExpandTrigger = "<c-e>"        " Do not use <tab>
 let g:UltiSnipsJumpForwardTrigger = "<c-f>"   " Do not use <c-j>
 let g:UltiSnipsJumpBackwardTrigger = "<c-b>"
 
@@ -17,7 +20,6 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'pangloss/vim-javascript', {'for': ['javascript'] }
 Plug 'AndrewRadev/tagalong.vim', {'for': ['html'] }
 Plug 'mattn/emmet-vim', { 'for': ['html'] }
-Plug 'shime/vim-livedown', { 'for': ['markdown'] }
 Plug 'dkarter/bullets.vim',  { 'for': ['markdown'] }
 
 
@@ -49,7 +51,12 @@ Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
 Plug 'SirVer/ultisnips'
 Plug '$HOME/git/ale'
 Plug 'lifepillar/vim-mucomplete'
-Plug 'majutsushi/tagbar'
+Plug 'liuchengxu/vista.vim'
+
+
+" Tex
+Plug 'lervag/vimtex', { 'for': 'tex' }
+Plug 'KeitaNakamura/tex-conceal.vim'
 
 "
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -59,6 +66,9 @@ Plug 'junegunn/fzf.vim'
 " My own tiny touches
 Plug '$HOME/git/dotfiles/conf/david.vim'
 call plug#end()
+
+" Set zathura as viewer for latex preview pdfs
+let g:livepreview_previewer = 'zathura'
 
 
 " Enable nvimrc as the local initialization file
@@ -77,9 +87,11 @@ let g:tagalong_verbose = 1
 packadd! matchit
 
 
+"" Stuff I wish was in ftplugin/, but doesn't work there.
 " Jedi takes over a bunch of key mappings if I don't do this
 let g:jedi#auto_initialization = 0
-
+" Set latex filetypes as tex, not plaintex
+let g:tex_flavor='latex'
 
 
 
@@ -90,8 +102,8 @@ autocmd FileType python setlocal indentkeys-=<:>
 autocmd FileType python setlocal indentkeys-=:
 
 " Mark down blockquotes work nicer like this
-autocmd FileType markdown set fo-=r
-autocmd FileType markdown set fo+=oc
+autocmd FileType markdown set formatoptions-=ro
+autocmd FileType markdown set formatoptions+=c
 
 
 
@@ -205,6 +217,13 @@ let g:vim_markdown_conceal = 0
 """"""
 " Change leader
 let mapleader = ","
+
+"" Vista.vim mappings
+" toggle Vista visibility
+nnoremap <Leader>vv :Vista!!<CR> 
+" Launch fzf with Vista
+nnoremap <Leader>vf :Vista finder<CR> 
+
 
 " close  preview/quickfix/locationlist windows all at once.
 nnoremap <Leader>c :cclose <bar> pclose <bar> lclose<CR>
