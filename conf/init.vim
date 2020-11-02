@@ -277,3 +277,4 @@ tnoremap <C-p> <C-\><C-n>
 " ALE mappings
 nnoremap <Leader>ah :ALEHover<CR>
 nnoremap <Leader>af :ALEFix<CR>
+nnoremap <Leader>ai :ALEInfo<CR>
