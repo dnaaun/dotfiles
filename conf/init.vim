@@ -84,7 +84,7 @@ let g:localvimrc_sandbox=0
 let g:tagalong_verbose = 1
 
 " allow % to match HTML blocks
-packadd! matchit
+" packadd! matchit
 
 
 "" Stuff I wish was in ftplugin/, but doesn't work there.
@@ -92,7 +92,6 @@ packadd! matchit
 let g:jedi#auto_initialization = 0
 " Set latex filetypes as tex, not plaintex
 let g:tex_flavor='latex'
-
 
 
 " Disable indenting lines more than necessary when typing :
@@ -194,6 +193,11 @@ set mouse+=a
 " Draw a line at wrapwidth
 set colorcolumn=+1
 
+" ALE Settings
+" Show status using vim airline
+let g:airline#extensions#ale#enabled = 1
+
+
 
 " Netrw
 " Allow netrw to remove non-empty local directories
@@ -278,3 +282,9 @@ tnoremap <C-p> <C-\><C-n>
 nnoremap <Leader>ah :ALEHover<CR>
 nnoremap <Leader>af :ALEFix<CR>
 nnoremap <Leader>ai :ALEInfo<CR>
+
+" Allow a 'computer dependent' initialization
+let s:secondary_init_vim=expand('~/.secondary.init.vim')
+if filereadable(s:secondary_init_vim)
+    execute 'source' s:secondary_init_vim
+endif
