@@ -11,26 +11,21 @@ let g:mucomplete#no_popup_mappings = 0
 
 call plug#begin()
 Plug 'embear/vim-localvimrc'
-
 Plug 'christoomey/vim-tmux-navigator'
-
-"Docker
 
 " Vim for frontend
 Plug 'pangloss/vim-javascript', {'for': ['javascript'] }
 Plug 'AndrewRadev/tagalong.vim', {'for': ['html'] }
 Plug 'mattn/emmet-vim', { 'for': ['html'] }
-Plug 'dkarter/bullets.vim',  { 'for': ['markdown'] }
 
-
-" Markdown
+" Markdown/writing
 Plug 'godlygeek/tabular', { 'for': ['markdown'] }
 Plug 'plasticboy/vim-markdown', { 'for': ['markdown'] }
 Plug 'iamcco/markdown-preview.nvim', {
             \ 'for': ['markdown'],
             \ 'do': { -> mkdp#util#install() },
             \ }
-
+Plug 'dkarter/bullets.vim',  { 'for': ['markdown'] }
 
 " Tpope's plugins are to ViM, what ViM is to Vi
 Plug 'tpope/vim-surround'
@@ -40,6 +35,7 @@ Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-dispatch'
 
 " Colors
 Plug 'vim-airline/vim-airline'
@@ -52,7 +48,7 @@ Plug 'SirVer/ultisnips'
 Plug '$HOME/git/ale'
 Plug 'lifepillar/vim-mucomplete'
 Plug 'liuchengxu/vista.vim'
-
+Plug 'ludovicchabant/vim-gutentags', { 'for': ['cpp'] }
 
 " Tex
 Plug 'lervag/vimtex', { 'for': 'tex' }
@@ -70,7 +66,6 @@ call plug#end()
 " Set zathura as viewer for latex preview pdfs
 let g:livepreview_previewer = 'zathura'
 
-
 " Enable nvimrc as the local initialization file
 let g:localvimrc_name=['.lnvimrc']
 " Whitelist everything in home directory
@@ -86,13 +81,11 @@ let g:tagalong_verbose = 1
 " allow % to match HTML blocks
 " packadd! matchit
 
-
 "" Stuff I wish was in ftplugin/, but doesn't work there.
 " Jedi takes over a bunch of key mappings if I don't do this
 let g:jedi#auto_initialization = 0
 " Set latex filetypes as tex, not plaintex
 let g:tex_flavor='latex'
-
 
 " Disable indenting lines more than necessary when typing :
 " This doens't work in ftplugin/python.vim or after/python.vim.
@@ -103,7 +96,6 @@ autocmd FileType python setlocal indentkeys-=:
 " Mark down blockquotes work nicer like this
 autocmd FileType markdown set formatoptions-=ro
 autocmd FileType markdown set formatoptions+=c
-
 
 
 "Relative line numbers!
@@ -118,30 +110,6 @@ augroup END
 
 " Bash
 autocmd FileType sh setlocal makeprg=bash\ %
-
-
-
-
-" Don't check if AST after formatting is equivalent
-" to AST before.
-let g:ale_python_black_options = '--fast'
-
-" Bandit options
-" Stop warning about asserts
-let g:ale_python_bandit_options = '-ll'
-
-let g:ale_fixers = {
-      \ 'python': ['black',],
-      \ 'javascript': ['prettier']
-      \}
-
-let g:ale_linters = {
-      \ 'python': ['mypy', 'flake8', 'bandit'],
-      \ 'html': [ 'htmlhint'],
-      \ 'css': ['stylelint'],
-      \ 'javascript': ['eslint', 'prettier']
-      \}
-
 
 " Other vim preferences
 set splitbelow
@@ -186,7 +154,6 @@ augroup END
 " Status line theme is whatever base16 theme I am using
 let g:airline_theme='base16'
 
-
 " Resize vim splists with a mouse when inside tmux
 set mouse+=a
 
@@ -196,7 +163,6 @@ set colorcolumn=+1
 " ALE Settings
 " Show status using vim airline
 let g:airline#extensions#ale#enabled = 1
-
 
 
 " Netrw
@@ -243,10 +209,15 @@ nnoremap <Leader>lo :lopen<CR>
 nnoremap <Leader>lc :lclose<CR>
 
 " Save easier
-noremap <Leader>s :update<CR>
+noremap <Leader>w :write<CR>
 
 augroup MarkdownRelated
-	au BufEnter,BufRead,BufNewFile *.md nmap <Leader>m <Plug>MarkdownPreviewToggle
+    au!
+	au FileType markdown nmap <Leader>m <Plug>MarkdownPreviewToggle<CR>
+    
+    "  https://github.com/reedes/vim-lexical/blob/master/autoload/lexical.vim
+    "  Go into insert mode
+    au FileType markdown nmap  <Leader>s ]svaWovEa<C-X><C-S>
 augroup END
 
 
@@ -258,8 +229,8 @@ augroup END
 "                 (will drop to vim prompt with :Files or :Ag prefilled)
 "   <Leader>Xd is for current directory. Will execute :Files or :Ag in current
 "                 [d]ir.
-"   <Leader>Xf is for current directory. Will execute :Files or :Ag in dir of 
-"                 of current file.
+"   <Leader>Xf is for current file. Will execute :Files or :Ag in dir of 
+"                 of current [f]ile.
 nnoremap <Leader>ff :execute 'Files' . expand('%:p:h')<CR> 
 nnoremap <Leader>fc :Files<CR> 
 nnoremap <Leader>fa :Files 
@@ -282,9 +253,12 @@ tnoremap <C-p> <C-\><C-n>
 nnoremap <Leader>ah :ALEHover<CR>
 nnoremap <Leader>af :ALEFix<CR>
 nnoremap <Leader>ai :ALEInfo<CR>
+nnoremap <Leader>ad :ALEGoToDefinition<CR>
+nnoremap <Leader>au :ALEFindReferences<CR>
 
 " Allow a 'computer dependent' initialization
 let s:secondary_init_vim=expand('~/.secondary.init.vim')
 if filereadable(s:secondary_init_vim)
     execute 'source' s:secondary_init_vim
 endif
+
