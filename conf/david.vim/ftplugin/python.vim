@@ -29,3 +29,18 @@ set noshowmode " jedi docs say we need this for the below.
 let g:jedi#show_call_signatures=1
 " auto_initialization is 0, so we gotta do this for call signatures.
 call jedi#configure_call_signatures()
+
+set expandtab
+" show existing tab with 2 spaces width
+set tabstop=4
+set softtabstop=4
+" when indenting with '>', use 2 spaces width
+set shiftwidth=4
+
+
+" Use the pytest compiler (look in ../compiler/pytest.vim) if we are in an
+" a file that looks like a test file.
+if expand('%:t') =~ '^test_.*\.py'
+    compiler pytest
+endif
+
