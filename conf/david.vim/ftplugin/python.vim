@@ -23,7 +23,7 @@ augroup TagBar
 augroup END
 
 " Set omnifunc
-setlocal omnifunc=jedi#completions
+set omnifunc=ale#completion#OmniFunc
 
 set noshowmode " jedi docs say we need this for the below.
 let g:jedi#show_call_signatures=1
@@ -40,7 +40,7 @@ set shiftwidth=4
 
 " Use the pytest compiler (look in ../compiler/pytest.vim) if we are in an
 " a file that looks like a test file.
-if expand('%:t') =~ '^test_.*\.py'
+if expand('%:t') =~ 'test_.*\.py'
     compiler pytest
 endif
 

@@ -200,6 +200,23 @@ fi
 alias vi=nvim
 alias vim=nvim
 
+# Show virtual env in custom prompt
+# https://stackoverflow.com/a/20026992
+function virtualenv_info(){
+    # Get Virtual Env
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        # Strip out the path and just leave the env name
+        venv="${VIRTUAL_ENV##*/}"
+    else
+        # In case you don't have one activated
+        venv=''
+    fi
+    [[ -n "$venv" ]] && echo "(venv:$venv) "
+
+} 
+# disable the default virtualenv prompt change
+export VIRTUAL_ENV_DISABLE_PROMPT=1 
+
 # Color prompt according to exit code: https://stackoverflow.com/a/16715681
 PROMPT_COMMAND=__prompt_command # Func to gen PS1 after CMDs
 
@@ -208,6 +225,8 @@ PROMPT_COMMAND=__prompt_command # Func to gen PS1 after CMDs
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 __prompt_command() {
+    VENV="\$(virtualenv_info)";
+
     local EXIT="$?"             # This needs to be first
 
     local RCol='\[\e[0m\]'
@@ -218,7 +237,7 @@ __prompt_command() {
     local BBlu='\[\e[1;34m\]'
     local Pur='\[\e[0;35m\]'
 
-    PS1="${Gre}\u@\h:"
+    PS1="${Gre}$VENV\u@\h:"
     if [ $EXIT != 0 ]; then
         PS1+="${Red}\w\$ ${RCol}"      # Add red if exit code non 0
     else
