@@ -199,6 +199,11 @@ bindsym $alt+Shift+Left exec playerctl position 60-
 bindsym $alt+Shift+Right exec playerctl position 60+
 
 
+# Printscreen
+#crop-area screenshot by pressing Mod + printscreen
+# gnome-screenshot-helper is a helper script in $PATH somewhere
+bindsym --release Print exec --no-startup-id ~/git/dotfiles/bin/gnome-screenshot-helper  -a
+bindsym --release Shift+Print exec --no-startup-id ~/git/dotfiles/bin/gnome-screenshot-helper -w
 
 
 

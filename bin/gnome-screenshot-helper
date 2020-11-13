@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+tmp_file=`mktemp --suffix .png`
+echo gnome-screenshot "$@" "$tmp_file"
+gnome-screenshot "$@" -f "$tmp_file" 
+cat $tmp_file | xclip -i -selection clipboard -target image/png
