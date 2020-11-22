@@ -37,10 +37,13 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-dispatch'
 
-" Colors
+" Colors and other niceties 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'chriskempson/base16-vim'
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
+Plug 'junegunn/seoul256.vim'
 
 " Coding
 Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
@@ -67,10 +70,11 @@ call plug#end()
 let g:livepreview_previewer = 'zathura'
 
 " Enable nvimrc as the local initialization file
+let g:localvimrc_debug=1
 let g:localvimrc_name=['.lnvimrc']
 " Whitelist everything in home directory
 " https://stackoverflow.com/a/48519356
-let g:localvimrc_whitelist = fnamemodify('~', ':p')
+let g:localvimrc_whitelist = [ fnamemodify('~', ':p') ]
 
 " Disable "sandbox" mode
 let g:localvimrc_sandbox=0
@@ -87,6 +91,31 @@ let g:jedi#auto_initialization = 0
 " Set latex filetypes as tex, not plaintex
 let g:tex_flavor='latex'
 
+let g:goyo_height=100
+" Make Goyo make tmux panes dissapear
+function! s:goyo_enter()
+  if executable('tmux') && strlen($TMUX)
+    silent !tmux set status off
+    silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+  endif
+  set noshowmode
+  set noshowcmd
+  set scrolloff=999
+endfunction
+
+function! s:goyo_leave()
+  if executable('tmux') && strlen($TMUX)
+    silent !tmux set status on
+    silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+  endif
+  set showmode
+  set showcmd
+  set scrolloff=5
+endfunction
+
+autocmd! User GoyoEnter nested call <SID>goyo_enter()
+autocmd! User GoyoLeave nested call <SID>goyo_leave()
+
 " Disable indenting lines more than necessary when typing :
 " This doens't work in ftplugin/python.vim or after/python.vim.
 " https://stackoverflow.com/a/37889460/13664712
@@ -96,6 +125,9 @@ autocmd FileType python setlocal indentkeys-=:
 " Mark down blockquotes work nicer like this
 autocmd FileType markdown set formatoptions-=ro
 autocmd FileType markdown set formatoptions+=c
+
+" Number of preceding/following paragraphs to include (default: 0)
+let g:limelight_paragraph_span = 2
 
 
 "Relative line numbers!
@@ -123,10 +155,10 @@ set number
 
 " Base16 autopickup
 if filereadable(expand('~/.vimrc_background'))
-  let base16colorspace=256
+    let base16colorspace=256
     source ~/.vimrc_background
 endif
-set bg=dark
+" colorscheme seoul256
 
 
 let session_file=".Session.vim"
@@ -164,6 +196,13 @@ set colorcolumn=+1
 " Show status using vim airline
 let g:airline#extensions#ale#enabled = 1
 
+" Only lint when I ask
+let g:ale_linters_explicit=1
+
+" Nice to know which linter is dissatisfied
+let g:ale_echo_msg_format = '%linter%:%severity%:%code:%%s'
+
+
 
 " Netrw
 " Allow netrw to remove non-empty local directories
@@ -187,6 +226,10 @@ let g:vim_markdown_conceal = 0
 """"""
 " Change leader
 let mapleader = ","
+
+" Goyo. Distraction free writing.
+" No justification for key choice except that it's the shortest that's not yet taken.
+nnoremap <leader>t :Goyo<CR>
 
 "" Vista.vim mappings
 " toggle Vista visibility
@@ -222,26 +265,16 @@ augroup END
 
 
 " fzf shortcuts
-" Here's the logic. 'X' means it can be any letter.
-"   <Leader>fX is for :Files
-"   <Leader>gX is for :Ag
-"   <Leader>Xa is for for [a]nywhere 
-"                 (will drop to vim prompt with :Files or :Ag prefilled)
-"   <Leader>Xd is for current directory. Will execute :Files or :Ag in current
-"                 [d]ir.
-"   <Leader>Xf is for current file. Will execute :Files or :Ag in dir of 
-"                 of current [f]ile.
+" second f for search in directory of curetn *F*ile
 nnoremap <Leader>ff :execute 'Files' . expand('%:p:h')<CR> 
+" c for current dir
 nnoremap <Leader>fc :Files<CR> 
-nnoremap <Leader>fa :Files 
-nnoremap <Leader>gf :execute 'Ag' . expand('%:p:h')<CR> 
-nnoremap <Leader>gc :Ag<CR> 
-nnoremap <Leader>ga :Ag 
-
+" a for Ag
+nnoremap <Leader>fa :Ag<CR> 
 " Search through buffers and history
-nnoremap <Leader>h: :History:<CR> 
-nnoremap <Leader>h/ :History/<CR>
-nnoremap <Leader>b :Buffers<CR> 
+nnoremap <Leader>f: :History:<CR> 
+nnoremap <Leader>f/ :History/<CR>
+nnoremap <Leader>fb :Buffers<CR> 
 
 
 " Neovim's terminal mode, escape with Ctrl-P which happens to
@@ -255,6 +288,22 @@ nnoremap <Leader>af :ALEFix<CR>
 nnoremap <Leader>ai :ALEInfo<CR>
 nnoremap <Leader>ad :ALEGoToDefinition<CR>
 nnoremap <Leader>au :ALEFindReferences<CR>
+nnoremap <Leader>al :ALELint<CR>
+nnoremap <Leader>aa :ALECodeAction<CR>
+" t for toggle
+nnoremap <Leader>at :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<CR>
+
+" Fugutive mappings
+nnoremap <Leader>gs :Git!<CR>
+nnoremap <Leader>gd :Gdiffsplit<CR>
+nnoremap <Leader>gd :Gdiffsplit<CR>
+nnoremap <Leader>gc :Gcommit<CR>
+nnoremap <Leader>gl :Glog<CR>
+
+
+" Reload vimrc and filetype plugins
+
+
 
 " Allow a 'computer dependent' initialization
 let s:secondary_init_vim=expand('~/.secondary.init.vim')

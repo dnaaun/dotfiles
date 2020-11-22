@@ -16,11 +16,6 @@ augroup end
 set formatoptions-=t
 set nowrap
 
-" Setup a shortcut for tagbar
-augroup TagBar
-	au!
-	nnoremap <Leader>t :TagbarToggle<CR>
-augroup END
 
 " Set omnifunc
 set omnifunc=ale#completion#OmniFunc

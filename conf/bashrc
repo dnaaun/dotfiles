@@ -138,10 +138,6 @@ export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 alias tmux='tmux -u'
 
-# Some convineince mappings
-export p=/project/llamagrp/davidat
-export pb=/projectnb/llamagrp/davidat
-
 export LD_LIBRARY_PATH=/usr/lib64
 
 # Vim everywhere
@@ -150,8 +146,6 @@ set -o vi
 # Ptpython vim
 alias ptpython='ptpython --vi'
 
-export p='/project/llamagrp/davidat'
-export nb='/projectnb/llamagrp/davidat'
 
 # I don't know where this is getting set, but I need to unset it
 export PYTHONPATH=
@@ -196,9 +190,6 @@ if [[ -f ~/.bashrc_specific  ]]; then
     source ~/.bashrc_specific
 fi
 
-# Use Neovim instead of vim
-alias vi=nvim
-alias vim=nvim
 
 # Show virtual env in custom prompt
 # https://stackoverflow.com/a/20026992
@@ -220,9 +211,6 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 # Color prompt according to exit code: https://stackoverflow.com/a/16715681
 PROMPT_COMMAND=__prompt_command # Func to gen PS1 after CMDs
 
-# Force prompt to write history after every command.
-# http://superuser.com/questions/20900/bash-history-loss
-PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 __prompt_command() {
     VENV="\$(virtualenv_info)";
@@ -248,4 +236,9 @@ __prompt_command() {
 # Force prompt to write history after every command.
 # http://superuser.com/questions/20900/bash-history-loss
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
+
+export EDITOR=vi          # Supposed to be "simpler"
+unset VISUAL # So that editing commands in bash doesn't launch neovim."
+
 
