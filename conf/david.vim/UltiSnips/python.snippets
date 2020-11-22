@@ -3,6 +3,11 @@ import logging
 logger = logging.getLogger(__name__)
 endsnippet
 
+snippet withf "open file in the context-manager way"
+with ${1:path}.open(${2:}) as ${3:fb}:
+    ${4:}
+endsnippet
+
 snippet ifm "ifmain"
 if __name__ == "__main__":
     ${1}

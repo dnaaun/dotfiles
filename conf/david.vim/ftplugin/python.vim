@@ -18,7 +18,7 @@ set nowrap
 
 
 " Set omnifunc
-set omnifunc=ale#completion#OmniFunc
+set omnifunc=jedi#completions
 
 set noshowmode " jedi docs say we need this for the below.
 let g:jedi#show_call_signatures=1
