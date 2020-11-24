@@ -42,8 +42,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'chriskempson/base16-vim'
 Plug 'junegunn/goyo.vim'
-Plug 'junegunn/limelight.vim'
-Plug 'junegunn/seoul256.vim'
 
 " Coding
 Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
@@ -251,8 +249,11 @@ nnoremap m<CR>  :Make!<CR>
 nnoremap <Leader>lo :lopen<CR>
 nnoremap <Leader>lc :lclose<CR>
 
-" Save easier
-noremap <Leader>w :write<CR>
+" Read vimrc again.
+noremap <Leader>ri :source $MYVIMRC<CR>
+" Reload file, usually triggers filetype plugin reload and local vimrc
+" reload.
+noremap <Leader>rr :edit<CR>
 
 augroup MarkdownRelated
     au!
@@ -286,10 +287,12 @@ tnoremap <C-p> <C-\><C-n>
 nnoremap <Leader>ah :ALEHover<CR>
 nnoremap <Leader>af :ALEFix<CR>
 nnoremap <Leader>ai :ALEInfo<CR>
-nnoremap <Leader>ad :ALEGoToDefinition<CR>
 nnoremap <Leader>au :ALEFindReferences<CR>
 nnoremap <Leader>al :ALELint<CR>
 nnoremap <Leader>aa :ALECodeAction<CR>
+nnoremap <Leader>ad :ALEGoToDefinition<CR>
+nnoremap <Leader>at :ALEGoToTypeDefinition<CR>
+nnoremap <Leader>ar :ALERename<CR>
 " t for toggle
 nnoremap <Leader>at :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<CR>
 
@@ -299,6 +302,9 @@ nnoremap <Leader>gd :Gdiffsplit<CR>
 nnoremap <Leader>gd :Gdiffsplit<CR>
 nnoremap <Leader>gc :Gcommit<CR>
 nnoremap <Leader>gl :Glog<CR>
+nnoremap <Leader>gw :Gwrite<CR>
+nnoremap <Leader>gp :Gpull --rebase<CR>
+nnoremap <Leader>gg :Git 
 
 
 " Reload vimrc and filetype plugins
