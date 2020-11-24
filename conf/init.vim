@@ -6,6 +6,10 @@ let g:UltiSnipsExpandTrigger = "<c-e>"        " Do not use <tab>
 let g:UltiSnipsJumpForwardTrigger = "<c-f>"   " Do not use <c-j>
 let g:UltiSnipsJumpBackwardTrigger = "<c-b>"
 
+" Vimwiki takes over .md files if I don't set this. This way, the extension
+" .wiki only is associated with vimwiki, but it's set to markdown format.
+let g:vimwiki_ext2syntax={'.wiki': 'markdown'}
+
 " Prevent the wrapper mappings of mucomplete to facilitate autoimport by ALE
 let g:mucomplete#no_popup_mappings = 0
 
@@ -51,9 +55,10 @@ Plug 'lifepillar/vim-mucomplete'
 Plug 'liuchengxu/vista.vim'
 Plug 'ludovicchabant/vim-gutentags', { 'for': ['cpp'] }
 
-" Tex
+" Tex, writing
 Plug 'lervag/vimtex', { 'for': 'tex' }
 Plug 'KeitaNakamura/tex-conceal.vim'
+Plug 'vimwiki/vimwiki'
 
 "
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
