@@ -204,6 +204,8 @@ bindsym $alt+Shift+Right exec playerctl position 60+
 # gnome-screenshot-helper is a helper script in $PATH somewhere
 bindsym --release Print exec --no-startup-id ~/git/dotfiles/bin/gnome-screenshot-helper  -a
 bindsym --release Shift+Print exec --no-startup-id ~/git/dotfiles/bin/gnome-screenshot-helper -w
+bindsym --release Control+Print exec --no-startup-id gnome-screenshot -a -f "$HOME/Bilder/`date`.png"
+bindsym --release Control+Shift+Print exec --no-startup-id gnome-screenshot -w -f "$HOME/Bilder/`date`.png"
 
 
 

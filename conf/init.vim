@@ -59,6 +59,7 @@ Plug 'ludovicchabant/vim-gutentags', { 'for': ['cpp'] }
 Plug 'lervag/vimtex', { 'for': 'tex' }
 Plug 'KeitaNakamura/tex-conceal.vim'
 Plug 'vimwiki/vimwiki'
+Plug 'itchyny/calendar.vim'
 
 "
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }

@@ -243,3 +243,11 @@ unset VISUAL # So that editing commands in bash doesn't launch neovim."
 
 # Define a shortcut to copy to clipboard
 alias copy="xclip -selection clipboard"
+
+# Attach to tmux sessionif it already exists
+tmux attach &> /dev/null
+
+# Create a session if not
+if [[ $? != 0 && ! $TERM =~ screen ]]; then
+    exec tmux new def # def for default is session name
+fi
