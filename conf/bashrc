@@ -73,6 +73,10 @@ xterm*|rxvt*)
     ;;
 esac
 
+# Enable autocomplete for aliases:
+# https://unix.stackexchange.com/questions/4219/how-do-i-get-bash-completion-for-command-aliases
+source /home/davidat/.bash_completion.d/complete_alias
+
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -195,6 +199,11 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 # Color prompt according to exit code: https://stackoverflow.com/a/16715681
 PROMPT_COMMAND=__prompt_command # Func to gen PS1 after CMDs
 
+# https://tldp.org/HOWTO/Xterm-Title-4.html
+ppwd () 
+{ 
+    echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"
+}
 
 __prompt_command() {
     VENV="\$(virtualenv_info)";
@@ -215,6 +224,8 @@ __prompt_command() {
     else
         PS1+="${BBlu}\w\$ ${RCol}"
     fi
+    ppwd
+    PS1="$PS1"
 }
 
 # Force prompt to write history after every command.
@@ -234,3 +245,7 @@ tmux attach &> /dev/null
 if [[ $? != 0 && ! $TERM =~ screen ]]; then
     tmux
 fi
+
+# Taskwarrior 
+alias t=task
+complete -F _complete_alias t

@@ -21,3 +21,7 @@ setlocal tabstop=4
 setlocal softtabstop=4
 " when indenting with '>', use 4 spaces width
 setlocal shiftwidth=4
+
+" ALE Config
+let b:ale_linters = { 'tex': ['alex', 'chktex', 'lacheck', 'proselint', 'redpen', 'texlab', 'textlint', 'vale', 'writegood'] }
+let b:ale_fixers = { 'tex': [ 'latexindent', 'remove_trailing_lines', 'textlint', 'trim_whitespace'] }

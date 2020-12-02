@@ -239,3 +239,6 @@ client.focused_inactive #1B3600 #1B3600 #888888 #FFFFFF
 client.unfocused #333333 #333333 #888888 #FFFFFF
 client.urgent #C20000 #C20000 #FFFFFF #FFFFFF
 
+
+# Lock the screen with xscreensasver
+bindsym $mod+t exec xscreensaver-command -l

@@ -365,10 +365,17 @@ nnoremap <Leader>gg :Git
 " Reload vimrc and filetype plugins
 
 
+" Read GCal credentials for Calendar.vim
+let g:cred_file=$HOME . '/.cache/calendar.vim/credentials.vim'
+if filereadable(g:cred_file)
+	execute 'source' g:cred_file
+endif
 
 " Allow a 'computer dependent' initialization
 let s:secondary_init_vim=expand('~/.secondary.init.vim')
 if filereadable(s:secondary_init_vim)
     execute 'source' s:secondary_init_vim
 endif
+
+
 
