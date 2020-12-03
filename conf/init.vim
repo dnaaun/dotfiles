@@ -1,4 +1,17 @@
 " Use non-venv python for pynvim always
+"let b:ale_open_list = 0
+let g:ale_virtual_text_cursor = 1
+let g:ale_virtualtext_delay = 0
+let g:ale_echo_cursor = 1
+let g:ale_fix_on_save = 0
+let g:ale_lint_on_enter = 0
+let g:ale_hover_to_preview = 0 " Conflicts with echodoc, which is more useful.
+let g:ale_completion_enabled = 0
+let g:ale_completion_delay = 0
+let g:ale_completion_autoimport = 1
+
+
+
 let g:python3_host_prog='/usr/bin/python3'
 
 " Make ultisnips use other triggers so mucomplete can do it's thing
@@ -10,8 +23,17 @@ let g:UltiSnipsJumpBackwardTrigger = "<c-b>"
 " .wiki only is associated with vimwiki, but it's set to markdown format.
 let g:vimwiki_ext2syntax={'.wiki': 'markdown'}
 
+" Mucomplete
 " Prevent the wrapper mappings of mucomplete to facilitate autoimport by ALE
 let g:mucomplete#no_popup_mappings = 0
+let g:mucomplete#enable_auto_at_startup = 0 " automatic completion(as opposed to <tab>-triggered)
+" For now, ALE is on top.
+
+" Deoplete
+let g:deoplete#enable_at_startup = 1
+ " <tab>: completion.
+" inoremap <expr><tab>  pumvisible() ? "\<C-n>" : "\<TAB>"
+
 
 call plug#begin()
 Plug 'embear/vim-localvimrc'
@@ -52,8 +74,9 @@ Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
 Plug 'SirVer/ultisnips'
 Plug '$HOME/git/ale'
 Plug 'lifepillar/vim-mucomplete'
-Plug 'liuchengxu/vista.vim'
-Plug 'ludovicchabant/vim-gutentags', { 'for': ['cpp'] }
+Plug 'Shougo/echodoc.vim'
+" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'ervandew/supertab' 
 
 " Tex, writing
 Plug 'lervag/vimtex', { 'for': 'tex' }
@@ -69,6 +92,16 @@ Plug 'junegunn/fzf.vim'
 " My own tiny touches
 Plug '$HOME/git/dotfiles/conf/david.vim'
 call plug#end()
+
+let g:echodoc#type="floating"
+let g:echodoc#enable_at_startup=1 
+set cmdheight=2
+" To use a custom highlight for the float window,
+" change Pmenu to your highlight group
+highlight link EchoDocFloat Pmenu
+
+let g:vista_default_executive='ale'
+let g:vista_fzf_preview = ['right:50%']
 
 " Set zathura as viewer for latex preview pdfs
 let g:livepreview_previewer = 'zathura'
@@ -133,6 +166,13 @@ autocmd FileType markdown set formatoptions+=c
 " Number of preceding/following paragraphs to include (default: 0)
 let g:limelight_paragraph_span = 2
 
+
+" menuone so that autoimport cna work with one completion
+" preview to get more info
+" noinsert because ALE is too eager with it's completiions sometimes
+" noinsert cuz ALE docs recommend, don't know why
+set completeopt=menu,menuone,preview,noinsert
+set completeopt-=longest " This doens't make sense.
 
 "Relative line numbers!
 set rnu
@@ -235,12 +275,6 @@ let mapleader = ","
 " No justification for key choice except that it's the shortest that's not yet taken.
 nnoremap <leader>t :Goyo<CR>
 
-"" Vista.vim mappings
-" toggle Vista visibility
-nnoremap <Leader>vv :Vista!!<CR> 
-" Launch fzf with Vista
-nnoremap <Leader>vf :Vista finder<CR> 
-
 
 " close  preview/quickfix/locationlist windows all at once.
 nnoremap <Leader>c :cclose <bar> pclose <bar> lclose<CR>
@@ -299,6 +333,21 @@ nnoremap <Leader>aa :ALECodeAction<CR>
 nnoremap <Leader>ad :ALEGoToDefinition<CR>
 nnoremap <Leader>at :ALEGoToTypeDefinition<CR>
 nnoremap <Leader>ar :ALERename<CR>
+" t for toggle
+nnoremap <Leader>at :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<CR>
+
+" Jedi mappings
+nnoremap <Leader>ju :call jedi#usages()<CR>
+nnoremap <Leader>jk :call jedi#show_documentation()<CR>
+nnoremap <Leader>jd :call jedi#goto_assignments()<CR>
+nnoremap <Leader>jt :call jedi#goto_stubs()<CR>
+nnoremap <Leader>jr :call jedi#rename()<CR>
+let g:jedi#auto_initialization=0  " Don't take over
+let g:jedi#completions_enabled=0 " Pyright+ALE=autoimport
+let g:jedi#show_call_signatures=2  " Show ginatures in window
+let g:jedi#show_call_signatures_delay=0 " Show ginatures in window
+
+
 " t for toggle
 nnoremap <Leader>at :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<CR>
 

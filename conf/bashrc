@@ -2,7 +2,7 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
-export FZF_DEFAULT_COMMAND='ag -g ""'
+export FZF_DEFAULT_COMMAND='rg --files --hidden'
 
 # If not running interactively, don't do anything
 case $- in
@@ -114,7 +114,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-
 # Some systems still have old vi by default
 alias vi=vim
 
@@ -124,13 +123,6 @@ BASE16_SHELL="$HOME/.config/base16-shell/"
 	[ -s "$BASE16_SHELL/profile_helper.sh" ] && \
 	eval "$("$BASE16_SHELL/profile_helper.sh")"
 
-# Directory housing all personal scripts
-export PERSONAL_SCRIPTS=~/PersonalScripts
-
-# Executables here
-
-# Start ssh-agent
-# source ~/PersonalScripts/bin/setup_ssh_agent
 
 # UTF8 issues
 export LC_ALL=en_US.UTF-8
@@ -149,16 +141,6 @@ alias ptpython='ptpython --vi'
 
 # I don't know where this is getting set, but I need to unset it
 export PYTHONPATH=
-
-# Load pytorch
-if [[ "$HOSTNAME" =~ "scc" ]]; then
-	module load "tmux/2.8"
-	module load "gcc"
-	module load "nodejs"
-	module load "cuda/10.1"
-	module load "python3/3.7.3"
-fi
-# module load "pytorch/1.1"
 
 
 # Shorter PS1 please
@@ -181,15 +163,17 @@ export HISTFILE=~/.bash_eternal_history
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # Scripts in dotfiles/bin/
-if [[ -d ~/git/dotfiles/bin/  ]]; then
-    export PATH=~/git/dotfiles/bin/:$PATH
-fi
+for bin_dir in {$HOME/git/dotfiles/bin,$HOME/.local/bin}; do
+	if [[ -d "$bin_dir"  ]]; then
+	    export PATH=$bin_dir:$PATH
+	fi
+done
 
 # Source customizations that differ across machines
 if [[ -f ~/.bashrc_specific  ]]; then
     source ~/.bashrc_specific
+    :
 fi
-
 
 # Show virtual env in custom prompt
 # https://stackoverflow.com/a/20026992
@@ -238,8 +222,7 @@ __prompt_command() {
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 
-export EDITOR=vi          # Supposed to be "simpler"
-unset VISUAL # So that editing commands in bash doesn't launch neovim."
+export EDITOR=nvim
 
 # Define a shortcut to copy to clipboard
 alias copy="xclip -selection clipboard"
@@ -249,5 +232,5 @@ tmux attach &> /dev/null
 
 # Create a session if not
 if [[ $? != 0 && ! $TERM =~ screen ]]; then
-    exec tmux new def # def for default is session name
+    tmux
 fi
