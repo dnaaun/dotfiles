@@ -35,6 +35,9 @@ let g:deoplete#enable_at_startup = 1
 " inoremap <expr><tab>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
 
+set conceallevel=2
+let g:vim_markdown_conceal = 1
+
 call plug#begin()
 Plug 'embear/vim-localvimrc'
 Plug 'christoomey/vim-tmux-navigator'
@@ -51,7 +54,7 @@ Plug 'iamcco/markdown-preview.nvim', {
             \ 'for': ['markdown'],
             \ 'do': { -> mkdp#util#install() },
             \ }
-Plug 'dkarter/bullets.vim',  { 'for': ['markdown'] }
+Plug 'dkarter/bullets.vim',  { 'for': ['markdown', 'vimwiki'] }
 
 " Tpope's plugins are to ViM, what ViM is to Vi
 Plug 'tpope/vim-surround'
@@ -159,9 +162,6 @@ autocmd! User GoyoLeave nested call <SID>goyo_leave()
 autocmd FileType python setlocal indentkeys-=<:>
 autocmd FileType python setlocal indentkeys-=:
 
-" Mark down blockquotes work nicer like this
-autocmd FileType markdown set formatoptions-=ro
-autocmd FileType markdown set formatoptions+=c
 
 " Number of preceding/following paragraphs to include (default: 0)
 let g:limelight_paragraph_span = 2
