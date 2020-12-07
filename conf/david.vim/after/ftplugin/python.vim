@@ -24,6 +24,21 @@ if expand('%:t') =~ 'test_.*\.py'
     compiler pytest
 endif
 
+" function! s:add_conf(conf, to_add)
+" 	if type(a:conf) != type(a:to_add)
+"         throw 'Type mismatch in add_conf call'
+"     endif
+" 
+"     if type(a:conf) == v:t_list:
+"         for item in a:to_add:
+"             add(a:conf, item)
+"         endfor
+"     elseif type(a:conf) == v:t_dict:
+"         for key in keys(a:to_add):
+"             if exists('a:conf[key]')
+"                 s:add_conf(a:conf[key], to_add[key]
+
+
 " Run pyright everywhere!
 if ! exists('g:ale_linters') 
     let g:ale_linters = {}
@@ -33,3 +48,4 @@ if ! exists('g:ale_linters["python"]')
 endif
 let g:ale_linters['python'] = g:ale_linters['python'] + ['pyright']
 let g:ale_linters['python'] = g:ale_linters['python'] + ['mypy']
+let b:ale_fixers = { 'python': ['black']}

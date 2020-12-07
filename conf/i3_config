@@ -40,7 +40,7 @@ bindsym $mod+Shift+q kill
 # start rofi (a program launcher)
 bindsym $mod+d exec rofi -modi drun -show drun
 # Switch windows with rofi
-bindsym $alt+Tab exec rofi -modi window -show window
+bindsym $mod+Tab exec rofi -modi window -show window
 
 
 # Rename workspace script
@@ -208,6 +208,8 @@ bindsym --release Control+Print exec --no-startup-id gnome-screenshot -a -f "$HO
 bindsym --release Control+Shift+Print exec --no-startup-id gnome-screenshot -w -f "$HOME/Bilder/`date`.png"
 
 
+# Start xscreensaver
+exec --no-startup-id xscreensaver
 
 # Remove title bars
 default_border none
@@ -216,7 +218,13 @@ default_border none
 exec redshift-gtk
 
 # Make CAPS an Esc
-exec setxkbmap -option caps:swapescape
+# For wireless keyboard  as well. The device number was found out by
+# xinput -list | grep keyboard
+# and then, doing
+# xinput test <id> 
+# where <id> was observed from cmd above
+exec setxkbmap -option caps:swapescape # No device configures default keyboard
+exec setxkbmap -device 11 -option caps:swapescape
 
 #### Sway WM specific settings ####
 # window gap
