@@ -1,14 +1,40 @@
 #!/usr/bin/env python3
+from abc import ABC , abstractmethod
 import sys
 import csv
 from argparse import ArgumentParser
 
+from typing import Dict , Iterable , Iterator
 
-AGGREGATIONS = {
-    "add": sum,
-    "mean": lambda ls: sum(ls) / len(ls),
+
+
+
+class Aggregator(ABC):
+    @abstractmethod
+    def __call__(self, items: Iterable[str]) -> object:
+        pass
+
+class OneOutputAggregator(Aggregator):
+    @abstractmethod
+    def __call__(self, items: Iterable[str]) -> float:
+        pass
+
+
+class PerRowAggregator(Aggregator):
+    @abstractmethod
+    def __call__(self, items: Iterable[str]) -> Iterator[float]:
+        pass
+
+class Accum(PerRowAggregator):
+    def __call__(self, items: Iterable[str]) -> Iterator[float]:
+        agg = 0.
+        for i in items:
+            agg += float(i)
+            yield agg
+
+AGGREGATIONS: Dict[str, Aggregator] = {
+    "accum": Accum()
 }
-
 
 def main():
     parser = ArgumentParser()
@@ -24,8 +50,11 @@ def main():
     lines = [line[0] for line in lines]
 
     try:
-        floats = list(map(float, lines))
-        print("%.3f" % AGGREGATIONS[args.aggregator](floats))
+        agg = AGGREGATIONS[args.aggregator]
+
+        if isinstance(agg, PerRowAggregator):
+            for line in agg(lines):
+                print(line)
 
     except ValueError:
         print(

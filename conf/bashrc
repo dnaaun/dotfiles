@@ -75,7 +75,7 @@ esac
 
 # Enable autocomplete for aliases:
 # https://unix.stackexchange.com/questions/4219/how-do-i-get-bash-completion-for-command-aliases
-source /home/davidat/.bash_completion.d/complete_alias
+source ~/.bash_completion.d/complete_alias
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -249,3 +249,6 @@ fi
 # Taskwarrior 
 alias t=task
 complete -F _complete_alias t
+
+# Direnv, used for automaticallys witching venvs when changing dirs
+eval "$(direnv hook bash)"

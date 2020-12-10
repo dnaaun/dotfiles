@@ -39,14 +39,14 @@ endif
 "                 s:add_conf(a:conf[key], to_add[key]
 
 
-if ! exists('g:ale_linters') 
-    let g:ale_linters = {}
+if ! exists('b:ale_linters') 
+    let b:ale_linters = {}
 endif 
-if ! exists('g:ale_linters["python"]')
-    let g:ale_linters['python'] = []
+if ! exists('b:ale_linters["python"]')
+    let b:ale_linters['python'] = []
 endif
-let b:ale_linters['python'] = g:ale_linters['python'] + ['pyright']
-let b:ale_linters['python'] = g:ale_linters['python'] + ['mypy']
+let b:ale_linters['python'] = b:ale_linters['python'] + ['pyright']
+let b:ale_linters['python'] = b:ale_linters['python'] + ['mypy']
 let b:ale_fixers = { 'python': ['black']}
 
 let b:ale_python_mypy_options="--show-error-codes"

@@ -132,8 +132,26 @@ let g:jedi#auto_initialization = 0
 let g:tex_flavor='latex'
 
 let g:goyo_height=100
-" Make Goyo make tmux panes dissapear
+" Variable to keep track of Goyo state to facilitate toggling.
+" Just :Goyo would toggle, except that I want to read textwidth
+" dynamically (and thus do :exec Goyo &tw), which doesn't toggle.
+if ! exists('s:goyo_on')
+    let s:goyo_on = 0
+endif
+function! GoyoToggle()
+    if ! s:goyo_on
+        " + 3 for good measure (aka error indicators from ALE)
+        execute 'Goyo ' &textwidth + 3 
+        let s:goyo_on = 1
+    else
+        execute 'Goyo!'
+        let s:goyo_on = 0
+    endif
+endfunction
+
+
 function! s:goyo_enter()
+" Make Goyo make tmux panes dissapear
   if executable('tmux') && strlen($TMUX)
     silent !tmux set status off
     silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
@@ -174,8 +192,6 @@ let g:limelight_paragraph_span = 2
 set completeopt=menu,menuone,preview,noinsert
 set completeopt-=longest " This doens't make sense.
 
-"Relative line numbers!
-set rnu
 
 " Automatically save views
 augroup SaveViewsOnEnter
@@ -194,8 +210,6 @@ set splitright
 " Enable backspace on everythiing
 set backspace=indent,eol,start
 
-" Line numbers
-set number
 
 " Base16 autopickup
 if filereadable(expand('~/.vimrc_background'))
@@ -273,7 +287,7 @@ let mapleader = ","
 
 " Goyo. Distraction free writing.
 " No justification for key choice except that it's the shortest that's not yet taken.
-nnoremap <leader>t :Goyo<CR>
+nnoremap <leader>t :call GoyoToggle()<CR>
 
 
 " close  preview/quickfix/locationlist windows all at once.
