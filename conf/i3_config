@@ -210,8 +210,8 @@ bindsym --release Control+Shift+Print exec --no-startup-id gnome-screenshot -w -
 
 # Start xscreensaver
 exec --no-startup-id xscreensaver
-# Start Window compositor that allows dimming innactive windows by 10%
-exec --no-startup-id picom  --inactive-dim 0.1 &
+# Start Window compositor that allows dimming innactive windows by 5%
+exec --no-startup-id picom  --inactive-dim 0.05 &
 
 # Remove title bars
 default_border none

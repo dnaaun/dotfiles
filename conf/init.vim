@@ -18,6 +18,35 @@ let g:python3_host_prog='/usr/bin/python3'
 let g:UltiSnipsExpandTrigger = "<c-e>"        " Do not use <tab>
 let g:UltiSnipsJumpForwardTrigger = "<c-f>"   " Do not use <c-j>
 let g:UltiSnipsJumpBackwardTrigger = "<c-b>"
+let g:mucomplete#chains = {
+	    \ 'default' : ['path', 'omni', 'ulti'],
+	    \ 'vim'     : ['path', 'omni', 'cmd', 'ulti']
+	    \ }
+
+" From mucomplete docs
+" It is also possible to expand snippets or complete text using only <tab>. That
+" is, when you press <tab>, if there is a snippet keyword before the cursor then
+" the snippet is expanded (and you may use <tab> also to jump between the
+" snippet triggers), otherwise MUcomplete kicks in. The following configuration
+" achieves this kind of behaviour:
+let g:ulti_expand_or_jump_res = 0
+
+fun! TryUltiSnips()
+  if !pumvisible() " With the pop-up menu open, let Tab move down
+    call UltiSnips#ExpandSnippetOrJump()
+  endif
+  return ''
+endf
+
+fun! TryMUcomplete()
+  return g:ulti_expand_or_jump_res ? "" : "\<plug>(MUcompleteFwd)"
+endf
+
+inoremap <plug>(TryUlti) <c-r>=TryUltiSnips()<cr>
+imap <expr> <silent> <plug>(TryMU) TryMUcomplete()
+imap <expr> <silent> <tab> "\<plug>(TryUlti)\<plug>(TryMU)"
+
+
 
 " Vimwiki takes over .md files if I don't set this. This way, the extension
 " .wiki only is associated with vimwiki, but it's set to markdown format.
@@ -243,6 +272,10 @@ augroup END
 
 " Status line theme is whatever base16 theme I am using
 let g:airline_theme='base16'
+" No error messages about whitespaces please
+let g:airline#extensions#whitespace#enabled = 0
+let g:ipy_celldef = '^##'
+
 
 " Resize vim splists with a mouse when inside tmux
 set mouse+=a
@@ -363,16 +396,16 @@ let g:jedi#show_call_signatures_delay=0 " Show ginatures in window
 
 
 " t for toggle
-nnoremap <Leader>at :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<CR>
+nnoremap <leader>at :aledisable <bar> alestopalllsps <bar> aleenable <bar> alelint<cr>
 
 " Fugutive mappings
 nnoremap <Leader>gs :Git!<CR>
 nnoremap <Leader>gd :Gdiffsplit<CR>
-nnoremap <Leader>gd :Gdiffsplit<CR>
 nnoremap <Leader>gc :Gcommit<CR>
 nnoremap <Leader>gl :Glog<CR>
 nnoremap <Leader>gw :Gwrite<CR>
-nnoremap <Leader>gp :Gpull --rebase<CR>
+nnoremap <Leader>gr :Gpull --rebase<CR>
+nnoremap <Leader>gp :Gpush<CR>
 nnoremap <Leader>gg :Git 
 
 
