@@ -238,12 +238,12 @@ export EDITOR=nvim
 # Define a shortcut to copy to clipboard
 alias copy="xclip -selection clipboard"
 
-# Attach to tmux sessionif it already exists
-tmux attach &> /dev/null
+# Attach to "def" (for default) tmux session if it already exists
+tmux attach -t def &> /dev/null
 
 # Create a session if not
 if [[ $? != 0 && ! $TERM =~ screen ]]; then
-    tmux
+    tmux new -s def
 fi
 
 # Taskwarrior 

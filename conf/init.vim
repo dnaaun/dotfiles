@@ -1,3 +1,9 @@
+"" Vimtex settings
+let g:tex_flavor='latex'
+let g:vimtex_view_method='zathura'
+" This should be set automatically, actually.
+
+
 " Use non-venv python for pynvim always
 "let b:ale_open_list = 0
 let g:ale_virtual_text_cursor = 1
@@ -15,42 +21,16 @@ let g:ale_completion_autoimport = 1
 let g:python3_host_prog='/usr/bin/python3'
 
 " Make ultisnips use other triggers so mucomplete can do it's thing
-let g:UltiSnipsExpandTrigger = "<c-e>"        " Do not use <tab>
-let g:UltiSnipsJumpForwardTrigger = "<c-f>"   " Do not use <c-j>
-let g:UltiSnipsJumpBackwardTrigger = "<c-b>"
+let g:UltiSnipsExpandTrigger = "<A-e>"        " Do not use <tab>
+let g:UltiSnipsJumpForwardTrigger = "<A-f>"   " Do not use <c-j>
+let g:UltiSnipsJumpBackwardTrigger = "<A-b>"
+
+
+"" Mu complete
 let g:mucomplete#chains = {
 	    \ 'default' : ['path', 'omni', 'ulti'],
 	    \ 'vim'     : ['path', 'omni', 'cmd', 'ulti']
 	    \ }
-
-" From mucomplete docs
-" It is also possible to expand snippets or complete text using only <tab>. That
-" is, when you press <tab>, if there is a snippet keyword before the cursor then
-" the snippet is expanded (and you may use <tab> also to jump between the
-" snippet triggers), otherwise MUcomplete kicks in. The following configuration
-" achieves this kind of behaviour:
-let g:ulti_expand_or_jump_res = 0
-
-fun! TryUltiSnips()
-  if !pumvisible() " With the pop-up menu open, let Tab move down
-    call UltiSnips#ExpandSnippetOrJump()
-  endif
-  return ''
-endf
-
-fun! TryMUcomplete()
-  return g:ulti_expand_or_jump_res ? "" : "\<plug>(MUcompleteFwd)"
-endf
-
-inoremap <plug>(TryUlti) <c-r>=TryUltiSnips()<cr>
-imap <expr> <silent> <plug>(TryMU) TryMUcomplete()
-imap <expr> <silent> <tab> "\<plug>(TryUlti)\<plug>(TryMU)"
-
-
-
-" Vimwiki takes over .md files if I don't set this. This way, the extension
-" .wiki only is associated with vimwiki, but it's set to markdown format.
-let g:vimwiki_ext2syntax={'.wiki': 'markdown'}
 
 " Mucomplete
 " Prevent the wrapper mappings of mucomplete to facilitate autoimport by ALE
@@ -58,18 +38,21 @@ let g:mucomplete#no_popup_mappings = 0
 let g:mucomplete#enable_auto_at_startup = 0 " automatic completion(as opposed to <tab>-triggered)
 " For now, ALE is on top.
 
-" Deoplete
-let g:deoplete#enable_at_startup = 1
- " <tab>: completion.
-" inoremap <expr><tab>  pumvisible() ? "\<C-n>" : "\<TAB>"
-
-
 set conceallevel=2
 let g:vim_markdown_conceal = 1
+
+
 
 call plug#begin()
 Plug 'embear/vim-localvimrc'
 Plug 'christoomey/vim-tmux-navigator'
+
+" Coding
+Plug 'lifepillar/vim-mucomplete'
+Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
+Plug 'SirVer/ultisnips'
+Plug '$HOME/git/ale'
+Plug 'Shougo/echodoc.vim'
 
 " Vim for frontend
 Plug 'pangloss/vim-javascript', {'for': ['javascript'] }
@@ -101,19 +84,9 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'chriskempson/base16-vim'
 Plug 'junegunn/goyo.vim'
 
-" Coding
-Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
-Plug 'SirVer/ultisnips'
-Plug '$HOME/git/ale'
-Plug 'lifepillar/vim-mucomplete'
-Plug 'Shougo/echodoc.vim'
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" Plug 'ervandew/supertab' 
-
 " Tex, writing
 Plug 'lervag/vimtex', { 'for': 'tex' }
 Plug 'KeitaNakamura/tex-conceal.vim'
-Plug 'vimwiki/vimwiki'
 Plug 'itchyny/calendar.vim'
 
 "
@@ -125,6 +98,41 @@ Plug 'junegunn/fzf.vim'
 Plug '$HOME/git/dotfiles/conf/david.vim'
 call plug#end()
 
+" From mucomplete docs
+" It is also possible to expand snippets or complete text using only <tab>. That
+" is, when you press <tab>, if there is a snippet keyword before the cursor then
+" the snippet is expanded (and you may use <tab> also to jump between the
+" snippet triggers), otherwise MUcomplete kicks in. The following configuration
+" achieves this kind of behaviour:
+let g:ulti_expand_or_jump_res = 0
+
+fun! TryUltiSnips()
+  if !pumvisible() " With the pop-up menu open, let Tab move down
+    call UltiSnips#ExpandSnippetOrJump()
+  endif
+  return ''
+endf
+
+fun! TryMUcomplete()
+  return g:ulti_expand_or_jump_res ? "" : "\<plug>(MUcompleteFwd)"
+endf
+
+"""" Here's my own addition, avoid automatic mapping when doing this so that
+"""" I don't get the "^I is already mapped" error
+let g:mucomplete#no_mappings=1
+" Map for <s-tab> used to be automatically added, but not so once we
+" disable with the var above.
+imap <s-tab> <plug>(MUcompleteBwd) 
+"""" own addition done
+
+inoremap <plug>(TryUlti) <c-r>=TryUltiSnips()<cr>
+imap <expr> <silent> <plug>(TryMU) TryMUcomplete()
+imap <expr> <silent> <tab> "\<plug>(TryUlti)\<plug>(TryMU)"
+
+" Make vimtex
+let g:vimtex_quickfix_ignore_filters = [ '\v(Under|Over)full \\(h|v)box']
+let g:vimtex_quickfix_open_on_warning=0
+
 let g:echodoc#type="floating"
 let g:echodoc#enable_at_startup=1 
 set cmdheight=2
@@ -132,11 +140,6 @@ set cmdheight=2
 " change Pmenu to your highlight group
 highlight link EchoDocFloat Pmenu
 
-let g:vista_default_executive='ale'
-let g:vista_fzf_preview = ['right:50%']
-
-" Set zathura as viewer for latex preview pdfs
-let g:livepreview_previewer = 'zathura'
 
 " Enable nvimrc as the local initialization file
 let g:localvimrc_debug=1
@@ -147,12 +150,6 @@ let g:localvimrc_whitelist = [ fnamemodify('~', ':p') ]
 
 " Disable "sandbox" mode
 let g:localvimrc_sandbox=0
-
-"" Frontend customization
-let g:tagalong_verbose = 1
-
-" allow % to match HTML blocks
-" packadd! matchit
 
 "" Stuff I wish was in ftplugin/, but doesn't work there.
 " Jedi takes over a bunch of key mappings if I don't do this
@@ -210,16 +207,8 @@ autocmd FileType python setlocal indentkeys-=<:>
 autocmd FileType python setlocal indentkeys-=:
 
 
-" Number of preceding/following paragraphs to include (default: 0)
-let g:limelight_paragraph_span = 2
-
-
-" menuone so that autoimport cna work with one completion
-" preview to get more info
-" noinsert because ALE is too eager with it's completiions sometimes
-" noinsert cuz ALE docs recommend, don't know why
-set completeopt=menu,menuone,preview,noinsert
-set completeopt-=longest " This doens't make sense.
+" noselect so the <leader>s mapping
+set completeopt=menu,menuone,preview,noinsert,noselect
 
 
 " Automatically save views
@@ -317,6 +306,19 @@ let g:vim_markdown_conceal = 0
 """"""
 " Change leader
 let mapleader = ","
+let maplocalleader = ","
+
+setlocal spell
+set spelllang=en_us
+
+" ]s means go to next spelling error.
+nnoremap  <Leader>s ]s1z=<C-X><C-S>
+
+" https://castel.dev/post/lecture-notes-1/#correcting-spelling-mistakes-on-the-fly
+" Insert mode, correct last error.
+inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
+" <tab> is no good in visual mode without launching UltiSnips:
+xmap  <tab> :call UltiSnips#SaveLastVisualSelection()<CR>gvs
 
 " Goyo. Distraction free writing.
 " No justification for key choice except that it's the shortest that's not yet taken.
@@ -345,10 +347,6 @@ noremap <Leader>rr :edit<CR>
 augroup MarkdownRelated
     au!
 	au FileType markdown nmap <Leader>m <Plug>MarkdownPreviewToggle<CR>
-    
-    "  https://github.com/reedes/vim-lexical/blob/master/autoload/lexical.vim
-    "  Go into insert mode
-    au FileType markdown nmap  <Leader>s ]svaWovEa<C-X><C-S>
 augroup END
 
 

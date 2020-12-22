@@ -1,0 +1,24 @@
+---
+# THis is referred to by ../.indentconfig.yaml because latexindent
+# reads that be default, and only allows references to other configs in there.
+
+# Awesome latex text wrap:
+# https://github.com/cmhughes/latexindent.pl/issues/103#issuecomment-408630780
+modifyLineBreaks:
+  textWrapOptions:
+    columns: 100
+    perCodeBlockBasis: 1
+    all: 1
+    removeParagraphLineBreaks:
+      all: 1
+      beforeTextWrap: 1
+  environments:
+    BeginStartsOnOwnLine: 4
+    BodyStartsOnOwnLine: 1
+    EndStartsOnOwnLine: 1
+    EndFinishesWithLineBreak: 4
+    array:
+      BeginStartsOnOwnLine: 0
+      BodyStartsOnOwnLine: 1
+      EndStartsOnOwnLine: 1
+      EndFinishesWithLineBreak: 0

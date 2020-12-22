@@ -1,12 +1,5 @@
-let g:tex_flavor='latex'
 
-" Modified from: https://github.com/gillescastel/latex-snippets
- 
-" Vimtex
-let g:vimtex_view_method='zathura'
-" This should be set automatically, actually.
 set omnifunc=vimtex#complete#omnifunc
-
 
 " tex-conceal.vim
 set conceallevel=1
@@ -17,11 +10,37 @@ hi Conceal ctermbg=none
 " On pressing tab, insert 4 spaces
 setlocal expandtab
 " show existing tab with 4 spaces width
-setlocal tabstop=4
-setlocal softtabstop=4
+setlocal tabstop=2
+setlocal softtabstop=2
 " when indenting with '>', use 4 spaces width
-setlocal shiftwidth=4
+setlocal shiftwidth=2
 
 " ALE Config
-let b:ale_linters = { 'tex': ['alex', 'chktex', 'lacheck', 'proselint', 'redpen', 'texlab', 'textlint', 'vale', 'writegood'] }
-let b:ale_fixers = { 'tex': [ 'latexindent', 'remove_trailing_lines', 'textlint', 'trim_whitespace'] }
+let b:ale_linters = { 'tex': ['chktex' ] }
+let b:ale_fixers = { 'tex': [ 'latexindent', 'remove_trailing_lines', 'trim_whitespace'] }
+
+" Suggestion of vimtex docs 
+" To enable adding latex environments using vim-surround
+let b:surround_{char2nr('e')} = "\\begin{\1environment: \1}\n\t\r\n\\end{\1\1}"
+let b:surround_{char2nr('c')} = "\\\1command: \1{\r}"
+
+
+set nohlsearch
+
+" Don't insert bullet on auto-wrap
+set formatoptions-=c
+
+
+" We're taking notes here, stop fussing over quotes chktex
+" error code 18 found form http://www.nongnu.org/chktex/ChkTeX.pdf
+" 45 is not using $$
+let b:ale_tex_chktex_options = '-n 18' . ' -n 45'
+
+" Don't stress about enclosing parens within curlies either
+let b:ale_tex_chktex_options .= '-n 3'
+
+
+" -m: Modify line breaks at end. Needed to move environments to new line.
+let b:ale_tex_latexindent_options = '-m'
+
+let b:ale_fix_on_save = 1

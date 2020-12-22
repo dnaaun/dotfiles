@@ -1,3 +1,30 @@
+# https://castel.dev/post/lecture-notes-1/#context
+global !p
+texMathZones = ['texMathZone' + x for x in ['A', 'AS', 'B', 'BS', 'C', 'CS',
+'D', 'DS', 'E', 'ES', 'F', 'FS', 'G', 'GS', 'H', 'HS', 'I', 'IS', 'J', 'JS',
+'K', 'KS', 'L', 'LS', 'DS', 'V', 'W', 'X', 'Y', 'Z', 'AmsA', 'AmsB', 'AmsC',
+'AmsD', 'AmsE', 'AmsF', 'AmsG', 'AmsAS', 'AmsBS', 'AmsCS', 'AmsDS', 'AmsES',
+'AmsFS', 'AmsGS' ]]
+
+texIgnoreMathZones = ['texMathText']
+
+texMathZoneIds = vim.eval('map('+str(texMathZones)+", 'hlID(v:val)')")
+texIgnoreMathZoneIds = vim.eval('map('+str(texIgnoreMathZones)+", 'hlID(v:val)')")
+
+ignore = texIgnoreMathZoneIds[0]
+
+def math():
+	synstackids = vim.eval("synstack(line('.'), col('.') - (col('.')>=2 ? 1 : 0))")
+	try:
+		first = next(
+            i for i in reversed(synstackids)
+            if i in texIgnoreMathZoneIds or i in texMathZoneIds
+        )
+		return first != ignore
+	except StopIteration:
+		return False
+endglobal
+
 snippet t "\text{}" w
 \text{${1:some text}}
 endsnippet
@@ -6,48 +33,141 @@ snippet f "\frac{}" w
 \frac{${1:numer}}{${2:denom}}${3:}
 endsnippet
 
-snippet ^ "superscript" iA
+snippet ^ "superscript" i
 ^{${1:sup}}${2:}
 endsnippet
 
-snippet _ "subscript" iA
+snippet _ "subscript" i
 _{${1:sup}}${2:}
 endsnippet
 
-snippet bn "\begin{enumerate}" w
-\begin{enumerate}
-	\item ${1:}
-\end{enumerate}${2:}
-endsnippet
-
-snippet ba "\begin{align}" w
-\begin{align}
-	${1:}
-\end{align}
+snippet up "\usepackage{}" wb
+\usepackage{${1:}}
 ${2:}
 endsnippet
 
-snippet b "\textbf{}" w
-\textbf{${1:}}${2:}
+snippet bd "\begin{document}" wb
+\begin{document}
+${1:${VISUAL:}}
+\end{document}
+endsnippet
+
+# List items
+snippet bn "\begin{enumerate}" w
+\begin{enumerate}
+	\item ${1:${VISUAL:}}
+\end{enumerate}${2:}
+endsnippet
+
+snippet bi "\begin{itemize}" w
+\begin{itemize}
+	\item ${1:${VISUAL:}}
+\end{itemize}${2:}
+endsnippet
+
+
+snippet ba "\begin{align}" w
+\begin{align*}
+	${1:${VISUAL:}}
+\end{align*}
+${2:}
+endsnippet
+
+snippet bq "\begin{quote}" w
+\begin{quote}
+	${1:${VISUAL:}}
+\end{quote}
+${2:}
+endsnippet
+
+context "math()"
+snippet bb "\mathbb{}"
+\mathbb{${1:${VISUAL:}}}${2:}
+endsnippet
+
+context "math()"
+snippet b "\mathbf{}" i
+\mathbf{${1:${VISUAL:}}}${2:}
+endsnippet
+
+snippet b "\textbf{}" i
+\textbf{${1:${VISUAL:}}}${2:}
 endsnippet
 
 snippet i "\textit{}" w
-\textit{${1:}}${2:}
+\textit{${1:${VISUAL:}}}${2:}
 endsnippet
 
 snippet c "\cite{}" w
-\cite{${1:}}${2:}
+\cite${1:t}{${1:${VISUAL:}}}${3:}
 endsnippet
 
-snippet li "list item" w
-\item 
+snippet l "list item" w
+\item ${1:${VISUAL}}
 endsnippet
 
-snippet se "\section{}" w
-\section{${1:}}${2:}
+snippet se "\section*{}" w
+\section{${1:${VISUAL:}}}
+${2:}
 endsnippet
 
-snippet su "\subsection{}" w
-\subsection{${1:}}${2:}
+snippet su "\subsection*{}" w
+\subsection{${1:${VISUAL:}}}
+${2:}
+endsnippet
+
+snippet ss "\subsubsection*{}" w
+\subsubsection{${1:${VISUAL:}}}
+${2:}
+endsnippet
+
+# https://castel.dev/post/lecture-notes-1/
+snippet mk "Math" w
+$${1}$`!p
+if t[2] and t[2][0] not in [',', '.', '?', '-', ' ']:
+    snip.rv = ' '
+else:
+    snip.rv = ''
+`$2
+endsnippet
+
+# Add some vertical space
+snippet vs "\vspace{2cm}" bw
+\vspace{2cm}
+endsnippet
+
+# WHen using paracols
+snippet brc "right column" bw
+\begin{rightcolumn*}
+${1:${VISUAL:}}
+\end{rightcolumn*}
+${2}
+endsnippet
+
+snippet blc "left column" bw
+\begin{leftcolumn}
+${1:${VISUAL:}}
+\end{leftcolumn}
+${2}
+endsnippet
+
+# Switchcolumn
+snippet sc "\switchcolumn*" bw
+\switchcolumn
+endsnippet
+
+snippet d "\ldots"
+\ldots
+endsnippet
+
+snippet $ "inline math" w
+$${1:${VISUAL:}}$ ${2:}
+endsnippet
+
+snippet ft "footnote" bw
+\footnote{
+  ${1:${VISUAL:}}
+}
+${2}
 endsnippet
 
