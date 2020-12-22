@@ -4,8 +4,20 @@ let g:vimtex_view_method='zathura'
 " This should be set automatically, actually.
 
 
-" Use non-venv python for pynvim always
-"let b:ale_open_list = 0
+""" Markdown, make preview available remotely (ie, serve on 0.0.0.0, not localhost)
+let g:mkdp_open_to_the_world = 1
+
+""" ALE Settings
+" Show status using vim airline
+let g:airline#extensions#ale#enabled = 1
+
+" Only lint when I ask
+let g:ale_linters_explicit=1
+
+" Nice to know which linter is dissatisfied
+let g:ale_echo_msg_format = '%linter%:%severity%:%code:%%s' 
+
+>>>>>>> bunch of changes
 let g:ale_virtual_text_cursor = 1
 let g:ale_virtualtext_delay = 0
 let g:ale_echo_cursor = 1
@@ -16,15 +28,18 @@ let g:ale_completion_enabled = 0
 let g:ale_completion_delay = 0
 let g:ale_completion_autoimport = 1
 
-
-
-let g:python3_host_prog='/usr/bin/python3'
+" Adapted from https://github.com/neovim/neovim/issues/1887#issuecomment-280653872
+" Use whatever venv we're in
+" if exists("$VIRTUAL_ENV")
+    " let g:python3_host_prog=substitute(system("which -a python3 | head -n2 | tail -n1"), "\n", '', 'g')
+" else
+let g:python3_host_prog=substitute(system("which python3"), "\n", '', 'g')
+" endif
 
 " Make ultisnips use other triggers so mucomplete can do it's thing
 let g:UltiSnipsExpandTrigger = "<A-e>"        " Do not use <tab>
 let g:UltiSnipsJumpForwardTrigger = "<A-f>"   " Do not use <c-j>
 let g:UltiSnipsJumpBackwardTrigger = "<A-b>"
-
 
 "" Mu complete
 let g:mucomplete#chains = {
@@ -32,16 +47,30 @@ let g:mucomplete#chains = {
 	    \ 'vim'     : ['path', 'omni', 'cmd', 'ulti']
 	    \ }
 
-" Mucomplete
-" Prevent the wrapper mappings of mucomplete to facilitate autoimport by ALE
 let g:mucomplete#no_popup_mappings = 0
 let g:mucomplete#enable_auto_at_startup = 0 " automatic completion(as opposed to <tab>-triggered)
-" For now, ALE is on top.
+" FOr automatic completion, we need
+set completeopt+=noselect
+" This one we don't need, but it works well for me like htis.
+set completeopt+=noinsert
 
-set conceallevel=2
-let g:vim_markdown_conceal = 1
+let g:mucomplete#chains = { 
+            \ 'default': [ 'ulti', 'omni', 'path'],
+            \ }
 
+" Deoplete
+let g:deoplete#enable_at_startup = 0
+ " <tab>: completion.
+" inoremap <expr><tab>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
+"  Stop nvim-ipy from mapping it's own shortcuts
+let g:nvim_ipy_perform_mappings = 0
+" nvim-ipy, allow cell delimiters to be preceeded by indenting
+let g:ipy_celldef = '^\s*##'
+
+" Add parenthesis to vaid filename chars for completion
+set isfname+=(
+set isfname+=)
 
 call plug#begin()
 Plug 'embear/vim-localvimrc'
@@ -225,7 +254,7 @@ autocmd FileType sh setlocal makeprg=bash\ %
 set splitbelow
 set splitright
 
-" Enable backspace on everythiing
+" Enable backspace on everything
 set backspace=indent,eol,start
 
 
@@ -259,28 +288,17 @@ augroup ObsessionGroup
       \ endif
 augroup END
 
+"" Airline
 " Status line theme is whatever base16 theme I am using
 let g:airline_theme='base16'
 " No error messages about whitespaces please
 let g:airline#extensions#whitespace#enabled = 0
-let g:ipy_celldef = '^##'
-
 
 " Resize vim splists with a mouse when inside tmux
 set mouse+=a
 
 " Draw a line at wrapwidth
 set colorcolumn=+1
-
-" ALE Settings
-" Show status using vim airline
-let g:airline#extensions#ale#enabled = 1
-
-" Only lint when I ask
-let g:ale_linters_explicit=1
-
-" Nice to know which linter is dissatisfied
-let g:ale_echo_msg_format = '%linter%:%severity%:%code:%%s'
 
 
 
@@ -292,14 +310,17 @@ let g:netrw_localrmdir='rm -r'
 let g:netrw_keepdir=1
 
 
-" Start markdown preview as soon as I enter a markdown file
-let g:mkdp_auto_start = 0
-let g:mkdp_auto_close = 0
+"" Markdown related
+set conceallevel=2
+let g:vim_markdown_conceal = 1
 
 " Markdown fenced languages support
 let g:markdown_fenced_languages = ['json', 'javascript', 'html', 'python', 'bash=sh']
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
+
+
+
 
 
 """""" Mappings
@@ -320,13 +341,37 @@ inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
 " <tab> is no good in visual mode without launching UltiSnips:
 xmap  <tab> :call UltiSnips#SaveLastVisualSelection()<CR>gvs
 
+"" vim-ipy
+" leader-e is mapped to running text objects, but since I never
+" wanna run till end of word(which is 'e'), but much more commonly to end of line...
+nmap <silent> <leader>ee <Plug>(IPy-Run)
+
+" Run arbitrary text objects, or in visual mode, run selection
+nmap <silent> <leader>e <Plug>(IPy-RunOp) 
+vmap <silent> <leader>e <Plug>(IPy-Run)
+
+" Run cell
+nmap <silent> <leader>ec <Plug>(IPy-RunCell)
+
+" Terminate kernel
+map <silent> <leader>iq <Plug>(IPy-Terminate)
+
+" (Re)start kernel
+nmap <silent> <leader>ei :IPython<CR>
+
+" Inspect variable under cursor. k cuz K means look up man page in vim.
+nmap <silent> <leader>ek <Plug>(IPy-WordObjInfo)
+
+" We use the IpyOmniFunc in mu-complete's chain, but it's synchronous.
+" This is async.
+imap <silent> <C-f> <Plug>(IPy-Complete)
+
+
+
 " Goyo. Distraction free writing.
 " No justification for key choice except that it's the shortest that's not yet taken.
 nnoremap <leader>t :call GoyoToggle()<CR>
 
-
-" close  preview/quickfix/locationlist windows all at once.
-nnoremap <Leader>c :cclose <bar> pclose <bar> lclose<CR>
 
 " Dispatch related shortcuts
 " open and close quickfix
@@ -355,8 +400,8 @@ augroup END
 nnoremap <Leader>ff :execute 'Files' . expand('%:p:h')<CR> 
 " c for current dir
 nnoremap <Leader>fc :Files<CR> 
-" a for Ag
-nnoremap <Leader>fa :Ag<CR> 
+nnoremap <Leader>fr :Rg<CR>
+inoremap <Leader>fa :Ag<CR> 
 " Search through buffers and history
 nnoremap <Leader>f: :History:<CR> 
 nnoremap <Leader>f/ :History/<CR>
@@ -421,6 +466,4 @@ let s:secondary_init_vim=expand('~/.secondary.init.vim')
 if filereadable(s:secondary_init_vim)
     execute 'source' s:secondary_init_vim
 endif
-
-
 

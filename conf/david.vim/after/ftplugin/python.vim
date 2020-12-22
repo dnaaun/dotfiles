@@ -49,4 +49,4 @@ let b:ale_linters['python'] = b:ale_linters['python'] + ['pyright']
 let b:ale_linters['python'] = b:ale_linters['python'] + ['mypy']
 let b:ale_fixers = { 'python': ['black']}
 
-let b:ale_python_mypy_options="--show-error-codes"
+let b:ale_python_mypy_options="--show-error-codes --allow-redefinition"
