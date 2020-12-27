@@ -1,3 +1,74 @@
+call plug#begin()
+Plug 'lifepillar/vim-mucomplete'
+Plug 'chriskempson/base16-vim'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'SirVer/ultisnips'
+
+" Avoid loading most plugins if we're on a temporary  file (which is the case when 
+" bash launches my $EDITOR to edit my commands, which I often do), for speed purposes. 
+let s:temp_file_ptrn = '\v^/(tmp|scratch)/.*'
+let s:NOT_IN_TEMP_FILE =  !(expand('%') =~ s:temp_file_ptrn)
+
+if (s:NOT_IN_TEMP_FILE)
+    Plug 'embear/vim-localvimrc'
+
+    " Python
+    Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
+    Plug 'bfredl/nvim-ipy', { 'for': ['python'] }
+    Plug 'jeetsukumaran/vim-pythonsense', { 'for': ['python'] }
+    Plug '$HOME/git/ale'
+    Plug 'Shougo/echodoc'
+    Plug 'vim-test/vim-test'
+    Plug 'tartansandal/vim-compiler-pytest'
+
+    " Frontend
+    Plug 'pangloss/vim-javascript', {'for': ['javascript'] }
+    Plug 'AndrewRadev/tagalong.vim', {'for': ['html'] }
+    Plug 'mattn/emmet-vim', { 'for': ['html'] }
+
+    " Markdown/writing
+    Plug 'godlygeek/tabular', { 'for': ['markdown'] }
+    Plug 'plasticboy/vim-markdown', { 'for': ['markdown'] }
+    Plug 'iamcco/markdown-preview.nvim', {
+                \ 'for': ['markdown'],
+                \ 'do': { -> mkdp#util#install() },
+                \ }
+    Plug 'dkarter/bullets.vim',  { 'for': ['markdown', 'vimwiki'] }
+
+    " Tpope makes great plugins.
+    Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-commentary'
+    Plug 'tpope/vim-obsession'
+    Plug 'tpope/vim-vinegar'
+    Plug 'tpope/vim-unimpaired'
+    Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-dispatch'
+    
+
+    " Colors and other niceties
+    Plug 'vim-airline/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
+    Plug 'junegunn/goyo.vim'
+
+    " Tex, writing
+    Plug 'lervag/vimtex', { 'for': 'tex' }
+    Plug 'KeitaNakamura/tex-conceal.vim', { 'for': 'tex' }
+
+    " Fuzzy find buffers, command and search history, ... etc
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
+
+    " My own touches
+    Plug '$HOME/git/dotfiles/conf/david.vim'
+else
+    echomsg 'Tmp file: not loading some plugins'
+endif
+call plug#end()
+
+"" vim-test
+let test#strategy = "dispatch"
+
 "" Vimtex settings
 let g:tex_flavor='latex'
 let g:vimtex_view_method='zathura'
@@ -17,13 +88,21 @@ let g:ale_linters_explicit=1
 " Nice to know which linter is dissatisfied
 let g:ale_echo_msg_format = '%linter%:%severity%:%code:%%s' 
 
->>>>>>> bunch of changes
+" Show errors in virtualtext
 let g:ale_virtual_text_cursor = 1
 let g:ale_virtualtext_delay = 0
 let g:ale_echo_cursor = 1
+
+" Use echo for ALE errors
+let g:ale_echo_cursor = 0
+
+" Make ale less automatic
 let g:ale_fix_on_save = 0
 let g:ale_lint_on_enter = 0
-let g:ale_hover_to_preview = 0 " Conflicts with echodoc, which is more useful.
+
+let g:ale_hover_to_preview = 1
+
+" Somehow, ale autoimport works with mucomplete
 let g:ale_completion_enabled = 0
 let g:ale_completion_delay = 0
 let g:ale_completion_autoimport = 1
@@ -42,90 +121,28 @@ let g:UltiSnipsJumpForwardTrigger = "<A-f>"   " Do not use <c-j>
 let g:UltiSnipsJumpBackwardTrigger = "<A-b>"
 
 "" Mu complete
+" We prefer completefunc (user) over omnifunc (omni) cuz we set
+" completefunc=jedi#completions, and jedi shows docs.
+" We keep ALE as omni cuz pyright does autoimport.
 let g:mucomplete#chains = {
 	    \ 'default' : ['path', 'omni', 'ulti'],
-	    \ 'vim'     : ['path', 'omni', 'cmd', 'ulti']
+	    \ 'vim'     : ['path', 'omni', 'cmd', 'ulti'],
+        \ 'python'     : ['path', 'user', 'omni', 'ulti'] 
 	    \ }
-
 let g:mucomplete#no_popup_mappings = 0
-let g:mucomplete#enable_auto_at_startup = 0 " automatic completion(as opposed to <tab>-triggered)
-" FOr automatic completion, we need
-set completeopt+=noselect
-" This one we don't need, but it works well for me like htis.
-set completeopt+=noinsert
+let g:mucomplete#enable_auto_at_startup = 1 " automatic completion(as opposed to <tab>-triggered)
 
-let g:mucomplete#chains = { 
-            \ 'default': [ 'ulti', 'omni', 'path'],
-            \ }
-
-" Deoplete
-let g:deoplete#enable_at_startup = 0
- " <tab>: completion.
-" inoremap <expr><tab>  pumvisible() ? "\<C-n>" : "\<TAB>"
-
-"  Stop nvim-ipy from mapping it's own shortcuts
+"" nvim-ipy
 let g:nvim_ipy_perform_mappings = 0
-" nvim-ipy, allow cell delimiters to be preceeded by indenting
-let g:ipy_celldef = '^\s*##'
+let g:ipy_celldef = '\v^\s*##[^#]*$' " Ipython cell boundary line regex.
 
 " Add parenthesis to vaid filename chars for completion
 set isfname+=(
 set isfname+=)
 
-call plug#begin()
-Plug 'embear/vim-localvimrc'
-Plug 'christoomey/vim-tmux-navigator'
-
-" Coding
-Plug 'lifepillar/vim-mucomplete'
-Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
-Plug 'SirVer/ultisnips'
-Plug '$HOME/git/ale'
-Plug 'Shougo/echodoc.vim'
-
-" Vim for frontend
-Plug 'pangloss/vim-javascript', {'for': ['javascript'] }
-Plug 'AndrewRadev/tagalong.vim', {'for': ['html'] }
-Plug 'mattn/emmet-vim', { 'for': ['html'] }
-
-" Markdown/writing
-Plug 'godlygeek/tabular', { 'for': ['markdown'] }
-Plug 'plasticboy/vim-markdown', { 'for': ['markdown'] }
-Plug 'iamcco/markdown-preview.nvim', {
-            \ 'for': ['markdown'],
-            \ 'do': { -> mkdp#util#install() },
-            \ }
-Plug 'dkarter/bullets.vim',  { 'for': ['markdown', 'vimwiki'] }
-
-" Tpope's plugins are to ViM, what ViM is to Vi
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-obsession'
-Plug 'tpope/vim-vinegar'
-Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-dispatch'
-
-" Colors and other niceties 
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'chriskempson/base16-vim'
-Plug 'junegunn/goyo.vim'
-
-" Tex, writing
-Plug 'lervag/vimtex', { 'for': 'tex' }
-Plug 'KeitaNakamura/tex-conceal.vim'
-Plug 'itchyny/calendar.vim'
-
-"
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-
-
-" My own tiny touches
-Plug '$HOME/git/dotfiles/conf/david.vim'
-call plug#end()
+" One note: lack of 'longest' is so that mucomplete doesn't insert longest
+" match(especailly annoying during autocompletion)
+set completeopt=menu,menuone,preview,noinsert,noselect
 
 " From mucomplete docs
 " It is also possible to expand snippets or complete text using only <tab>. That
@@ -158,17 +175,9 @@ inoremap <plug>(TryUlti) <c-r>=TryUltiSnips()<cr>
 imap <expr> <silent> <plug>(TryMU) TryMUcomplete()
 imap <expr> <silent> <tab> "\<plug>(TryUlti)\<plug>(TryMU)"
 
-" Make vimtex
-let g:vimtex_quickfix_ignore_filters = [ '\v(Under|Over)full \\(h|v)box']
+"" Vimtex
+let g:vimtex_quickfix_ignore_filters = [ '\v(Under|Over)full \\(h|v)box'] " Ignore some latex 'errors'
 let g:vimtex_quickfix_open_on_warning=0
-
-let g:echodoc#type="floating"
-let g:echodoc#enable_at_startup=1 
-set cmdheight=2
-" To use a custom highlight for the float window,
-" change Pmenu to your highlight group
-highlight link EchoDocFloat Pmenu
-
 
 " Enable nvimrc as the local initialization file
 let g:localvimrc_debug=1
@@ -236,8 +245,6 @@ autocmd FileType python setlocal indentkeys-=<:>
 autocmd FileType python setlocal indentkeys-=:
 
 
-" noselect so the <leader>s mapping
-set completeopt=menu,menuone,preview,noinsert,noselect
 
 
 " Automatically save views
@@ -258,14 +265,6 @@ set splitright
 set backspace=indent,eol,start
 
 
-" Base16 autopickup
-if filereadable(expand('~/.vimrc_background'))
-    let base16colorspace=256
-    source ~/.vimrc_background
-endif
-" colorscheme seoul256
-
-
 let session_file=".Session.vim"
 " https://github.com/tpope/vim-obsession/issues/17
 augroup ObsessionGroup
@@ -279,7 +278,7 @@ augroup ObsessionGroup
   " Calling Obsession when the session is being recorded would pause the recording,
   " that's why we check if v:this_session is empty.
   autocmd VimEnter * nested
-      \ if !&modified |
+      \ if !&modified && s:NOT_IN_TEMP_FILE |
       \   if !argc() && filereadable(session_file) |
       \   execute "source" session_file |
       \   elseif empty(v:this_session) |
@@ -287,6 +286,13 @@ augroup ObsessionGroup
       \   endif |
       \ endif
 augroup END
+
+"" Colors
+" https://browntreelabs.com/base-16-shell-and-why-its-so-awsome/
+if filereadable(expand("~/.vimrc_background"))
+  let base16colorspace=256
+  source ~/.vimrc_background
+endif
 
 "" Airline
 " Status line theme is whatever base16 theme I am using
@@ -301,8 +307,7 @@ set mouse+=a
 set colorcolumn=+1
 
 
-
-" Netrw
+"" Netrw
 " Allow netrw to remove non-empty local directories
 let g:netrw_localrmdir='rm -r'
 
@@ -329,8 +334,6 @@ let g:vim_markdown_conceal = 0
 let mapleader = ","
 let maplocalleader = ","
 
-setlocal spell
-set spelllang=en_us
 
 " ]s means go to next spelling error.
 nnoremap  <Leader>s ]s1z=<C-X><C-S>
@@ -346,9 +349,11 @@ xmap  <tab> :call UltiSnips#SaveLastVisualSelection()<CR>gvs
 " wanna run till end of word(which is 'e'), but much more commonly to end of line...
 nmap <silent> <leader>ee <Plug>(IPy-Run)
 
-" Run arbitrary text objects, or in visual mode, run selection
-nmap <silent> <leader>e <Plug>(IPy-RunOp) 
+" Run arbitrary text objects
+nmap <silent> <leader>e <Plug>(IPy-RunOp)
+" Run in visual mode
 vmap <silent> <leader>e <Plug>(IPy-Run)
+
 
 " Run cell
 nmap <silent> <leader>ec <Plug>(IPy-RunCell)
@@ -370,7 +375,7 @@ imap <silent> <C-f> <Plug>(IPy-Complete)
 
 " Goyo. Distraction free writing.
 " No justification for key choice except that it's the shortest that's not yet taken.
-nnoremap <leader>t :call GoyoToggle()<CR>
+nnoremap <leader>z :call GoyoToggle()<CR>
 
 
 " Dispatch related shortcuts
@@ -385,9 +390,8 @@ nnoremap <Leader>lc :lclose<CR>
 
 " Read vimrc again.
 noremap <Leader>ri :source $MYVIMRC<CR>
-" Reload file, usually triggers filetype plugin reload and local vimrc
-" reload.
-noremap <Leader>rr :edit<CR>
+" Reload filetype plugins by setting filetype to current filetype
+noremap <Leader>rf :let &filetype=&filetype<CR>
 
 augroup MarkdownRelated
     au!
@@ -406,6 +410,13 @@ inoremap <Leader>fa :Ag<CR>
 nnoremap <Leader>f: :History:<CR> 
 nnoremap <Leader>f/ :History/<CR>
 nnoremap <Leader>fb :Buffers<CR> 
+
+" Run tests
+nmap <silent> <leader>tn :TestNearest<CR>
+nmap <silent> <leader>tf :TestFile<CR>
+nmap <silent> <leader>ts :TestSuite<CR>
+nmap <silent> <leader>tl :TestLast<CR>
+nmap <silent> <leader>tv :TestVisit<CR>
 
 
 " Neovim's terminal mode, escape with Ctrl-P which happens to
@@ -429,7 +440,8 @@ nnoremap <Leader>at :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELi
 " Jedi mappings
 nnoremap <Leader>ju :call jedi#usages()<CR>
 nnoremap <Leader>jk :call jedi#show_documentation()<CR>
-nnoremap <Leader>jd :call jedi#goto_assignments()<CR>
+nnoremap <Leader>jd :call jedi#goto_definitions()<CR>
+nnoremap <Leader>ja :call jedi#goto_assignments()<CR>
 nnoremap <Leader>jt :call jedi#goto_stubs()<CR>
 nnoremap <Leader>jr :call jedi#rename()<CR>
 let g:jedi#auto_initialization=0  " Don't take over
@@ -439,7 +451,7 @@ let g:jedi#show_call_signatures_delay=0 " Show ginatures in window
 
 
 " t for toggle
-nnoremap <leader>at :aledisable <bar> alestopalllsps <bar> aleenable <bar> alelint<cr>
+nnoremap <leader>at :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<cr>
 
 " Fugutive mappings
 nnoremap <Leader>gs :Git!<CR>
@@ -451,19 +463,26 @@ nnoremap <Leader>gr :Gpull --rebase<CR>
 nnoremap <Leader>gp :Gpush<CR>
 nnoremap <Leader>gg :Git 
 
-
-" Reload vimrc and filetype plugins
-
-
-" Read GCal credentials for Calendar.vim
-let g:cred_file=$HOME . '/.cache/calendar.vim/credentials.vim'
-if filereadable(g:cred_file)
-	execute 'source' g:cred_file
-endif
-
 " Allow a 'computer dependent' initialization
 let s:secondary_init_vim=expand('~/.secondary.init.vim')
 if filereadable(s:secondary_init_vim)
     execute 'source' s:secondary_init_vim
 endif
 
+function! s:list_buffers()
+  redir => list
+  silent ls
+  redir END
+  return split(list, "\n")
+endfunction
+
+" From an issue on the official github repo.
+function! s:delete_buffers(lines)
+  execute 'bwipeout' join(map(a:lines, {_, line -> split(line)[0]}))
+endfunction
+
+command! BD call fzf#run(fzf#wrap({
+  \ 'source': s:list_buffers(),
+  \ 'sink*': { lines -> s:delete_buffers(lines) },
+  \ 'options': '--multi --reverse --bind ctrl-a:select-all+accept'
+\ }))
