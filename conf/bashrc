@@ -1,14 +1,24 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
-
-export FZF_DEFAULT_COMMAND="rg --files --hidden --ignore-global"
-
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
       *) return;;
 esac
+
+## Fzf + Rg
+export FZF_DEFAULT_COMMAND="rg --files --hidden --ignore-global"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+# Fzf completion when typing in ** doesn't use $FZF_DEFAULT_COMMAND. The below
+# is necessary.
+_fzf_compgen_path() {
+  echo "$1"
+  command $FZF_DEFAULT_COMMAND "$1"
+}
+_fzf_compgen_dir() {
+  echo "$1"
+  command $FZF_DEFAULT_COMMAND "$1"
+}
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -45,28 +55,6 @@ case "$TERM" in
     xterm-color) color_prompt=yes;;
 esac
 
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-force_color_prompt=yes
-
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
-fi
-
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
@@ -98,16 +86,6 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -128,26 +106,16 @@ BASE16_SHELL="$HOME/.config/base16-shell/"
 	[ -s "$BASE16_SHELL/profile_helper.sh" ] && \
 	eval "$("$BASE16_SHELL/profile_helper.sh")"
 
-
 # UTF8 issues
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 alias tmux='tmux -u'
 
-
 # Ptpython vim
 alias ptpython='ptpython --vi'
-
-
 # I don't know where this is getting set, but I need to unset it
 export PYTHONPATH=
-
-
-# Shorter PS1 please
-PROMPT_DIRTRIM=3
-
-# Use ipdb
 export PYTHONBREAKPOINT=ipdb.set_trace
 
 # Eternal bash history.
@@ -161,7 +129,6 @@ export HISTTIMEFORMAT="[%F %T] "
 # http://superuser.com/questions/575479/bash-history-truncated-to-500-lines-on-each-login
 export HISTFILE=~/.bash_eternal_history
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # Scripts in dotfiles/bin/
 for bin_dir in {$HOME/git/dotfiles/bin,$HOME/.local/bin}; do
@@ -256,37 +223,12 @@ if [[ $? != 0 && ! $TERM =~ screen ]]; then
     tmux new -s def
 fi
 
-# Aliases
+## Aliases
 # Taskwarrior 
 alias t=task
-complete -F _complete_alias t
-
-# xsv
+complete -F _complete_alias t 
 alias x=xsv
 alias xs="xsv select"
-alias xh="xsv headers"
-
+alias xh="xsv headers" 
 # lowercase
 alias lower="tr '[:upper:]' '[:lower:]'"
-
-# Use Fzf for ALL tab completion. This is different from the integration that
-# comes with fzf by default, as that only works when you type **<tab>, and it# only  works for directories and ssh targets (I think)
-# source "$HOME/git/dotfiles/submodules/fzf-tab-completion/bash/fzf-bash-completion.sh"
-# bind -x '"\t": fzf_bash_completion'
-# I am too used to inserting hte longest match for this.
-
-
-source "/projectnb/llamagrp/davidat/cargo/env"
-
-source /usr3/graduate/davidat/.bash_completions/typer.sh
-
-# Fzf completion when typing in ** doesn't use $FZF_DEFAULT_COMMAND. The below is necessary.
-_fzf_compgen_path() {
-  echo "$1"
-  command $FZF_DEFAULT_COMMAND "$1"
-}
-
-_fzf_compgen_dir() {
-  echo "$1"
-  command $FZF_DEFAULT_COMMAND "$1"
-}
