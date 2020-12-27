@@ -7,16 +7,21 @@
 modifyLineBreaks:
   textWrapOptions:
     columns: 100
-    perCodeBlockBasis: 1
+    perCodeBlockBasis: 0
     all: 1
     removeParagraphLineBreaks:
       all: 1
       beforeTextWrap: 1
   environments:
-    BeginStartsOnOwnLine: 4
+    BeginStartsOnOwnLine: 1
     BodyStartsOnOwnLine: 1
     EndStartsOnOwnLine: 1
-    EndFinishesWithLineBreak: 4
+    EndFinishesWithLineBreak: 1
+    quote:
+      BeginStartsOnOwnLine: 1
+      BodyStartsOnOwnLine: 1
+      EndStartsOnOwnLine: 1
+      EndFinishesWithLineBreak: 1
     array:
       BeginStartsOnOwnLine: 0
       BodyStartsOnOwnLine: 1

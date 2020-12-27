@@ -137,19 +137,51 @@ snippet vs "\vspace{2cm}" bw
 endsnippet
 
 # WHen using paracols
-snippet brc "right column" bw
+snippet brc "begin right column" bw
 \begin{rightcolumn*}
 ${1:${VISUAL:}}
 \end{rightcolumn*}
 ${2}
 endsnippet
 
-snippet blc "left column" bw
+snippet blc "begin left column" bw
 \begin{leftcolumn}
 ${1:${VISUAL:}}
 \end{leftcolumn}
 ${2}
 endsnippet
+
+snippet src "split right column" bw
+\end{rightcolumn*}
+\begin{leftcolumn}
+${1:${VISUAL}}
+\end{leftcolumn}
+\begin{rightcolumn*}
+${2}
+endsnippet
+
+snippet slc "split left column" bw
+\end{leftcolumn}
+\begin{rightcolumn*}
+${1:${VISUAL}}
+\end{rightcolumn*}
+\begin{leftcolumn}
+${2}
+endsnippet
+
+# Take notes in right column. I could use
+# slc and then bl, but I do this frequently enough to justify it's own snippet.
+snippet tn "take notes (in right column)" bw
+\end{leftcolumn}
+\begin{rightcolumn*}
+\begin{itemize}
+\item ${1:${VISUAL}}
+\end{itemize}
+\end{rightcolumn*}
+\begin{leftcolumn}
+${2}
+endsnippet
+
 
 # Switchcolumn
 snippet sc "\switchcolumn*" bw

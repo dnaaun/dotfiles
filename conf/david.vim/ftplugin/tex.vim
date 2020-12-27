@@ -1,8 +1,7 @@
-
 set omnifunc=vimtex#complete#omnifunc
 
 " tex-conceal.vim
-set conceallevel=1
+set conceallevel=2
 let g:tex_conceal='abdmg'
 hi Conceal ctermbg=none
 
@@ -26,9 +25,8 @@ let b:surround_{char2nr('c')} = "\\\1command: \1{\r}"
 
 
 set nohlsearch
-
-" Don't insert bullet on auto-wrap
-set formatoptions-=c
+set formatoptions-=c " Don't insert bullet on auto-wrap
+set spell
 
 
 " We're taking notes here, stop fussing over quotes chktex
@@ -37,10 +35,10 @@ set formatoptions-=c
 let b:ale_tex_chktex_options = '-n 18' . ' -n 45'
 
 " Don't stress about enclosing parens within curlies either
-let b:ale_tex_chktex_options .= '-n 3'
+let b:ale_tex_chktex_options .= ' -n 3'
 
+let b:ale_tex_chktex_options .= ' -n 13' " Enter sentence spacing.
 
-" -m: Modify line breaks at end. Needed to move environments to new line.
-let b:ale_tex_latexindent_options = '-m'
+let b:ale_tex_latexindent_options  = '-m'
 
 let b:ale_fix_on_save = 1
