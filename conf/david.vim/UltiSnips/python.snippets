@@ -18,11 +18,6 @@ class ${1:SomeClass}:
     ${2:pass}
 endsnippet
 
-snippet def "def func"
-def ${1:func}(${2:arg1: type1, arg2: type2}) -> ${3:None}:
-    ${4:pass}
-endsnippet
-
 snippet sup "super()." m
 super().
 endsnippet
@@ -30,9 +25,7 @@ endsnippet
 
 snippet impp "from pathlib import Path" bm
 from pathlib import Path
-endsnippet
-
-
+endsnippet 
 
 snippet "\b(Protocol|NamedTuple|TypedDict)\b" "Inherited mypy types" rwb
 class ${1:ClassName}(`!p
@@ -57,4 +50,9 @@ endsnippet
 
 snippet attr.s "autoattrib" bm
 @attr.s(auto_attribs=True)
+endsnippet
+
+snippet def "def func() -> None:" w
+def ${1:func}(${2:args}) -> ${3:None}:
+	${4:${VISUAL:pass}}
 endsnippet

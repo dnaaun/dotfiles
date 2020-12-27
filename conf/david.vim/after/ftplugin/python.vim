@@ -1,22 +1,15 @@
+" Set omnifunc to ALE, completefunc to jedi, because only ALE does autoimport
+set omnifunc=ale#completion#OmniFunc 
+" set omnifunc=
+set completefunc=jedi#completions
+
 set textwidth=88 " Google Styleguide
-
-
-" Black to do formatting, don't wrap lines
 set formatoptions-=t
-set nowrap
-
-
-" Set omnifunc
-set omnifunc=ale#completion#OmniFunc
-
-
+set nowrap " Black to do formatting, don't wrap lines
 set expandtab
-" show existing tab with 2 spaces width
-set tabstop=4
+set tabstop=4 " show existing tab with 2 spaces width
 set softtabstop=4
-" when indenting with '>', use 2 spaces width
-set shiftwidth=4
-
+set shiftwidth=4 " when indenting with '>', use 2 spaces width
 
 " Use the pytest compiler (look in ../compiler/pytest.vim) if we are in an
 " a file that looks like a test file.
@@ -24,29 +17,23 @@ if expand('%:t') =~ 'test_.*\.py'
     compiler pytest
 endif
 
-" function! s:add_conf(conf, to_add)
-" 	if type(a:conf) != type(a:to_add)
-"         throw 'Type mismatch in add_conf call'
-"     endif
-" 
-"     if type(a:conf) == v:t_list:
-"         for item in a:to_add:
-"             add(a:conf, item)
-"         endfor
-"     elseif type(a:conf) == v:t_dict:
-"         for key in keys(a:to_add):
-"             if exists('a:conf[key]')
-"                 s:add_conf(a:conf[key], to_add[key]
-
-
-if ! exists('b:ale_linters') 
-    let b:ale_linters = {}
-endif 
-if ! exists('b:ale_linters["python"]')
-    let b:ale_linters['python'] = []
-endif
-let b:ale_linters['python'] = b:ale_linters['python'] + ['pyright']
-let b:ale_linters['python'] = b:ale_linters['python'] + ['mypy']
+"" Ale
 let b:ale_fixers = { 'python': ['black']}
+let b:ale_linters = [ 'mypy', 'pyright' ]
+let b:ale_python_mypy_options="--no-pretty --show-error-codes --allow-redefinition"
 
-let b:ale_python_mypy_options="--show-error-codes --allow-redefinition"
+"" Mappings
+" nvim-ipy, go to next cell.
+" j or k is to go one line below/above the cell boundary line.
+" :noh is to clear highlights in case hlsearch is set.
+" zz is to center the cursor vertically.
+nmap ]c :execute '/' . g:ipy_celldef<CR>j:noh<CR>zz
+nmap [c :execute '?' . g:ipy_celldef<CR>k:noh<CR>zz
+
+" Jedi for docs
+nmap K :call jedi#show_documentation()<CR>
+
+" This is needed to show call sigs in prev win. Doesn't work in init.vim, must be in
+" ftplugin.
+" call jedi#configure_call_signatures() " Disabled cuz it's currently causing problems
+
