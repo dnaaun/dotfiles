@@ -28,6 +28,9 @@ set nohlsearch
 set formatoptions-=c " Don't insert bullet on auto-wrap
 set spell
 
+" When editing tex, noselect is not desired
+set completeopt-=noselect
+
 
 " We're taking notes here, stop fussing over quotes chktex
 " error code 18 found form http://www.nongnu.org/chktex/ChkTeX.pdf

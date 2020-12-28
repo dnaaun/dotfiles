@@ -6,22 +6,24 @@
 # https://github.com/cmhughes/latexindent.pl/issues/103#issuecomment-408630780
 modifyLineBreaks:
   textWrapOptions:
-    columns: 100
-    perCodeBlockBasis: 0
+    columns: 80
+    perCodeBlockBasis: 1
     all: 1
     removeParagraphLineBreaks:
       all: 1
       beforeTextWrap: 1
+  items:
+    itemStartsOnOwnLine: 1
   environments:
     BeginStartsOnOwnLine: 1
     BodyStartsOnOwnLine: 1
     EndStartsOnOwnLine: 1
     EndFinishesWithLineBreak: 1
     quote:
-      BeginStartsOnOwnLine: 1
+      BeginStartsOnOwnLine: 4
       BodyStartsOnOwnLine: 1
       EndStartsOnOwnLine: 1
-      EndFinishesWithLineBreak: 1
+      EndFinishesWithLineBreak: 4
     array:
       BeginStartsOnOwnLine: 0
       BodyStartsOnOwnLine: 1
