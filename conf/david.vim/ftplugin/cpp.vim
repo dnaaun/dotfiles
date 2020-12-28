@@ -23,5 +23,7 @@ set softtabstop=2   " Sets the number of columns for a TAB
 
 set expandtab       " Expand TABs to spaces
 
+let b:ale_linters = [ 'cc' ]
+
 " Use ALE for autocomplete
 set omnifunc=ale#completion#OmniFunc

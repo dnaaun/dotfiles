@@ -19,8 +19,8 @@ endif
 
 "" Ale
 let b:ale_fixers = { 'python': ['black']}
-let b:ale_linters = [ 'mypy', 'pyright' ]
-let b:ale_python_mypy_options="--no-pretty --show-error-codes --allow-redefinition"
+let b:ale_linters = [ 'pyright' ]
+" let b:ale_python_mypy_options="--no-pretty --show-error-codes --allow-redefinition" " Mypy bugs out with allennlp
 
 "" Mappings
 " nvim-ipy, go to next cell.

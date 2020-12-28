@@ -16,10 +16,13 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
     Plug 'bfredl/nvim-ipy', { 'for': ['python'] }
     Plug 'jeetsukumaran/vim-pythonsense', { 'for': ['python'] }
+
+    " General coding
     Plug '$HOME/git/ale'
     Plug 'Shougo/echodoc'
     Plug 'vim-test/vim-test'
     Plug 'tartansandal/vim-compiler-pytest'
+    Plug 'ncm2/float-preview.nvim' " Until https://github.com/neovim/neovim/issues/10996 lands
 
     " Frontend
     Plug 'pangloss/vim-javascript', {'for': ['javascript'] }
@@ -66,35 +69,27 @@ else
 endif
 call plug#end()
 
+"" Floating window preview for docs from autocomplete, super nice with Jedi.
+let g:float_preview#docked=0 
+
 "" vim-test
 let test#strategy = "dispatch"
 
 "" Vimtex settings
 let g:tex_flavor='latex'
 let g:vimtex_view_method='zathura'
-" This should be set automatically, actually.
-
 
 """ Markdown, make preview available remotely (ie, serve on 0.0.0.0, not localhost)
 let g:mkdp_open_to_the_world = 1
 
 """ ALE Settings
-" Show status using vim airline
-let g:airline#extensions#ale#enabled = 1
+let g:airline#extensions#ale#enabled = 1 " Show status using vim airline
 
-" Only lint when I ask
-let g:ale_linters_explicit=1
-
-" Nice to know which linter is dissatisfied
-let g:ale_echo_msg_format = '%linter%:%severity%:%code:%%s' 
-
-" Show errors in virtualtext
-let g:ale_virtual_text_cursor = 1
-let g:ale_virtualtext_delay = 0
-let g:ale_echo_cursor = 1
-
-" Use echo for ALE errors
-let g:ale_echo_cursor = 0
+let g:ale_linters_explicit=1 " Only lint with linters I explicitly I ask for
+let g:ale_echo_msg_format = '%linter%:%severity%:%code:%%s' " Nice to know which linter is dissatisfied
+let g:ale_virtualtext_cursor = 1 " Show errors in virtualtext
+let g:ale_virtualtext_delay = 1
+let g:ale_echo_cursor = 0 " Use echo for ALE errors
 
 " Make ale less automatic
 let g:ale_fix_on_save = 0
@@ -107,13 +102,12 @@ let g:ale_completion_enabled = 0
 let g:ale_completion_delay = 0
 let g:ale_completion_autoimport = 1
 
-" Adapted from https://github.com/neovim/neovim/issues/1887#issuecomment-280653872
-" Use whatever venv we're in
-" if exists("$VIRTUAL_ENV")
-    " let g:python3_host_prog=substitute(system("which -a python3 | head -n2 | tail -n1"), "\n", '', 'g')
-" else
+" Use whatever python3 virtualenv is currently activated. Means I have to install
+" pynvim in every venv, but makes life easier.
 let g:python3_host_prog=substitute(system("which python3"), "\n", '', 'g')
-" endif
+
+" Make ALE virtualtext more readable
+highlight link ALEVirtualTextError Exception
 
 " Make ultisnips use other triggers so mucomplete can do it's thing
 let g:UltiSnipsExpandTrigger = "<A-e>"        " Do not use <tab>
@@ -121,16 +115,19 @@ let g:UltiSnipsJumpForwardTrigger = "<A-f>"   " Do not use <c-j>
 let g:UltiSnipsJumpBackwardTrigger = "<A-b>"
 
 "" Mu complete
-" We prefer completefunc (user) over omnifunc (omni) cuz we set
-" completefunc=jedi#completions, and jedi shows docs.
-" We keep ALE as omni cuz pyright does autoimport.
+" Disable 'user' for python, cuz we set it to jedi,
+" and jedi is too slow for how frequently I like my completions.
 let g:mucomplete#chains = {
 	    \ 'default' : ['path', 'omni', 'ulti'],
 	    \ 'vim'     : ['path', 'omni', 'cmd', 'ulti'],
-        \ 'python'     : ['path', 'user', 'omni', 'ulti'] 
+        \ 'python'     : ['path', 'omni', 'ulti'] 
 	    \ }
 let g:mucomplete#no_popup_mappings = 0
 let g:mucomplete#enable_auto_at_startup = 1 " automatic completion(as opposed to <tab>-triggered)
+
+" Do even more automatic completion. One of these should have the effect I want.
+let g:mucomplete#minimum_prefix_length = 0
+let g:mucomplete#empty_text_auto = 1
 
 "" nvim-ipy
 let g:nvim_ipy_perform_mappings = 0
@@ -142,7 +139,7 @@ set isfname+=)
 
 " One note: lack of 'longest' is so that mucomplete doesn't insert longest
 " match(especailly annoying during autocompletion)
-set completeopt=menu,menuone,preview,noinsert,noselect
+set completeopt=menu,menuone,noinsert,noselect,preview
 
 " From mucomplete docs
 " It is also possible to expand snippets or complete text using only <tab>. That
@@ -168,7 +165,7 @@ endf
 let g:mucomplete#no_mappings=1
 " Map for <s-tab> used to be automatically added, but not so once we
 " disable with the var above.
-imap <s-tab> <plug>(MUcompleteBwd) 
+imap <s-tab> <plug>(MUcompleteBwd)
 """" own addition done
 
 inoremap <plug>(TryUlti) <c-r>=TryUltiSnips()<cr>
@@ -381,6 +378,8 @@ nnoremap <leader>z :call GoyoToggle()<CR>
 " Dispatch related shortcuts
 " open and close quickfix
 nnoremap <Leader>qo :copen<CR>
+nnoremap <Leader>qc :cclose<CR>
+
 " make using compiler in bg
 nnoremap m<CR>  :Make!<CR>
 
@@ -435,7 +434,7 @@ nnoremap <Leader>ad :ALEGoToDefinition<CR>
 nnoremap <Leader>at :ALEGoToTypeDefinition<CR>
 nnoremap <Leader>ar :ALERename<CR>
 " t for toggle
-nnoremap <Leader>at :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<CR>
+nnoremap <leader>at :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<cr>
 
 " Jedi mappings
 nnoremap <Leader>ju :call jedi#usages()<CR>
@@ -444,14 +443,10 @@ nnoremap <Leader>jd :call jedi#goto_definitions()<CR>
 nnoremap <Leader>ja :call jedi#goto_assignments()<CR>
 nnoremap <Leader>jt :call jedi#goto_stubs()<CR>
 nnoremap <Leader>jr :call jedi#rename()<CR>
-let g:jedi#auto_initialization=0  " Don't take over
-let g:jedi#completions_enabled=0 " Pyright+ALE=autoimport
+let g:jedi#auto_initialization=0  " Don't take over mappings, autocomplete, etc.
+let g:jedi#completions_enabled=0 " Mycomplete
 let g:jedi#show_call_signatures=2  " Show ginatures in window
 let g:jedi#show_call_signatures_delay=0 " Show ginatures in window
-
-
-" t for toggle
-nnoremap <leader>at :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<cr>
 
 " Fugutive mappings
 nnoremap <Leader>gs :Git!<CR>
