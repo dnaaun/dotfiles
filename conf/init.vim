@@ -1,5 +1,4 @@
 call plug#begin()
-Plug 'lifepillar/vim-mucomplete'
 Plug 'chriskempson/base16-vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'SirVer/ultisnips'
@@ -22,7 +21,8 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'Shougo/echodoc'
     Plug 'vim-test/vim-test'
     Plug 'tartansandal/vim-compiler-pytest'
-    Plug 'ncm2/float-preview.nvim' " Until https://github.com/neovim/neovim/issues/10996 lands
+    Plug 'liuchengxu/vista.vim'
+    Plug 'christoomey/vim-tmux-runner'
 
     " Frontend
     Plug 'pangloss/vim-javascript', {'for': ['javascript'] }
@@ -50,7 +50,7 @@ if (s:NOT_IN_TEMP_FILE)
     
 
     " Colors and other niceties
-    Plug 'vim-airline/vim-airline'
+    Plug '$HOME/git/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
     Plug 'junegunn/goyo.vim'
 
@@ -58,9 +58,10 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'lervag/vimtex', { 'for': 'tex' }
     Plug 'KeitaNakamura/tex-conceal.vim', { 'for': 'tex' }
 
-    " Fuzzy find buffers, command and search history, ... etc
+    " Fzf and file manager
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
+    Plug 'Shougo/defx.nvim',  { 'do': ':UpdateRemotePlugins' }
 
     " My own touches
     Plug '$HOME/git/dotfiles/conf/david.vim'
@@ -69,11 +70,20 @@ else
 endif
 call plug#end()
 
+
+"" Vista.vim
+let g:vista_default_executive='ale'
+let g:vista_fzf_preview=[] " enable fzf preview, I think
+let g:vista_keep_fzf_colors=1
+
 "" Floating window preview for docs from autocomplete, super nice with Jedi.
-let g:float_preview#docked=0 
 
 "" vim-test
 let test#strategy = "dispatch"
+
+"" dispatch.vim
+let g:dispatch_tmux_height = 30 " Foundt this by reading dispatch.vim source code
+
 
 "" Vimtex settings
 let g:tex_flavor='latex'
@@ -85,20 +95,22 @@ let g:mkdp_open_to_the_world = 1
 """ ALE Settings
 let g:airline#extensions#ale#enabled = 1 " Show status using vim airline
 
+let g:ale_close_preview_on_insert = 0
 let g:ale_linters_explicit=1 " Only lint with linters I explicitly I ask for
 let g:ale_echo_msg_format = '%linter%:%severity%:%code:%%s' " Nice to know which linter is dissatisfied
 let g:ale_virtualtext_cursor = 1 " Show errors in virtualtext
-let g:ale_virtualtext_delay = 1
+let g:ale_virtualtext_delay = 0
 let g:ale_echo_cursor = 0 " Use echo for ALE errors
 
 " Make ale less automatic
 let g:ale_fix_on_save = 0
-let g:ale_lint_on_enter = 0
+let g:ale_lint_on_enter = 1
+let g:ale_cursor_detail = 0
 
-let g:ale_hover_to_preview = 1
+let g:ale_hover_to_preview = 0
 
-" Somehow, ale autoimport works with mucomplete
-let g:ale_completion_enabled = 0
+
+let g:ale_completion_enabled = 1
 let g:ale_completion_delay = 0
 let g:ale_completion_autoimport = 1
 
@@ -109,25 +121,10 @@ let g:python3_host_prog=substitute(system("which python3"), "\n", '', 'g')
 " Make ALE virtualtext more readable
 highlight link ALEVirtualTextError Exception
 
-" Make ultisnips use other triggers so mucomplete can do it's thing
-let g:UltiSnipsExpandTrigger = "<A-e>"        " Do not use <tab>
-let g:UltiSnipsJumpForwardTrigger = "<A-f>"   " Do not use <c-j>
+let g:UltiSnipsExpandTrigger = "<A-e>"
+let g:UltiSnipsJumpForwardTrigger = "<A-f>"
 let g:UltiSnipsJumpBackwardTrigger = "<A-b>"
 
-"" Mu complete
-" Disable 'user' for python, cuz we set it to jedi,
-" and jedi is too slow for how frequently I like my completions.
-let g:mucomplete#chains = {
-	    \ 'default' : ['path', 'omni', 'ulti'],
-	    \ 'vim'     : ['path', 'omni', 'cmd', 'ulti'],
-        \ 'python'     : ['path', 'omni', 'ulti'] 
-	    \ }
-let g:mucomplete#no_popup_mappings = 0
-let g:mucomplete#enable_auto_at_startup = 1 " automatic completion(as opposed to <tab>-triggered)
-
-" Do even more automatic completion. One of these should have the effect I want.
-let g:mucomplete#minimum_prefix_length = 0
-let g:mucomplete#empty_text_auto = 1
 
 "" nvim-ipy
 let g:nvim_ipy_perform_mappings = 0
@@ -137,40 +134,7 @@ let g:ipy_celldef = '\v^\s*##[^#]*$' " Ipython cell boundary line regex.
 set isfname+=(
 set isfname+=)
 
-" One note: lack of 'longest' is so that mucomplete doesn't insert longest
-" match(especailly annoying during autocompletion)
 set completeopt=menu,menuone,noinsert,noselect,preview
-
-" From mucomplete docs
-" It is also possible to expand snippets or complete text using only <tab>. That
-" is, when you press <tab>, if there is a snippet keyword before the cursor then
-" the snippet is expanded (and you may use <tab> also to jump between the
-" snippet triggers), otherwise MUcomplete kicks in. The following configuration
-" achieves this kind of behaviour:
-let g:ulti_expand_or_jump_res = 0
-
-fun! TryUltiSnips()
-  if !pumvisible() " With the pop-up menu open, let Tab move down
-    call UltiSnips#ExpandSnippetOrJump()
-  endif
-  return ''
-endf
-
-fun! TryMUcomplete()
-  return g:ulti_expand_or_jump_res ? "" : "\<plug>(MUcompleteFwd)"
-endf
-
-"""" Here's my own addition, avoid automatic mapping when doing this so that
-"""" I don't get the "^I is already mapped" error
-let g:mucomplete#no_mappings=1
-" Map for <s-tab> used to be automatically added, but not so once we
-" disable with the var above.
-imap <s-tab> <plug>(MUcompleteBwd)
-"""" own addition done
-
-inoremap <plug>(TryUlti) <c-r>=TryUltiSnips()<cr>
-imap <expr> <silent> <plug>(TryMU) TryMUcomplete()
-imap <expr> <silent> <tab> "\<plug>(TryUlti)\<plug>(TryMU)"
 
 "" Vimtex
 let g:vimtex_quickfix_ignore_filters = [ '\v(Under|Over)full \\(h|v)box'] " Ignore some latex 'errors'
@@ -240,9 +204,6 @@ autocmd! User GoyoLeave nested call <SID>goyo_leave()
 " https://stackoverflow.com/a/37889460/13664712
 autocmd FileType python setlocal indentkeys-=<:>
 autocmd FileType python setlocal indentkeys-=:
-
-
-
 
 " Automatically save views
 augroup SaveViewsOnEnter
@@ -356,7 +317,7 @@ vmap <silent> <leader>e <Plug>(IPy-Run)
 nmap <silent> <leader>ec <Plug>(IPy-RunCell)
 
 " Terminate kernel
-map <silent> <leader>iq <Plug>(IPy-Terminate)
+map <silent> <leader>eq <Plug>(IPy-Terminate)
 
 " (Re)start kernel
 nmap <silent> <leader>ei :IPython<CR>
@@ -409,6 +370,7 @@ inoremap <Leader>fa :Ag<CR>
 nnoremap <Leader>f: :History:<CR> 
 nnoremap <Leader>f/ :History/<CR>
 nnoremap <Leader>fb :Buffers<CR> 
+nnoremap <Leader>fs :Vista finder<CR>
 
 " Run tests
 nmap <silent> <leader>tn :TestNearest<CR>
@@ -424,7 +386,7 @@ nmap <silent> <leader>tv :TestVisit<CR>
 tnoremap <C-p> <C-\><C-n>
 
 " ALE mappings
-nnoremap <Leader>ah :ALEHover<CR>
+nnoremap <Leader>ah :ALEDetail<CR>
 nnoremap <Leader>af :ALEFix<CR>
 nnoremap <Leader>ai :ALEInfo<CR>
 nnoremap <Leader>au :ALEFindReferences<CR>
@@ -435,6 +397,9 @@ nnoremap <Leader>at :ALEGoToTypeDefinition<CR>
 nnoremap <Leader>ar :ALERename<CR>
 " t for toggle
 nnoremap <leader>at :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<cr>
+inoremap <expr> <tab> pumvisible() ? "\<C-n>" : "<C-\><C-O>:ALEComplete<CR>"
+inoremap <expr> <s-tab> pumvisible() ? "\<C-p>" : "\<s-tab>"
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " Jedi mappings
 nnoremap <Leader>ju :call jedi#usages()<CR>
