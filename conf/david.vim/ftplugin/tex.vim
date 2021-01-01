@@ -36,11 +36,9 @@ set completeopt-=noselect
 " error code 18 found form http://www.nongnu.org/chktex/ChkTeX.pdf
 " 45 is not using $$
 let b:ale_tex_chktex_options = '-n 18' . ' -n 45'
-
-" Don't stress about enclosing parens within curlies either
-let b:ale_tex_chktex_options .= ' -n 3'
-
-let b:ale_tex_chktex_options .= ' -n 13' " Enter sentence spacing.
+let b:ale_tex_chktex_options .= ' -n 3' " Don't stress about enclosing parens within curlies either
+let b:ale_tex_chktex_options .= ' -n 13' " Enter sentence spacing.  
+let b:ale_tex_chktex_options .= ' -n 26' " Allow punctuation to follow whitespace
 
 let b:ale_tex_latexindent_options  = '-m'
 
