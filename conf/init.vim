@@ -1,7 +1,7 @@
 call plug#begin()
 Plug 'chriskempson/base16-vim'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'SirVer/ultisnips'
+Plug 'easymotion/vim-easymotion'
 
 " Avoid loading most plugins if we're on a temporary  file (which is the case when 
 " bash launches my $EDITOR to edit my commands, which I often do), for speed purposes. 
@@ -18,11 +18,11 @@ if (s:NOT_IN_TEMP_FILE)
 
     " General coding
     Plug '$HOME/git/ale'
-    Plug 'Shougo/echodoc'
     Plug 'vim-test/vim-test'
     Plug 'tartansandal/vim-compiler-pytest'
     Plug 'liuchengxu/vista.vim'
     Plug 'christoomey/vim-tmux-runner'
+    Plug 'SirVer/ultisnips'
 
     " Frontend
     Plug 'pangloss/vim-javascript', {'for': ['javascript'] }
@@ -88,11 +88,14 @@ let g:dispatch_tmux_height = 30 " Foundt this by reading dispatch.vim source cod
 "" Vimtex settings
 let g:tex_flavor='latex'
 let g:vimtex_view_method='zathura'
+let g:vimtex_quickfix_ignore_filters = [ '\v(Under|Over)full \\(h|v)box'] " Ignore some latex 'errors'
+let g:vimtex_quickfix_open_on_warning=0
+
 
 """ Markdown, make preview available remotely (ie, serve on 0.0.0.0, not localhost)
 let g:mkdp_open_to_the_world = 1
 
-""" ALE Settings
+"" ALE Settings
 let g:airline#extensions#ale#enabled = 1 " Show status using vim airline
 let g:ale_fix_on_save = 0
 " Diagnostics
@@ -101,11 +104,18 @@ let g:ale_echo_msg_format = '%linter%:%severity%:%code:%%s' " Nice to know which
 let g:ale_virtualtext_cursor = 1 " Show errors in virtualtext
 let g:ale_virtualtext_delay = 0
 let g:ale_echo_cursor = 0 " Use echo for ALE errors
+<<<<<<< HEAD
 let g:ale_lint_on_enter = 1
 set updatetime=200  " Trigger ALEHover quicker
 let g:ale_cursor_detail = 0
 let g:ale_hover_to_preview = 0
 " Completion
+=======
+let g:ale_fix_on_save = 0
+let g:ale_lint_on_enter = 1
+let g:ale_cursor_detail = 0 
+let g:ale_hover_to_preview = 0 
+>>>>>>> add easy motion, setup omnicomplete for tex
 let g:ale_completion_enabled = 1
 let g:ale_completion_delay = 0
 let g:ale_completion_autoimport = 1
@@ -113,15 +123,14 @@ let g:ale_completion_autoimport = 1
 highlight link ALEVirtualTextError Exception
 highlight link ALEError DiffDelete
 
-" Use whatever python3 virtualenv is currently activated. Means I have to install
-" pynvim in every venv, but makes life easier.
+" Use whatever python3 virtualenv is currently activated.
+" Means I have to install pynvim in every venv, but makes life easier.
 let g:python3_host_prog=substitute(system("which python3"), "\n", '', 'g')
 
 "" Ultisnips
 let g:UltiSnipsExpandTrigger = "<A-e>"
 let g:UltiSnipsJumpForwardTrigger = "<A-f>"
 let g:UltiSnipsJumpBackwardTrigger = "<A-b>"
-
 
 "" nvim-ipy
 let g:nvim_ipy_perform_mappings = 0
@@ -133,17 +142,13 @@ set isfname+=)
 
 set completeopt=menu,menuone,noinsert,noselect,preview
 
-"" Vimtex
-let g:vimtex_quickfix_ignore_filters = [ '\v(Under|Over)full \\(h|v)box'] " Ignore some latex 'errors'
-let g:vimtex_quickfix_open_on_warning=0
 
-" Enable nvimrc as the local initialization file
+"" Local vimrc
 let g:localvimrc_debug=1
 let g:localvimrc_name=['.lnvimrc']
 " Whitelist everything in home directory
 " https://stackoverflow.com/a/48519356
 let g:localvimrc_whitelist = [ fnamemodify('~', ':p') ]
-
 " Disable "sandbox" mode
 let g:localvimrc_sandbox=0
 
@@ -151,7 +156,6 @@ let g:localvimrc_sandbox=0
 " Jedi takes over a bunch of key mappings if I don't do this
 let g:jedi#auto_initialization = 0
 " Set latex filetypes as tex, not plaintex
-let g:tex_flavor='latex'
 
 let g:goyo_height=100
 " Variable to keep track of Goyo state to facilitate toggling.
@@ -278,9 +282,6 @@ let g:vim_markdown_conceal = 1
 let g:markdown_fenced_languages = ['json', 'javascript', 'html', 'python', 'bash=sh']
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
-
-
-
 
 
 """""" Mappings
@@ -410,7 +411,7 @@ let g:jedi#completions_enabled=0 " Mycomplete
 let g:jedi#show_call_signatures=2  " Show ginatures in window
 let g:jedi#show_call_signatures_delay=0 " Show ginatures in window
 
-" Fugutive mappings
+"" Fugutive mappings
 nnoremap <Leader>gs :Git!<CR>
 nnoremap <Leader>gd :Gdiffsplit<CR>
 nnoremap <Leader>gc :Gcommit<CR>
@@ -420,26 +421,14 @@ nnoremap <Leader>gr :Gpull --rebase<CR>
 nnoremap <Leader>gp :Gpush<CR>
 nnoremap <Leader>gg :Git 
 
-" Allow a 'computer dependent' initialization
+"" Easy motion
+nmap s <Plug>(easymotion-s2)
+vmap s <Plug>(easymotion-s2)
+
+""" Allow a 'computer dependent' initialization
 let s:secondary_init_vim=expand('~/.secondary.init.vim')
 if filereadable(s:secondary_init_vim)
     execute 'source' s:secondary_init_vim
 endif
 
-function! s:list_buffers()
-  redir => list
-  silent ls
-  redir END
-  return split(list, "\n")
-endfunction
 
-" From an issue on the official github repo.
-function! s:delete_buffers(lines)
-  execute 'bwipeout' join(map(a:lines, {_, line -> split(line)[0]}))
-endfunction
-
-command! BD call fzf#run(fzf#wrap({
-  \ 'source': s:list_buffers(),
-  \ 'sink*': { lines -> s:delete_buffers(lines) },
-  \ 'options': '--multi --reverse --bind ctrl-a:select-all+accept'
-\ }))
