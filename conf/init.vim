@@ -11,17 +11,16 @@ let s:NOT_IN_TEMP_FILE =  !(expand('%') =~ s:temp_file_ptrn)
 if (s:NOT_IN_TEMP_FILE)
     Plug 'embear/vim-localvimrc'
 
-    " Python
+   " Python
     Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
     Plug 'bfredl/nvim-ipy', { 'for': ['python'] }
     Plug 'jeetsukumaran/vim-pythonsense', { 'for': ['python'] }
+    Plug 'tartansandal/vim-compiler-pytest', { 'for': ['python'] }
 
     " General coding
     Plug '$HOME/git/ale'
     Plug 'vim-test/vim-test'
-    Plug 'tartansandal/vim-compiler-pytest'
     Plug 'liuchengxu/vista.vim'
-    Plug 'christoomey/vim-tmux-runner'
     Plug 'SirVer/ultisnips'
 
     " Frontend
@@ -36,7 +35,7 @@ if (s:NOT_IN_TEMP_FILE)
                 \ 'for': ['markdown'],
                 \ 'do': { -> mkdp#util#install() },
                 \ }
-    Plug 'dkarter/bullets.vim',  { 'for': ['markdown', 'vimwiki'] }
+    Plug 'dkarter/bullets.vim',  { 'for': ['markdown'] }
 
     " Tpope makes great plugins.
     Plug 'tpope/vim-surround'
@@ -76,7 +75,6 @@ let g:vista_default_executive='ale'
 let g:vista_fzf_preview=[] " enable fzf preview, I think
 let g:vista_keep_fzf_colors=1
 
-"" Floating window preview for docs from autocomplete, super nice with Jedi.
 
 "" vim-test
 let test#strategy = "dispatch"
@@ -357,17 +355,18 @@ augroup MarkdownRelated
 augroup END
 
 
-" fzf shortcuts
-" second f for search in directory of curetn *F*ile
+"" Fzf shortcuts
+" second f for search in directory of current *F*ile
 nnoremap <Leader>ff :execute 'Files' . expand('%:p:h')<CR> 
 " c for current dir
 nnoremap <Leader>fc :Files<CR> 
 nnoremap <Leader>fr :Rg<CR>
-inoremap <Leader>fa :Ag<CR> 
 " Search through buffers and history
+nnoremap <Leader>fh :History<CR> 
 nnoremap <Leader>f: :History:<CR> 
 nnoremap <Leader>f/ :History/<CR>
 nnoremap <Leader>fb :Buffers<CR> 
+" Go to LSP symbols
 nnoremap <Leader>fs :Vista finder<CR>
 
 " Run tests
