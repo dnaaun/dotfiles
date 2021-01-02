@@ -94,33 +94,30 @@ let g:mkdp_open_to_the_world = 1
 
 """ ALE Settings
 let g:airline#extensions#ale#enabled = 1 " Show status using vim airline
-
-let g:ale_close_preview_on_insert = 0
+let g:ale_fix_on_save = 0
+" Diagnostics
 let g:ale_linters_explicit=1 " Only lint with linters I explicitly I ask for
 let g:ale_echo_msg_format = '%linter%:%severity%:%code:%%s' " Nice to know which linter is dissatisfied
 let g:ale_virtualtext_cursor = 1 " Show errors in virtualtext
 let g:ale_virtualtext_delay = 0
 let g:ale_echo_cursor = 0 " Use echo for ALE errors
-
-" Make ale less automatic
-let g:ale_fix_on_save = 0
 let g:ale_lint_on_enter = 1
+set updatetime=200  " Trigger ALEHover quicker
 let g:ale_cursor_detail = 0
-
 let g:ale_hover_to_preview = 0
-
-
+" Completion
 let g:ale_completion_enabled = 1
 let g:ale_completion_delay = 0
 let g:ale_completion_autoimport = 1
+" Make ALE more readable
+highlight link ALEVirtualTextError Exception
+highlight link ALEError DiffDelete
 
 " Use whatever python3 virtualenv is currently activated. Means I have to install
 " pynvim in every venv, but makes life easier.
 let g:python3_host_prog=substitute(system("which python3"), "\n", '', 'g')
 
-" Make ALE virtualtext more readable
-highlight link ALEVirtualTextError Exception
-
+"" Ultisnips
 let g:UltiSnipsExpandTrigger = "<A-e>"
 let g:UltiSnipsJumpForwardTrigger = "<A-f>"
 let g:UltiSnipsJumpBackwardTrigger = "<A-b>"
@@ -317,7 +314,7 @@ vmap <silent> <leader>e <Plug>(IPy-Run)
 nmap <silent> <leader>ec <Plug>(IPy-RunCell)
 
 " Terminate kernel
-map <silent> <leader>eq <Plug>(IPy-Terminate)
+nmap <silent> <leader>eq <Plug>(IPy-Terminate)
 
 " (Re)start kernel
 nmap <silent> <leader>ei :IPython<CR>
