@@ -4,5 +4,10 @@ set show-mode-in-prompt on
 set vi-ins-mode-string \1\e[6 q\2
 set vi-cmd-mode-string \1\e[2 q\2
 
+# When completing mid-word, don't repeat whatever is currently present
+# after the cursor.
+set skip-completed-text on
+
 set completion-ignore-case on
 set show-all-if-ambiguous on
+

@@ -2,7 +2,7 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
-export FZF_DEFAULT_COMMAND="rg --files --hidden"
+export FZF_DEFAULT_COMMAND="rg --files --hidden --ignore-global"
 
 # If not running interactively, don't do anything
 case $- in
@@ -135,10 +135,6 @@ export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 alias tmux='tmux -u'
 
-export LD_LIBRARY_PATH=/usr/lib64
-
-# Vim everywhere
-set -o vi
 
 # Ptpython vim
 alias ptpython='ptpython --vi'
@@ -206,10 +202,10 @@ ppwd ()
     echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"
 }
 
-__prompt_command() {
+set_ps1() {
+    local EXIT="$?"             # This needs to be first
     VENV="\$(virtualenv_info)";
 
-    local EXIT="$?"             # This needs to be first
 
     local RCol='\[\e[0m\]'
 
@@ -225,13 +221,26 @@ __prompt_command() {
     else
         PS1+="${BBlu}\w\$ ${RCol}"
     fi
-    ppwd
     PS1="$PS1"
+    ppwd
 }
 
-# Force prompt to write history after every command.
-# http://superuser.com/questions/20900/bash-history-loss
-PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+auto_change_venv() {
+  if [ ! -d "$PWD/.venv" ]; then #
+    return
+  fi
+  if [ -n "$VIRTUAL_ENV" ]; then
+    deactivate;
+  fi;
+
+  source $PWD/.venv/bin/activate;
+}
+
+__prompt_command() {
+  set_ps1 # This needs to be first
+  auto_change_venv
+}
+
 
 
 export EDITOR=nvim
@@ -267,6 +276,17 @@ alias lower="tr '[:upper:]' '[:lower:]'"
 # I am too used to inserting hte longest match for this.
 
 
-source "/projectnb/llamagrp/davidat/cargo//env"
+source "/projectnb/llamagrp/davidat/cargo/env"
 
 source /usr3/graduate/davidat/.bash_completions/typer.sh
+
+# Fzf completion when typing in ** doesn't use $FZF_DEFAULT_COMMAND. The below is necessary.
+_fzf_compgen_path() {
+  echo "$1"
+  command $FZF_DEFAULT_COMMAND "$1"
+}
+
+_fzf_compgen_dir() {
+  echo "$1"
+  command $FZF_DEFAULT_COMMAND "$1"
+}
