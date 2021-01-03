@@ -1,7 +1,12 @@
+"" Easy motion
+let g:EasyMotion_do_mapping=0 " no default mappings
+" nmap s <Plug>(easymotion-s2)
+" vmap s <Plug>(easymotion-s2)
+
 call plug#begin()
 Plug 'chriskempson/base16-vim'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'easymotion/vim-easymotion'
+" Plug 'easymotion/vim-easymotion'
 
 " Avoid loading most plugins if we're on a temporary  file (which is the case when 
 " bash launches my $EDITOR to edit my commands, which I often do), for speed purposes. 
@@ -52,6 +57,7 @@ if (s:NOT_IN_TEMP_FILE)
     Plug '$HOME/git/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
     Plug 'junegunn/goyo.vim'
+    Plug 'junegunn/limelight.vim'
 
     " Tex, writing
     Plug 'lervag/vimtex', { 'for': 'tex' }
@@ -102,18 +108,11 @@ let g:ale_echo_msg_format = '%linter%:%severity%:%code:%%s' " Nice to know which
 let g:ale_virtualtext_cursor = 1 " Show errors in virtualtext
 let g:ale_virtualtext_delay = 0
 let g:ale_echo_cursor = 0 " Use echo for ALE errors
-<<<<<<< HEAD
 let g:ale_lint_on_enter = 1
 set updatetime=200  " Trigger ALEHover quicker
 let g:ale_cursor_detail = 0
 let g:ale_hover_to_preview = 0
 " Completion
-=======
-let g:ale_fix_on_save = 0
-let g:ale_lint_on_enter = 1
-let g:ale_cursor_detail = 0 
-let g:ale_hover_to_preview = 0 
->>>>>>> add easy motion, setup omnicomplete for tex
 let g:ale_completion_enabled = 1
 let g:ale_completion_delay = 0
 let g:ale_completion_autoimport = 1
@@ -164,14 +163,20 @@ if ! exists('s:goyo_on')
 endif
 function! GoyoToggle()
     if ! s:goyo_on
-        " + 3 for good measure (aka error indicators from ALE)
-        execute 'Goyo ' &textwidth + 3 
+        if &textwidth > 0 " If we're doing hard wrapping
+            " + 3 for good measure (aka error indicators from ALE)
+            execute 'Goyo ' &textwidth + 3 
+        else
+            Goyo!
+        endif
+
         let s:goyo_on = 1
     else
-        execute 'Goyo!'
+        Goyo!
         let s:goyo_on = 0
     endif
 endfunction
+nnoremap <silent> <leader>v :call GoyoToggle()<CR>
 
 
 function! s:goyo_enter()
@@ -183,6 +188,7 @@ function! s:goyo_enter()
   set noshowmode
   set noshowcmd
   set scrolloff=999
+  Limelight
 endfunction
 
 function! s:goyo_leave()
@@ -193,6 +199,7 @@ function! s:goyo_leave()
   set showmode
   set showcmd
   set scrolloff=5
+  Limelight!
 endfunction
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
@@ -295,14 +302,15 @@ nnoremap  <Leader>s ]s1z=<C-X><C-S>
 " https://castel.dev/post/lecture-notes-1/#correcting-spelling-mistakes-on-the-fly
 " Insert mode, correct last error.
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
+
 " <tab> is no good in visual mode without launching UltiSnips:
-xmap  <tab> :call UltiSnips#SaveLastVisualSelection()<CR>gvs
+xmap  <tab> :call UltiSnips#SaveLastVisualSelection()<CR>gvc
 
 "" vim-ipy
 " leader-e is mapped to running text objects, but since I never
 " wanna run till end of word(which is 'e'), but much more commonly to end of line...
-nmap <silent> <leader>ee <Plug>(IPy-Run)
-
+nmap <silent> <leader>ee <Plug>(IPy-Run) 
+nmap <silent> <leader>ea <Plug>(IPy-RunAll)
 " Run arbitrary text objects
 nmap <silent> <leader>e <Plug>(IPy-RunOp)
 " Run in visual mode
@@ -344,18 +352,14 @@ nnoremap m<CR>  :Make!<CR>
 nnoremap <Leader>lo :lopen<CR>
 nnoremap <Leader>lc :lclose<CR>
 
-" Read vimrc again.
-noremap <Leader>ri :source $MYVIMRC<CR>
-" Reload filetype plugins by setting filetype to current filetype
-noremap <Leader>rf :let &filetype=&filetype<CR>
+" Reload config
+noremap <Leader>rr :source $MYVIMRC <bar> let &filetype=&filetype<CR>
 
 augroup MarkdownRelated
     au!
 	au FileType markdown nmap <Leader>m <Plug>MarkdownPreviewToggle<CR>
 augroup END
 
-
-"" Fzf shortcuts
 " second f for search in directory of current *F*ile
 nnoremap <Leader>ff :execute 'Files' . expand('%:p:h')<CR> 
 " c for current dir
@@ -420,9 +424,6 @@ nnoremap <Leader>gr :Gpull --rebase<CR>
 nnoremap <Leader>gp :Gpush<CR>
 nnoremap <Leader>gg :Git 
 
-"" Easy motion
-nmap s <Plug>(easymotion-s2)
-vmap s <Plug>(easymotion-s2)
 
 """ Allow a 'computer dependent' initialization
 let s:secondary_init_vim=expand('~/.secondary.init.vim')

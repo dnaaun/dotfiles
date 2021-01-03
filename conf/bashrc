@@ -232,3 +232,4 @@ alias xs="xsv select"
 alias xh="xsv headers" 
 # lowercase
 alias lower="tr '[:upper:]' '[:lower:]'"
+alias bat=batcat

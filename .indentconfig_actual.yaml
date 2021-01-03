@@ -6,7 +6,7 @@
 # https://github.com/cmhughes/latexindent.pl/issues/103#issuecomment-408630780
 modifyLineBreaks:
   textWrapOptions:
-    columns: 80
+    columns: 79
     perCodeBlockBasis: 1
     all: 1
     removeParagraphLineBreaks:
