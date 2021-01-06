@@ -167,47 +167,52 @@ let g:localvimrc_sandbox=0
 let g:jedi#auto_initialization = 0
 " Set latex filetypes as tex, not plaintex
 
+"" Goyo and limelight
+let g:limelight_paragraph_span=5
+let g:limelight_bop = '^'
+let g:limelight_eop = '$'
+
 let g:goyo_height=100
 " Variable to keep track of Goyo state to facilitate toggling.
 " Just :Goyo would toggle, except that I want to read textwidth
 " dynamically (and thus do :exec Goyo &tw), which doesn't toggle.
-if ! exists('s:goyo_on')
-    let s:goyo_on = 0
+if ! exists('g:goyo_on')
+    let g:goyo_on = 0
 endif
 function! GoyoToggle()
-    if ! s:goyo_on
+    if ! g:goyo_on
         if &textwidth > 0 " If we're doing hard wrapping
             " + 3 for good measure (aka error indicators from ALE)
             execute 'Goyo ' &textwidth + 3 
         else
-            Goyo!
+            Goyo
         endif
 
-        let s:goyo_on = 1
+        let g:goyo_on = 1
     else
         Goyo!
-        let s:goyo_on = 0
+        let g:goyo_on = 0
     endif
 endfunction
 nnoremap <silent> <leader>v :call GoyoToggle()<CR>
 
 function! s:goyo_enter()
 " Make Goyo make tmux panes dissapear
-  if executable('tmux') && strlen($TMUX)
-    silent !tmux set status off
-    silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
-  endif
+  " if executable('tmux') && strlen($TMUX)
+    " silent !tmux set status off
+    " silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+  " endif
   set noshowmode
   set noshowcmd
   set scrolloff=999
-  Limelight
+  Limelight 0.7
 endfunction
 
 function! s:goyo_leave()
-  if executable('tmux') && strlen($TMUX)
-    silent !tmux set status on
-    silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
-  endif
+  " if executable('tmux') && strlen($TMUX)
+    " silent !tmux set status on
+    " silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+  " endif
   set showmode
   set showcmd
   set scrolloff=5
