@@ -1,4 +1,5 @@
 # If not running interactively, don't do anything
+
 case $- in
     *i*) ;;
       *) return;;
@@ -11,13 +12,14 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # is necessary.
 _fzf_compgen_path() {
   echo "$1"
-  command $FZF_DEFAULT_COMMAND "$1"
+  # shellcheck disable=SC2086
+  command $FZF_DEFAULT_COMMAND "$1" 2>/dev/null
 }
 _fzf_compgen_dir() {
   echo "$1"
-  command $FZF_DEFAULT_COMMAND "$1"
+  # shellcheck disable=SC2086
+  command $FZF_DEFAULT_COMMAND "$1" 2>/dev/null
 }
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 
 # don't put duplicate lines or lines starting with space in the history.
@@ -50,20 +52,6 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color) color_prompt=yes;;
-esac
-
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
 
 # Enable autocomplete for aliases:
 # https://unix.stackexchange.com/questions/4219/how-do-i-get-bash-completion-for-command-aliases
@@ -96,6 +84,11 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# This sourcing needs to happen strictly after the block above for
+# ** completion to not malfunction in cases like cd **, cp ** (probably
+# they have something in common)
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # Some systems still have old vi by default
 alias vi=vim
@@ -233,3 +226,5 @@ alias xh="xsv headers"
 # lowercase
 alias lower="tr '[:upper:]' '[:lower:]'"
 alias bat=batcat
+
+alias bash="bash --noprofile"

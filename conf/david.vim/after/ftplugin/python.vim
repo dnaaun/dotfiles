@@ -19,7 +19,7 @@ endif
 
 "" Ale
 let b:ale_fixers = { 'python': ['black']}
-let b:ale_linters = [ 'pyright' ]
+let b:ale_linters = [ 'mypy', 'pyright' ]
 " let b:ale_python_mypy_options="--no-pretty --show-error-codes --allow-redefinition" " Mypy bugs out with allennlp
 
 "" Mappings
@@ -37,3 +37,5 @@ nmap K :call jedi#show_documentation()<CR>
 " ftplugin.
 " call jedi#configure_call_signatures() " Disabled cuz it's currently causing problems
 
+" WHen typing an open bracket, check if ale docs are available
+imap <buffer> ( (<C-\><C-o>:ALEHover<CR>

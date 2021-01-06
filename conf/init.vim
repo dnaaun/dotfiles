@@ -31,6 +31,8 @@ if (s:NOT_IN_TEMP_FILE)
     " Frontend
     Plug 'pangloss/vim-javascript', {'for': ['javascript'] }
     Plug 'AndrewRadev/tagalong.vim', {'for': ['html'] }
+    Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'typescriptreact'] }
+    Plug 'peitalin/vim-jsx-typescript', { 'for': ['typescript', 'typescriptreact'] }
     Plug 'mattn/emmet-vim', { 'for': ['html'] }
 
     " Markdown/writing
@@ -43,7 +45,6 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'dkarter/bullets.vim',  { 'for': ['markdown'] }
 
     " Tpope makes great plugins.
-    Plug 'tpope/vim-surround'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-obsession'
     Plug 'tpope/vim-vinegar'
@@ -51,6 +52,8 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-dispatch'
+    " Vim sandwich, the generalized vim surround
+    Plug 'machakann/vim-sandwich'
     
 
     " Colors and other niceties
@@ -116,9 +119,17 @@ let g:ale_hover_to_preview = 0
 let g:ale_completion_enabled = 1
 let g:ale_completion_delay = 0
 let g:ale_completion_autoimport = 1
+" Using an off-master branch with this feature
+let g:ale_hover_to_floating_preview=1
 " Make ALE more readable
 highlight link ALEVirtualTextError Exception
 highlight link ALEError DiffDelete
+
+augroup HoverAfterComplete                                                        
+    autocmd!                                                                    
+    " display argument list of the selected completion candidate using ALEHover
+    autocmd User ALECompletePost ALEHover                                       
+augroup END
 
 " Use whatever python3 virtualenv is currently activated.
 " Means I have to install pynvim in every venv, but makes life easier.
@@ -133,6 +144,8 @@ let g:UltiSnipsJumpBackwardTrigger = "<A-b>"
 let g:nvim_ipy_perform_mappings = 0
 let g:ipy_celldef = '\v^\s*##[^#]*$' " Ipython cell boundary line regex.
 
+set nohlsearch " Don't higlight all matches
+set incsearch " Incremental search highlight
 " Add parenthesis to vaid filename chars for completion
 set isfname+=(
 set isfname+=)
@@ -177,7 +190,6 @@ function! GoyoToggle()
     endif
 endfunction
 nnoremap <silent> <leader>v :call GoyoToggle()<CR>
-
 
 function! s:goyo_enter()
 " Make Goyo make tmux panes dissapear
@@ -303,41 +315,29 @@ nnoremap  <Leader>s ]s1z=<C-X><C-S>
 " Insert mode, correct last error.
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
 
-" <tab> is no good in visual mode without launching UltiSnips:
+" Inspired by unimpaired, jump to the last location on jumplist
+" that is NOT in the current file
+:ech
+" <tab> in visual mode starts goes into insert mode with UltiSnips ready to
+" integrate the visual selection into an expanded snippet.
 xmap  <tab> :call UltiSnips#SaveLastVisualSelection()<CR>gvc
 
 "" vim-ipy
 " leader-e is mapped to running text objects, but since I never
 " wanna run till end of word(which is 'e'), but much more commonly to end of line...
+"" Run arbitrary text objects. The first one uses i unlike most of
+" of my nvim-ipy maps because I wanna run arbitrary text objects,
+" which conflict with the two letter mappings.
+nmap <silent> <leader>i <Plug>(IPy-RunOp)
+vmap <silent> <leader>i <Plug>(IPy-Run)
 nmap <silent> <leader>ee <Plug>(IPy-Run) 
 nmap <silent> <leader>ea <Plug>(IPy-RunAll)
-" Run arbitrary text objects
-nmap <silent> <leader>e <Plug>(IPy-RunOp)
-" Run in visual mode
-vmap <silent> <leader>e <Plug>(IPy-Run)
-
-
-" Run cell
 nmap <silent> <leader>ec <Plug>(IPy-RunCell)
-
-" Terminate kernel
 nmap <silent> <leader>eq <Plug>(IPy-Terminate)
-
-" (Re)start kernel
 nmap <silent> <leader>ei :IPython<CR>
-
-" Inspect variable under cursor. k cuz K means look up man page in vim.
 nmap <silent> <leader>ek <Plug>(IPy-WordObjInfo)
-
-" We use the IpyOmniFunc in mu-complete's chain, but it's synchronous.
-" This is async.
 imap <silent> <C-f> <Plug>(IPy-Complete)
 
-
-
-" Goyo. Distraction free writing.
-" No justification for key choice except that it's the shortest that's not yet taken.
-nnoremap <leader>z :call GoyoToggle()<CR>
 
 
 " Dispatch related shortcuts
@@ -353,7 +353,7 @@ nnoremap <Leader>lo :lopen<CR>
 nnoremap <Leader>lc :lclose<CR>
 
 " Reload config
-noremap <Leader>rr :source $MYVIMRC <bar> let &filetype=&filetype<CR>
+nnoremap <Leader>rr :source $MYVIMRC <bar> let &filetype=&filetype<CR>
 
 augroup MarkdownRelated
     au!
@@ -387,7 +387,9 @@ nmap <silent> <leader>tv :TestVisit<CR>
 tnoremap <C-p> <C-\><C-n>
 
 " ALE mappings
-nnoremap <Leader>ah :ALEDetail<CR>
+nnoremap <Leader>ah :ALEHover<CR>
+" ad is taken by ALEDocumentation
+nnoremap <Leader>aj :ALEDetail<CR>
 nnoremap <Leader>af :ALEFix<CR>
 nnoremap <Leader>ai :ALEInfo<CR>
 nnoremap <Leader>au :ALEFindReferences<CR>
@@ -398,7 +400,7 @@ nnoremap <Leader>at :ALEGoToTypeDefinition<CR>
 nnoremap <Leader>ar :ALERename<CR>
 " t for toggle
 nnoremap <leader>at :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<cr>
-inoremap <expr> <tab> pumvisible() ? "\<C-n>" : "<C-\><C-O>:ALEComplete<CR>"
+inoremap <expr> <tab> pumvisible() ? "\<C-n>" : "<C-x><C-o>"
 inoremap <expr> <s-tab> pumvisible() ? "\<C-p>" : "\<s-tab>"
 inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
@@ -430,5 +432,4 @@ let s:secondary_init_vim=expand('~/.secondary.init.vim')
 if filereadable(s:secondary_init_vim)
     execute 'source' s:secondary_init_vim
 endif
-
 
