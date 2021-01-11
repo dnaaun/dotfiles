@@ -220,7 +220,10 @@ fi
 # Taskwarrior 
 alias t=task
 complete -F _complete_alias t 
+alias tw=timew
+complete -F _complete_alias tw
 alias x=xsv
+complete -F _complete_alias x
 alias xs="xsv select"
 alias xh="xsv headers" 
 # lowercase

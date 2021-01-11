@@ -1,2 +1,4 @@
-*.venv/*
-*.git/*
+.venv/
+.git/
+.mypy_cache/
+.Session.vim

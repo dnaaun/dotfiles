@@ -73,6 +73,14 @@ snippet ba "\begin{align}" w
 ${2:}
 endsnippet
 
+# " clipboard quote. Wrap whatever is in the clipboard into a \begin{qutoe} bock
+snippet cq "\begin{quote}" w
+\begin{quote}
+	${1}`!v @+`
+\end{quote}
+endsnippet
+
+
 snippet bq "\begin{quote}" w
 \begin{quote}
 	${1:${VISUAL:}}

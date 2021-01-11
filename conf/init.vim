@@ -1,7 +1,5 @@
-"" Easy motion
-let g:EasyMotion_do_mapping=0 " no default mappings
-" nmap s <Plug>(easymotion-s2)
-" vmap s <Plug>(easymotion-s2)
+
+
 
 call plug#begin()
 Plug 'chriskempson/base16-vim'
@@ -45,15 +43,17 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'dkarter/bullets.vim',  { 'for': ['markdown'] }
 
     " Tpope makes great plugins.
-    Plug 'tpope/vim-commentary'
-    Plug 'tpope/vim-obsession'
     Plug 'tpope/vim-vinegar'
-    Plug 'tpope/vim-unimpaired'
     Plug 'tpope/vim-fugitive'
-    Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-dispatch'
-    " Vim sandwich, the generalized vim surround
-    Plug 'machakann/vim-sandwich'
+
+    " Editing text
+    Plug 'tommcdo/vim-ninja-feet'
+    Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-unimpaired'
+    Plug 'tpope/vim-obsession'
+    Plug 'tpope/vim-repeat'
+    Plug 'easymotion/vim-easymotion'
     
 
     " Colors and other niceties
@@ -77,6 +77,20 @@ else
     echomsg 'Tmp file: not loading some plugins'
 endif
 call plug#end()
+
+"" Easymotion
+let g:EasyMotion_do_mapping=0 " no default mappings
+map sw <Plug>(easymotion-wl)
+map sb <Plug>(easymotion-bl)
+map sW <Plug>(easymotion-Wl)
+map sB <Plug>(easymotion-Bl)
+map se <Plug>(easymotion-el)
+map sE <Plug>(easymotion-El)
+map s<Space>  <Plug>(easymotion-fl) 
+
+"" Surround.vim
+" This is because ys conflicts with easymotion
+let g:surround_no_mappings=1
 
 
 "" Vista.vim
@@ -113,14 +127,15 @@ let g:ale_virtualtext_delay = 0
 let g:ale_echo_cursor = 0 " Use echo for ALE errors
 let g:ale_lint_on_enter = 1
 set updatetime=200  " Trigger ALEHover quicker
-let g:ale_cursor_detail = 0
-let g:ale_hover_to_preview = 0
+let g:ale_cursor_detail = 0 " Show ale diagnostics regarding current line automatically with cursor changing lines
+let g:ale_hover_to_preview = 1
+" Using an off-master branch with this feature
+let g:ale_floating_preview = 1
+let g:ale_hover_to_floating_preview=0
 " Completion
 let g:ale_completion_enabled = 1
 let g:ale_completion_delay = 0
 let g:ale_completion_autoimport = 1
-" Using an off-master branch with this feature
-let g:ale_hover_to_floating_preview=1
 " Make ALE more readable
 highlight link ALEVirtualTextError Exception
 highlight link ALEError DiffDelete
@@ -166,61 +181,6 @@ let g:localvimrc_sandbox=0
 " Jedi takes over a bunch of key mappings if I don't do this
 let g:jedi#auto_initialization = 0
 " Set latex filetypes as tex, not plaintex
-
-"" Goyo and limelight
-let g:limelight_paragraph_span=5
-let g:limelight_bop = '^'
-let g:limelight_eop = '$'
-
-let g:goyo_height=100
-" Variable to keep track of Goyo state to facilitate toggling.
-" Just :Goyo would toggle, except that I want to read textwidth
-" dynamically (and thus do :exec Goyo &tw), which doesn't toggle.
-if ! exists('g:goyo_on')
-    let g:goyo_on = 0
-endif
-function! GoyoToggle()
-    if ! g:goyo_on
-        if &textwidth > 0 " If we're doing hard wrapping
-            " + 3 for good measure (aka error indicators from ALE)
-            execute 'Goyo ' &textwidth + 3 
-        else
-            Goyo
-        endif
-
-        let g:goyo_on = 1
-    else
-        Goyo!
-        let g:goyo_on = 0
-    endif
-endfunction
-nnoremap <silent> <leader>v :call GoyoToggle()<CR>
-
-function! s:goyo_enter()
-" Make Goyo make tmux panes dissapear
-  " if executable('tmux') && strlen($TMUX)
-    " silent !tmux set status off
-    " silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
-  " endif
-  set noshowmode
-  set noshowcmd
-  set scrolloff=999
-  Limelight 0.7
-endfunction
-
-function! s:goyo_leave()
-  " if executable('tmux') && strlen($TMUX)
-    " silent !tmux set status on
-    " silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
-  " endif
-  set showmode
-  set showcmd
-  set scrolloff=5
-  Limelight!
-endfunction
-
-autocmd! User GoyoEnter nested call <SID>goyo_enter()
-autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
 " Disable indenting lines more than necessary when typing :
 " This doens't work in ftplugin/python.vim or after/python.vim.
@@ -358,7 +318,7 @@ nnoremap <Leader>lo :lopen<CR>
 nnoremap <Leader>lc :lclose<CR>
 
 " Reload config
-nnoremap <Leader>rr :source $MYVIMRC <bar> let &filetype=&filetype<CR>
+nnoremap <Leader>rr :source $MYVIMRC <bar> let &filetype=&filetype <bar> LocalVimRC<CR>
 
 augroup MarkdownRelated
     au!
@@ -405,7 +365,36 @@ nnoremap <Leader>at :ALEGoToTypeDefinition<CR>
 nnoremap <Leader>ar :ALERename<CR>
 " t for toggle
 nnoremap <leader>at :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<cr>
-inoremap <expr> <tab> pumvisible() ? "\<C-n>" : "<C-x><C-o>"
+" inoremap <expr> <tab> pumvisible() ? "\<C-n>" : "<C-x><C-o>"
+
+
+" https://vi.stackexchange.com/questions/11476/
+fun! GetCharAtOffset(offset)
+ let l:offset = col('.') + a:offset - 1
+ if l:offset < 0
+     return ""
+ endif
+ let l:res = strcharpart(strpart(getline('.'), l:offset), 0, 1)
+ echom "CharAtOffset ='" . l:res . "'"
+  return l:res
+endfun
+
+
+function! WhenTabKeyPressed()
+    if pumvisible()
+        return "\<C-p>"
+    else
+        " \k uses &iskeyword
+        if GetCharAtOffset(-1) =~ '\k'
+            return "\<C-x>\<C-o>"
+        else
+            " TODO: This is a workaround. This should be result of pressing <tab> according to all the vars like expandtab, ...etc.
+            return "  " 
+        endif
+    endif
+endfunction 
+
+inoremap <expr> <tab> WhenTabKeyPressed()
 inoremap <expr> <s-tab> pumvisible() ? "\<C-p>" : "\<s-tab>"
 inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
@@ -431,10 +420,94 @@ nnoremap <Leader>gr :Gpull --rebase<CR>
 nnoremap <Leader>gp :Gpush<CR>
 nnoremap <Leader>gg :Git 
 
+"" Limelight
+let g:limelight_paragraph_span=5
+let g:limelight_bop = '^'
+let g:limelight_eop = '$'
+" When using fzf terminal splits, toggle Limelight.
+" This exists() trick below was taken by reading limelight src at
+" autoload/limelight.vim
+let s:ll_was_on=0
+function! s:fzf_enter()
+   let s:ll_was_on=exists("#limelight")
+   Limelight!
+   " Limelight listens to this autocmds to start doing things.
+   " This is also from the docs.
+   doautocmd CursorMoved
+endfunction
+
+function! s:fzf_leave()
+    echom 'filetype=' . json_encode(&filetype)
+    echom 'ss:ll_was_on=' json_encode(s:ll_was_on)
+    if &filetype == 'fzf' && s:ll_was_on
+        Limelight!!
+    endif
+endfunction
+
+
+augroup fzf_enter
+    au!
+    autocmd FileType fzf call <SID>fzf_enter()
+    autocmd TermClose * call <SID>fzf_leave()
+augroup END
+
+"" Goyo 
+let g:goyo_height=100
+" Variable to keep track of Goyo state to facilitate toggling.
+" Just :Goyo would toggle, except that I want to read textwidth
+" dynamically (and thus do :exec Goyo &tw), which doesn't toggle.
+if ! exists('g:goyo_on')
+    let g:goyo_on = 0
+endif
+function! GoyoToggle()
+    if ! g:goyo_on
+        if &textwidth > 0 " If we're doing hard wrapping
+            " + 3 for good measure (aka error indicators from ALE)
+            execute 'Goyo ' &textwidth + 3 
+        else
+            Goyo
+        endif
+
+        let g:goyo_on = 1
+    else
+        Goyo!
+        let g:goyo_on = 0
+    endif
+endfunction
+echom "about to do it"
+nmap <silent> <leader>v :call GoyoToggle()<CR>
+
+function! s:goyo_enter()
+" Make Goyo make tmux panes dissapear
+  " if executable('tmux') && strlen($TMUX)
+    " silent !tmux set status off
+    " silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+  " endif
+  set noshowmode
+  set noshowcmd
+  set scrolloff=999
+  Limelight
+endfunction
+
+function! s:goyo_leave()
+  " if executable('tmux') && strlen($TMUX)
+    " silent !tmux set status on
+    " silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+  " endif
+  set showmode
+  set showcmd
+  set scrolloff=5
+  Limelight!
+endfunction
+
+autocmd! User GoyoEnter nested call <SID>goyo_enter()
+autocmd! User GoyoLeave nested call <SID>goyo_leave()
+
 
 """ Allow a 'computer dependent' initialization
 let s:secondary_init_vim=expand('~/.secondary.init.vim')
 if filereadable(s:secondary_init_vim)
     execute 'source' s:secondary_init_vim
 endif
+
 

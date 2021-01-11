@@ -5,13 +5,18 @@ set conceallevel=2
 let g:tex_conceal='abdmg'
 hi Conceal ctermbg=none
 
+" Needs to be strictly less than the "columns" option
+" provided to latexindent.pl because latexindent.pl acts as if
+" "overflow" is set sometimes.
+setlocal textwidth=79
+
 " https://vi.stackexchange.com/questions/13080/setting-tab-to-2-spaces
-" On pressing tab, insert 4 spaces
+" On pressing tab, insert 2 spaces
 setlocal expandtab
-" show existing tab with 4 spaces width
+" show existing tab with 2 spaces width
 setlocal tabstop=2
 setlocal softtabstop=2
-" when indenting with '>', use 4 spaces width
+" when indenting with '>', use 2 spaces width
 setlocal shiftwidth=2
 
 " ALE Config
@@ -57,7 +62,11 @@ fun! TryUltiSnips()
 endf
 
 fun! TryOmni()
-  return g:ulti_expand_or_jump_res ? "" : "\<C-x>\<C-o>"
+  if g:ulti_expand_or_jump_res
+      return "" 
+  else
+      return WhenTabKeyPressed()
+  endif
 endf
 
 inoremap <plug>(TryUlti) <c-r>=TryUltiSnips()<cr>
