@@ -13,12 +13,12 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 _fzf_compgen_path() {
   echo "$1"
   # shellcheck disable=SC2086
-  command fdfind --type d --hidden "$1" 2>/dev/null
+  command fdfind --type f --hidden "$1" 2>/dev/null
 }
 _fzf_compgen_dir() {
   echo "$1"
   # shellcheck disable=SC2086
-  command $FZF_DEFAULT_COMMAND "$1" 2>/dev/null
+  command fdfind --type d --hidden "$1" 2>/dev/null
 }
 
 
