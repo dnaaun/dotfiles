@@ -13,6 +13,7 @@ let s:NOT_IN_TEMP_FILE =  !(expand('%') =~ s:temp_file_ptrn)
 
 if (s:NOT_IN_TEMP_FILE)
     Plug 'embear/vim-localvimrc'
+    Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 
    " Python
     Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
@@ -48,7 +49,6 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'tpope/vim-dispatch'
 
     " Editing text
-    Plug 'tommcdo/vim-ninja-feet'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
     Plug 'tpope/vim-obsession'
@@ -382,7 +382,7 @@ endfun
 
 function! WhenTabKeyPressed()
     if pumvisible()
-        return "\<C-p>"
+        return "\<C-n>"
     else
         " \k uses &iskeyword
         if GetCharAtOffset(-1) =~ '\k'

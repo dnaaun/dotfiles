@@ -2,59 +2,55 @@
 
 set -e
 
-function main() {
-  THIS_DIR="$(dirname "$0")"
-  THIS_DIR="$(readlink -f "$THIS_DIR")"
-  if [[ -z "$THIS_DIR" ]]; then
-          echo "Can't figure out what directory I'm in."
-          exit 1
-  fi
 
-  setup
+# Read cmd line args
+DRY_RUN_ECHO=""
+for i in "$@";do
+  case "$i" in
+    -d|--dry-run)
+      DRY_RUN_ECHO="echo"
+      shift
+      ;;
+  esac
+done
+
+main() {
+  
+  THIS_DIR="$(dirname "$0")"
+
+	if [[ -z "$THIS_DIR" ]]; then
+		echo "Can't determine the directory which this is getting called from."
+		echo "Probably has to do with how this script was invoked."
+	else
+		do_setup
+	fi
 }
 
-function setup() {
-  mkdir -p ~/.config/
+# The ${DRY_RUN_ECHO:+"$DRY_RUN_ECHO"} is to work around bash passing
+# an empty string as one of the arguments to xargs when DRY_RUN_ECHO
+# is empty.
 
-  echo "Setting up symlinks ..."
-  mkdir -p ~/.config/nvim 
-  rm -f ~/.config/nvim/init.vim
-  ln -s "$THIS_DIR/conf/init.vim" ~/.config/nvim/init.vim
+do_setup() {
+  # Make directory structure
+  find . -type d |
+    grep -v '/.git.*' |
+    sed 's+^./++' |
+    xargs -d\\n -I{} \
+     ${DRY_RUN_ECHO:+"$DRY_RUN_ECHO"} mkdir -p "$HOME/{}"
 
-  mkdir -p ~/.config/i3 
-  rm -f ~/.config/i3/config
-  ln -s "$THIS_DIR/conf/i3_config" ~/.config/i3/config
+  # Delete existing files
+  find . -type f |
+    grep -Ev '/.git|README|setup.sh' |
+    sed 's+./++' |
+    xargs -I{} \
+     ${DRY_RUN_ECHO:+"$DRY_RUN_ECHO"} rm -f "$HOME/{}"
 
-  mkdir -p ~/.config/sway 
-  rm -f ~/.config/sway/config
-  ln -s "$THIS_DIR/conf/i3_config" ~/.config/sway/config
-
-
-  rm -f ~/.bashrc
-  ln -s "$THIS_DIR/conf/bashrc" ~/.bashrc
-  rm -f ~/.tmux.conf
-  ln -s "$THIS_DIR/conf/tmux.conf" ~/.tmux.conf
-
-  mkdir -p ~/.config/mypy 
-  rm -f ~/.config/mypy/config
-  ln -s "$THIS_DIR/conf/mypy_config" ~/.config/mypy/config
-
-  rm -f ~/.config/flake8
-  ln -s "$THIS_DIR/conf/flake8" ~/.config/flake8
-
-  # Setup global gitignore
-  git config --global core.excludesfile ~/git/dotfiles/conf/gitignore
-
-  echo "Setting up vim plug  ... "
-  curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-  echo "Setting up fzf ..."
-  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-  ~/.fzf/install
-
-  # TODO: i3blocks.conf
-  echo "Done! Start a new shell, restart tmux, for new config files to take effect."
+  # Symlink the files in this dir
+  find . -type f |
+    grep -Ev '/.git|README|setup.sh' |
+    sed 's+./++' |
+    xargs -I{} \
+      ${DRY_RUN_ECHO:+"$DRY_RUN_ECHO"} ln -s "/home/davidat/git/dotfiles/{}" "$HOME/{}"
 }
 
 main

@@ -2,3 +2,4 @@
 .git/
 .mypy_cache/
 .Session.vim
+venvs/

@@ -1,7 +1,0 @@
-# Fzf uses rg. Most of the time, I don't want to find files with the following extensions
-*.jpg
-*.png
-*.jsonl
-
-# My virtual environments are usually named:
-venvs/
