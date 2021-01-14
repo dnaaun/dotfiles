@@ -20,6 +20,9 @@ endif
 "" Ale
 let b:ale_fixers = { 'python': ['black']}
 let b:ale_linters = [ 'mypy', 'pyright' ]
+" mypy is too slow. Pyright is not affected by this cuz it's an LSP.
+let b:ale_lint_on_text_changed = 'never'
+let b:ale_lint_on_insert_leave = 0
 " let b:ale_python_mypy_options="--no-pretty --show-error-codes --allow-redefinition" " Mypy bugs out with allennlp
 
 "" Mappings

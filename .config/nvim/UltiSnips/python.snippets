@@ -1,7 +1,12 @@
-snippet log "setup logging"
+snippet log "setup logging" b
 import logging
 logger = logging.getLogger(__name__)
 endsnippet
+
+snippet ann "from __future__ import annotations" b
+from __future__ import annotations
+endsnippet
+
 
 snippet withf "open file in the context-manager way"
 with ${1:path}.open(${2:}) as ${3:fb}:

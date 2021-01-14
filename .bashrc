@@ -6,19 +6,15 @@ case $- in
 esac
 
 ## Fzf + Rg
-export FZF_DEFAULT_COMMAND="rg --files --hidden --ignore-global"
+export FZF_DEFAULT_COMMAND="fdfind --type f --hidden"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # Fzf completion when typing in ** doesn't use $FZF_DEFAULT_COMMAND. The below
 # is necessary.
 _fzf_compgen_path() {
-  echo "$1"
-  # shellcheck disable=SC2086
-  command fdfind --type f --hidden "$1" 2>/dev/null
+  command fdfind . --hidden "$1" 2>/dev/null
 }
 _fzf_compgen_dir() {
-  echo "$1"
-  # shellcheck disable=SC2086
-  command fdfind --type d --hidden "$1" 2>/dev/null
+  command fdfind . --type d --hidden "$1" 2>/dev/null
 }
 
 
@@ -171,9 +167,7 @@ set_ps1() {
 
     local Red='\[\e[0;31m\]'
     local Gre='\[\e[0;32m\]'
-    local BYel='\[\e[1;33m\]'
     local BBlu='\[\e[1;34m\]'
-    local Pur='\[\e[0;35m\]'
 
     PS1="${Gre}$VENV\u@\h:"
     if [ $EXIT != 0 ]; then
@@ -186,18 +180,29 @@ set_ps1() {
 }
 
 auto_change_venv() {
-  if [ ! -d "$PWD/.venv" ]; then #
+  # Check all parents from $PWD until /
+  parent="$PWD"
+  found_venv=0
+  while  ((${#parent} > 1 )); do
+    if [ -d "$parent/.venv" ]; then
+      found_venv=1
+      break
+    fi
+    parent=${parent%/*} # (shortest match) parameter subsiution ${param%word}
+  done
+  if [ $found_venv = 0 ]; then
     return
   fi
   if [ -n "$VIRTUAL_ENV" ]; then
     deactivate;
   fi;
 
-  source $PWD/.venv/bin/activate;
+  # shellcheck disable=SC1090
+  source "$parent/.venv/bin/activate";
 }
 
 __prompt_command() {
-  set_ps1 # This needs to be first
+  set_ps1 # This needs to be first to change color based on return value
   auto_change_venv
 }
 

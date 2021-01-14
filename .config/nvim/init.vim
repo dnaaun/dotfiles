@@ -47,6 +47,7 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'tpope/vim-vinegar'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-dispatch'
+    Plug 'tpope/vim-scriptease'
 
     " Editing text
     Plug 'tpope/vim-surround'
@@ -125,7 +126,7 @@ let g:ale_echo_msg_format = '%linter%:%severity%:%code:%%s' " Nice to know which
 let g:ale_virtualtext_cursor = 1 " Show errors in virtualtext
 let g:ale_virtualtext_delay = 0
 let g:ale_echo_cursor = 0 " Use echo for ALE errors
-let g:ale_lint_on_enter = 1
+let g:ale_lint_on_enter = 0
 set updatetime=200  " Trigger ALEHover quicker
 let g:ale_cursor_detail = 0 " Show ale diagnostics regarding current line automatically with cursor changing lines
 let g:ale_hover_to_preview = 1
@@ -210,7 +211,7 @@ let session_file=".Session.vim"
 " https://github.com/tpope/vim-obsession/issues/17
 augroup ObsessionGroup
   autocmd!
-  " When opening a file, start recording the Vim session with its tabs and splits.
+  " When opening a file, start recording the Vim session.
   " If Vim is called without arguments and there is already a session file,
   " source it and record the session.
   " Checking 'modified' avoids recording a session when reading from stdin.
@@ -223,7 +224,7 @@ augroup ObsessionGroup
       \   if !argc() && filereadable(session_file) |
       \   execute "source" session_file |
       \   elseif empty(v:this_session) |
-      \     execute "Obsession" session_file|
+      \     execute "Obsession" session_file |
       \   endif |
       \ endif
 augroup END
@@ -325,6 +326,8 @@ augroup MarkdownRelated
 	au FileType markdown nmap <Leader>m <Plug>MarkdownPreviewToggle<CR>
 augroup END
 
+" Expand * to do cross file search when prefixed by <leader>f
+nnoremap <Leader>f* :execute 'Rg ' . expand('<cword>')<CR> 
 " second f for search in directory of current *F*ile
 nnoremap <Leader>ff :execute 'Files' . expand('%:p:h')<CR> 
 " c for current dir
@@ -363,8 +366,8 @@ nnoremap <Leader>aa :ALECodeAction<CR>
 nnoremap <Leader>ad :ALEGoToDefinition<CR>
 nnoremap <Leader>at :ALEGoToTypeDefinition<CR>
 nnoremap <Leader>ar :ALERename<CR>
-" t for toggle
-nnoremap <leader>at :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<cr>
+" restart ('quit' is the mnemonic. Go figure.)
+nnoremap <leader>aq :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<cr>
 " inoremap <expr> <tab> pumvisible() ? "\<C-n>" : "<C-x><C-o>"
 
 
