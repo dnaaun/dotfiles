@@ -1,6 +1,3 @@
-
-
-
 call plug#begin()
 Plug 'chriskempson/base16-vim'
 Plug 'christoomey/vim-tmux-navigator'
@@ -78,6 +75,10 @@ else
     echomsg 'Tmp file: not loading some plugins'
 endif
 call plug#end()
+
+"" Netrw sort by time in descending order
+let g:netrw_sort_by='time'
+let g:netrw_sort_direction='reverse'
 
 "" Easymotion
 let g:EasyMotion_do_mapping=0 " no default mappings
@@ -252,7 +253,6 @@ set colorcolumn=+1
 "" Netrw
 " Allow netrw to remove non-empty local directories
 let g:netrw_localrmdir='rm -r'
-
 " Make netrw moving work 
 let g:netrw_keepdir=1
 
@@ -330,6 +330,7 @@ augroup END
 nnoremap <Leader>f* :execute 'Rg ' . expand('<cword>')<CR> 
 " second f for search in directory of current *F*ile
 nnoremap <Leader>ff :execute 'Files' . expand('%:p:h')<CR> 
+nnoremap <Leader>fv :Vista finder fzf:ale<CR> 
 " c for current dir
 nnoremap <Leader>fc :Files<CR> 
 nnoremap <Leader>fr :Rg<CR>
