@@ -50,7 +50,7 @@ do_setup() {
     grep -Ev '/.git|README|setup.sh' |
     sed 's+./++' |
     xargs -I{} \
-      ${DRY_RUN_ECHO:+"$DRY_RUN_ECHO"} ln -s "/home/davidat/git/dotfiles/{}" "$HOME/{}"
+      ${DRY_RUN_ECHO:+"$DRY_RUN_ECHO"} ln -s "$HOME/git/dotfiles/{}" "$HOME/{}"
 }
 
 main
