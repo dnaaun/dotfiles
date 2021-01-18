@@ -6,12 +6,10 @@
 defaultIndent: "  "
 modifyLineBreaks:
   textWrapOptions:
-    # For some reason, this has the effect of a max width of 79
-    columns: 80
-    huge: wrap
+    columns: 70
     unexpand: 0
     tabstop: 2
-    perCodeBlockBasis: 0
+    perCodeBlockBasis: 1
     all: 1
     removeParagraphLineBreaks:
       all: 1

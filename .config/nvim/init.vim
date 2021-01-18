@@ -10,7 +10,6 @@ let s:NOT_IN_TEMP_FILE =  !(expand('%') =~ s:temp_file_ptrn)
 
 if (s:NOT_IN_TEMP_FILE)
     Plug 'embear/vim-localvimrc'
-    Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 
    " Python
     Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
@@ -39,6 +38,7 @@ if (s:NOT_IN_TEMP_FILE)
                 \ 'do': { -> mkdp#util#install() },
                 \ }
     Plug 'dkarter/bullets.vim',  { 'for': ['markdown'] }
+
 
     " Tpope makes great plugins.
     Plug 'tpope/vim-vinegar'
@@ -273,13 +273,18 @@ let g:vim_markdown_conceal = 0
 let mapleader = ","
 let maplocalleader = ","
 
+" WHen in visual/select/operator mode, I want searching with / to be an inclusive
+" motion. This is acheived by doing /pattern/e, but I don't wanna have to type
+" that /e everytime so:
+vnoremap / //e<Left><Left>
+onoremap / //e<Left><Left>
 
 " ]s means go to next spelling error.
 nnoremap  <Leader>s ]s1z=<C-X><C-S>
 
 " https://castel.dev/post/lecture-notes-1/#correcting-spelling-mistakes-on-the-fly
 " Insert mode, correct last error.
-inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
+inoremap <C-s> <c-g>u<Esc>[s1z=`]a<c-g>u
 
 " Inspired by unimpaired, jump to the last location on jumplist
 " that is NOT in the current file
@@ -328,6 +333,7 @@ augroup END
 
 " Expand * to do cross file search when prefixed by <leader>f
 nnoremap <Leader>f* :execute 'Rg ' . expand('<cword>')<CR> 
+vnoremap <Leader>f y:execute 'Rg ' . @0<CR> 
 " second f for search in directory of current *F*ile
 nnoremap <Leader>ff :execute 'Files' . expand('%:p:h')<CR> 
 nnoremap <Leader>fv :Vista finder fzf:ale<CR> 
@@ -478,7 +484,6 @@ function! GoyoToggle()
         let g:goyo_on = 0
     endif
 endfunction
-echom "about to do it"
 nmap <silent> <leader>v :call GoyoToggle()<CR>
 
 function! s:goyo_enter()
@@ -507,6 +512,13 @@ endfunction
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
+"" vim-tmux-navigator
+" Map the keys used in normal mode for tmux/vim navigation in insert mode 
+" as well
+inoremap <C-j> <Esc>:TmuxNavigateDown<CR>
+inoremap <C-k> <Esc>:TmuxNavigateUp<CR>
+inoremap <C-h> <Esc>:TmuxNavigateLeft<CR>
+inoremap <C-l> <Esc>:TmuxNavigateRight<CR>
 
 """ Allow a 'computer dependent' initialization
 let s:secondary_init_vim=expand('~/.secondary.init.vim')

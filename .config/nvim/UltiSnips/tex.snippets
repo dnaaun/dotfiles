@@ -78,11 +78,13 @@ endsnippet
 # it being updated when the clipboard is updated.
 snippet cq "\begin{quote}" w
 \begin{quote}
-	${1}`!p
+	`!p
 if not snip.c:
   snip.rv = vim.eval('@+')
 `
 \end{quote}
+
+${1}
 endsnippet
  
 
@@ -90,6 +92,7 @@ snippet bq "\begin{quote}" w
 \begin{quote}
 	${1:${VISUAL:}}
 \end{quote}
+
 ${2:}
 endsnippet
 
