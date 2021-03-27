@@ -22,13 +22,14 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'vim-test/vim-test'
     Plug 'liuchengxu/vista.vim'
     Plug 'SirVer/ultisnips'
+    Plug 'wellle/targets.vim' " text objects on steriods
 
     " Frontend
-    Plug 'pangloss/vim-javascript', {'for': ['javascript'] }
-    Plug 'AndrewRadev/tagalong.vim', {'for': ['html'] }
-    Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'typescriptreact'] }
-    Plug 'peitalin/vim-jsx-typescript', { 'for': ['typescript', 'typescriptreact'] }
-    Plug 'mattn/emmet-vim', { 'for': ['html'] }
+    Plug 'pangloss/vim-javascript', {'for': ['javascript'] } " Trusted the internet's recommendations. Not sure if I actually need it
+    Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'typescriptreact'] } " Trusted the internet's recommendations. Not sure if I actually need it
+    Plug 'maxmellon/vim-jsx-pretty' , { 'for': ['typescript', 'typescriptreact'] } " Trusted the internet's recommendations. Not sure if I actually need it.
+    Plug 'Valloric/MatchTagAlways', { 'for': ['typescript', 'typescriptreact'] } " shows the matching tag of the tag under cursor
+    Plug 'skammer/vim-css-color', { 'for': ['css'] } " highlights color codes with the color
 
     " Markdown/writing
     Plug 'godlygeek/tabular', { 'for': ['markdown'] }
@@ -76,6 +77,15 @@ else
 endif
 call plug#end()
 
+"" Match tag always
+let g:mta_filetypes = {
+    \ 'html' : 1,
+    \ 'xhtml' : 1,
+    \ 'xml' : 1,
+    \ 'jinja' : 1,
+    \ 'typescriptreact' : 1,
+    \}
+
 "" Netrw sort by time in descending order
 let g:netrw_sort_by='time'
 let g:netrw_sort_direction='reverse'
@@ -92,7 +102,7 @@ map s<Space>  <Plug>(easymotion-fl)
 
 "" Surround.vim
 " This is because ys conflicts with easymotion
-let g:surround_no_mappings=1
+" let g:surround_no_mappings=1
 
 
 "" Vista.vim
@@ -515,10 +525,10 @@ autocmd! User GoyoLeave nested call <SID>goyo_leave()
 "" vim-tmux-navigator
 " Map the keys used in normal mode for tmux/vim navigation in insert mode 
 " as well
-inoremap <C-j> <Esc>:TmuxNavigateDown<CR>
-inoremap <C-k> <Esc>:TmuxNavigateUp<CR>
-inoremap <C-h> <Esc>:TmuxNavigateLeft<CR>
-inoremap <C-l> <Esc>:TmuxNavigateRight<CR>
+inoremap <C-j> <C-\><C-o>:TmuxNavigateDown<CR>
+inoremap <C-k> <C-\><C-o>:TmuxNavigateUp<CR>
+inoremap <C-h> <C-\><C-o>:TmuxNavigateLeft<CR>
+inoremap <C-l> <C-\><C-o>:TmuxNavigateRight<CR>
 
 """ Allow a 'computer dependent' initialization
 let s:secondary_init_vim=expand('~/.secondary.init.vim')

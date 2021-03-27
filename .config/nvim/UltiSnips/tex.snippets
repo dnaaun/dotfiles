@@ -25,6 +25,14 @@ def math():
 		return False
 endglobal
 
+snippet h "\href{}{}" w
+\href{${1:${VISUAL:www.example.com}}}{${2:link}}
+endsnippet
+
+snippet t "\text{}" w
+\text{${1:some text}}
+endsnippet
+
 snippet t "\text{}" w
 \text{${1:some text}}
 endsnippet
@@ -102,6 +110,12 @@ snippet bb "\mathbb{}"
 endsnippet
 
 context "math()"
+snippet bi "binom" i
+\binom{${1:n}, ${2:k}}
+endsnippet
+
+
+context "math()"
 snippet b "\mathbf{}" i
 \mathbf{${1:${VISUAL:}}}${2:}
 endsnippet
@@ -121,6 +135,7 @@ endsnippet
 snippet l "list item" w
 \item ${1:${VISUAL}}
 endsnippet
+
 
 snippet se "\section*{}" w
 \section{${1:${VISUAL:}}}
@@ -146,6 +161,7 @@ else:
     snip.rv = ''
 `$2
 endsnippet
+
 
 # Add some vertical space
 snippet vs "\vspace{2cm}" bw
