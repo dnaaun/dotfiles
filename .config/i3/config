@@ -38,10 +38,11 @@ bindsym $mod+Return exec gnome-terminal
 bindsym $mod+Shift+q kill
 
 # start rofi (a launcher) with ssh and app options
-bindsym $mod+d exec rofi -modi combi -show combi -combi-modi "drun#ssh"
+bindsym $mod+d exec --no-startup-id rofi -modi combi -show combi -combi-modi "drun#ssh" -run-shell-command '{cmd}'
+bindsym $mod+Shift+d exec --no-startup-id rofi -show drun -run-shell-command '{cmd}'
 
 # Start custom script in dotfiles/bin/ to find files
-bindsym $mod+space exec ~/git/dotfiles/bin/rofi_search.sh
+bindsym $mod+space exec ~/git/dotfiles/.local/bin/rofi_search.sh
 
 # Switch windows with rofi
 bindsym $mod+Tab exec rofi -modi window -show window
@@ -67,7 +68,6 @@ bindsym $mod+Shift+h move left
 bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
-
 
 # split in horizontal orientation
 # NOTE: Changed to b to be able to keep h for vim like movements
