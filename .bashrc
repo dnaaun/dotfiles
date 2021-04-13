@@ -152,31 +152,26 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 # Color prompt according to exit code: https://stackoverflow.com/a/16715681
 PROMPT_COMMAND=__prompt_command # Func to gen PS1 after CMDs
 
-# https://tldp.org/HOWTO/Xterm-Title-4.html
-ppwd () 
-{ 
-    echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"
-}
 
 set_ps1() {
     local EXIT="$?"             # This needs to be first
-    VENV="\$(virtualenv_info)";
+     
+    # Green color code
+    local Gre='\[\e[0;32m\]'
 
+    VENV="\$(virtualenv_info)"; 
+    PS1="${Gre}$VENV\u@\h:"
 
     local RCol='\[\e[0m\]'
 
     local Red='\[\e[0;31m\]'
-    local Gre='\[\e[0;32m\]'
     local BBlu='\[\e[1;34m\]'
 
-    PS1="${Gre}$VENV\u@\h:"
     if [ $EXIT != 0 ]; then
         PS1+="${Red}\w\$ ${RCol}"      # Add red if exit code non 0
     else
         PS1+="${BBlu}\w\$ ${RCol}"
     fi
-    PS1="$PS1"
-    ppwd
 }
 
 auto_change_venv() {
@@ -213,13 +208,14 @@ export EDITOR=nvim
 # Define a shortcut to copy to clipboard
 alias copy="xclip -selection clipboard"
 
+# DISABLED: Create / go to tmux session on launch.
 # Attach to "def" (for default) tmux session if it already exists
-tmux attach -t def &> /dev/null
+# tmux attach -t def &> /dev/null
 
 # Create a session if not
-if [[ $? != 0 && ! $TERM =~ screen ]]; then
-    tmux new -s def
-fi
+# if [[ $? != 0 && ! $TERM =~ screen ]]; then
+    # tmux new -s def
+# fi
 
 ## Aliases
 # Taskwarrior 
