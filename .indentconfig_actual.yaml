@@ -6,6 +6,7 @@
 defaultIndent: "  "
 modifyLineBreaks:
   textWrapOptions:
+    huge: "overflow"  # Don't split long words when wrapping
     columns: 70
     unexpand: 0
     tabstop: 2
@@ -21,6 +22,7 @@ modifyLineBreaks:
     BodyStartsOnOwnLine: 1
     EndStartsOnOwnLine: 1
     EndFinishesWithLineBreak: 1
+    verbatim: 0
     quote:
       BeginStartsOnOwnLine: 4
       BodyStartsOnOwnLine: 1

@@ -13,14 +13,14 @@ if (s:NOT_IN_TEMP_FILE)
 
    " Python
     Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
-    Plug 'bfredl/nvim-ipy', { 'for': ['python'] }
+    Plug 'bfredl/nvim-ipy', { 'for': ['python'], 'do': ':UpdateRemotePlugins' }
     Plug 'jeetsukumaran/vim-pythonsense', { 'for': ['python'] }
     Plug 'tartansandal/vim-compiler-pytest', { 'for': ['python'] }
 
     " General coding
     Plug '$HOME/git/ale'
-    Plug 'vim-test/vim-test'
-    Plug 'liuchengxu/vista.vim'
+    Plug 'vim-test/vim-test', { 'for': ['python'] }
+    Plug 'liuchengxu/vista.vim', { 'for': ['python'] }
     Plug 'SirVer/ultisnips'
     Plug 'wellle/targets.vim' " text objects on steriods
 
@@ -32,7 +32,7 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'skammer/vim-css-color', { 'for': ['css'] } " highlights color codes with the color
 
     " Markdown/writing
-    Plug 'godlygeek/tabular', { 'for': ['markdown'] }
+    " Plug 'godlygeek/tabular', { 'for': ['markdown'] }
     Plug 'plasticboy/vim-markdown', { 'for': ['markdown'] }
     Plug 'iamcco/markdown-preview.nvim', {
                 \ 'for': ['markdown'],
@@ -40,12 +40,10 @@ if (s:NOT_IN_TEMP_FILE)
                 \ }
     Plug 'dkarter/bullets.vim',  { 'for': ['markdown'] }
 
-
     " Tpope makes great plugins.
     Plug 'tpope/vim-vinegar'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-dispatch'
-    Plug 'tpope/vim-scriptease'
 
     " Editing text
     Plug 'tpope/vim-surround'
@@ -54,7 +52,6 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'tpope/vim-repeat'
     Plug 'easymotion/vim-easymotion'
     
-
     " Colors and other niceties
     Plug '$HOME/git/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
@@ -68,10 +65,7 @@ if (s:NOT_IN_TEMP_FILE)
     " Fzf and file manager
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
-    Plug 'Shougo/defx.nvim',  { 'do': ':UpdateRemotePlugins' }
 
-    " My own touches
-    Plug '$HOME/git/dotfiles/conf/david.vim'
 else
     echomsg 'Tmp file: not loading some plugins'
 endif
@@ -272,7 +266,9 @@ set conceallevel=2
 let g:vim_markdown_conceal = 1
 
 " Markdown fenced languages support
-let g:markdown_fenced_languages = ['json', 'javascript', 'html', 'python', 'bash=sh']
+" Thanks to https://thoughtbot.com/blog/profiling-vim, I now know that the following is
+" what causes slow open times for markdown files.
+" let g:markdown_fenced_languages = ['json', 'javascript', 'html', 'python', 'bash=sh']
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
 
@@ -326,6 +322,60 @@ imap <silent> <C-f> <Plug>(IPy-Complete)
 nnoremap <Leader>qo :copen<CR>
 nnoremap <Leader>qc :cclose<CR>
 
+
+" function! IsAhead(first, second)
+"     if type(a:first) == v:t_dict
+"         let l:first = [ a:first["lnum"], a:first["col"] ]
+"     else
+"         let l:first = a:first
+"     endif
+"     if type(a:second) == v:t_dict
+"         let l:second = [ a:second["lnum"], a:second["col"] ]
+"     else
+"         let l:second = a:second
+"     endif
+"     if ( (l:first[0] > l:second[0]) || l:first[0] == l:second[0] && l:first[1] > l:second[1] )
+"         return 1
+"     elseif ( l:first[0] == l:second[0] && l:first[1] == l:second[1] )
+"         return 0
+"     else
+"         return -1
+"     endif
+" endfunction
+" 
+" 
+" " Vim-unimpaired maps ]l and [l to :lprev and :lnext, but 
+" " :lprev and :lnext are relative to an internal marker that is
+" " initiated to 1 every time the loclist is populated. 
+" " I want ]l and [l to be relative to the current line, such that
+" " ]l jumps to the closest location list item after/below cursor, 
+" " and analogously for [l.
+" function! LoclistRelative(ahead)
+"     let [l:_, l:curlnum, l:curcol; l:_] = getcurpos()
+"     let l:loclist = getloclist(0, ['lnum', 'col'])
+"     if empty(l:loclist)
+"         return
+"     endif
+" 
+"     let l:curloc = [l:curlnum, l:curcol]
+" 
+"     " Binary search for loc
+"     let [l:low, l:high] = [0, len(l:loclist)]
+" 
+"     while 1
+"         " Below condition means we've found the closest thing
+"         if l:low == l:high - 1
+"             if a:ahead
+"                 echo l:loclist[l:high]
+"             else
+"                 echo l:loclist[l:low]
+" 
+"     if l:low == l:high 
+"         if IsAhead(l:loclist[l:low], l:curloc)
+"             " This confirms the binary search has narrowed down
+"             
+" endfunction
+" 
 " make using compiler in bg
 nnoremap m<CR>  :Make!<CR>
 

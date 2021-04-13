@@ -19,7 +19,7 @@ endif
 
 "" Ale
 let b:ale_fixers = { 'python': ['black']}
-let b:ale_linters = [ 'mypy', 'pyright' ]
+let b:ale_linters = [  'pyright' ]
 " mypy is too slow. Pyright is not affected by this cuz it's an LSP.
 let b:ale_lint_on_text_changed = 'never'
 let b:ale_lint_on_insert_leave = 0
