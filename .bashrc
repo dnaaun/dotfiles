@@ -139,6 +139,10 @@ function virtualenv_info(){
     if [[ -n "$VIRTUAL_ENV" ]]; then
         # Strip out the path and just leave the env name
         venv="${VIRTUAL_ENV##*/}"
+        
+        # Strip out everything after the first hyphen.
+        # Poetry creates names with random strings after a hyphen to make things unique.
+        venv=${venv%%-*}
     else
         # In case you don't have one activated
         venv=''
@@ -185,13 +189,16 @@ auto_change_venv() {
     fi
     parent=${parent%/*} # (shortest match) parameter subsiution ${param%word}
   done
+
+  # TODO: If checking whether 'deactivate' is actually 
+  # valid right now would be more efficient, we should do it.
+  deactivate  > /dev/null 2>&1
+
   if [ $found_venv = 0 ]; then
     return
   fi
-  if [ -n "$VIRTUAL_ENV" ]; then
-    deactivate;
-  fi;
 
+  
   # shellcheck disable=SC1090
   source "$parent/.venv/bin/activate";
 }
