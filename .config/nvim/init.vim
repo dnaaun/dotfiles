@@ -1,3 +1,4 @@
+
 call plug#begin()
 Plug 'chriskempson/base16-vim'
 Plug 'christoomey/vim-tmux-navigator'
@@ -10,10 +11,11 @@ let s:NOT_IN_TEMP_FILE =  !(expand('%') =~ s:temp_file_ptrn)
 
 if (s:NOT_IN_TEMP_FILE)
     Plug 'embear/vim-localvimrc'
+    Plug 'machakann/vim-highlightedyank'
 
    " Python
     Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
-    Plug 'bfredl/nvim-ipy', { 'for': ['python'], 'do': ':UpdateRemotePlugins' }
+    " Plug 'bfredl/nvim-ipy', { 'for': ['python'], 'do': ':UpdateRemotePlugins' }
     Plug 'jeetsukumaran/vim-pythonsense', { 'for': ['python'] }
     Plug 'tartansandal/vim-compiler-pytest', { 'for': ['python'] }
 
@@ -21,8 +23,9 @@ if (s:NOT_IN_TEMP_FILE)
     Plug '$HOME/git/ale'
     Plug 'vim-test/vim-test', { 'for': ['python'] }
     Plug 'liuchengxu/vista.vim', { 'for': ['python'] }
-    Plug 'SirVer/ultisnips'
+    Plug 'SirVer/ultisnips', { 'commit': '96026a4df27899b9e4029dd3b2977ad2ed819caf' }
     Plug 'wellle/targets.vim' " text objects on steriods
+    Plug 'urbainvaes/vim-ripple' " Send code to REPLs easily
 
     " Frontend
     Plug 'pangloss/vim-javascript', {'for': ['javascript'] } " Trusted the internet's recommendations. Not sure if I actually need it
@@ -50,7 +53,6 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'tpope/vim-unimpaired'
     Plug 'tpope/vim-obsession'
     Plug 'tpope/vim-repeat'
-    Plug 'easymotion/vim-easymotion'
     
     " Colors and other niceties
     Plug '$HOME/git/vim-airline'
@@ -70,6 +72,29 @@ else
     echomsg 'Tmp file: not loading some plugins'
 endif
 call plug#end()
+
+"" vim-ripple
+" The python one is strongly informed by https://github.com/urbainvaes/vim-ripple/issues/20
+let g:ripple_repls = {
+            \ 'python': ['ipython', "\<c-u>\<esc>[200~", "\<esc>[201~\<cr>", 1]
+            \}
+
+let g:ripple_enable_mappings=0
+" Use whatever python3 virtualenv is currently activated.
+" Means I have to install pynvim in every venv, but makes life easier.
+let g:python3_host_prog=substitute(system("which python3"), "\n", '', 'g')
+
+"" Vim-repl
+"" https://github.com/sillybun/vim-repl#setting
+" Check if we're in a venv. g:python3_host_prog should be set
+" to the executable from the venv already from the line above.
+" let s:venv_activate_path = substitute(g:python3_host_prog, 'python$', 'activate')
+" if filereadable()
+    " let g:repl_python_pre_launch_command = 'source "
+" Choose the repl program by filetype
+let g:repl_program = { 
+            \ 'python' : ['ptpython']
+            \ }
 
 "" Match tag always
 let g:mta_filetypes = {
@@ -152,9 +177,6 @@ augroup HoverAfterComplete
     autocmd User ALECompletePost ALEHover                                       
 augroup END
 
-" Use whatever python3 virtualenv is currently activated.
-" Means I have to install pynvim in every venv, but makes life easier.
-let g:python3_host_prog=substitute(system("which python3"), "\n", '', 'g')
 
 "" Ultisnips
 let g:UltiSnipsExpandTrigger = "<A-e>"
@@ -162,8 +184,8 @@ let g:UltiSnipsJumpForwardTrigger = "<A-f>"
 let g:UltiSnipsJumpBackwardTrigger = "<A-b>"
 
 "" nvim-ipy
-let g:nvim_ipy_perform_mappings = 0
-let g:ipy_celldef = '\v^\s*##[^#]*$' " Ipython cell boundary line regex.
+" let g:nvim_ipy_perform_mappings = 0
+" let g:ipy_celldef = '\v^\s*##[^#]*$' " Ipython cell boundary line regex.
 
 set nohlsearch " Don't higlight all matches
 set incsearch " Incremental search highlight
@@ -299,21 +321,33 @@ inoremap <C-s> <c-g>u<Esc>[s1z=`]a<c-g>u
 " integrate the visual selection into an expanded snippet.
 xmap  <tab> :call UltiSnips#SaveLastVisualSelection()<CR>gvc
 
+" Vim-ripple
+" Open repl
+nmap <leader>ro <Plug>(ripple_open_repl)
+" Send  text contained in next motion to repl
+nmap <leader>r <Plug>(ripple_send_motion)
+" In select mode, send selection
+xmap <leader>r <Plug>(ripple_send_selection)
+" Send line. Two r's to make it simple.
+nmap <leader>rr <Plug>(ripple_send_line)
+
+
+
 "" vim-ipy
 " leader-e is mapped to running text objects, but since I never
 " wanna run till end of word(which is 'e'), but much more commonly to end of line...
 "" Run arbitrary text objects. The first one uses i unlike most of
 " of my nvim-ipy maps because I wanna run arbitrary text objects,
 " which conflict with the two letter mappings.
-nmap <silent> <leader>i <Plug>(IPy-RunOp)
-vmap <silent> <leader>i <Plug>(IPy-Run)
-nmap <silent> <leader>ee <Plug>(IPy-Run) 
-nmap <silent> <leader>ea <Plug>(IPy-RunAll)
-nmap <silent> <leader>ec <Plug>(IPy-RunCell)
-nmap <silent> <leader>eq <Plug>(IPy-Terminate)
-nmap <silent> <leader>ei :IPython<CR>
-nmap <silent> <leader>ek <Plug>(IPy-WordObjInfo)
-imap <silent> <C-f> <Plug>(IPy-Complete)
+" nmap <silent> <leader>i <Plug>(IPy-RunOp)
+" vmap <silent> <leader>i <Plug>(IPy-Run)
+" nmap <silent> <leader>ee <Plug>(IPy-Run) 
+" nmap <silent> <leader>ea <Plug>(IPy-RunAll)
+" nmap <silent> <leader>ec <Plug>(IPy-RunCell)
+" nmap <silent> <leader>eq <Plug>(IPy-Terminate)
+" nmap <silent> <leader>ei :IPython<CR>
+" nmap <silent> <leader>ek <Plug>(IPy-WordObjInfo)
+" imap <silent> <C-f> <Plug>(IPy-Complete)
 
 
 
@@ -383,8 +417,9 @@ nnoremap m<CR>  :Make!<CR>
 nnoremap <Leader>lo :lopen<CR>
 nnoremap <Leader>lc :lclose<CR>
 
-" Reload config
-nnoremap <Leader>rr :source $MYVIMRC <bar> let &filetype=&filetype <bar> LocalVimRC<CR>
+" cr stands for 'config reload'
+nnoremap <Leader>cr :source $MYVIMRC <bar> let &filetype=&filetype <bar> LocalVimRC<CR>
+
 
 augroup MarkdownRelated
     au!
@@ -458,7 +493,7 @@ function! WhenTabKeyPressed()
         if GetCharAtOffset(-1) =~ '\k'
             return "\<C-x>\<C-o>"
         else
-            " TODO: This is a workaround. This should be result of pressing <tab> according to all the vars like expandtab, ...etc.
+            " TODO: This should be result of pressing <tab> according to all the vars like expandtab, ...etc, that is, not necessarily a tab character.
             return "  " 
         endif
     endif
