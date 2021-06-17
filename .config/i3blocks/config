@@ -36,11 +36,11 @@ markup=none
 # See the script for details.
 
 [volume]
-#label=♪
-label=VOL
+label=♪
 interval=once
 signal=10
 #STEP=5%
+
 
 # Memory usage
 #

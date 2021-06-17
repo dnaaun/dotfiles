@@ -19,7 +19,7 @@ set $alt Mod1
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-font pango:DejaVu Sans Mono Bold 11
+font pango:DejaVu Sans Mono Bold 8
 
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -32,7 +32,7 @@ font pango:DejaVu Sans Mono Bold 11
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec gnome-terminal
+bindsym $mod+Return exec i3-sensible-terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -133,21 +133,10 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 # resize window (you can also use the mouse for that)
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
-
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
         bindsym h resize shrink width 2 px or 2 ppt
         bindsym k resize grow height 2 px or 2 ppt
         bindsym j resize shrink height 2 px or 2 ppt
         bindsym l resize grow width 2 px or 2 ppt
-
-        # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
 
         # back to normal: Enter or Escape
         bindsym r mode "default"
@@ -184,29 +173,6 @@ bindsym Mod2+F3 exec "amixer -q sset Master,0 1+ unmute"
 bindsym XF86MonBrightnessUp exec brightnessctl set 5%+
 bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
 
-# Media player controls
-bindsym XF86AudioPlay exec playerctl play
-bindsym XF86AudioPause exec playerctl pause
-bindsym XF86AudioNext exec playerctl next
-bindsym XF86AudioPrev exec playerctl previous
-
-# The pkill business below is to update i3blocks.
-# the [volume] section in .config/i3blocks/config specifies that this signal
-# will update the volume indicator.
-# Volume
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +5% && pkill -SIGRTMIN+10 i3blocks
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -5% && pkill -SIGRTMIN+10 i3blocks 
-bindsym XF86AudioMute exec pactl set-sink-mute 0 toggle && pkill -SIGRTMIN+10 i3blocks
-
-# Media player controls
-bindsym Control+$alt+z exec playerctl play-pause
-bindsym $alt+Left exec playerctl position 2-
-bindsym $alt+Right exec playerctl position 2+
-bindsym Control+Left exec playerctl position 10-
-bindsym Control+Right exec playerctl position 10+
-bindsym $alt+Shift+Left exec playerctl position 60-
-bindsym $alt+Shift+Right exec playerctl position 60+
-
 
 # Printscreen
 #crop-area screenshot by pressing Mod + printscreen
@@ -223,7 +189,10 @@ exec --no-startup-id xscreensaver
 exec --no-startup-id picom  --inactive-dim 0.05 &
 
 # Remove title bars
-default_border none
+# The following line is apprently not compatible with old versions of i3
+# default_border none
+# Let's try this fix from here: https://www.reddit.com/r/i3wm/comments/87kclz/how_do_i_remove_borders_and_titles/
+for_window [class="^.*"] border pixel 0
 
 # Start redshift
 exec --no-startup-id redshift-gtk
@@ -261,5 +230,40 @@ client.urgent #C20000 #C20000 #FFFFFF #FFFFFF
 
 # Lock the screen with xscreensasver
 bindsym $mod+t exec xscreensaver-command -l
+
+# Media player controls
+# The (ubuntu/debian installed binary version of) Cmus player doesn't support
+# MPRIS, despite claiming otherwise in it's man page, so we gotta 
+# accomodate.
+bindsym XF86AudioPlay exec playerctl play; exec cmus-remote -C player-play
+bindsym XF86AudioPause exec playerctl pause; exec cmus-remote -C player-pause-playback
+bindsym XF86AudioNext exec playerctl next; exec cmus-remote -C player-next
+bindsym XF86AudioPrev exec playerctl previous; exec cmus-remote -C player-prev
+
+
+# Control media (MPRIS, and Cmus)
+bindsym Control+$alt+l exec playerctl next; exec cmus-remote -C player-next
+bindsym Control+$alt+h exec playerctl previous; exec cmus-remote -C player-prev
+bindsym Control+$alt+j exec playerctl play-pause; exec cmus-remote -C player-pause
+
+# The pkill business below is to update i3blocks.
+# the [volume] section in .config/i3blocks/config specifies that this signal
+# will update the volume indicator.
+# Volume
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume "$(pacmd info | grep Default\ sink | sed 's/^[^:]*: //')" +5% && pkill -SIGRTMIN+10 i3blocks 
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume "$(pacmd info | grep Default\ sink | sed 's/^[^:]*: //')" -5% && pkill -SIGRTMIN+10 i3blocks 
+bindsym XF86AudioMute exec pactl set-sink-mute 0 toggle && pkill -SIGRTMIN+10 i3blocks
+
+# Media player controls
+# TODO: Accomodate Cmus here as well. Alternatively, submit a bug report
+# to (the debian package of) Cmus for not obeying MPRIS.
+bindsym Control+$alt+z exec playerctl play-pause
+bindsym $alt+Left exec playerctl position 2-
+bindsym $alt+Right exec playerctl position 2+
+bindsym Control+Left exec playerctl position 10-
+bindsym Control+Right exec playerctl position 10+
+bindsym $alt+Shift+Left exec playerctl position 60-
+bindsym $alt+Shift+Right exec playerctl position 60+
+
 
 
