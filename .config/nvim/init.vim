@@ -11,21 +11,21 @@ let s:NOT_IN_TEMP_FILE =  !(expand('%') =~ s:temp_file_ptrn)
 
 if (s:NOT_IN_TEMP_FILE)
     Plug 'embear/vim-localvimrc'
-    Plug 'machakann/vim-highlightedyank'
+    Plug 'sedm0784/vim-resize-mode'
+
+    " Fzf
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
 
    " Python
-    Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
-    " Plug 'bfredl/nvim-ipy', { 'for': ['python'], 'do': ':UpdateRemotePlugins' }
     Plug 'jeetsukumaran/vim-pythonsense', { 'for': ['python'] }
-    Plug 'tartansandal/vim-compiler-pytest', { 'for': ['python'] }
 
     " General coding
     Plug '$HOME/git/ale'
     Plug 'vim-test/vim-test', { 'for': ['python'] }
-    Plug 'liuchengxu/vista.vim', { 'for': ['python'] }
-    Plug 'SirVer/ultisnips', { 'commit': '96026a4df27899b9e4029dd3b2977ad2ed819caf' }
-    Plug 'wellle/targets.vim' " text objects on steriods
     Plug 'urbainvaes/vim-ripple' " Send code to REPLs easily
+    Plug 'preservim/tagbar'
+    packadd! matchit
 
     " Frontend
     Plug 'pangloss/vim-javascript', {'for': ['javascript'] } " Trusted the internet's recommendations. Not sure if I actually need it
@@ -34,50 +34,44 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'Valloric/MatchTagAlways', { 'for': ['typescript', 'typescriptreact'] } " shows the matching tag of the tag under cursor
     Plug 'skammer/vim-css-color', { 'for': ['css'] } " highlights color codes with the color
 
-    " Markdown/writing
-    " Plug 'godlygeek/tabular', { 'for': ['markdown'] }
+    
+    Plug 'tpope/vim-vinegar'  " netrw
+    Plug 'tpope/vim-fugitive' " the awesomest Git plugin ever
+
+    "" Writing
+    " Markdown
+    Plug 'tpope/vim-unimpaired'
     Plug 'plasticboy/vim-markdown', { 'for': ['markdown'] }
     Plug 'iamcco/markdown-preview.nvim', {
                 \ 'for': ['markdown'],
                 \ 'do': { -> mkdp#util#install() },
                 \ }
     Plug 'dkarter/bullets.vim',  { 'for': ['markdown'] }
-
-    " Tpope makes great plugins.
-    Plug 'tpope/vim-vinegar'
-    Plug 'tpope/vim-fugitive'
-    Plug 'tpope/vim-dispatch'
-
-    " Editing text
-    Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-unimpaired'
     Plug 'tpope/vim-obsession'
-    Plug 'tpope/vim-repeat'
+    " Tex
+    Plug 'lervag/vimtex', { 'for': 'tex' }
+    Plug 'KeitaNakamura/tex-conceal.vim', { 'for': 'tex' }
+    Plug 'SirVer/ultisnips', { 'for': ['tex'], 'commit': '96026a4df27899b9e4029dd3b2977ad2ed819caf' } 
     
-    " Colors and other niceties
+    "" Colors and other niceties
     Plug '$HOME/git/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
     Plug 'junegunn/goyo.vim'
-    Plug 'junegunn/limelight.vim'
-
-    " Tex, writing
-    Plug 'lervag/vimtex', { 'for': 'tex' }
-    Plug 'KeitaNakamura/tex-conceal.vim', { 'for': 'tex' }
-
-    " Fzf and file manager
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    Plug 'junegunn/fzf.vim'
-
+    " Plug 'junegunn/limelight.vim'
+   
 else
     echomsg 'Tmp file: not loading some plugins'
 endif
 call plug#end()
 
+"" float_preview.vim 
+let g:float_preview#docked=0
+
 "" vim-ripple
 " The python one is strongly informed by https://github.com/urbainvaes/vim-ripple/issues/20
 let g:ripple_repls = {
-            \ 'python': ['ipython', "\<c-u>\<esc>[200~", "\<esc>[201~\<cr>", 1]
-            \}
+            \ 'python': ['ptpython --vi', "\<c-u>\<esc>[200~", "\<esc>[201~\<cr>", 1] 
+            \ }
 
 let g:ripple_enable_mappings=0
 " Use whatever python3 virtualenv is currently activated.
@@ -109,26 +103,10 @@ let g:mta_filetypes = {
 let g:netrw_sort_by='time'
 let g:netrw_sort_direction='reverse'
 
-"" Easymotion
-let g:EasyMotion_do_mapping=0 " no default mappings
-map sw <Plug>(easymotion-wl)
-map sb <Plug>(easymotion-bl)
-map sW <Plug>(easymotion-Wl)
-map sB <Plug>(easymotion-Bl)
-map se <Plug>(easymotion-el)
-map sE <Plug>(easymotion-El)
-map s<Space>  <Plug>(easymotion-fl) 
-
-"" Surround.vim
-" This is because ys conflicts with easymotion
-" let g:surround_no_mappings=1
-
-
 "" Vista.vim
 let g:vista_default_executive='ale'
-let g:vista_fzf_preview=[] " enable fzf preview, I think
+let g:vista_fzf_preview=['right:50%'] " enable fzf preview, I think
 let g:vista_keep_fzf_colors=1
-
 
 "" vim-test
 let test#strategy = "dispatch"
@@ -148,21 +126,18 @@ let g:vimtex_quickfix_open_on_warning=0
 let g:mkdp_open_to_the_world = 1
 
 "" ALE Settings
-let g:airline#extensions#ale#enabled = 1 " Show status using vim airline
+let g:airline#extensions#ale#enabled = 0 " Show status using vim airline
 let g:ale_fix_on_save = 0
 " Diagnostics
 let g:ale_linters_explicit=1 " Only lint with linters I explicitly I ask for
 let g:ale_echo_msg_format = '%linter%:%severity%:%code:%%s' " Nice to know which linter is dissatisfied
-let g:ale_virtualtext_cursor = 1 " Show errors in virtualtext
 let g:ale_virtualtext_delay = 0
-let g:ale_echo_cursor = 0 " Use echo for ALE errors
 let g:ale_lint_on_enter = 0
+
 set updatetime=200  " Trigger ALEHover quicker
 let g:ale_cursor_detail = 0 " Show ale diagnostics regarding current line automatically with cursor changing lines
-let g:ale_hover_to_preview = 1
-" Using an off-master branch with this feature
 let g:ale_floating_preview = 1
-let g:ale_hover_to_floating_preview=0
+
 " Completion
 let g:ale_completion_enabled = 1
 let g:ale_completion_delay = 0
@@ -431,7 +406,6 @@ nnoremap <Leader>f* :execute 'Rg ' . expand('<cword>')<CR>
 vnoremap <Leader>f y:execute 'Rg ' . @0<CR> 
 " second f for search in directory of current *F*ile
 nnoremap <Leader>ff :execute 'Files' . expand('%:p:h')<CR> 
-nnoremap <Leader>fv :Vista finder fzf:ale<CR> 
 " c for current dir
 nnoremap <Leader>fc :Files<CR> 
 nnoremap <Leader>fr :Rg<CR>
@@ -457,19 +431,19 @@ nmap <silent> <leader>tv :TestVisit<CR>
 tnoremap <C-p> <C-\><C-n>
 
 " ALE mappings
-nnoremap <Leader>ah :ALEHover<CR>
+nnoremap <silent> <Leader>ah :ALEHover<CR>
 " ad is taken by ALEDocumentation
-nnoremap <Leader>aj :ALEDetail<CR>
-nnoremap <Leader>af :ALEFix<CR>
-nnoremap <Leader>ai :ALEInfo<CR>
-nnoremap <Leader>au :ALEFindReferences<CR>
-nnoremap <Leader>al :ALELint<CR>
-nnoremap <Leader>aa :ALECodeAction<CR>
-nnoremap <Leader>ad :ALEGoToDefinition<CR>
-nnoremap <Leader>at :ALEGoToTypeDefinition<CR>
-nnoremap <Leader>ar :ALERename<CR>
+nnoremap <silent> <Leader>aj :ALEDetail<CR>
+nnoremap <silent> <Leader>af :ALEFix<CR>
+nnoremap <silent> <Leader>ai :ALEInfo<CR>
+nnoremap <silent> <Leader>au :ALEFindReferences<CR>
+nnoremap <silent> <Leader>al :ALELint<CR>
+nnoremap <silent> <Leader>aa :ALECodeAction<CR>
+nnoremap <silent> <Leader>ad :ALEGoToDefinition<CR>
+nnoremap <silent> <Leader>at :ALEGoToTypeDefinition<CR>
+nnoremap <silent> <Leader>ar :ALERename<CR>
 " restart ('quit' is the mnemonic. Go figure.)
-nnoremap <leader>aq :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<cr>
+nnoremap <silent> <leader>aq :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<cr>
 " inoremap <expr> <tab> pumvisible() ? "\<C-n>" : "<C-x><C-o>"
 
 
@@ -535,7 +509,7 @@ let g:limelight_eop = '$'
 let s:ll_was_on=0
 function! s:fzf_enter()
    let s:ll_was_on=exists("#limelight")
-   Limelight!
+   " Limelight!
    " Limelight listens to this autocmds to start doing things.
    " This is also from the docs.
    doautocmd CursorMoved
@@ -545,7 +519,7 @@ function! s:fzf_leave()
     echom 'filetype=' . json_encode(&filetype)
     echom 'ss:ll_was_on=' json_encode(s:ll_was_on)
     if &filetype == 'fzf' && s:ll_was_on
-        Limelight!!
+        " Limelight!!
     endif
 endfunction
 
@@ -557,7 +531,7 @@ augroup fzf_enter
 augroup END
 
 "" Goyo 
-let g:goyo_height=100
+let g:goyo_height="100%"
 " Variable to keep track of Goyo state to facilitate toggling.
 " Just :Goyo would toggle, except that I want to read textwidth
 " dynamically (and thus do :exec Goyo &tw), which doesn't toggle.
@@ -583,25 +557,25 @@ nmap <silent> <leader>v :call GoyoToggle()<CR>
 
 function! s:goyo_enter()
 " Make Goyo make tmux panes dissapear
-  " if executable('tmux') && strlen($TMUX)
-    " silent !tmux set status off
-    " silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
-  " endif
+  if executable('tmux') && strlen($TMUX)
+    silent !tmux set status off
+    silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+  endif
   set noshowmode
   set noshowcmd
   set scrolloff=999
-  Limelight
+  " Limelight
 endfunction
 
 function! s:goyo_leave()
-  " if executable('tmux') && strlen($TMUX)
-    " silent !tmux set status on
-    " silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
-  " endif
+  if executable('tmux') && strlen($TMUX)
+    silent !tmux set status on
+    silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+  endif
   set showmode
   set showcmd
   set scrolloff=5
-  Limelight!
+  " Limelight!
 endfunction
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
@@ -615,6 +589,12 @@ inoremap <C-k> <C-\><C-o>:TmuxNavigateUp<CR>
 inoremap <C-h> <C-\><C-o>:TmuxNavigateLeft<CR>
 inoremap <C-l> <C-\><C-o>:TmuxNavigateRight<CR>
 
+" Repeat same mappings for terminal mode in neovim
+tnoremap <C-j> <C-\><C-n>:TmuxNavigateDown<CR>
+tnoremap <C-k> <C-\><C-n>:TmuxNavigateUp<CR>
+tnoremap <C-h> <C-\><C-n>:TmuxNavigateLeft<CR>
+tnoremap <C-l> <C-\><C-n>:TmuxNavigateRight<CR>
+
 """ Allow a 'computer dependent' initialization
 let s:secondary_init_vim=expand('~/.secondary.init.vim')
 if filereadable(s:secondary_init_vim)
@@ -622,3 +602,6 @@ if filereadable(s:secondary_init_vim)
 endif
 
 
+function! Hello() range
+    echo "firstline: " . a:firstline .  " | " . "lastline: " . a:lastline
+endfunction
