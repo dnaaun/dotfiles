@@ -1,9 +1,12 @@
 # If not running interactively, don't do anything
-
 case $- in
     *i*) ;;
       *) return;;
 esac
+
+# I use history expansion to set terminal title to last
+# run command.
+set -o history -o histexpand
 
 ## Fzf + Rg
 export FZF_DEFAULT_COMMAND="fdfind --type f --hidden"
@@ -202,6 +205,7 @@ auto_change_venv() {
   # shellcheck disable=SC1090
   source "$parent/.venv/bin/activate";
 }
+
 
 __prompt_command() {
   set_ps1 # This needs to be first to change color based on return value
