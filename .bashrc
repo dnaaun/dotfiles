@@ -21,6 +21,13 @@ _fzf_compgen_dir() {
 }
 
 
+# Recently switched to apt installing fzf, and accoridng to /usr/share/doc/fzf/README.Debian,
+# The following are necessary for the usual bash fzf integration.
+source /usr/share/doc/fzf/examples/key-bindings.bash
+source /usr/share/doc/fzf/examples/completion.bash # This line must come below the sourcing of /etc/bashcompletion above
+
+
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -73,21 +80,7 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
-fi
 
-# This sourcing needs to happen strictly after the block above for
-# ** completion to not malfunction in cases like cd **, cp ** (probably
-# they have something in common)
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # Some systems still have old vi by default
 alias vi=vim
@@ -229,8 +222,6 @@ alias copy="xclip -selection clipboard"
 # fi
 
 ## Aliases
-# Use neovim for git diffing
-alias vimdiff='nvim -d'
 # Taskwarrior 
 alias t=task
 complete -F _complete_alias t 
