@@ -67,7 +67,7 @@ def configure(repl):
     repl.enable_dictionary_completion = False
 
     # Vi mode.
-    repl.vi_mode = False
+    repl.vi_mode = True
 
     # Paste mode. (When True, don't insert whitespace after new line.)
     repl.paste_mode = False
@@ -99,14 +99,14 @@ def configure(repl):
     repl.enable_system_bindings = True
 
     # Ask for confirmation on exit.
-    repl.confirm_exit = True
+    repl.confirm_exit = False
 
     # Enable input validation. (Don't try to execute when the input contains
     # syntax errors.)
     repl.enable_input_validation = True
 
     # Use this colorscheme for the code.
-    repl.use_code_colorscheme("default")
+    repl.use_code_colorscheme("monokai")
     # repl.use_code_colorscheme("pastie")
 
     # Set color depth (keep in mind that not all terminals support true color).

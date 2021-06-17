@@ -70,7 +70,7 @@ let g:float_preview#docked=0
 "" vim-ripple
 " The python one is strongly informed by https://github.com/urbainvaes/vim-ripple/issues/20
 let g:ripple_repls = {
-            \ 'python': ['ptpython --vi', "\<c-u>\<esc>[200~", "\<esc>[201~\<cr>", 1] 
+            \ 'python': ['ptpython --vi', "\<c-u>\<esc>[200~", "\<esc>[201~\<cr>\<cr>", 1] 
             \ }
 
 let g:ripple_enable_mappings=0
