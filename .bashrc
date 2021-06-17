@@ -229,6 +229,8 @@ alias copy="xclip -selection clipboard"
 # fi
 
 ## Aliases
+# Use neovim for git diffing
+alias vimdiff='nvim -d'
 # Taskwarrior 
 alias t=task
 complete -F _complete_alias t 
