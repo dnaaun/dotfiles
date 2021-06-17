@@ -27,3 +27,6 @@ sudo apt-get install fonts-powerline
  - Figure out why `Cmus` doesn't obey MPRIS so that we don't have to launch
    a process (`cmus-cremote`) to control music.
 
+
+# Other requirements
+`pip install litecli`
