@@ -29,4 +29,9 @@ sudo apt-get install fonts-powerline
 
 
 # Other requirements
+## `Litecli` 
 `pip install litecli`
+
+## Install `fzf`
+ - The version of `fzf` packaged in Ubuntu's apt repos is a few versions behind, so
+     install from Git using instructions.
