@@ -3,6 +3,13 @@
 # Load autoconfig.yml
 config.load_autoconfig()
 
-# Hint table of contnent links on Kotlin's docs
-with config.pattern('*://kotlinlang.org/'):
-    c.hints.selectors['toc'] = [ 'li[data-toc-scroll]']
+# Custom "hint-ables" for kotlinlang.org.
+with config.pattern("*://kotlinlang.org/"):
+    c.hints.selectors.update(
+        {
+            "toc": ["li[data-toc-scroll]"],  # Table of content sidebar items
+            "scrollable": ["div.layout--scroll-container"],  # Focus on one of the scrollable divs.
+        }
+    )
+
+

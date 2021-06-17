@@ -7,16 +7,12 @@
 config_version: 2
 settings:
   backend:
-    global: webkit
+    global: webengine
   bindings.commands:
     global:
       normal:
-        <Ctrl+i>: tab-focus stack-next
-        <Ctrl+o>: tab-focus stack-prev
-        O: set-cmd-text -s :open -b
-        T: set-cmd-text -s :tab-select
-        c-o: tab-focus stack-prev
-        sp: set-cmd-text -s site
+        T: set-cmd-text -s :buffer
+        sf: hint scrollable
         tf: hint toc
         yf: hint all yank
   completion.open_categories:
@@ -25,9 +21,16 @@ settings:
     - quickmarks
     - bookmarks
     - history
-    - filesystem
+  completion.shrink:
+    global: true
+  content.blocking.enabled:
+    global: true
+  content.blocking.method:
+    global: adblock
   content.javascript.enabled:
     global: true
+  content.register_protocol_handler:
+    https://mail.google.com?extsrc=mailto&url=%25s: true
   tabs.background:
     global: true
   tabs.wrap:
@@ -37,6 +40,5 @@ settings:
   url.searchengines:
     global:
       DEFAULT: https://www.google.com/search?q={}
-      p: https://www.google.com/search?q={}+site:docs.python.org
   url.start_pages:
     global: 'https://www.google.com  '
