@@ -19,10 +19,12 @@ if (s:NOT_IN_TEMP_FILE)
 
    " Python
     Plug 'jeetsukumaran/vim-pythonsense', { 'for': ['python'] }
+    Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
 
     " General coding
     Plug '$HOME/git/ale'
     Plug 'vim-test/vim-test', { 'for': ['python'] }
+    Plug 'tpope/vim-dispatch', { 'for': ['python'] } " Here only cuz vim-test
     Plug 'urbainvaes/vim-ripple' " Send code to REPLs easily
     Plug 'preservim/tagbar'
     packadd! matchit
@@ -112,7 +114,7 @@ let g:vista_keep_fzf_colors=1
 let test#strategy = "dispatch"
 
 "" dispatch.vim
-let g:dispatch_tmux_height = 30 " Foundt this by reading dispatch.vim source code
+let g:dispatch_tmux_height = 10 " Foundt this by reading dispatch.vim source code
 
 
 "" Vimtex settings
@@ -516,8 +518,6 @@ function! s:fzf_enter()
 endfunction
 
 function! s:fzf_leave()
-    echom 'filetype=' . json_encode(&filetype)
-    echom 'ss:ll_was_on=' json_encode(s:ll_was_on)
     if &filetype == 'fzf' && s:ll_was_on
         " Limelight!!
     endif
