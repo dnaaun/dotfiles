@@ -4,9 +4,6 @@ case $- in
       *) return;;
 esac
 
-# I use history expansion to set terminal title to last
-# run command.
-set -o history -o histexpand
 
 ## Fzf + Rg
 export FZF_DEFAULT_COMMAND="fdfind --type f --hidden"
@@ -107,17 +104,6 @@ alias tmux='tmux -u'
 # I don't know where this is getting set, but I need to unset it
 export PYTHONPATH=
 export PYTHONBREAKPOINT=ipdb.set_trace
-
-# Eternal bash history.
-# ---------------------
-# Undocumented feature which sets the size to "unlimited".
-# http://stackoverflow.com/questions/9457233/unlimited-bash-history
-export HISTFILESIZE=
-export HISTSIZE=
-export HISTTIMEFORMAT="[%F %T] "
-# Change the file location because certain bash sessions truncate .bash_history file upon close.
-# http://superuser.com/questions/575479/bash-history-truncated-to-500-lines-on-each-login
-export HISTFILE=~/.bash_eternal_history
 
 
 # Scripts in dotfiles/bin/
@@ -247,3 +233,14 @@ alias bash="bash --noprofile"
 # (I tHink) this line must come below the sourcing of /etc/bashcompletion
 # above
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# Eternal bash history.
+# ---------------------
+# Undocumented feature which sets the size to "unlimited".
+# http://stackoverflow.com/questions/9457233/unlimited-bash-history
+export HISTFILESIZE=
+export HISTSIZE=
+export HISTTIMEFORMAT="[%F %T] "
+# Change the file location because certain bash sessions truncate .bash_history file upon close.
+# http://superuser.com/questions/575479/bash-history-truncated-to-500-lines-on-each-login
+export HISTFILE=~/.bash_eternal_history
