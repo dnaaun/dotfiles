@@ -11,7 +11,7 @@ settings:
   bindings.commands:
     global:
       normal:
-        T: set-cmd-text -s :buffer
+        T: set-cmd-text -sr :tab-select
         sf: hint scrollable
         tf: hint toc
         yf: hint all yank
