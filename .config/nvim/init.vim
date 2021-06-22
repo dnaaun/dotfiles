@@ -21,6 +21,9 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'jeetsukumaran/vim-pythonsense', { 'for': ['python'] }
     Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
 
+    " Android
+    Plug 'udalov/kotlin-vim', { 'for': ['kotlin'] }
+
     " General coding
     Plug '$HOME/git/ale'
     Plug 'vim-test/vim-test', { 'for': ['python'] }
@@ -29,7 +32,7 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'preservim/tagbar'
     packadd! matchit
 
-    " Frontend
+    "" Frontend
     Plug 'pangloss/vim-javascript', {'for': ['javascript'] } " Trusted the internet's recommendations. Not sure if I actually need it
     Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'typescriptreact'] } " Trusted the internet's recommendations. Not sure if I actually need it
     Plug 'maxmellon/vim-jsx-pretty' , { 'for': ['typescript', 'typescriptreact'] } " Trusted the internet's recommendations. Not sure if I actually need it.
@@ -37,8 +40,14 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'skammer/vim-css-color', { 'for': ['css'] } " highlights color codes with the color
 
     
+    "" File management
     Plug 'tpope/vim-vinegar'  " netrw
+
+    "" Git
     Plug 'tpope/vim-fugitive' " the awesomest Git plugin ever
+
+    "" Session management
+    Plug 'tpope/vim-obsession'
 
     "" Writing
     " Markdown
@@ -49,7 +58,6 @@ if (s:NOT_IN_TEMP_FILE)
                 \ 'do': { -> mkdp#util#install() },
                 \ }
     Plug 'dkarter/bullets.vim',  { 'for': ['markdown'] }
-    Plug 'tpope/vim-obsession'
     " Tex
     Plug 'lervag/vimtex', { 'for': 'tex' }
     Plug 'KeitaNakamura/tex-conceal.vim', { 'for': 'tex' }
@@ -59,15 +67,12 @@ if (s:NOT_IN_TEMP_FILE)
     Plug '$HOME/git/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
     Plug 'junegunn/goyo.vim'
-    " Plug 'junegunn/limelight.vim'
+    " Plug 'junegunn/limelight.vim' " Performance cost is too high
    
 else
     echomsg 'Tmp file: not loading some plugins'
 endif
 call plug#end()
-
-"" float_preview.vim 
-let g:float_preview#docked=0
 
 "" vim-ripple
 " The python one is strongly informed by https://github.com/urbainvaes/vim-ripple/issues/20
@@ -105,17 +110,11 @@ let g:mta_filetypes = {
 let g:netrw_sort_by='time'
 let g:netrw_sort_direction='reverse'
 
-"" Vista.vim
-let g:vista_default_executive='ale'
-let g:vista_fzf_preview=['right:50%'] " enable fzf preview, I think
-let g:vista_keep_fzf_colors=1
-
 "" vim-test
 let test#strategy = "dispatch"
 
 "" dispatch.vim
 let g:dispatch_tmux_height = 10 " Foundt this by reading dispatch.vim source code
-
 
 "" Vimtex settings
 let g:tex_flavor='latex'
@@ -123,9 +122,6 @@ let g:vimtex_view_method='zathura'
 let g:vimtex_quickfix_ignore_filters = [ '\v(Under|Over)full \\(h|v)box'] " Ignore some latex 'errors'
 let g:vimtex_quickfix_open_on_warning=0
 
-
-""" Markdown, make preview available remotely (ie, serve on 0.0.0.0, not localhost)
-let g:mkdp_open_to_the_world = 1
 
 "" ALE Settings
 let g:airline#extensions#ale#enabled = 0 " Show status using vim airline
@@ -160,18 +156,6 @@ let g:UltiSnipsExpandTrigger = "<A-e>"
 let g:UltiSnipsJumpForwardTrigger = "<A-f>"
 let g:UltiSnipsJumpBackwardTrigger = "<A-b>"
 
-"" nvim-ipy
-" let g:nvim_ipy_perform_mappings = 0
-" let g:ipy_celldef = '\v^\s*##[^#]*$' " Ipython cell boundary line regex.
-
-set nohlsearch " Don't higlight all matches
-set incsearch " Incremental search highlight
-" Add parenthesis to vaid filename chars for completion
-set isfname+=(
-set isfname+=)
-
-set completeopt=menu,menuone,noinsert,noselect,preview
-
 
 "" Local vimrc
 let g:localvimrc_debug=1
@@ -186,31 +170,6 @@ let g:localvimrc_sandbox=0
 " Jedi takes over a bunch of key mappings if I don't do this
 let g:jedi#auto_initialization = 0
 " Set latex filetypes as tex, not plaintex
-
-" Disable indenting lines more than necessary when typing :
-" This doens't work in ftplugin/python.vim or after/python.vim.
-" https://stackoverflow.com/a/37889460/13664712
-autocmd FileType python setlocal indentkeys-=<:>
-autocmd FileType python setlocal indentkeys-=:
-
-" Automatically save views
-augroup SaveViewsOnEnter
-  autocmd BufWinLeave *.* mkview
-  autocmd BufWinEnter *.* silent! loadview 
-augroup END
-
-
-" Bash
-autocmd FileType sh setlocal makeprg=bash\ %
-
-" Other vim preferences
-set splitbelow
-set splitright
-
-" Enable backspace on everything
-set backspace=indent,eol,start
-
-
 let session_file=".Session.vim"
 " https://github.com/tpope/vim-obsession/issues/17
 augroup ObsessionGroup
@@ -246,13 +205,6 @@ let g:airline_theme='base16'
 " No error messages about whitespaces please
 let g:airline#extensions#whitespace#enabled = 0
 
-" Resize vim splists with a mouse when inside tmux
-set mouse+=a
-
-" Draw a line at wrapwidth
-set colorcolumn=+1
-
-
 "" Netrw
 " Allow netrw to remove non-empty local directories
 let g:netrw_localrmdir='rm -r'
@@ -263,13 +215,42 @@ let g:netrw_keepdir=1
 "" Markdown related
 set conceallevel=2
 let g:vim_markdown_conceal = 1
-
 " Markdown fenced languages support
 " Thanks to https://thoughtbot.com/blog/profiling-vim, I now know that the following is
 " what causes slow open times for markdown files.
 " let g:markdown_fenced_languages = ['json', 'javascript', 'html', 'python', 'bash=sh']
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
+""" Markdown, make preview available remotely (ie, serve on 0.0.0.0, not localhost)
+let g:mkdp_open_to_the_world = 1
+
+
+" Disable indenting lines more than necessary when typing :
+" This doens't work in ftplugin/python.vim or after/python.vim.
+" https://stackoverflow.com/a/37889460/13664712
+autocmd FileType python setlocal indentkeys-=<:>
+autocmd FileType python setlocal indentkeys-=:
+
+" Automatically save views
+augroup SaveViewsOnEnter
+  autocmd BufWinLeave *.* mkview
+  autocmd BufWinEnter *.* silent! loadview 
+augroup END
+
+
+" Other vim preferences
+set splitbelow
+set splitright
+set nohlsearch " Don't higlight all matches
+set incsearch " Incremental search highlight
+" Add parenthesis to vaid filename chars for completion
+set isfname+=(
+set isfname+=)
+set completeopt=menu,menuone,noinsert,noselect,preview
+" Enable backspace on everything
+set backspace=indent,eol,start 
+set mouse+=a " Resize vim splists with a mouse when inside tmux
+set colorcolumn=+1 " Draw a line at wrapwidth
 
 
 """""" Mappings
@@ -291,9 +272,6 @@ nnoremap  <Leader>s ]s1z=<C-X><C-S>
 " Insert mode, correct last error.
 inoremap <C-s> <c-g>u<Esc>[s1z=`]a<c-g>u
 
-" Inspired by unimpaired, jump to the last location on jumplist
-" that is NOT in the current file
-:ech
 " <tab> in visual mode starts goes into insert mode with UltiSnips ready to
 " integrate the visual selection into an expanded snippet.
 xmap  <tab> :call UltiSnips#SaveLastVisualSelection()<CR>gvc
@@ -309,84 +287,11 @@ xmap <leader>r <Plug>(ripple_send_selection)
 nmap <leader>rr <Plug>(ripple_send_line)
 
 
-
-"" vim-ipy
-" leader-e is mapped to running text objects, but since I never
-" wanna run till end of word(which is 'e'), but much more commonly to end of line...
-"" Run arbitrary text objects. The first one uses i unlike most of
-" of my nvim-ipy maps because I wanna run arbitrary text objects,
-" which conflict with the two letter mappings.
-" nmap <silent> <leader>i <Plug>(IPy-RunOp)
-" vmap <silent> <leader>i <Plug>(IPy-Run)
-" nmap <silent> <leader>ee <Plug>(IPy-Run) 
-" nmap <silent> <leader>ea <Plug>(IPy-RunAll)
-" nmap <silent> <leader>ec <Plug>(IPy-RunCell)
-" nmap <silent> <leader>eq <Plug>(IPy-Terminate)
-" nmap <silent> <leader>ei :IPython<CR>
-" nmap <silent> <leader>ek <Plug>(IPy-WordObjInfo)
-" imap <silent> <C-f> <Plug>(IPy-Complete)
-
-
-
 " Dispatch related shortcuts
 " open and close quickfix
 nnoremap <Leader>qo :copen<CR>
 nnoremap <Leader>qc :cclose<CR>
-
-
-" function! IsAhead(first, second)
-"     if type(a:first) == v:t_dict
-"         let l:first = [ a:first["lnum"], a:first["col"] ]
-"     else
-"         let l:first = a:first
-"     endif
-"     if type(a:second) == v:t_dict
-"         let l:second = [ a:second["lnum"], a:second["col"] ]
-"     else
-"         let l:second = a:second
-"     endif
-"     if ( (l:first[0] > l:second[0]) || l:first[0] == l:second[0] && l:first[1] > l:second[1] )
-"         return 1
-"     elseif ( l:first[0] == l:second[0] && l:first[1] == l:second[1] )
-"         return 0
-"     else
-"         return -1
-"     endif
-" endfunction
-" 
-" 
-" " Vim-unimpaired maps ]l and [l to :lprev and :lnext, but 
-" " :lprev and :lnext are relative to an internal marker that is
-" " initiated to 1 every time the loclist is populated. 
-" " I want ]l and [l to be relative to the current line, such that
-" " ]l jumps to the closest location list item after/below cursor, 
-" " and analogously for [l.
-" function! LoclistRelative(ahead)
-"     let [l:_, l:curlnum, l:curcol; l:_] = getcurpos()
-"     let l:loclist = getloclist(0, ['lnum', 'col'])
-"     if empty(l:loclist)
-"         return
-"     endif
-" 
-"     let l:curloc = [l:curlnum, l:curcol]
-" 
-"     " Binary search for loc
-"     let [l:low, l:high] = [0, len(l:loclist)]
-" 
-"     while 1
-"         " Below condition means we've found the closest thing
-"         if l:low == l:high - 1
-"             if a:ahead
-"                 echo l:loclist[l:high]
-"             else
-"                 echo l:loclist[l:low]
-" 
-"     if l:low == l:high 
-"         if IsAhead(l:loclist[l:low], l:curloc)
-"             " This confirms the binary search has narrowed down
-"             
-" endfunction
-" 
+ 
 " make using compiler in bg
 nnoremap m<CR>  :Make!<CR>
 
@@ -501,7 +406,7 @@ nnoremap <Leader>gr :Gpull --rebase<CR>
 nnoremap <Leader>gp :Gpush<CR>
 nnoremap <Leader>gg :Git 
 
-"" Limelight
+"" Limelight and Goyo
 let g:limelight_paragraph_span=5
 let g:limelight_bop = '^'
 let g:limelight_eop = '$'
@@ -516,21 +421,17 @@ function! s:fzf_enter()
    " This is also from the docs.
    doautocmd CursorMoved
 endfunction
-
 function! s:fzf_leave()
     if &filetype == 'fzf' && s:ll_was_on
         " Limelight!!
     endif
 endfunction
-
-
 augroup fzf_enter
     au!
     autocmd FileType fzf call <SID>fzf_enter()
     autocmd TermClose * call <SID>fzf_leave()
 augroup END
-
-"" Goyo 
+" Goyo 
 let g:goyo_height="100%"
 " Variable to keep track of Goyo state to facilitate toggling.
 " Just :Goyo would toggle, except that I want to read textwidth
@@ -554,7 +455,6 @@ function! GoyoToggle()
     endif
 endfunction
 nmap <silent> <leader>v :call GoyoToggle()<CR>
-
 function! s:goyo_enter()
 " Make Goyo make tmux panes dissapear
   if executable('tmux') && strlen($TMUX)
@@ -566,7 +466,6 @@ function! s:goyo_enter()
   set scrolloff=999
   " Limelight
 endfunction
-
 function! s:goyo_leave()
   if executable('tmux') && strlen($TMUX)
     silent !tmux set status on
@@ -577,7 +476,6 @@ function! s:goyo_leave()
   set scrolloff=5
   " Limelight!
 endfunction
-
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
@@ -588,7 +486,6 @@ inoremap <C-j> <C-\><C-o>:TmuxNavigateDown<CR>
 inoremap <C-k> <C-\><C-o>:TmuxNavigateUp<CR>
 inoremap <C-h> <C-\><C-o>:TmuxNavigateLeft<CR>
 inoremap <C-l> <C-\><C-o>:TmuxNavigateRight<CR>
-
 " Repeat same mappings for terminal mode in neovim
 tnoremap <C-j> <C-\><C-n>:TmuxNavigateDown<CR>
 tnoremap <C-k> <C-\><C-n>:TmuxNavigateUp<CR>
@@ -601,7 +498,56 @@ if filereadable(s:secondary_init_vim)
     execute 'source' s:secondary_init_vim
 endif
 
-
-function! Hello() range
-    echo "firstline: " . a:firstline .  " | " . "lastline: " . a:lastline
-endfunction
+" function! IsAhead(first, second)
+"     if type(a:first) == v:t_dict
+"         let l:first = [ a:first["lnum"], a:first["col"] ]
+"     else
+"         let l:first = a:first
+"     endif
+"     if type(a:second) == v:t_dict
+"         let l:second = [ a:second["lnum"], a:second["col"] ]
+"     else
+"         let l:second = a:second
+"     endif
+"     if ( (l:first[0] > l:second[0]) || l:first[0] == l:second[0] && l:first[1] > l:second[1] )
+"         return 1
+"     elseif ( l:first[0] == l:second[0] && l:first[1] == l:second[1] )
+"         return 0
+"     else
+"         return -1
+"     endif
+" endfunction
+" 
+" 
+" " Vim-unimpaired maps ]l and [l to :lprev and :lnext, but 
+" " :lprev and :lnext are relative to an internal marker that is
+" " initiated to 1 every time the loclist is populated. 
+" " I want ]l and [l to be relative to the current line, such that
+" " ]l jumps to the closest location list item after/below cursor, 
+" " and analogously for [l.
+" function! LoclistRelative(ahead)
+"     let [l:_, l:curlnum, l:curcol; l:_] = getcurpos()
+"     let l:loclist = getloclist(0, ['lnum', 'col'])
+"     if empty(l:loclist)
+"         return
+"     endif
+" 
+"     let l:curloc = [l:curlnum, l:curcol]
+" 
+"     " Binary search for loc
+"     let [l:low, l:high] = [0, len(l:loclist)]
+" 
+"     while 1
+"         " Below condition means we've found the closest thing
+"         if l:low == l:high - 1
+"             if a:ahead
+"                 echo l:loclist[l:high]
+"             else
+"                 echo l:loclist[l:low]
+" 
+"     if l:low == l:high 
+"         if IsAhead(l:loclist[l:low], l:curloc)
+"             " This confirms the binary search has narrowed down
+"             
+" endfunction
+"
