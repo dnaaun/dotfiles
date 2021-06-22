@@ -399,7 +399,7 @@ let g:jedi#show_call_signatures_delay=0 " Show ginatures in window
 "" Fugutive mappings
 nnoremap <Leader>gs :Git!<CR>
 nnoremap <Leader>gd :Gdiffsplit<CR>
-nnoremap <Leader>gc :Gcommit<CR>
+nnoremap <Leader>gc :Git commit<CR>
 nnoremap <Leader>gl :Glog<CR>
 nnoremap <Leader>gw :Gwrite<CR>
 nnoremap <Leader>gr :Gpull --rebase<CR>
