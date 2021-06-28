@@ -5,21 +5,24 @@ Plug 'christoomey/vim-tmux-navigator'
 " Plug 'easymotion/vim-easymotion'
 
 " Avoid loading most plugins if we're on a temporary  file (which is the case when 
-" bash launches my $EDITOR to edit my commands, which I often do), for speed purposes. 
+" bash launches my $EDITOR to edit my commands, which I often do), for speed. 
 let s:temp_file_ptrn = '\v^/(tmp|scratch)/.*'
 let s:NOT_IN_TEMP_FILE =  !(expand('%') =~ s:temp_file_ptrn)
 
 if (s:NOT_IN_TEMP_FILE)
     Plug 'embear/vim-localvimrc'
     Plug 'sedm0784/vim-resize-mode'
+    Plug 'nvim-treesitter/nvim-treesitter'
+    Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+    Plug 'mhartington/oceanic-next'
 
     " Fzf
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
 
    " Python
-    Plug 'jeetsukumaran/vim-pythonsense', { 'for': ['python'] }
-    Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
+    " Plug 'jeetsukumaran/vim-pythonsense', { 'for': ['python'] }
+    " Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
 
     " Android
     Plug 'udalov/kotlin-vim', { 'for': ['kotlin'] }
@@ -28,8 +31,7 @@ if (s:NOT_IN_TEMP_FILE)
     Plug '$HOME/git/ale'
     Plug 'vim-test/vim-test', { 'for': ['python'] }
     Plug 'tpope/vim-dispatch', { 'for': ['python'] } " Here only cuz vim-test
-    Plug 'urbainvaes/vim-ripple' " Send code to REPLs easily
-    Plug 'preservim/tagbar'
+    Plug 'urbainvaes/vim-ripple', {'for': ['python'] } " Send code to REPLs easily
     packadd! matchit
 
     "" Frontend
@@ -37,7 +39,7 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'typescriptreact'] } " Trusted the internet's recommendations. Not sure if I actually need it
     Plug 'maxmellon/vim-jsx-pretty' , { 'for': ['typescript', 'typescriptreact'] } " Trusted the internet's recommendations. Not sure if I actually need it.
     Plug 'Valloric/MatchTagAlways', { 'for': ['typescript', 'typescriptreact'] } " shows the matching tag of the tag under cursor
-    Plug 'skammer/vim-css-color', { 'for': ['css'] } " highlights color codes with the color
+    " Plug 'skammer/vim-css-color', { 'for': ['css'] } " highlights color codes with the color
 
     
     "" File management
@@ -65,9 +67,9 @@ if (s:NOT_IN_TEMP_FILE)
     
     "" Colors and other niceties
     Plug '$HOME/git/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
+    " Plug 'vim-airline/vim-airline-themes'
     Plug 'junegunn/goyo.vim'
-    " Plug 'junegunn/limelight.vim' " Performance cost is too high
+    Plug 'junegunn/limelight.vim' " Performance cost is too high
    
 else
     echomsg 'Tmp file: not loading some plugins'
@@ -194,14 +196,15 @@ augroup END
 
 "" Colors
 " https://browntreelabs.com/base-16-shell-and-why-its-so-awsome/
-if filereadable(expand("~/.vimrc_background"))
-  let base16colorspace=256
-  source ~/.vimrc_background
-endif
+" if filereadable(expand("~/.vimrc_background"))
+  " let base16colorspace=256
+  " source ~/.vimrc_background
+" endif
 
 "" Airline
 " Status line theme is whatever base16 theme I am using
-let g:airline_theme='base16'
+" let g:airline_theme='base16'
+let g:airline_theme='oceanicnext'
 " No error messages about whitespaces please
 let g:airline#extensions#whitespace#enabled = 0
 
@@ -218,11 +221,23 @@ let g:vim_markdown_conceal = 1
 " Markdown fenced languages support
 " Thanks to https://thoughtbot.com/blog/profiling-vim, I now know that the following is
 " what causes slow open times for markdown files.
-" let g:markdown_fenced_languages = ['json', 'javascript', 'html', 'python', 'bash=sh']
+let g:markdown_fenced_languages = []
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
 """ Markdown, make preview available remotely (ie, serve on 0.0.0.0, not localhost)
 let g:mkdp_open_to_the_world = 1
+
+"" Tree-sitter https://github.com/nvim-treesitter/nvim-treesitter
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+      enable = true
+      }, 
+  indent = {
+    enable = true
+  }
+}
+EOF
 
 
 " Disable indenting lines more than necessary when typing :
@@ -251,7 +266,7 @@ set completeopt=menu,menuone,noinsert,noselect,preview
 set backspace=indent,eol,start 
 set mouse+=a " Resize vim splists with a mouse when inside tmux
 set colorcolumn=+1 " Draw a line at wrapwidth
-
+let &grepprg='rg -nH' " Use ripgrep as a grep program
 
 """""" Mappings
 """"""
@@ -351,8 +366,6 @@ nnoremap <silent> <Leader>at :ALEGoToTypeDefinition<CR>
 nnoremap <silent> <Leader>ar :ALERename<CR>
 " restart ('quit' is the mnemonic. Go figure.)
 nnoremap <silent> <leader>aq :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<cr>
-" inoremap <expr> <tab> pumvisible() ? "\<C-n>" : "<C-x><C-o>"
-
 
 " https://vi.stackexchange.com/questions/11476/
 fun! GetCharAtOffset(offset)
@@ -464,7 +477,7 @@ function! s:goyo_enter()
   set noshowmode
   set noshowcmd
   set scrolloff=999
-  " Limelight
+  Limelight
 endfunction
 function! s:goyo_leave()
   if executable('tmux') && strlen($TMUX)
@@ -474,7 +487,7 @@ function! s:goyo_leave()
   set showmode
   set showcmd
   set scrolloff=5
-  " Limelight!
+  Limelight!
 endfunction
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
@@ -491,6 +504,12 @@ tnoremap <C-j> <C-\><C-n>:TmuxNavigateDown<CR>
 tnoremap <C-k> <C-\><C-n>:TmuxNavigateUp<CR>
 tnoremap <C-h> <C-\><C-n>:TmuxNavigateLeft<CR>
 tnoremap <C-l> <C-\><C-n>:TmuxNavigateRight<CR>
+
+" for vim 8
+if (has("termguicolors"))
+    set termguicolors
+endif
+colorscheme OceanicNext
 
 """ Allow a 'computer dependent' initialization
 let s:secondary_init_vim=expand('~/.secondary.init.vim')
