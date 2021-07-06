@@ -48,27 +48,3 @@ let b:ale_tex_chktex_options .= ' -n 26' " Allow punctuation to follow whitespac
 let b:ale_tex_latexindent_options  = '-m'
 
 let b:ale_fix_on_save = 1
-
-" Use vimtex's omnifunc
-set omnifunc=vimtex#complete#omnifunc
-
-let g:ulti_expand_or_jump_res = 0
-
-fun! TryUltiSnips()
-  if !pumvisible() " With the pop-up menu open, let Tab move down
-    call UltiSnips#ExpandSnippetOrJump()
-  endif
-  return ''
-endf
-
-fun! TryOmni()
-  if g:ulti_expand_or_jump_res
-      return "" 
-  else
-      return WhenTabKeyPressed()
-  endif
-endf
-
-inoremap <plug>(TryUlti) <c-r>=TryUltiSnips()<cr>
-imap <expr> <silent> <plug>(TryOmni) TryOmni()
-imap <expr> <silent> <tab> "\<plug>(TryUlti)\<plug>(TryOmni)"

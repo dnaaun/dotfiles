@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 WsNum=$(i3-msg -t get_workspaces |
 	jq ".[] | if .focused == true then .num else empty end"
 )

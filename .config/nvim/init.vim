@@ -1,123 +1,145 @@
+"""""""""""""""""""""" not plugin-specific login """""""""""""""""""""""
+" Use whatever python3 virtualenv is currently activated.
+" Means I have to install pynvim in every venv, but makes life easier.
+set foldexpr=
+set nospell
+set conceallevel=0
+set splitbelow
+set splitright
+set nohlsearch " Don't higlight all matches
+set incsearch " Incremental search highlight
+" Add parenthesis to vaid filename chars for completion
+set isfname+=(
+set isfname+=)
+set completeopt=menuone,noselect
+" Enable backspace on everything
+set backspace=indent,eol,start 
+set mouse+=a " Resize vim splists with a mouse when inside tmux
+set colorcolumn=+1 " Draw a line at wrapwidth
+let &grepprg='rg -nH' " Use ripgrep as a grep program
 
+let mapleader = ","
+let maplocalleader = ","
+" open and close quickfix
+nnoremap <Leader>qo :copen<CR>
+nnoremap <Leader>qc :cclose<CR>
+" Same pattern for loclist
+nnoremap <Leader>lo :lopen<CR>
+nnoremap <Leader>lc :lclose<CR>
+" cr stands for 'config reload'
+nnoremap <Leader>cr :Reload <CR>
+" WHen in visual/select/operator mode, I want searching with / to be an inclusive
+" motion. This is acheived by doing /pattern/e, but I don't wanna have to type
+" that /e everytime so:
+vnoremap / //e<Left><Left>
+onoremap / //e<Left><Left>
+" ]s means go to next spelling error.
+nnoremap  <Leader>s ]s1z=<C-X><C-S>
+" https://castel.dev/post/lecture-notes-1/#correcting-spelling-mistakes-on-the-fly
+" Insert mode, correct last error.
+inoremap <C-s> <c-g>u<Esc>[s1z=`]a<c-g>u
+" lspsaga doesn't have go to type definition.
+" We use gT instead of gt cuz gt means, something (I forget what) in vim.
+nnoremap gT :luado vim.lsp.buf.type_definition()<CR>
+
+
+"""""""""""""""""""""""" Add plugins """""""""""""""""""""""""""""""
 call plug#begin()
-Plug 'chriskempson/base16-vim'
+Plug 'mhartington/oceanic-next'
 Plug 'christoomey/vim-tmux-navigator'
-" Plug 'easymotion/vim-easymotion'
 
 " Avoid loading most plugins if we're on a temporary  file (which is the case when 
-" bash launches my $EDITOR to edit my commands, which I often do), for speed. 
+" bash launches my $EDITOR to edit my commands), for speed. 
 let s:temp_file_ptrn = '\v^/(tmp|scratch)/.*'
 let s:NOT_IN_TEMP_FILE =  !(expand('%') =~ s:temp_file_ptrn)
 
 if (s:NOT_IN_TEMP_FILE)
-    Plug 'embear/vim-localvimrc'
-    Plug 'sedm0784/vim-resize-mode'
-    Plug 'nvim-treesitter/nvim-treesitter'
-    Plug 'nvim-treesitter/nvim-treesitter-textobjects'
-    Plug 'mhartington/oceanic-next'
-
-    " Fzf
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    Plug 'junegunn/fzf.vim'
-
-   " Python
-    " Plug 'jeetsukumaran/vim-pythonsense', { 'for': ['python'] }
-    " Plug 'davidhalter/jedi-vim', { 'for': ['python'] }
-
-    " Android
-    Plug 'udalov/kotlin-vim', { 'for': ['kotlin'] }
-
+    Plug 'embear/vim-localvimrc' " Enable sourcing .lnvimrc files
+    Plug 'sedm0784/vim-resize-mode' " After doing <C-w>,  be able to type consecutive +,-,<,>
+    
     " General coding
-    Plug '$HOME/git/ale'
+    Plug 'neovim/nvim-lspconfig' " Neovim's builtin LSP client
+    Plug 'glepnir/lspsaga.nvim' " A "light-weight lsp plugin"
+    Plug 'hrsh7th/nvim-compe' " Auto completion for neovim
+    Plug 'urbainvaes/vim-ripple', {'for': ['javascript', 'typescript', 'python'] } " Send code to REPLs easily
+    Plug 'mfussenegger/nvim-dap' " TODO: Set this up to replace vim-ripple.
+    Plug 'simrat39/symbols-outline.nvim' " Either nvim's LSP, or pyright, isn't yielding workspace/symbols, gotta fix that ...
+    Plug 'nvim-treesitter/nvim-treesitter' " Do highlighting, indenting, based on ASTs
+    Plug 'nvim-treesitter/nvim-treesitter-textobjects' " Text objects based on syntax trees!!
+    Plug 'famiu/nvim-reload' " Adds :Reload and :Restart to make reloading lua easier
+    Plug 'ray-x/lsp_signature.nvim' " Show func signatures automatically
+    Plug 'folke/trouble.nvim' " Basically a slightly nicer loclist that works well with Neovim's LSP and Telescope
+    Plug 'mhartington/formatter.nvim' " Replace ALE's formatting
+
+    " Python
     Plug 'vim-test/vim-test', { 'for': ['python'] }
     Plug 'tpope/vim-dispatch', { 'for': ['python'] } " Here only cuz vim-test
-    Plug 'urbainvaes/vim-ripple', {'for': ['python'] } " Send code to REPLs easily
-    packadd! matchit
 
-    "" Frontend
-    Plug 'pangloss/vim-javascript', {'for': ['javascript'] } " Trusted the internet's recommendations. Not sure if I actually need it
-    Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'typescriptreact'] } " Trusted the internet's recommendations. Not sure if I actually need it
-    Plug 'maxmellon/vim-jsx-pretty' , { 'for': ['typescript', 'typescriptreact'] } " Trusted the internet's recommendations. Not sure if I actually need it.
-    Plug 'Valloric/MatchTagAlways', { 'for': ['typescript', 'typescriptreact'] } " shows the matching tag of the tag under cursor
-    " Plug 'skammer/vim-css-color', { 'for': ['css'] } " highlights color codes with the color
+    " (Fuzzy) search everything!
+    Plug 'nvim-lua/popup.nvim'
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-telescope/telescope.nvim'
+    Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
-    
-    "" File management
-    Plug 'tpope/vim-vinegar'  " netrw
 
-    "" Git
-    Plug 'tpope/vim-fugitive' " the awesomest Git plugin ever
+    Plug 'tpope/vim-unimpaired' "" TPope makes vim sane
+    Plug 'tpope/vim-vinegar' " Better netrw
+    Plug 'tpope/vim-fugitive' "" Git
+    Plug 'tpope/vim-obsession' "" Session management
 
-    "" Session management
-    Plug 'tpope/vim-obsession'
+    "" CSS
+    Plug 'ap/vim-css-color', { 'for': ['css'] } " Highlight css colors
 
     "" Writing
     " Markdown
-    Plug 'tpope/vim-unimpaired'
     Plug 'plasticboy/vim-markdown', { 'for': ['markdown'] }
     Plug 'iamcco/markdown-preview.nvim', {
                 \ 'for': ['markdown'],
                 \ 'do': { -> mkdp#util#install() },
                 \ }
-    Plug 'dkarter/bullets.vim',  { 'for': ['markdown'] }
+
     " Tex
     Plug 'lervag/vimtex', { 'for': 'tex' }
     Plug 'KeitaNakamura/tex-conceal.vim', { 'for': 'tex' }
-    Plug 'SirVer/ultisnips', { 'for': ['tex'], 'commit': '96026a4df27899b9e4029dd3b2977ad2ed819caf' } 
+    Plug 'SirVer/ultisnips', { 'for': ['tex', 'markdown', 'snippets', 'python'], 'commit': '96026a4df27899b9e4029dd3b2977ad2ed819caf' } 
     
     "" Colors and other niceties
-    Plug '$HOME/git/vim-airline'
-    " Plug 'vim-airline/vim-airline-themes'
+    Plug 'hoob3rt/lualine.nvim'
     Plug 'junegunn/goyo.vim'
-    Plug 'junegunn/limelight.vim' " Performance cost is too high
-   
+    Plug 'junegunn/limelight.vim'
+    Plug 'kyazdani42/nvim-web-devicons'
 else
     echomsg 'Tmp file: not loading some plugins'
 endif
 call plug#end()
 
-"" vim-ripple
+
+""""""""""""""""""""""" Colorscheme """"""""""""""""""""""""""""""""""
+colorscheme OceanicNext
+
+
+""""""""""""""""""""""" vim-ripple """""""""""""""""""""""""""""""""""
 " The python one is strongly informed by https://github.com/urbainvaes/vim-ripple/issues/20
 let g:ripple_repls = {
-            \ 'python': ['ptpython --vi', "\<c-u>\<esc>[200~", "\<esc>[201~\<cr>\<cr>", 1] 
+            \ 'python': ['ptpython --vi', "", "\<cr>", 0],
+            \ 'javascript': ['deno', "", "\<cr>", 0],
+            \ 'typescript': ['deno', "", "\<cr>", 0] 
             \ }
+let g:ripple_enable_mappings=0 " Disable default mappings (which are mostly Ctrl based and suck)
 
-let g:ripple_enable_mappings=0
-" Use whatever python3 virtualenv is currently activated.
-" Means I have to install pynvim in every venv, but makes life easier.
-let g:python3_host_prog=substitute(system("which python3"), "\n", '', 'g')
+" Vim-ripple
+" Open repl
+nmap <leader>ro <Plug>(ripple_open_repl)
+" Send  text contained in next motion to repl
+nmap <leader>r <Plug>(ripple_send_motion)
+" In select mode, send selection
+xmap <leader>r <Plug>(ripple_send_selection)
+" Send line. Two r's to make it simple.
+nmap <leader>rr <Plug>(ripple_send_line)
 
-"" Vim-repl
-"" https://github.com/sillybun/vim-repl#setting
-" Check if we're in a venv. g:python3_host_prog should be set
-" to the executable from the venv already from the line above.
-" let s:venv_activate_path = substitute(g:python3_host_prog, 'python$', 'activate')
-" if filereadable()
-    " let g:repl_python_pre_launch_command = 'source "
-" Choose the repl program by filetype
-let g:repl_program = { 
-            \ 'python' : ['ptpython']
-            \ }
 
-"" Match tag always
-let g:mta_filetypes = {
-    \ 'html' : 1,
-    \ 'xhtml' : 1,
-    \ 'xml' : 1,
-    \ 'jinja' : 1,
-    \ 'typescriptreact' : 1,
-    \}
 
-"" Netrw sort by time in descending order
-let g:netrw_sort_by='time'
-let g:netrw_sort_direction='reverse'
-
-"" vim-test
-let test#strategy = "dispatch"
-
-"" dispatch.vim
-let g:dispatch_tmux_height = 10 " Foundt this by reading dispatch.vim source code
-
+"""""""""""""""""""""""""""" vimtex """""""""""""""""""""""""""""""""
 "" Vimtex settings
 let g:tex_flavor='latex'
 let g:vimtex_view_method='zathura'
@@ -125,40 +147,7 @@ let g:vimtex_quickfix_ignore_filters = [ '\v(Under|Over)full \\(h|v)box'] " Igno
 let g:vimtex_quickfix_open_on_warning=0
 
 
-"" ALE Settings
-let g:airline#extensions#ale#enabled = 0 " Show status using vim airline
-let g:ale_fix_on_save = 0
-" Diagnostics
-let g:ale_linters_explicit=1 " Only lint with linters I explicitly I ask for
-let g:ale_echo_msg_format = '%linter%:%severity%:%code:%%s' " Nice to know which linter is dissatisfied
-let g:ale_virtualtext_delay = 0
-let g:ale_lint_on_enter = 0
-
-set updatetime=200  " Trigger ALEHover quicker
-let g:ale_cursor_detail = 0 " Show ale diagnostics regarding current line automatically with cursor changing lines
-let g:ale_floating_preview = 1
-
-" Completion
-let g:ale_completion_enabled = 1
-let g:ale_completion_delay = 0
-let g:ale_completion_autoimport = 1
-" Make ALE more readable
-highlight link ALEVirtualTextError Exception
-highlight link ALEError DiffDelete
-
-augroup HoverAfterComplete                                                        
-    autocmd!                                                                    
-    " display argument list of the selected completion candidate using ALEHover
-    autocmd User ALECompletePost ALEHover                                       
-augroup END
-
-
-"" Ultisnips
-let g:UltiSnipsExpandTrigger = "<A-e>"
-let g:UltiSnipsJumpForwardTrigger = "<A-f>"
-let g:UltiSnipsJumpBackwardTrigger = "<A-b>"
-
-
+""""""""""""""""""""""" lnvimrc.vim """"""""""""""""""""""""""""""""
 "" Local vimrc
 let g:localvimrc_debug=1
 let g:localvimrc_name=['.lnvimrc']
@@ -168,9 +157,8 @@ let g:localvimrc_whitelist = [ fnamemodify('~', ':p') ]
 " Disable "sandbox" mode
 let g:localvimrc_sandbox=0
 
-"" Stuff I wish was in ftplugin/, but doesn't work there.
-" Jedi takes over a bunch of key mappings if I don't do this
-let g:jedi#auto_initialization = 0
+
+""""""""""""""""""""""""" session.vim """""""""""""""""""""""""""""""
 " Set latex filetypes as tex, not plaintex
 let session_file=".Session.vim"
 " https://github.com/tpope/vim-obsession/issues/17
@@ -194,222 +182,41 @@ augroup ObsessionGroup
       \ endif
 augroup END
 
-"" Colors
-" https://browntreelabs.com/base-16-shell-and-why-its-so-awsome/
-" if filereadable(expand("~/.vimrc_background"))
-  " let base16colorspace=256
-  " source ~/.vimrc_background
-" endif
 
-"" Airline
+""""""""""""""""""""" vim-airline """""""""""""""""""""""""""""""""""
 " Status line theme is whatever base16 theme I am using
 " let g:airline_theme='base16'
 let g:airline_theme='oceanicnext'
 " No error messages about whitespaces please
 let g:airline#extensions#whitespace#enabled = 0
 
-"" Netrw
-" Allow netrw to remove non-empty local directories
-let g:netrw_localrmdir='rm -r'
-" Make netrw moving work 
-let g:netrw_keepdir=1
 
-
-"" Markdown related
-set conceallevel=2
-let g:vim_markdown_conceal = 1
+"""""""""""""""""""""""" vim-markdown """""""""""""""""""""""""""""""
 " Markdown fenced languages support
 " Thanks to https://thoughtbot.com/blog/profiling-vim, I now know that the following is
 " what causes slow open times for markdown files.
-let g:markdown_fenced_languages = []
+let g:markdown_fenced_languages = ['json', 'bash']
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
 """ Markdown, make preview available remotely (ie, serve on 0.0.0.0, not localhost)
 let g:mkdp_open_to_the_world = 1
-
-"" Tree-sitter https://github.com/nvim-treesitter/nvim-treesitter
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  highlight = {
-      enable = true
-      }, 
-  indent = {
-    enable = true
-  }
-}
-EOF
-
-
-" Disable indenting lines more than necessary when typing :
-" This doens't work in ftplugin/python.vim or after/python.vim.
-" https://stackoverflow.com/a/37889460/13664712
-autocmd FileType python setlocal indentkeys-=<:>
-autocmd FileType python setlocal indentkeys-=:
-
-" Automatically save views
-augroup SaveViewsOnEnter
-  autocmd BufWinLeave *.* mkview
-  autocmd BufWinEnter *.* silent! loadview 
-augroup END
-
-
-" Other vim preferences
-set splitbelow
-set splitright
-set nohlsearch " Don't higlight all matches
-set incsearch " Incremental search highlight
-" Add parenthesis to vaid filename chars for completion
-set isfname+=(
-set isfname+=)
-set completeopt=menu,menuone,noinsert,noselect,preview
-" Enable backspace on everything
-set backspace=indent,eol,start 
-set mouse+=a " Resize vim splists with a mouse when inside tmux
-set colorcolumn=+1 " Draw a line at wrapwidth
-let &grepprg='rg -nH' " Use ripgrep as a grep program
-
-"""""" Mappings
-""""""
-" Change leader
-let mapleader = ","
-let maplocalleader = ","
-
-" WHen in visual/select/operator mode, I want searching with / to be an inclusive
-" motion. This is acheived by doing /pattern/e, but I don't wanna have to type
-" that /e everytime so:
-vnoremap / //e<Left><Left>
-onoremap / //e<Left><Left>
-
-" ]s means go to next spelling error.
-nnoremap  <Leader>s ]s1z=<C-X><C-S>
-
-" https://castel.dev/post/lecture-notes-1/#correcting-spelling-mistakes-on-the-fly
-" Insert mode, correct last error.
-inoremap <C-s> <c-g>u<Esc>[s1z=`]a<c-g>u
-
-" <tab> in visual mode starts goes into insert mode with UltiSnips ready to
-" integrate the visual selection into an expanded snippet.
-xmap  <tab> :call UltiSnips#SaveLastVisualSelection()<CR>gvc
-
-" Vim-ripple
-" Open repl
-nmap <leader>ro <Plug>(ripple_open_repl)
-" Send  text contained in next motion to repl
-nmap <leader>r <Plug>(ripple_send_motion)
-" In select mode, send selection
-xmap <leader>r <Plug>(ripple_send_selection)
-" Send line. Two r's to make it simple.
-nmap <leader>rr <Plug>(ripple_send_line)
-
-
-" Dispatch related shortcuts
-" open and close quickfix
-nnoremap <Leader>qo :copen<CR>
-nnoremap <Leader>qc :cclose<CR>
- 
-" make using compiler in bg
-nnoremap m<CR>  :Make!<CR>
-
-" Same pattern for loclist
-nnoremap <Leader>lo :lopen<CR>
-nnoremap <Leader>lc :lclose<CR>
-
-" cr stands for 'config reload'
-nnoremap <Leader>cr :source $MYVIMRC <bar> let &filetype=&filetype <bar> LocalVimRC<CR>
-
-
 augroup MarkdownRelated
     au!
 	au FileType markdown nmap <Leader>m <Plug>MarkdownPreviewToggle<CR>
 augroup END
 
-" Expand * to do cross file search when prefixed by <leader>f
-nnoremap <Leader>f* :execute 'Rg ' . expand('<cword>')<CR> 
-vnoremap <Leader>f y:execute 'Rg ' . @0<CR> 
-" second f for search in directory of current *F*ile
-nnoremap <Leader>ff :execute 'Files' . expand('%:p:h')<CR> 
-" c for current dir
-nnoremap <Leader>fc :Files<CR> 
-nnoremap <Leader>fr :Rg<CR>
-" Search through buffers and history
-nnoremap <Leader>fh :History<CR> 
-nnoremap <Leader>f: :History:<CR> 
-nnoremap <Leader>f/ :History/<CR>
-nnoremap <Leader>fb :Buffers<CR> 
-" Go to LSP symbols
-nnoremap <Leader>fs :Vista finder<CR>
 
-" Run tests
+""""""""""""""""""" vim-test """""""""""""""""""""""""""
+let test#strategy = "dispatch"
+let g:dispatch_tmux_height = 10 " Foundt this by reading dispatch.vim source code
+
 nmap <silent> <leader>tn :TestNearest<CR>
 nmap <silent> <leader>tf :TestFile<CR>
 nmap <silent> <leader>ts :TestSuite<CR>
 nmap <silent> <leader>tl :TestLast<CR>
 nmap <silent> <leader>tv :TestVisit<CR>
 
-
-" Neovim's terminal mode, escape with Ctrl-P which happens to
-" be my Tmux "leader" key, which works great cuz I don't see
-" a reason to use Neovim's :terminal inside tmux.
-tnoremap <C-p> <C-\><C-n>
-
-" ALE mappings
-nnoremap <silent> <Leader>ah :ALEHover<CR>
-" ad is taken by ALEDocumentation
-nnoremap <silent> <Leader>aj :ALEDetail<CR>
-nnoremap <silent> <Leader>af :ALEFix<CR>
-nnoremap <silent> <Leader>ai :ALEInfo<CR>
-nnoremap <silent> <Leader>au :ALEFindReferences<CR>
-nnoremap <silent> <Leader>al :ALELint<CR>
-nnoremap <silent> <Leader>aa :ALECodeAction<CR>
-nnoremap <silent> <Leader>ad :ALEGoToDefinition<CR>
-nnoremap <silent> <Leader>at :ALEGoToTypeDefinition<CR>
-nnoremap <silent> <Leader>ar :ALERename<CR>
-" restart ('quit' is the mnemonic. Go figure.)
-nnoremap <silent> <leader>aq :ALEDisable <bar> ALEStopAllLSPs <bar> ALEEnable <bar> ALELint<cr>
-
-" https://vi.stackexchange.com/questions/11476/
-fun! GetCharAtOffset(offset)
- let l:offset = col('.') + a:offset - 1
- if l:offset < 0
-     return ""
- endif
- let l:res = strcharpart(strpart(getline('.'), l:offset), 0, 1)
- echom "CharAtOffset ='" . l:res . "'"
-  return l:res
-endfun
-
-
-function! WhenTabKeyPressed()
-    if pumvisible()
-        return "\<C-n>"
-    else
-        " \k uses &iskeyword
-        if GetCharAtOffset(-1) =~ '\k'
-            return "\<C-x>\<C-o>"
-        else
-            " TODO: This should be result of pressing <tab> according to all the vars like expandtab, ...etc, that is, not necessarily a tab character.
-            return "  " 
-        endif
-    endif
-endfunction 
-
-inoremap <expr> <tab> WhenTabKeyPressed()
-inoremap <expr> <s-tab> pumvisible() ? "\<C-p>" : "\<s-tab>"
-inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" Jedi mappings
-nnoremap <Leader>ju :call jedi#usages()<CR>
-nnoremap <Leader>jk :call jedi#show_documentation()<CR>
-nnoremap <Leader>jd :call jedi#goto_definitions()<CR>
-nnoremap <Leader>ja :call jedi#goto_assignments()<CR>
-nnoremap <Leader>jt :call jedi#goto_stubs()<CR>
-nnoremap <Leader>jr :call jedi#rename()<CR>
-let g:jedi#auto_initialization=0  " Don't take over mappings, autocomplete, etc.
-let g:jedi#completions_enabled=0 " Mycomplete
-let g:jedi#show_call_signatures=2  " Show ginatures in window
-let g:jedi#show_call_signatures_delay=0 " Show ginatures in window
-
-"" Fugutive mappings
+"""""""""""""""""""" fugitive.vim """""""""""""""""""""""
 nnoremap <Leader>gs :Git!<CR>
 nnoremap <Leader>gd :Gdiffsplit<CR>
 nnoremap <Leader>gc :Git commit<CR>
@@ -419,7 +226,7 @@ nnoremap <Leader>gr :Gpull --rebase<CR>
 nnoremap <Leader>gp :Gpush<CR>
 nnoremap <Leader>gg :Git 
 
-"" Limelight and Goyo
+"""""""""""""""""""" limelight.vim """"""""""""""""""""""""""""
 let g:limelight_paragraph_span=5
 let g:limelight_bop = '^'
 let g:limelight_eop = '$'
@@ -427,6 +234,8 @@ let g:limelight_eop = '$'
 " This exists() trick below was taken by reading limelight src at
 " autoload/limelight.vim
 let s:ll_was_on=0
+"
+"""""""""""""""""""" goyo.vim """"""""""""""""""""""""""""
 function! s:fzf_enter()
    let s:ll_was_on=exists("#limelight")
    " Limelight!
@@ -455,7 +264,7 @@ endif
 function! GoyoToggle()
     if ! g:goyo_on
         if &textwidth > 0 " If we're doing hard wrapping
-            " + 3 for good measure (aka error indicators from ALE)
+            " + 3 for good measure (aka error indicators)
             execute 'Goyo ' &textwidth + 3 
         else
             Goyo
@@ -492,9 +301,8 @@ endfunction
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
-"" vim-tmux-navigator
-" Map the keys used in normal mode for tmux/vim navigation in insert mode 
-" as well
+
+"""""""""""""""""""" vim-tmux-navigator """""""""""""""""""""""""
 inoremap <C-j> <C-\><C-o>:TmuxNavigateDown<CR>
 inoremap <C-k> <C-\><C-o>:TmuxNavigateUp<CR>
 inoremap <C-h> <C-\><C-o>:TmuxNavigateLeft<CR>
@@ -505,68 +313,47 @@ tnoremap <C-k> <C-\><C-n>:TmuxNavigateUp<CR>
 tnoremap <C-h> <C-\><C-n>:TmuxNavigateLeft<CR>
 tnoremap <C-l> <C-\><C-n>:TmuxNavigateRight<CR>
 
-" for vim 8
-if (has("termguicolors"))
-    set termguicolors
-endif
-colorscheme OceanicNext
 
-""" Allow a 'computer dependent' initialization
+"""""""""""""""""""""" netrw """""""""""""""""""""""
+let g:python3_host_prog=substitute(system("which python3"), "\n", '', 'g')
+let g:netrw_localrmdir='rm -r' " Allow netrw to remove non-empty local directories
+let g:netrw_keepdir=1 " Make netrw moving work 
+let g:netrw_sort_by='time' " Netrw sort by time in descending order
+let g:netrw_sort_direction='reverse'
+
+""""""""""""""""""""""""" Ultisnips """""""""""""""""""""""""""""""""'
+" The only reason this section is here is because I need to define the
+" following function to get ultisnips and nvim-compe working the way I want
+" them to.
+function! UltiSnips_IsExpandable()
+return !(
+  \ col('.') <= 1
+  \ || !empty(matchstr(getline('.'), '\%' . (col('.') - 1) . 'c\s'))
+  \ || empty(UltiSnips#SnippetsInCurrentScope())
+  \ )
+endfunction
+
+
+""""""""""""""" Plugin configuration separated out to files """"""""
+lua <<EOF
+require 'plugin_config.nvim_compe'
+require 'plugin_config.telescope'
+require 'plugin_config.lsp_config'
+require 'plugin_config.lspsaga'
+require 'plugin_config.symbols_outline'
+require 'plugin_config.nvim_treesitter'
+require 'plugin_config.nvim_treesitter_textobjects'
+require 'plugin_config.lsp_signature'
+require 'plugin_config.trouble'
+require 'plugin_config.lualine'
+require 'plugin_config.formatter'
+EOF
+luado vim.lsp.set_log_level("debug")
+
+
+"""""""""""""""""""""""""" Secondary init file """""""""""""""""""""""""""""
+" Include a "secondary" init file that is machine-specific (ie, not racked in this repo)
 let s:secondary_init_vim=expand('~/.secondary.init.vim')
 if filereadable(s:secondary_init_vim)
     execute 'source' s:secondary_init_vim
 endif
-
-" function! IsAhead(first, second)
-"     if type(a:first) == v:t_dict
-"         let l:first = [ a:first["lnum"], a:first["col"] ]
-"     else
-"         let l:first = a:first
-"     endif
-"     if type(a:second) == v:t_dict
-"         let l:second = [ a:second["lnum"], a:second["col"] ]
-"     else
-"         let l:second = a:second
-"     endif
-"     if ( (l:first[0] > l:second[0]) || l:first[0] == l:second[0] && l:first[1] > l:second[1] )
-"         return 1
-"     elseif ( l:first[0] == l:second[0] && l:first[1] == l:second[1] )
-"         return 0
-"     else
-"         return -1
-"     endif
-" endfunction
-" 
-" 
-" " Vim-unimpaired maps ]l and [l to :lprev and :lnext, but 
-" " :lprev and :lnext are relative to an internal marker that is
-" " initiated to 1 every time the loclist is populated. 
-" " I want ]l and [l to be relative to the current line, such that
-" " ]l jumps to the closest location list item after/below cursor, 
-" " and analogously for [l.
-" function! LoclistRelative(ahead)
-"     let [l:_, l:curlnum, l:curcol; l:_] = getcurpos()
-"     let l:loclist = getloclist(0, ['lnum', 'col'])
-"     if empty(l:loclist)
-"         return
-"     endif
-" 
-"     let l:curloc = [l:curlnum, l:curcol]
-" 
-"     " Binary search for loc
-"     let [l:low, l:high] = [0, len(l:loclist)]
-" 
-"     while 1
-"         " Below condition means we've found the closest thing
-"         if l:low == l:high - 1
-"             if a:ahead
-"                 echo l:loclist[l:high]
-"             else
-"                 echo l:loclist[l:low]
-" 
-"     if l:low == l:high 
-"         if IsAhead(l:loclist[l:low], l:curloc)
-"             " This confirms the binary search has narrowed down
-"             
-" endfunction
-"

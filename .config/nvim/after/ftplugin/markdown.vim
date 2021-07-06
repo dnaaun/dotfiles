@@ -14,7 +14,6 @@ set spell
 
 "  Make bold, italics, and so forth
 let g:vim_markdown_conceal=1
-set conceallevel=2
 
 " Spelling corrections are quicker when completion inserts the first match (or subsequent matches)
 " without having to press a combo.

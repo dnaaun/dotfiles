@@ -11,6 +11,7 @@ settings:
   bindings.commands:
     global:
       normal:
+        Ctrl-O: tab-prev
         T: set-cmd-text -sr :tab-select
         sf: hint scrollable
         tf: hint toc
@@ -24,13 +25,22 @@ settings:
   completion.shrink:
     global: true
   content.blocking.enabled:
-    global: true
+    global: false
   content.blocking.method:
     global: adblock
-  content.javascript.enabled:
+  content.javascript.can_access_clipboard:
     global: true
+  content.javascript.enabled:
+    global: false
   content.register_protocol_handler:
     https://mail.google.com?extsrc=mailto&url=%25s: true
+  editor.command:
+    global:
+    - xterm
+    - -e
+    - vim {file}
+  editor.encoding:
+    global: utf-8
   tabs.background:
     global: true
   tabs.wrap:

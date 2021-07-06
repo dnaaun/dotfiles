@@ -1,10 +1,4 @@
 set expandtab
-" show existing tab with 2 spaces width
-set tabstop=2
-set softtabstop=2
-" when indenting with '>', use 2 spaces width
-set shiftwidth=2
-
-""" Coc settings
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call CocActionAsync('doHover')<CR>
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4

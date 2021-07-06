@@ -17,12 +17,13 @@ def count_lines(f_: TextIO, chunksize=2 ** 12) -> int:
     return count
 
 def main(
-    total: int = 8537, dir_: Path = Path("."), glob: str = "*.jsonl", file_: Path=None, period: float = 2
+    total: int,  dir_: Path = Path("."), glob: str = "*.jsonl", file_: Path=None, period: float = 2
 ) -> None:
     
     first_time = time.time()
 
     in_file = 0
+    open_file = None
     if file_:
         open_file =  file_.open()
         in_file = count_lines(open_file)
@@ -37,7 +38,8 @@ def main(
             new_time = time.time()
             in_dir = len(list(dir_.glob(glob)))
 
-            if file_: in_file = count_lines(open_file)
+            in_file = 0
+            if open_file: in_file = count_lines(open_file)
 
             new_count =  in_dir+ in_file
 

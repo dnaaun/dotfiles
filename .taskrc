@@ -7,7 +7,7 @@ report._reviewed.sort=reviewed+,modified+
 report._reviewed.filter=( reviewed.none: or reviewed.before:now-6days ) and ( +PENDING or +WAITING )
 include ~/.config/taskwarrior/themes/base16-monokai.theme
 taskd.server=freecinc.com:53589
-taskd.key=\/home\/davidat\/.task\/freecinc_b087ab45.key.pem
-taskd.certificate=\/home\/davidat\/.task\/freecinc_b087ab45.cert.pem
-taskd.ca=\/home\/davidat\/.task\/freecinc_b087ab45.ca.pem
-taskd.credentials=FreeCinc\/freecinc_b087ab45\/2eb1bdcd-3a3a-42cb-a104-c4af1ac5e9e3
+taskd.key=\/home\/davidat\/git\/taskwarrior\/freecinc_keys\/freecinc_4adeea2f.key.pem
+taskd.certificate=\/home\/davidat\/git\/taskwarrior\/freecinc_keys\/freecinc_4adeea2f.cert.pem
+taskd.ca=\/home\/davidat\/git\/taskwarrior\/freecinc_keys\/freecinc_4adeea2f.ca.pem
+taskd.credentials=FreeCinc\/freecinc_a77180ec\/861d3883-3522-46ea-b0a1-b98024928f79

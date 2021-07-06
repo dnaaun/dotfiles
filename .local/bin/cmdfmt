@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+"""
+Format "bash commands"
+"""
+
+import sys
+import shlex
+from typer.main import Typer
+from typer import Option
+
+app = Typer()
+
+
+@app.command()
+def main(max_width: int = Option(80, "--max-width", '-m')):
+    sys.stderr.write("ERROR: This script is not yet finished.")
+    return 1
+
+    txt = sys.stdin.read()
+    if ';' in txt:
+        sys.stderr.write("WARNING: cmdfmt currently supports single lines of bash commands."
+                         " The input had a ';' which is usually used to delimit bash commands."
+                         )
+    parts = shlex.split(txt)
+
+    if len(parts) == 0:
+        sys.stderr.write("ERROR: No text passed.")
+        return 1
+
+    output_lines = [parts[0]]
+
+    current_line = ""
+    for part in parts:
+        if len(current_line) >= max_width:
+            output_lines.append(current_line)
+            current_line = ""
