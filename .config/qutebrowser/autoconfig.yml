@@ -31,7 +31,7 @@ settings:
   content.javascript.can_access_clipboard:
     global: true
   content.javascript.enabled:
-    global: false
+    global: true
   content.register_protocol_handler:
     https://mail.google.com?extsrc=mailto&url=%25s: true
   editor.command:
