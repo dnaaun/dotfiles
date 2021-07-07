@@ -1,17 +1,30 @@
-prettier = function()
-    return {
-        exe = "prettier",
-        args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0), '--single-quote'},
-        stdin = true
-    }
+jsx_prettier = function()
+  return {
+    exe = "prettier",
+    args = {"--parser", "babel", "--stdin-filepath", vim.api.nvim_buf_get_name(0), '--single-quote'},
+    stdin = true
+  }
 end
+
+local filetype = {}
+filetype['javascript'] =  {
+      function()
+        return {
+          exe = "prettier",
+          args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0), '--single-quote'},
+          stdin = true
+        }
+      end
+    }
+
+filetype['javascript.jsx'] = {jsx_prettier }
+
+
+
 
 require('formatter').setup({
   logging = false,
-  filetype = {
-    javascript = {prettier},
-    javascriptreact = {prettier},
-  }
+  filetype = filetype
 })
 
 

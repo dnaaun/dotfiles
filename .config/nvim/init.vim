@@ -59,7 +59,7 @@ if (s:NOT_IN_TEMP_FILE)
     
     " General coding
     Plug 'neovim/nvim-lspconfig' " Neovim's builtin LSP client
-    Plug 'glepnir/lspsaga.nvim' " A "light-weight lsp plugin"
+    Plug 'glepnir/lspsaga.nvim', { 'branch': 'main'} " A "light-weight lsp plugin"
     Plug 'hrsh7th/nvim-compe' " Auto completion for neovim
     Plug 'urbainvaes/vim-ripple', {'for': ['javascript', 'typescript', 'python'] } " Send code to REPLs easily
     Plug 'mfussenegger/nvim-dap' " TODO: Set this up to replace vim-ripple.
@@ -68,18 +68,22 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'nvim-treesitter/nvim-treesitter-textobjects' " Text objects based on syntax trees!!
     Plug 'famiu/nvim-reload' " Adds :Reload and :Restart to make reloading lua easier
     Plug 'ray-x/lsp_signature.nvim' " Show func signatures automatically
-    Plug 'folke/trouble.nvim' " Basically a slightly nicer loclist that works well with Neovim's LSP and Telescope
+    Plug 'folke/trouble.nvim', { 'branch': 'main'} " Basically a slightly nicer loclist that works well with Neovim's LSP and Telescope
     Plug 'mhartington/formatter.nvim' " Replace ALE's formatting
+
+    " JSX
+    Plug 'maxmellon/vim-jsx-pretty' " I hope this fixes indentation for jSX until TreeSitter supports JSX.
 
     " Python
     Plug 'vim-test/vim-test', { 'for': ['python'] }
     Plug 'tpope/vim-dispatch', { 'for': ['python'] } " Here only cuz vim-test
 
+
     " (Fuzzy) search everything!
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim'
-    Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+    Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'branch': 'main', 'do': 'make' }
 
 
     Plug 'tpope/vim-unimpaired' "" TPope makes vim sane
@@ -104,7 +108,8 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'SirVer/ultisnips', { 'for': ['tex', 'markdown', 'snippets', 'python'], 'commit': '96026a4df27899b9e4029dd3b2977ad2ed819caf' } 
     
     "" Colors and other niceties
-    Plug 'hoob3rt/lualine.nvim'
+    " Breaks when I do :Reload
+    Plug 'vim-airline/vim-airline'
     Plug 'junegunn/goyo.vim'
     Plug 'junegunn/limelight.vim'
     Plug 'kyazdani42/nvim-web-devicons'
@@ -345,10 +350,8 @@ require 'plugin_config.nvim_treesitter'
 require 'plugin_config.nvim_treesitter_textobjects'
 require 'plugin_config.lsp_signature'
 require 'plugin_config.trouble'
-require 'plugin_config.lualine'
 require 'plugin_config.formatter'
 EOF
-luado vim.lsp.set_log_level("debug")
 
 
 """""""""""""""""""""""""" Secondary init file """""""""""""""""""""""""""""
