@@ -1,1 +1,1 @@
-let b:ale_fixers = { 'json': [ 'jq' ] }
+setlocal formatprg='jq'

@@ -1,5 +1,3 @@
-set omnifunc=vimtex#complete#omnifunc
-
 " tex-conceal.vim
 set conceallevel=2
 let g:tex_conceal='abdmg'
@@ -19,10 +17,6 @@ setlocal softtabstop=2
 " when indenting with '>', use 2 spaces width
 setlocal shiftwidth=2
 
-" ALE Config
-let b:ale_linters = { 'tex': ['chktex' ] }
-let b:ale_fixers = { 'tex': [ 'latexindent', 'remove_trailing_lines', 'trim_whitespace'] }
-
 " Suggestion of vimtex docs 
 " To enable adding latex environments using vim-surround
 let b:surround_{char2nr('e')} = "\\begin{\1environment: \1}\n\t\r\n\\end{\1\1}"
@@ -32,9 +26,6 @@ let b:surround_{char2nr('c')} = "\\\1command: \1{\r}"
 set nohlsearch
 set formatoptions-=c " Don't insert bullet on auto-wrap
 set spell
-
-" When editing tex, noselect is not desired
-set completeopt-=noselect
 
 
 " We're taking notes here, stop fussing over quotes chktex
@@ -46,5 +37,3 @@ let b:ale_tex_chktex_options .= ' -n 13' " Enter sentence spacing.
 let b:ale_tex_chktex_options .= ' -n 26' " Allow punctuation to follow whitespace
 
 let b:ale_tex_latexindent_options  = '-m'
-
-let b:ale_fix_on_save = 1
