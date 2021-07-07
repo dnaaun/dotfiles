@@ -1,3 +1,4 @@
+.tmux.yaml
 .venv
 .venv/
 .git/
