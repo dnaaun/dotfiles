@@ -16,6 +16,14 @@ filetype['javascript'] =  {
         }
       end
     }
+filetype['python'] = {
+    function()
+        return {
+            exe = "black",
+            stdin = false
+        }
+    end
+}
 
 filetype['javascript.jsx'] = {jsx_prettier }
 
@@ -56,3 +64,4 @@ end
 vim.api.nvim_set_keymap("n", "gq", "<cmd>lua format_range_operator()<CR>", {noremap = true})
 vim.api.nvim_set_keymap("v", "gq", "<cmd>lua format_range_operator()<CR>", {noremap = true})
 vim.api.nvim_set_keymap("n", "gqq", "<cmd>lua format_range_operator()<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "gqg", "<cmd>Format<CR>", {noremap = true})

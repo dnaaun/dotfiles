@@ -8,8 +8,8 @@ require'compe'.setup {
   preselect = "always";
 
   source = {
-    nvim_lsp = true;
     ultisnips = true;
+    nvim_lsp = true;
     calc = true;
     path = true;
   };
@@ -47,10 +47,12 @@ _G.tab_complete = function()
     else
 
     if ultisnips_is_loaded() then
-        vim.fn.call("UltiSnips#ExpandSnippetOrJump", {})
-        print("Callling things")
-        -- the above call will set the following
-        if vim.g.ulti_expand_or_jump_res > 0 then
+        vim.fn.call("UltiSnips#JumpForwards", {})
+	if vim.g.ulti_jump_forwards_res > 0 then
+	    return t ""
+        end
+        vim.fn.call("UltiSnips#ExpandSnippet", {})
+        if vim.g.ulti_expand_res > 0 then
             return t ""
         end
     end

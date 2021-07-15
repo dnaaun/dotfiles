@@ -6,10 +6,13 @@ require'nvim-treesitter.configs'.setup {
     },
     indent = {
         enable = true,
-        disable = { 'javascriptreact', 'jsx', 'javascript.jsx' } 
+        disable = {'python'} 
     },
     incremental_selection = {
       enable = true,
-        disable = { 'javascriptreact', 'jsx', 'javascript.jsx' } 
+         -- disable = { 'javascriptreact', 'jsx', 'javascript.jsx' } 
     }
 }
+
+local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
+parser_config.tsx.used_by = { "jsx", "javascript.jsx", "javascriptreact" }

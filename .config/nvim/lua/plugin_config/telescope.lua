@@ -4,11 +4,22 @@ require("telescope").setup {
   defaults = {
           generic_sorter =  require'telescope.sorters'.get_fzy_sorter,
           mappings = {
-            i = { ["<c-t>"] = trouble.open_with_trouble },
+            i = {
+              ["<c-t>"] = trouble.open_with_trouble },
             n = { ["<c-t>"] = trouble.open_with_trouble }
           },
   },
   pickers = {
+    buffers = {
+      mappings = {
+        i =  {
+          ["<c-d>"] = "delete_buffer"
+        },
+        n = {
+           ["<c-d>"] = "delete_buffer"
+         }
+       }
+    }
   },
    extensions = {
     fzf = {

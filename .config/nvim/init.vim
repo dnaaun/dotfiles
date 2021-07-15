@@ -57,22 +57,26 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'embear/vim-localvimrc' " Enable sourcing .lnvimrc files
     Plug 'sedm0784/vim-resize-mode' " After doing <C-w>,  be able to type consecutive +,-,<,>
     
-    " General coding
+    " Mostly LSP dependent
     Plug 'neovim/nvim-lspconfig' " Neovim's builtin LSP client
     Plug 'glepnir/lspsaga.nvim', { 'branch': 'main'} " A "light-weight lsp plugin"
+    Plug 'ray-x/lsp_signature.nvim' " Show func signatures automatically
     Plug 'hrsh7th/nvim-compe' " Auto completion for neovim
-    Plug 'urbainvaes/vim-ripple', {'for': ['javascript', 'typescript', 'python'] } " Send code to REPLs easily
-    Plug 'mfussenegger/nvim-dap' " TODO: Set this up to replace vim-ripple.
-    Plug 'simrat39/symbols-outline.nvim' " Either nvim's LSP, or pyright, isn't yielding workspace/symbols, gotta fix that ...
+    Plug 'folke/trouble.nvim', { 'branch': 'main'} " Basically a slightly nicer loclist that works well with Neovim's LSP and Telescope
+
+    " Tree sitter
     Plug 'nvim-treesitter/nvim-treesitter' " Do highlighting, indenting, based on ASTs
     Plug 'nvim-treesitter/nvim-treesitter-textobjects' " Text objects based on syntax trees!!
+
+
     Plug 'famiu/nvim-reload' " Adds :Reload and :Restart to make reloading lua easier
-    Plug 'ray-x/lsp_signature.nvim' " Show func signatures automatically
-    Plug 'folke/trouble.nvim', { 'branch': 'main'} " Basically a slightly nicer loclist that works well with Neovim's LSP and Telescope
     Plug 'mhartington/formatter.nvim' " Replace ALE's formatting
+    Plug 'mfussenegger/nvim-dap' " TODO: Set this up to replace vim-ripple.
+    Plug 'urbainvaes/vim-ripple', { 'branch': 'main' }
 
     " JSX
     Plug 'maxmellon/vim-jsx-pretty' " I hope this fixes indentation for jSX until TreeSitter supports JSX.
+    Plug 'AndrewRadev/tagalong.vim' " When changing tags, change both
 
     " Python
     Plug 'vim-test/vim-test', { 'for': ['python'] }
@@ -86,10 +90,10 @@ if (s:NOT_IN_TEMP_FILE)
     Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'branch': 'main', 'do': 'make' }
 
 
-    Plug 'tpope/vim-unimpaired' "" TPope makes vim sane
+    Plug 'tpope/vim-unimpaired' " TPope makes vim sane
     Plug 'tpope/vim-vinegar' " Better netrw
-    Plug 'tpope/vim-fugitive' "" Git
-    Plug 'tpope/vim-obsession' "" Session management
+    Plug 'tpope/vim-fugitive' " Git
+    Plug 'tpope/vim-obsession' " Session management
 
     "" CSS
     Plug 'ap/vim-css-color', { 'for': ['css'] } " Highlight css colors
@@ -105,13 +109,15 @@ if (s:NOT_IN_TEMP_FILE)
     " Tex
     Plug 'lervag/vimtex', { 'for': 'tex' }
     Plug 'KeitaNakamura/tex-conceal.vim', { 'for': 'tex' }
-    Plug 'SirVer/ultisnips', { 'for': ['tex', 'markdown', 'snippets', 'python'], 'commit': '96026a4df27899b9e4029dd3b2977ad2ed819caf' } 
+    " Ultisnips's neovim support is 'on a best effort basis'
+    " https://github.com/SirVer/ultisnips/issues/801
+    " Plug 'SirVer/ultisnips', { 'for': ['tex'], 'commit': '96026a4df27899b9e4029dd3b2977ad2ed819caf' } 
+    Plug 'hrsh7th/vim-vsnip' 
     
     "" Colors and other niceties
     " Breaks when I do :Reload
     Plug 'vim-airline/vim-airline'
-    Plug 'junegunn/goyo.vim'
-    Plug 'junegunn/limelight.vim'
+    Plug 'folke/zen-mode.nvim', { 'branch': 'main' }
     Plug 'kyazdani42/nvim-web-devicons'
 else
     echomsg 'Tmp file: not loading some plugins'
@@ -123,13 +129,27 @@ call plug#end()
 colorscheme OceanicNext
 
 
+"""""""""""""""""""""""""""" zen-mode """"""""""""""""""""""""""""""""
+noremap <silent> <leader>v :ZenMode<CR>
+
+
+"""""""""""""""""""""""""""" Vim plug """"""""""""""""""""""""""""""""
+" Make it quicker to install plugins
+autocmd BufEnter *.vim nnoremap <buffer> <leader>ci :source %<bar>PlugInstall<CR>
+" Sometimes I just wanna load the current file
+autocmd BufEnter *.vim nnoremap <buffer> <leader>cc :source %<CR>
+
+
 """"""""""""""""""""""" vim-ripple """""""""""""""""""""""""""""""""""
 " The python one is strongly informed by https://github.com/urbainvaes/vim-ripple/issues/20
 let g:ripple_repls = {
-            \ 'python': ['ptpython --vi', "", "\<cr>", 0],
             \ 'javascript': ['deno', "", "\<cr>", 0],
-            \ 'typescript': ['deno', "", "\<cr>", 0] 
+            \ 'javascript.jsx': ['deno', "", "\<cr>", 0],
+            \ 'typescript': ['deno', "", "\<cr>", 0] ,
+            \ 'sh': ['bash', "", "\<cr>", 0] 
             \ }
+let g:ripple_repls['python'] = ['python', "", "\<CR>", 0]
+
 let g:ripple_enable_mappings=0 " Disable default mappings (which are mostly Ctrl based and suck)
 
 " Vim-ripple
@@ -214,12 +234,12 @@ augroup END
 """"""""""""""""""" vim-test """""""""""""""""""""""""""
 let test#strategy = "dispatch"
 let g:dispatch_tmux_height = 10 " Foundt this by reading dispatch.vim source code
-
 nmap <silent> <leader>tn :TestNearest<CR>
 nmap <silent> <leader>tf :TestFile<CR>
 nmap <silent> <leader>ts :TestSuite<CR>
 nmap <silent> <leader>tl :TestLast<CR>
 nmap <silent> <leader>tv :TestVisit<CR>
+
 
 """""""""""""""""""" fugitive.vim """""""""""""""""""""""
 nnoremap <Leader>gs :Git!<CR>
@@ -230,81 +250,6 @@ nnoremap <Leader>gw :Gwrite<CR>
 nnoremap <Leader>gr :Gpull --rebase<CR>
 nnoremap <Leader>gp :Gpush<CR>
 nnoremap <Leader>gg :Git 
-
-"""""""""""""""""""" limelight.vim """"""""""""""""""""""""""""
-let g:limelight_paragraph_span=5
-let g:limelight_bop = '^'
-let g:limelight_eop = '$'
-" When using fzf terminal splits, toggle Limelight.
-" This exists() trick below was taken by reading limelight src at
-" autoload/limelight.vim
-let s:ll_was_on=0
-"
-"""""""""""""""""""" goyo.vim """"""""""""""""""""""""""""
-function! s:fzf_enter()
-   let s:ll_was_on=exists("#limelight")
-   " Limelight!
-   " Limelight listens to this autocmds to start doing things.
-   " This is also from the docs.
-   doautocmd CursorMoved
-endfunction
-function! s:fzf_leave()
-    if &filetype == 'fzf' && s:ll_was_on
-        " Limelight!!
-    endif
-endfunction
-augroup fzf_enter
-    au!
-    autocmd FileType fzf call <SID>fzf_enter()
-    autocmd TermClose * call <SID>fzf_leave()
-augroup END
-" Goyo 
-let g:goyo_height="100%"
-" Variable to keep track of Goyo state to facilitate toggling.
-" Just :Goyo would toggle, except that I want to read textwidth
-" dynamically (and thus do :exec Goyo &tw), which doesn't toggle.
-if ! exists('g:goyo_on')
-    let g:goyo_on = 0
-endif
-function! GoyoToggle()
-    if ! g:goyo_on
-        if &textwidth > 0 " If we're doing hard wrapping
-            " + 3 for good measure (aka error indicators)
-            execute 'Goyo ' &textwidth + 3 
-        else
-            Goyo
-        endif
-
-        let g:goyo_on = 1
-    else
-        Goyo!
-        let g:goyo_on = 0
-    endif
-endfunction
-nmap <silent> <leader>v :call GoyoToggle()<CR>
-function! s:goyo_enter()
-" Make Goyo make tmux panes dissapear
-  if executable('tmux') && strlen($TMUX)
-    silent !tmux set status off
-    silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
-  endif
-  set noshowmode
-  set noshowcmd
-  set scrolloff=999
-  Limelight
-endfunction
-function! s:goyo_leave()
-  if executable('tmux') && strlen($TMUX)
-    silent !tmux set status on
-    silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
-  endif
-  set showmode
-  set showcmd
-  set scrolloff=5
-  Limelight!
-endfunction
-autocmd! User GoyoEnter nested call <SID>goyo_enter()
-autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
 
 """""""""""""""""""" vim-tmux-navigator """""""""""""""""""""""""
@@ -326,6 +271,7 @@ let g:netrw_keepdir=1 " Make netrw moving work
 let g:netrw_sort_by='time' " Netrw sort by time in descending order
 let g:netrw_sort_direction='reverse'
 
+
 """"""""""""""""""""""""" Ultisnips """""""""""""""""""""""""""""""""'
 " The only reason this section is here is because I need to define the
 " following function to get ultisnips and nvim-compe working the way I want
@@ -345,12 +291,12 @@ require 'plugin_config.nvim_compe'
 require 'plugin_config.telescope'
 require 'plugin_config.lsp_config'
 require 'plugin_config.lspsaga'
-require 'plugin_config.symbols_outline'
 require 'plugin_config.nvim_treesitter'
 require 'plugin_config.nvim_treesitter_textobjects'
 require 'plugin_config.lsp_signature'
 require 'plugin_config.trouble'
 require 'plugin_config.formatter'
+require 'plugin_config.zen_mode'
 EOF
 
 
