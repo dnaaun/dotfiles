@@ -92,7 +92,7 @@ def configure(repl):
 
     # Enable open-in-editor. Pressing C-x C-e in emacs mode or 'v' in
     # Vi navigation mode will open the input in the current editor.
-    repl.enable_open_in_editor = True
+    repl.enable_open_in_editor = False
 
     # Enable system prompt. Pressing meta-! will display the system prompt.
     # Also enables Control-Z suspend.
@@ -143,13 +143,11 @@ def configure(repl):
         event.cli.current_buffer.insert_text("\nimport pdb; pdb.set_trace()\n")
     """
 
-    # Typing ControlE twice should also execute the current command.
+    # Typing ControlE once should also execute the current command.
     # (Alternative for Meta-Enter.)
-    """
-    @repl.add_key_binding("c-e", "c-e")
+    @repl.add_key_binding("c-e")
     def _(event):
         event.current_buffer.validate_and_handle()
-    """
 
     # Typing 'jj' in Vi Insert mode, should send escape. (Go back to navigation
     # mode.)

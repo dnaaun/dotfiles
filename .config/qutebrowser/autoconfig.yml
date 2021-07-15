@@ -6,11 +6,19 @@
 
 config_version: 2
 settings:
+  aliases:
+    global:
+      q: close
+      qa: quit
+      w: session-save
+      wq: quit --save
+      wqa: quit --save
   backend:
     global: webengine
   bindings.commands:
     global:
       normal:
+        ',,': config-cycle content.javascript.enabled
         Ctrl-O: tab-prev
         T: set-cmd-text -sr :tab-select
         sf: hint scrollable
@@ -25,7 +33,7 @@ settings:
   completion.shrink:
     global: true
   content.blocking.enabled:
-    global: false
+    global: true
   content.blocking.method:
     global: adblock
   content.javascript.can_access_clipboard:
@@ -41,8 +49,12 @@ settings:
     - vim {file}
   editor.encoding:
     global: utf-8
+  statusbar.show:
+    global: always
   tabs.background:
     global: true
+  tabs.show:
+    global: never
   tabs.wrap:
     global: true
   url.default_page:
