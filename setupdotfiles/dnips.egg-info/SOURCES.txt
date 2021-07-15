@@ -1,0 +1,9 @@
+setup.py
+dnips.egg-info/PKG-INFO
+dnips.egg-info/SOURCES.txt
+dnips.egg-info/dependency_links.txt
+dnips.egg-info/requires.txt
+dnips.egg-info/top_level.txt
+setupdotfiles/__main__.py
+setupdotfiles/daemonize.py
+setupdotfiles/setup_symlinks.py

@@ -1,0 +1,9 @@
+setup.py
+setupdotfiles/__main__.py
+setupdotfiles/daemonize.py
+setupdotfiles/setup_symlinks.py
+setupdotfiles.egg-info/PKG-INFO
+setupdotfiles.egg-info/SOURCES.txt
+setupdotfiles.egg-info/dependency_links.txt
+setupdotfiles.egg-info/requires.txt
+setupdotfiles.egg-info/top_level.txt
