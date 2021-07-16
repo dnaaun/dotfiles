@@ -61,9 +61,9 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
 fi
 
 
-# Enable autocomplete for aliases:
-# https://unix.stackexchange.com/questions/4219/how-do-i-get-bash-completion-for-command-aliases
-source ~/.bash_completion.d/complete_alias
+for comp_file in ~/.bash_completion.d/*; do
+  source "$comp_file"
+done
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -225,10 +225,13 @@ alias xh="xsv headers"
 # lowercase
 alias lower="tr '[:upper:]' '[:lower:]'"
 alias bat=batcat
-alias fd=fdfind
+# Include hidden files by default
+alias fd="fdfind -H"
 complete -F _complete_alias fd
 
+# NO idea why I have this here.
 alias bash="bash --noprofile"
+
 
 # (I tHink) this line must come below the sourcing of /etc/bashcompletion
 # above
@@ -249,4 +252,19 @@ export HISTFILE=~/.bash_eternal_history
 # Setup an alias for previewing JSON
 jeqq () {
   jq -C "$@" | less -r
+}
+
+
+## Load .tmuxp sessions automatically if they are in the current directory
+tm () {
+  if [ -f ".tmuxp.yaml" ]; then
+    tmuxp load -y .tmuxp.yaml
+  else
+    sess_name="${PWD##*/}"
+    if tmux list-sessions | grep "$sess_name" > /dev/null; then
+      tmux attach-session -t "$sess_name"
+    else
+      tmux new-session -s "$sess_name"
+    fi
+  fi
 }

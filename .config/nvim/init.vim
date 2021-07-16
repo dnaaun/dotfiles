@@ -44,85 +44,19 @@ nnoremap gT :luado vim.lsp.buf.type_definition()<CR>
 
 
 """""""""""""""""""""""" Add plugins """""""""""""""""""""""""""""""
-call plug#begin()
-Plug 'mhartington/oceanic-next'
-Plug 'christoomey/vim-tmux-navigator'
-
-" Avoid loading most plugins if we're on a temporary  file (which is the case when 
-" bash launches my $EDITOR to edit my commands), for speed. 
-let s:temp_file_ptrn = '\v^/(tmp|scratch)/.*'
-let s:NOT_IN_TEMP_FILE =  !(expand('%') =~ s:temp_file_ptrn)
-
-if (s:NOT_IN_TEMP_FILE)
-    Plug 'embear/vim-localvimrc' " Enable sourcing .lnvimrc files
-    Plug 'sedm0784/vim-resize-mode' " After doing <C-w>,  be able to type consecutive +,-,<,>
-    
-    " Mostly LSP dependent
-    Plug 'neovim/nvim-lspconfig' " Neovim's builtin LSP client
-    Plug 'glepnir/lspsaga.nvim', { 'branch': 'main'} " A "light-weight lsp plugin"
-    Plug 'ray-x/lsp_signature.nvim' " Show func signatures automatically
-    Plug 'hrsh7th/nvim-compe' " Auto completion for neovim
-    Plug 'folke/trouble.nvim', { 'branch': 'main'} " Basically a slightly nicer loclist that works well with Neovim's LSP and Telescope
-
-    " Tree sitter
-    Plug 'nvim-treesitter/nvim-treesitter' " Do highlighting, indenting, based on ASTs
-    Plug 'nvim-treesitter/nvim-treesitter-textobjects' " Text objects based on syntax trees!!
+lua <<EOF
+require('plugins')
+EOF
 
 
-    Plug 'famiu/nvim-reload' " Adds :Reload and :Restart to make reloading lua easier
-    Plug 'mhartington/formatter.nvim' " Replace ALE's formatting
-    Plug 'mfussenegger/nvim-dap' " TODO: Set this up to replace vim-ripple.
-    Plug 'urbainvaes/vim-ripple', { 'branch': 'main' }
-
-    " JSX
-    Plug 'maxmellon/vim-jsx-pretty' " I hope this fixes indentation for jSX until TreeSitter supports JSX.
-    Plug 'AndrewRadev/tagalong.vim' " When changing tags, change both
-
-    " Python
-    Plug 'vim-test/vim-test', { 'for': ['python'] }
-    Plug 'tpope/vim-dispatch', { 'for': ['python'] } " Here only cuz vim-test
-
-
-    " (Fuzzy) search everything!
-    Plug 'nvim-lua/popup.nvim'
-    Plug 'nvim-lua/plenary.nvim'
-    Plug 'nvim-telescope/telescope.nvim'
-    Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'branch': 'main', 'do': 'make' }
-
-
-    Plug 'tpope/vim-unimpaired' " TPope makes vim sane
-    Plug 'tpope/vim-vinegar' " Better netrw
-    Plug 'tpope/vim-fugitive' " Git
-    Plug 'tpope/vim-obsession' " Session management
-
-    "" CSS
-    Plug 'ap/vim-css-color', { 'for': ['css'] } " Highlight css colors
-
-    "" Writing
-    " Markdown
-    Plug 'plasticboy/vim-markdown', { 'for': ['markdown'] }
-    Plug 'iamcco/markdown-preview.nvim', {
-                \ 'for': ['markdown'],
-                \ 'do': { -> mkdp#util#install() },
-                \ }
-
-    " Tex
-    Plug 'lervag/vimtex', { 'for': 'tex' }
-    Plug 'KeitaNakamura/tex-conceal.vim', { 'for': 'tex' }
-    " Ultisnips's neovim support is 'on a best effort basis'
-    " https://github.com/SirVer/ultisnips/issues/801
-    " Plug 'SirVer/ultisnips', { 'for': ['tex'], 'commit': '96026a4df27899b9e4029dd3b2977ad2ed819caf' } 
-    Plug 'hrsh7th/vim-vsnip' 
-    
-    "" Colors and other niceties
-    " Breaks when I do :Reload
-    Plug 'vim-airline/vim-airline'
-    Plug 'folke/zen-mode.nvim', { 'branch': 'main' }
-    Plug 'kyazdani42/nvim-web-devicons'
-else
-    echomsg 'Tmp file: not loading some plugins'
-endif
-call plug#end()
+""""""""""""""" Lua plugin configuration separated out to files """"""""
+lua <<EOF
+-- Credit to: https://stackoverflow.com/a/46378453
+for filename in io.popen('ls ~/.config/nvim/lua/plugin_config'):lines() do
+    local module_name = string.gsub(filename, "%.lua$", "")
+    require("plugin_config."..module_name)
+end
+EOF
 
 
 """"""""""""""""""""""" Colorscheme """"""""""""""""""""""""""""""""""
@@ -133,9 +67,9 @@ colorscheme OceanicNext
 noremap <silent> <leader>v :ZenMode<CR>
 
 
-"""""""""""""""""""""""""""" Vim plug """"""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""" packer  """"""""""""""""""""""""""""""""
 " Make it quicker to install plugins
-autocmd BufEnter *.vim nnoremap <buffer> <leader>ci :source %<bar>PlugInstall<CR>
+autocmd BufEnter *.vim nnoremap <buffer> <leader>ci :source %<bar>PackerInstall<CR>
 " Sometimes I just wanna load the current file
 autocmd BufEnter *.vim nnoremap <buffer> <leader>cc :source %<CR>
 
@@ -143,12 +77,12 @@ autocmd BufEnter *.vim nnoremap <buffer> <leader>cc :source %<CR>
 """"""""""""""""""""""" vim-ripple """""""""""""""""""""""""""""""""""
 " The python one is strongly informed by https://github.com/urbainvaes/vim-ripple/issues/20
 let g:ripple_repls = {
+            \ "python": ["python", "", "", 0],
             \ 'javascript': ['deno', "", "\<cr>", 0],
             \ 'javascript.jsx': ['deno', "", "\<cr>", 0],
             \ 'typescript': ['deno', "", "\<cr>", 0] ,
             \ 'sh': ['bash', "", "\<cr>", 0] 
             \ }
-let g:ripple_repls['python'] = ['python', "", "\<CR>", 0]
 
 let g:ripple_enable_mappings=0 " Disable default mappings (which are mostly Ctrl based and suck)
 
@@ -162,6 +96,17 @@ xmap <leader>r <Plug>(ripple_send_selection)
 " Send line. Two r's to make it simple.
 nmap <leader>rr <Plug>(ripple_send_line)
 
+
+
+""""""""""""""""""""""" nvim-repl """""""""""""""""""""""""""""""""""
+let g:repl_filetype_commands = {
+    \ 'javascript': 'node',
+    \ }
+let g:repl_filetype_commands['python'] = 'ptpython'
+nmap <leader>ro :ReplOpen<CR>
+nmap <leader>r <Plug>ReplSendMotion
+vmap <leader>r <Plug>ReplSendVisual
+nmap <leader>rr <Plug>ReplSendLine
 
 
 """""""""""""""""""""""""""" vimtex """""""""""""""""""""""""""""""""
@@ -198,7 +143,7 @@ augroup ObsessionGroup
   " Calling Obsession when the session is being recorded would pause the recording,
   " that's why we check if v:this_session is empty.
   autocmd VimEnter * nested
-      \ if !&modified && s:NOT_IN_TEMP_FILE |
+      \ if !&modified |
       \   if !argc() && filereadable(session_file) |
       \   execute "source" session_file |
       \   elseif empty(v:this_session) |
@@ -283,21 +228,6 @@ return !(
   \ || empty(UltiSnips#SnippetsInCurrentScope())
   \ )
 endfunction
-
-
-""""""""""""""" Plugin configuration separated out to files """"""""
-lua <<EOF
-require 'plugin_config.nvim_compe'
-require 'plugin_config.telescope'
-require 'plugin_config.lsp_config'
-require 'plugin_config.lspsaga'
-require 'plugin_config.nvim_treesitter'
-require 'plugin_config.nvim_treesitter_textobjects'
-require 'plugin_config.lsp_signature'
-require 'plugin_config.trouble'
-require 'plugin_config.formatter'
-require 'plugin_config.zen_mode'
-EOF
 
 
 """""""""""""""""""""""""" Secondary init file """""""""""""""""""""""""""""

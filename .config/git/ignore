@@ -1,7 +1,8 @@
-.tmux.yaml
+.tmuxp.yaml
 .venv
 .venv/
 .git/
 .mypy_cache/
 .Session.vim
 venvs/
+*.egg-info/
