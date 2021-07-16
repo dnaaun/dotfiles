@@ -22,13 +22,15 @@ def main() -> int:
             r".*\.git.*",
             r".*README\.md",
             r".*setupdotfiles.*",
-            r".*\.Session\.vim.*",
+            r".*\.Session\.vim",
             r".*submodules.*",
-            r".*\.mypy_cache.*",
-            r".*__pycache__.*",
+            r".*\.mypy_cache/.*",
+            r".*__pycache__/.*",
+            r".*.tmuxp.yaml",
             # Saving in neovim creates these temporary files
-            r".*[0-9]{3,}",
-            r".*\~" 
+            r"/.*[0-9]{3,}",
+            r".*~" 
+            r".*\.st"  # axel temporary file
         ],
     )
     args = parser.parse_args()

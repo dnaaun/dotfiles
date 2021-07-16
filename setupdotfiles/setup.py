@@ -20,5 +20,8 @@ setup(
             "black==19.10b0",
         ]
     },
+    entry_points=dict(
+        console_scripts=['setupdotfiles=setupdotfiles.__main__:main']
+    ),
     python_requires=">=3.6.0",
 )

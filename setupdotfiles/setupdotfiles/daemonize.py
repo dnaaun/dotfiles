@@ -41,9 +41,10 @@ class EventHandler(pyinotify.ProcessEvent):
 
     def _handle_delete_file(self, event: EventProtocol) -> None:
         path = Path(event.pathname)
-        if path.is_dir():
-            return
+        
         to_resolved = self._to / path.relative_to(self._base)
+        if path.is_dir() or not path.exists():
+            return
         if self._dry_run:
             print(f"DELETE {to_resolved}")
         else:
