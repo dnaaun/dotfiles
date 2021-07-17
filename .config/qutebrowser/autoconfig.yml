@@ -54,7 +54,7 @@ settings:
   tabs.background:
     global: true
   tabs.show:
-    global: never
+    global: multiple
   tabs.wrap:
     global: true
   url.default_page:

@@ -11,7 +11,6 @@ setup(
     install_requires=[
         "typing-extensions>=3.7.4.2,<4",
         "python-daemon",
-        "pyinotify"
     ],
     extras_require={
         "dev": [

@@ -18,7 +18,7 @@ return require('packer').startup(function()
     use 'nvim-treesitter/nvim-treesitter-textobjects' -- Text objects based on syntax trees!!
 
 
-    use '~/git/nvim-repl'
+    use 'davidatbu/nvim-repl'
     use 'famiu/nvim-reload' -- Adds :Reload and :Restart to make reloading lua easier
     use 'mhartington/formatter.nvim' -- Replace ALE's formatting
     use 'mfussenegger/nvim-dap' -- TODO: Set this up to replace vim-ripple.

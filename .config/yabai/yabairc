@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# not floating, but tiling
+yabai -m config layout bsp
+
+# Focus follows mouse
+yabai -m config focus_follows_mouse autoraise
+
+# floating windows are always on top
+yabai -m config window_topmost on

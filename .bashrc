@@ -6,15 +6,15 @@ esac
 
 
 ## Fzf + Rg
-export FZF_DEFAULT_COMMAND="fdfind --type f --hidden"
+export FZF_DEFAULT_COMMAND="fd --type f --hidden"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # Fzf completion when typing in ** doesn't use $FZF_DEFAULT_COMMAND. The below
 # is necessary.
 _fzf_compgen_path() {
-  command fdfind . --hidden "$1" 2>/dev/null
+  command fd . --hidden "$1" 2>/dev/null
 }
 _fzf_compgen_dir() {
-  command fdfind . --type d --hidden "$1" 2>/dev/null
+  command fd . --type d --hidden "$1" 2>/dev/null
 }
 
 # enable programmable completion features (you don't need to enable
@@ -35,7 +35,8 @@ fi
 HISTCONTROL=ignoreboth
 
 # Expand shell variables on bash-compleition
-shopt -s direxpand
+# Unsupported on MacOS.
+# shopt -s direxpand
 
 # append to the history file, don't overwrite it
 shopt -s histappend
@@ -226,7 +227,7 @@ alias xh="xsv headers"
 alias lower="tr '[:upper:]' '[:lower:]'"
 alias bat=batcat
 # Include hidden files by default
-alias fd="fdfind -H"
+alias fd="fd -H"
 complete -F _complete_alias fd
 
 # NO idea why I have this here.
@@ -268,3 +269,8 @@ tm () {
     fi
   fi
 }
+
+# Auto start tmux
+if [ -z "$TMUX" ]; then
+  tm
+fi
