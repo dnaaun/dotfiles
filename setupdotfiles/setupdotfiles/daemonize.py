@@ -1,5 +1,4 @@
 import os
-import daemon
 import subprocess
 from typing import List
 from typing_extensions import Protocol
@@ -21,11 +20,12 @@ def Notification(body: str, title: str) -> None:
     subprocess.Popen(['notify-send', title, body])
 
 class EventHandler(pyinotify.ProcessEvent):
-    def my_init(self, base: Path, to: Path, dry_run: bool, force: bool):
+    def my_init(self, base: Path, to: Path, dry_run: bool, force: bool, verbose: bool):
         self._base = base
         self._to = to
         self._dry_run = dry_run
         self._force = force
+        self._verbose = verbose
 
     def process_IN_DELETE(self, event: EventProtocol) -> None:
         self._handle_delete_file(event)
@@ -62,6 +62,7 @@ class EventHandler(pyinotify.ProcessEvent):
             to=self._to,
             dry_run=self._dry_run,
             force=self._force,
+            verbose=self._verbose
         )
         if to_resolved:
             Notification(f"Setup {to_resolved}", "Dotfiles watcher")
@@ -69,13 +70,13 @@ class EventHandler(pyinotify.ProcessEvent):
             Notification(f"Failed to setup {to_resolved}.", "Dotfiles watcher")
 
 def daemonize(
-    base: Path, to: Path, dry_run: bool, force: bool, exclude: List[re.Pattern]
+        base: Path, to: Path, dry_run: bool, force: bool, exclude: List[re.Pattern], verbose: bool
 ) -> None:
-    _daemonize(base, to, dry_run, force, exclude)
+    _daemonize(base, to, dry_run, force, exclude, verbose)
     # with daemon.DaemonContext(pidfile="/tmp/setupdotfiles.pid", detach_process=False):
 
 def _daemonize(
-    base: Path, to: Path, dry_run: bool, force: bool, exclude: List[re.Pattern]
+        base: Path, to: Path, dry_run: bool, force: bool, exclude: List[re.Pattern], verbose: bool
 ) -> None:
 
     mask = (
@@ -85,7 +86,7 @@ def _daemonize(
         | pyinotify.IN_MOVED_TO  # type: ignore
     )
 
-    event_handler = EventHandler(base=base, to=to, dry_run=dry_run, force=force)
+    event_handler = EventHandler(base=base, to=to, dry_run=dry_run, force=force, verbose=verbose)
     wm = pyinotify.WatchManager()
 
     def exclude_func(path: str):

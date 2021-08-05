@@ -37,6 +37,14 @@ require'nvim-treesitter.configs'.setup {
           ["[]"] = "@class.outer",
           ["[K"] = "@comment.outer",
         },
-      }
+      },
+      lsp_interop = {
+      enable = true,
+      border = 'none',
+      peek_definition_code = {
+        ["<leader>ld"] = "@function.outer",
+        ["<leader>lD"] = "@class.outer",
+      },
+    },
   },
 }

@@ -11,7 +11,7 @@ filetype['javascript'] =  {
       function()
         return {
           exe = "prettier",
-          args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0), '--single-quote'},
+          args = {"--parser", "babel", "--stdin-filepath", vim.api.nvim_buf_get_name(0), '--single-quote'},
           stdin = true
         }
       end
@@ -24,8 +24,35 @@ filetype['python'] = {
         }
     end
 }
+filetype['sql'] = {
+	function()
+	return {
+	exe = "pgformatter",
+	args = {"-"},
+	stdin = true
+	}
+	end
+}
+
+filetype['json'] = {
+    function()
+        return {
+            exe = "jq",
+            args = {"."},
+            stdin = true
+        }
+    end
+}
 
 filetype['javascript.jsx'] = {jsx_prettier }
+filetype['htmldjango'] = {
+    function()
+        return {
+            exe = "djhtml",
+            stdin = true
+        }
+    end
+}
 
 
 
@@ -37,7 +64,7 @@ require('formatter').setup({
 
 
 -- Ideas mainly from: https://github.com/neovim/neovim/issues/14680
-function format_range_operator(fmt_line)
+function Format_range_operator(fmt_line)
   fmt_line = fmt_line or false
 
   local old_func = vim.go.operatorfunc  -- ERROR: Error executing lua: <path to init.lua>: attampt to index field 'go' (a nil value)
@@ -45,7 +72,7 @@ function format_range_operator(fmt_line)
     local start
     local finish
 
-    if fmt_line then 
+    if fmt_line then
       start = vim.fn.line('.')
       finish = start
     else
@@ -59,9 +86,7 @@ function format_range_operator(fmt_line)
     _G.op_func_formatting = nil
   end
   vim.go.operatorfunc = 'v:lua.op_func_formatting'
-  vim.api.nvim_feedkeys('g@', 'n', false)
+  vim.api.nvim_feedkeys('g@', 'nt', false)
 end
-vim.api.nvim_set_keymap("n", "gq", "<cmd>lua format_range_operator()<CR>", {noremap = true})
-vim.api.nvim_set_keymap("v", "gq", "<cmd>lua format_range_operator()<CR>", {noremap = true})
-vim.api.nvim_set_keymap("n", "gqq", "<cmd>lua format_range_operator()<CR>", {noremap = true})
-vim.api.nvim_set_keymap("n", "gqg", "<cmd>Format<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "gq", "<cmd>lua Format_range_operator()<CR>", {noremap = true})
+vim.api.nvim_set_keymap("v", "gq", "<cmd>lua Format_range_operator()<CR>", {noremap = true})

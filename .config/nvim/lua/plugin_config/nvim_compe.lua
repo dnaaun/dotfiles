@@ -1,19 +1,4 @@
-require'compe'.setup {
-  enabled = true;
-  autocomplete = true;
-  debug = false;
-  min_length = 1;
-  preselect = 'enable';
-  documentation = true;
-  preselect = "always";
 
-  source = {
-    ultisnips = true;
-    nvim_lsp = true;
-    calc = true;
-    path = true;
-  };
-}
 
 ------------ Enable <tab> and <s-tab> to start and jump through completions
 function _G.dump(...)
@@ -26,7 +11,7 @@ local t = function(str)
   return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
-local check_back_space = function()
+local preceded_by_space = function()
     local col = vim.fn.col('.') - 1
     if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
         return true
@@ -46,18 +31,13 @@ _G.tab_complete = function()
         return t "<C-n>"
     else
 
-    if ultisnips_is_loaded() then
-        vim.fn.call("UltiSnips#JumpForwards", {})
-	if vim.g.ulti_jump_forwards_res > 0 then
-	    return t ""
-        end
+    if ultisnips_is_loaded() and vim.fn.call("UltiSnips#CanExpandSnippet", {}) == 1 then
         vim.fn.call("UltiSnips#ExpandSnippet", {})
-        if vim.g.ulti_expand_res > 0 then
-            return t ""
-        end
+        return t ""
     end
-    if check_back_space() then
-      return t "<Tab>"
+
+    if preceded_by_space() then
+      return t "<tab>"
     else
       return vim.fn['compe#complete']()
     end
@@ -81,10 +61,28 @@ _G.s_tab_complete = function()
   end
 end
 
-vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+local function on_attach()
+    require'compe'.setup {
+      enabled = true;
+      autocomplete = false;
+      debug = false;
+      min_length = 1;
+      documentation = true;
+      preselect = "always";
 
--- This is needed for autoimport
-vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm('<CR>')", {silent=True, expr = true})
+      source = {
+        nvim_lsp = true;
+        calc = true;
+        path = true;
+      };
+    }
+    vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+    vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
+    vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+    vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+
+    -- This is needed for autoimport
+    vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm('<CR>')", {silent=true, expr = true})
+end
+
+table.insert(_G.lsp_config_on_attach_callbacks, on_attach)

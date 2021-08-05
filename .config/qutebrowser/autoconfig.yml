@@ -19,11 +19,19 @@ settings:
     global:
       normal:
         ',,': config-cycle content.javascript.enabled
+        <Ctrl+h>: null
         Ctrl-O: tab-prev
+        M: hint links spawn /Users/elemental/.local/bin/mpv {hint-url}
         T: set-cmd-text -sr :tab-select
+        mf: hint links spawn bash -c "mpv {hint-url}"
         sf: hint scrollable
         tf: hint toc
+        wi: devtools bottom
         yf: hint all yank
+  colors.webpage.darkmode.enabled:
+    global: false
+  colors.webpage.preferred_color_scheme:
+    global: dark
   completion.open_categories:
     global:
     - searchengines
@@ -32,10 +40,14 @@ settings:
     - history
   completion.shrink:
     global: true
+  content.autoplay:
+    global: false
   content.blocking.enabled:
     global: true
   content.blocking.method:
     global: adblock
+  content.geolocation:
+    https://www.google.com: false
   content.javascript.can_access_clipboard:
     global: true
   content.javascript.enabled:
@@ -49,10 +61,53 @@ settings:
     - vim {file}
   editor.encoding:
     global: utf-8
+  fonts.default_family:
+    global: null
+  fonts.default_size:
+    global: 14pt
+  fonts.messages.info:
+    global: default_size default_family
+  fonts.prompts:
+    global: default_size default_family
+  fonts.statusbar:
+    global: defalt_size  default_family
+  fonts.tabs.selected:
+    global: default_size default_family
+  fonts.web.size.default:
+    global: 16
+  qt.workarounds.remove_service_workers:
+    global: true
+  statusbar.position:
+    global: top
   statusbar.show:
     global: always
+  statusbar.widgets:
+    global:
+    - keypress
+    - scroll
+    - progress
+    - history
+    - url
   tabs.background:
     global: true
+  tabs.favicons.scale:
+    global: 1.0
+  tabs.favicons.show:
+    global: pinned
+  tabs.indicator.padding:
+    global:
+      bottom: 2
+      left: 0
+      right: 4
+      top: 2
+  tabs.indicator.width:
+    global: 6
+  tabs.padding:
+    global:
+      bottom: 5
+      left: 5
+      right: 5
+      top: 5
   tabs.show:
     global: multiple
   tabs.wrap:
@@ -62,5 +117,9 @@ settings:
   url.searchengines:
     global:
       DEFAULT: https://www.google.com/search?q={}
+      l: https://libgen.is/search.php?req={}
+      p: https://www.google.com/search?q={}+site:docs.python.org
   url.start_pages:
     global: 'https://www.google.com  '
+  window.transparent:
+    global: true

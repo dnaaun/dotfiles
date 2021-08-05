@@ -12,6 +12,7 @@ def main() -> int:
     parser = ArgumentParser()
     parser.add_argument("-d", "--dry-run", action="store_true")
     parser.add_argument("-f", "--force", action="store_true")
+    parser.add_argument("-v", "--verbose", action="store_true")
     parser.add_argument("-b", "--daemonize", action="store_true")
     parser.add_argument("-t", "--dotfiles-dir", default=None)
     parser.add_argument(
@@ -58,10 +59,11 @@ def main() -> int:
         dry_run=args.dry_run,
         exclude=exclude,
         force=args.force,
+        verbose=args.verbose
     )
     if args.daemonize:
         from .daemonize import daemonize
-        daemonize(base, to, dry_run=args.dry_run, force=args.force, exclude=exclude)
+        daemonize(base, to, dry_run=args.dry_run, force=args.force, exclude=exclude, verbose=args.verbose)
 
     return 0
 

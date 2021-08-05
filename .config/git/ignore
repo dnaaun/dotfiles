@@ -7,3 +7,14 @@
 venvs/
 *.egg-info/
 __pycache__/
+.pyenv/
+.vscode/
+.Trash/
+.npm/
+__MACOSX/
+.rustup/
+.venvs/
+Caches/
+
+# Saw it on macos once. Probably should be here.
+.DS_Store

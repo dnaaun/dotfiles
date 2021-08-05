@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Reddit Old Layout
+// @name         Changed Name Reddit Old Layout
 // @namespace    9bf36c681d35d52913b3bda74ddf6127318ed7b0
 // @version      0.1
 // @description  Forces usage of the old reddit version

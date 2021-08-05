@@ -1,0 +1,14 @@
+#!/usr/local/bin/bash
+
+home_sess="${HOME##*/}"
+if [[ "$(tmux display-message -p '#S')" != "$home_sess" ]]; then
+  if tmux list-sessions -F '#S' | grep "^$home_sess$"  > /dev/null
+  then
+     tmux switch-client -t "$home_sess"
+  else
+    tmux new-session -s "$home_sess" -c "$HOME" 
+  fi
+else
+  tmux switch-client -l
+fi
+

@@ -1,5 +1,12 @@
+lua <<EOF
+vim.lsp.set_log_level("debug")    
+EOF
+
 """""""""""""""""""""" not plugin-specific login """""""""""""""""""""""
-" Use whatever python3 virtualenv is currently activated.
+" Prevent wierd de-endentation when writing python
+set indentkeys-=:
+
+set scrollback=100000 " Lines to keep in neovim's terminal emulator
 " Means I have to install pynvim in every venv, but makes life easier.
 set foldexpr=
 set nospell
@@ -37,11 +44,13 @@ onoremap / //e<Left><Left>
 nnoremap  <Leader>s ]s1z=<C-X><C-S>
 " https://castel.dev/post/lecture-notes-1/#correcting-spelling-mistakes-on-the-fly
 " Insert mode, correct last error.
-inoremap <C-s> <c-g>u<Esc>[s1z=`]a<c-g>u
-" lspsaga doesn't have go to type definition.
-" We use gT instead of gt cuz gt means, something (I forget what) in vim.
-nnoremap gT :luado vim.lsp.buf.type_definition()<CR>
+inoremap <C-v> <c-g>u<Esc>[s1z=`]a<c-g>u
 
+" A hack to avoid having press a key before the terminal closes when the process in the
+" terminal finishes.
+autocmd TermClose * call feedkeys("x")
+
+let g:python3_host_prog=substitute(system("which python3"), "\n", '', 'g')
 
 """""""""""""""""""""""" Add plugins """""""""""""""""""""""""""""""
 lua <<EOF
@@ -49,18 +58,45 @@ require('plugins')
 EOF
 
 
+""""""""""""""""""""""" Colorscheme """"""""""""""""""""""""""""""""""
+" This section must come before loading nvim-dap for it not to mess up
+" nvim-dap colors.
+let g:nvcode_termcolors=256
+
+syntax on
+colorscheme snazzy
+
+
+" checks if your terminal has 24-bit color support
+if (has("termguicolors"))
+    set termguicolors
+    hi LineNr ctermbg=NONE guibg=NONE
+endif
+
+
+
 """"""""""""""" Lua plugin configuration separated out to files """"""""
 lua <<EOF
--- Credit to: https://stackoverflow.com/a/46378453
+-- Need to source lsp_config last because we collect some callbacks
+-- from other plugin configs that are needed to set it up. Namely:
+_G.lsp_config_on_attach_callbacks = {}
 for filename in io.popen('ls ~/.config/nvim/lua/plugin_config'):lines() do
     local module_name = string.gsub(filename, "%.lua$", "")
-    require("plugin_config."..module_name)
+    if module_name ~= "lsp_config" then
+        require("plugin_config."..module_name)
+    end
 end
+
+require("plugin_config.lsp_config")
 EOF
 
-
-""""""""""""""""""""""" Colorscheme """"""""""""""""""""""""""""""""""
-colorscheme OceanicNext
+"""""""""""""""""""""""""""" himalaya """""""""""""""""""""""
+let g:himalaya_mailbox_picker =  'telescope'
+let g:himalaya_telescope_preview_enabled = 0
+lua <<EOF
+-- packer has issues with loading rtp: https://github.com/wbthomason/packer.nvim/issues/274
+vim.o.rtp = vim.o.rtp .. ',' .. vim.fn.stdpath('data') .. '/site/pack/packer/start/himalaya/vim/'
+EOF
 
 
 """""""""""""""""""""""""""" zen-mode """"""""""""""""""""""""""""""""
@@ -68,45 +104,11 @@ noremap <silent> <leader>v :ZenMode<CR>
 
 
 """""""""""""""""""""""""""" packer  """"""""""""""""""""""""""""""""
+" TODO: Move this section to plugins.lua
 " Make it quicker to install plugins
-autocmd BufEnter *.vim nnoremap <buffer> <leader>ci :source %<bar>PackerInstall<CR>
+autocmd FileType vim,lua nnoremap <buffer> <leader>ci :source %<bar>PackerInstall<CR>
 " Sometimes I just wanna load the current file
-autocmd BufEnter *.vim nnoremap <buffer> <leader>cc :source %<CR>
-
-
-""""""""""""""""""""""" vim-ripple """""""""""""""""""""""""""""""""""
-" The python one is strongly informed by https://github.com/urbainvaes/vim-ripple/issues/20
-let g:ripple_repls = {
-            \ "python": ["python", "", "", 0],
-            \ 'javascript': ['deno', "", "\<cr>", 0],
-            \ 'javascript.jsx': ['deno', "", "\<cr>", 0],
-            \ 'typescript': ['deno', "", "\<cr>", 0] ,
-            \ 'sh': ['bash', "", "\<cr>", 0] 
-            \ }
-
-let g:ripple_enable_mappings=0 " Disable default mappings (which are mostly Ctrl based and suck)
-
-" Vim-ripple
-" Open repl
-nmap <leader>ro <Plug>(ripple_open_repl)
-" Send  text contained in next motion to repl
-nmap <leader>r <Plug>(ripple_send_motion)
-" In select mode, send selection
-xmap <leader>r <Plug>(ripple_send_selection)
-" Send line. Two r's to make it simple.
-nmap <leader>rr <Plug>(ripple_send_line)
-
-
-
-""""""""""""""""""""""" nvim-repl """""""""""""""""""""""""""""""""""
-let g:repl_filetype_commands = {
-    \ 'javascript': 'node',
-    \ }
-let g:repl_filetype_commands['python'] = 'ptpython'
-nmap <leader>ro :ReplOpen<CR>
-nmap <leader>r <Plug>ReplSendMotion
-vmap <leader>r <Plug>ReplSendVisual
-nmap <leader>rr <Plug>ReplSendLine
+autocmd FileType vim,lua nnoremap <buffer> <leader>cc :source %<CR>
 
 
 """""""""""""""""""""""""""" vimtex """""""""""""""""""""""""""""""""
@@ -156,10 +158,20 @@ augroup END
 """"""""""""""""""""" vim-airline """""""""""""""""""""""""""""""""""
 " Status line theme is whatever base16 theme I am using
 " let g:airline_theme='base16'
-let g:airline_theme='oceanicnext'
+let g:airline_theme='base16_snazzy'
 " No error messages about whitespaces please
 let g:airline#extensions#whitespace#enabled = 0
 
+" Without this, airline truncates the filename instead of the git branch when 
+" space gets tight
+let g:airline#extensions#default#section_truncate_width = {
+      \ 'b': 79,
+      \ 'x': 60,
+      \ 'y': 88,
+      \ 'z': 45,
+      \ 'warning': 80,
+      \ 'error': 80,
+      \ }
 
 """""""""""""""""""""""" vim-markdown """""""""""""""""""""""""""""""
 " Markdown fenced languages support
@@ -210,7 +222,6 @@ tnoremap <C-l> <C-\><C-n>:TmuxNavigateRight<CR>
 
 
 """""""""""""""""""""" netrw """""""""""""""""""""""
-let g:python3_host_prog=substitute(system("which python3"), "\n", '', 'g')
 let g:netrw_localrmdir='rm -r' " Allow netrw to remove non-empty local directories
 let g:netrw_keepdir=1 " Make netrw moving work 
 let g:netrw_sort_by='time' " Netrw sort by time in descending order
@@ -218,16 +229,22 @@ let g:netrw_sort_direction='reverse'
 
 
 """"""""""""""""""""""""" Ultisnips """""""""""""""""""""""""""""""""'
-" The only reason this section is here is because I need to define the
-" following function to get ultisnips and nvim-compe working the way I want
-" them to.
-function! UltiSnips_IsExpandable()
-return !(
-  \ col('.') <= 1
-  \ || !empty(matchstr(getline('.'), '\%' . (col('.') - 1) . 'c\s'))
-  \ || empty(UltiSnips#SnippetsInCurrentScope())
-  \ )
-endfunction
+imap <C-f> <cmd>call UltiSnips#JumpForwards()<CR>
+
+"""""""""""""""""""""""""""" indent-blankline """""""""""""""""""""""""""
+let g:indent_blankline_buftype_exclude = ['terminal']
+
+
+"""""""""""""""""""""""""""" vim-sneak """""""""""""""""""""""""""
+let g:sneak#label = 1
+
+
+"""""""""""""""""""""""""""" vim-vsnip """""""""""""""""""""""""""
+let g:vsnip_snippet_dir = expand('~/.config/nvim/vsnip')
+
+
+"""""""""""""""""""""""""""" dap-virtual-text """""""""""""""""""""""
+let g:dap_virtual_text = 'all frames'
 
 
 """""""""""""""""""""""""" Secondary init file """""""""""""""""""""""""""""
@@ -236,3 +253,6 @@ let s:secondary_init_vim=expand('~/.secondary.init.vim')
 if filereadable(s:secondary_init_vim)
     execute 'source' s:secondary_init_vim
 endif
+
+
+

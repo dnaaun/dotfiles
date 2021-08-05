@@ -100,11 +100,9 @@ export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 alias tmux='tmux -u'
 
-# Ptpython vim
-# alias ptpython='ptpython --vi'
 # I don't know where this is getting set, but I need to unset it
 export PYTHONPATH=
-export PYTHONBREAKPOINT=ipdb.set_trace
+export PYTHONBREAKPOINT=ptpdb.set_trace
 
 
 # Scripts in dotfiles/bin/

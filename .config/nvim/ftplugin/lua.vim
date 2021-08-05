@@ -1,4 +1,3 @@
-setlocal formatprg='jq'
 set expandtab
 " show existing tab with 2 spaces width
 set tabstop=2

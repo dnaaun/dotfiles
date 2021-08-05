@@ -1,7 +1,7 @@
 cfg = {
   bind = true, -- This is mandatory, otherwise border config won't get registered.
                -- If you want to hook lspsaga or other signature handler, pls set to false
-  doc_lines = 10, -- will show two lines of comment/doc(if there are more than two lines in doc, will be truncated);
+  doc_lines = 20, -- will show two lines of comment/doc(if there are more than two lines in doc, will be truncated);
                  -- set to 0 if you DO NOT want any API comments be shown
                  -- This setting only take effect in insert mode, it does not affect signature help in normal
                  -- mode, 10 by default
@@ -13,7 +13,7 @@ cfg = {
   hint_scheme = "String",
   use_lspsaga = false,  -- set to true if you want to use lspsaga popup
   hi_parameter = "Search", -- how your parameter will be highlight
-  max_height = 12, -- max height of signature floating_window, if content is more than max_height, you can scroll down
+  max_height = 32, -- max height of signature floating_window, if content is more than max_height, you can scroll down
                    -- to view the hiding contents
   max_width = 80, -- max_width of signature floating_window, line will be wrapped if exceed max_width
   handler_opts = {
@@ -25,4 +25,7 @@ cfg = {
 
 }
 
-require'lsp_signature'.on_attach(cfg)
+local custom_attach = function()
+	require'lsp_signature'.on_attach(cfg)
+end
+table.insert(_G.lsp_config_on_attach_callbacks, custom_attach)

@@ -4,7 +4,22 @@
 yabai -m config layout bsp
 
 # Focus follows mouse
-yabai -m config focus_follows_mouse autoraise
+# Setting to autoraise makes hovering over context menus and docks click on the hovered-on items
+yabai -m config focus_follows_mouse autofocus
+yabai -m config mouse_follows_focus on
 
 # floating windows are always on top
 yabai -m config window_topmost on
+
+# Exclude some windows from being managed
+# Mostly from: https://github.com/Julian-Heng/yabai-config/blob/master/yabairc
+yabai -m rule --add app="^System Preferences$" manage=off
+yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
+yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
+yabai -m rule --add label="App Store" app="^App Store$" manage=off
+yabai -m rule --add label="Activity Monitor" app="^Activity Monitor$" manage=off
+yabai -m rule --add label="Calculator" app="^Calculator$" manage=off
+yabai -m rule --add label="Dictionary" app="^Dictionary$" manage=off
+yabai -m rule --add label="Software Update" title="Software Update" manage=off
+yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
+

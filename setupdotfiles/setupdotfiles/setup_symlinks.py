@@ -29,18 +29,19 @@ def walk_with_exclude(
 
 
 def setup_all_symlinks(
-    base: Path, to: Path, dry_run: bool, force: bool, exclude: List[re.Pattern[str]]
+        base: Path, to: Path, dry_run: bool, force: bool, exclude: List[re.Pattern[str]], verbose: bool
 ) -> None:
     to_symlink = walk_with_exclude(base, exclude)
     try:
         while fp := next(to_symlink):
-            setup_symlink(base, fp, to, dry_run, force)
+            setup_symlink(base, fp, to, dry_run, force, verbose)
     except StopIteration as e:
-        print({"skipped": list(map(str, e.value))})
+        if verbose:
+            print({"skipped": list(map(str, e.value))})
 
 
 def setup_symlink(
-    base: Path, from_: Path, to: Path, dry_run: bool, force: bool
+        base: Path, from_: Path, to: Path, dry_run: bool, force: bool, verbose: bool
 ) -> Optional[Path]:
     resolved_from = base / from_
     resolved_to = to / from_
@@ -48,11 +49,11 @@ def setup_symlink(
         if force:
             os.unlink(resolved_to)
         else:
-            print(f"Warning: not setting up {resolved_to} because target exists.")
+            if verbose:
+                print(f"Warning: not setting up {resolved_to} because target exists.")
             return None
-    if dry_run:
-        print(f"{resolved_from} => {resolved_to}")
-    else:
+    print(f"{resolved_from} => {resolved_to}")
+    if not dry_run:
         if not resolved_to.parent.exists():
             os.makedirs(resolved_to.parent)
         os.symlink(resolved_from, resolved_to)

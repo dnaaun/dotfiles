@@ -1,16 +1,16 @@
 -- Tree-sitter https://github.com/nvim-treesitter/nvim-treesitter
 require'nvim-treesitter.configs'.setup {
     highlight = {
-        enable = true,
-        --disable = { 'javascriptreact', 'jsx', 'javascript.jsx' } 
+        enable = false,
+        --disable = { 'javascriptreact', 'jsx', 'javascript.jsx' }
     },
     indent = {
         enable = true,
-        disable = {'python'} 
+        disable = {'python'}
     },
     incremental_selection = {
       enable = true,
-         -- disable = { 'javascriptreact', 'jsx', 'javascript.jsx' } 
+         -- disable = { 'javascriptreact', 'jsx', 'javascript.jsx' }
     }
 }
 
