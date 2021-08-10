@@ -1,34 +1,39 @@
-#!/usr/bin/env bash
+#!/usr/bin/python3
 
-if [[ ! -z "$QUTE_URL" ]]; then
-  hostname_arg="--url=$(echo $QUTE_URL | sed -e 's/[^/]*\/\/\([^@]*@\)\?\([^:/]*\).*/\2/')"
-else
-  hostname_arg=""
-fi
+from urllib.parse import urlparse
+import sys
+import os
+import json
+from pyperclip import copy
+from subprocess import PIPE, Popen
 
-# This relies on a hack that my passwords wo'nt contain 🤓
-prompts=()
-passwords=()
-bw list items "$hostname_arg" | jq -r '.[] | .name + "🤓" + .login.username  + "🤓" + .login.password'  |
-  while IFS=🤓 read name username password; do
-    prompts+=("$name  | $username")
-    passwords+=("$password")
-  done
+if url := os.environ.get("QUTE_URL", ""):
+  hostname_args = [ "--url", urlparse(url).hostname]
+else:
+  hostname_args = []
 
 
-# 
-# from subprocess import Popen
-# import sys
-# import os
-# from urllib.parse import urlparse
-# import pyperclip
-# 
-# url = os.environ.get("QUTE_URL", "")
-# 
-# if url:
-#     hostname = urlparse(url).hostname
-# else:
-#     raise Exception("No QUTE_URL environment variable.")
-# 
-# Popen(["bw", "list", "items", 
-# pyperclip.copy("asdf")
+proc =  Popen(["bw", "list", "items"] + hostname_args, stdout=PIPE)
+if proc.stdout:
+    items = json.loads(proc.stdout.read().decode())
+else:
+    print("Proc has no stdout")
+    sys.exit()
+
+pwds = []
+prompts = []
+
+for i, item in enumerate(items):
+    if (login:= item.get("login")) and login.get("password"):
+        pwds.append(item["login"]["password"])
+        prompts.append(str(i) + " | " + item["name"] or "NO NAME"  + " | " + item["login"]["username"] or "NO USERNAME")
+
+proc =  Popen(["fzf", ],  stdin=PIPE, stdout=PIPE, text=True)
+stdout, stderr = proc.communicate(input="\n".join(prompts))
+if proc.stdout:
+    idx = int(stdout.strip().split(" | ")[0])
+    copy(pwds[idx])
+else:
+    print("Proc has no stdout")
+    sys.exit()
+

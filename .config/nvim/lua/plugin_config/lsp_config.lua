@@ -64,7 +64,7 @@ local lsp_specific_configs = {
 }
 
 
-for _, lspname in ipairs({'pyright', 'tsserver', 'cssls', 'vimls', 'rls','lua', 'kotlin_language_server'}) do
+for _, lspname in ipairs({'pyright', 'tsserver', 'cssls', 'vimls', 'rls','kotlin_language_server'}) do
   local  config = lsp_specific_configs[lspname]
   if (config ~= nil) then
     config = vim.tbl_extend("force", common_config, config)

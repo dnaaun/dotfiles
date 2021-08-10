@@ -4,17 +4,19 @@ case $- in
       *) return;;
 esac
 
+# TODO: This changes on different platforms. 
+FDCMD=fdfind
 
 ## Fzf + Rg
-export FZF_DEFAULT_COMMAND="fd --type f --hidden"
+export FZF_DEFAULT_COMMAND="$FDCMD --type f --hidden"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # Fzf completion when typing in ** doesn't use $FZF_DEFAULT_COMMAND. The below
 # is necessary.
 _fzf_compgen_path() {
-  command fd . --hidden "$1" 2>/dev/null
+  command $FDCMD . --hidden "$1" 2>/dev/null
 }
 _fzf_compgen_dir() {
-  command fd . --type d --hidden "$1" 2>/dev/null
+  command $FDCMD . --type d --hidden "$1" 2>/dev/null
 }
 
 # enable programmable completion features (you don't need to enable
@@ -224,7 +226,7 @@ alias xh="xsv headers"
 # lowercase
 alias lower="tr '[:upper:]' '[:lower:]'"
 # Include hidden files by default
-alias fd="fd -H"
+alias fd="$FDCMD -H"
 complete -F _complete_alias fd
 
 # NO idea why I have this here.
