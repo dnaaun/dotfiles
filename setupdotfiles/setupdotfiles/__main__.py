@@ -20,7 +20,8 @@ def main() -> int:
         "--exclude",
         nargs="*",
         default=[
-            r".*\.git.*",
+            r".*\.gitmodules",
+            r".*\.git/.*",
             r".*README\.md",
             r".*setupdotfiles.*",
             r".*\.Session\.vim",

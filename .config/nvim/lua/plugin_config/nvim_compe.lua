@@ -61,28 +61,31 @@ _G.s_tab_complete = function()
   end
 end
 
-local function on_attach()
-    require'compe'.setup {
-      enabled = true;
-      autocomplete = false;
-      debug = false;
-      min_length = 1;
-      documentation = true;
-      preselect = "always";
+require'compe'.setup {
+  enabled = true;
+  autocomplete = false;
+  debug = false;
+  min_length = 1;
+  documentation = true;
+  preselect = "always";
 
-      source = {
-        nvim_lsp = true;
-        calc = true;
-        path = true;
-      };
+  source = {
+    nvim_lsp = {
+      priority = 10;
+    },
+    path = {
+      priority = 5;
+    },
+    calc = {
+      priority = 0
     }
-    vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-    vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-    vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-    vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+  };
+}
+vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 
-    -- This is needed for autoimport
-    vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm('<CR>')", {silent=true, expr = true})
-end
+-- This is needed for autoimport
+vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm('<CR>')", {silent=true, expr = true})
 
-table.insert(_G.lsp_config_on_attach_callbacks, on_attach)

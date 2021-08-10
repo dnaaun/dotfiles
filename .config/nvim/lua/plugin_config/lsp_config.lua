@@ -1,3 +1,4 @@
+
 -- Keybindings
 local setup_mappings = function()
   local opts = { noremap=true, silent=true }
@@ -15,6 +16,7 @@ local setup_mappings = function()
   vim.api.nvim_buf_set_keymap(0, "n", "<leader>lf", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 end
 
+
 -- Allow other files to define callbacks that get called `on_attach`
 local on_attach = function(client)
   for _, plugin_custom_attach in pairs(_G.lsp_config_on_attach_callbacks) do
@@ -29,6 +31,8 @@ local common_config = {
   on_attach = on_attach
 }
 
+local lspconfig = require('lspconfig')
+
 -- Configuration for each LSP
 local lsp_specific_configs = {
   lua = {
@@ -41,7 +45,7 @@ local lsp_specific_configs = {
         },
         diagnostics = {
           -- Get the language server to recognize the `vim` global
-          globals = {'vim'},
+          globals = {'vim', 'use'},
         },
         workspace = {
           -- Make the server aware of Neovim runtime files
@@ -52,12 +56,15 @@ local lsp_specific_configs = {
         },
       }
     }
+  },
+  kotlin_language_server = {
+    cmd = { vim.fn.expand("~") .. "/src/kotlin-language-server/server/build/install/server/bin/kotlin-language-server" },
+    root_dir = lspconfig.util.root_pattern("settings.gradle.kts") or lspconfig.util.root_pattern("settings.gradle")
   }
 }
 
 
-local lspconfig = require('lspconfig')
-for _, lspname in ipairs({'pyright', 'tsserver', 'cssls', 'vimls', 'rls','lua'}) do
+for _, lspname in ipairs({'pyright', 'tsserver', 'cssls', 'vimls', 'rls','lua', 'kotlin_language_server'}) do
   local  config = lsp_specific_configs[lspname]
   if (config ~= nil) then
     config = vim.tbl_extend("force", common_config, config)

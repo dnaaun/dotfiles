@@ -48,6 +48,8 @@ def setup_symlink(
     if resolved_to.exists():
         if force:
             os.unlink(resolved_to)
+            if verbose:
+                print(f"Deleted {resolved_to}.")
         else:
             if verbose:
                 print(f"Warning: not setting up {resolved_to} because target exists.")

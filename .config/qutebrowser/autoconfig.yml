@@ -19,8 +19,10 @@ settings:
     global:
       normal:
         ',,': config-cycle content.javascript.enabled
+        ',b': spawn --userscript bitwarden
         <Ctrl+h>: null
-        Ctrl-O: tab-prev
+        <Ctrl+o>: tab-focus last
+        Ctrl-O: tab-focus last
         M: hint links spawn /Users/elemental/.local/bin/mpv {hint-url}
         T: set-cmd-text -sr :tab-select
         mf: hint links spawn bash -c "mpv {hint-url}"
@@ -28,10 +30,6 @@ settings:
         tf: hint toc
         wi: devtools bottom
         yf: hint all yank
-  colors.webpage.darkmode.enabled:
-    global: false
-  colors.webpage.preferred_color_scheme:
-    global: dark
   completion.open_categories:
     global:
     - searchengines

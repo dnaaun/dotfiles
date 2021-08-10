@@ -14,13 +14,13 @@
               ]
             }
           },
-          "to": [
+          "to_if_held_down": [
             {
               "key_code": "left_control",
-              "lazy": true
+              "halt": true
             }
           ],
-          "to_if_alone": [
+          "to_after_key_up": [
             {
               "key_code": "escape"
             }

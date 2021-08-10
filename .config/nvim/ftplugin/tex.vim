@@ -37,3 +37,6 @@ let b:ale_tex_chktex_options .= ' -n 13' " Enter sentence spacing.
 let b:ale_tex_chktex_options .= ' -n 26' " Allow punctuation to follow whitespace
 
 let b:ale_tex_latexindent_options  = '-m'
+
+" Vimtex doesn't load if this isn't set.
+let g:tex_flavour='latex'

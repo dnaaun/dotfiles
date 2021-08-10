@@ -8,7 +8,7 @@ return require('packer').startup(function()
 
     use 'embear/vim-localvimrc' -- Enable sourcing .lnvimrc files
     use 'sedm0784/vim-resize-mode' -- After doing <C-w>,  be able to type consecutive +,-,<,>
-    
+
     -- Mostly LSP dependent
     use 'neovim/nvim-lspconfig' -- Neovim's builtin LSP client
     use 'kabouzeid/nvim-lspinstall' -- Easily (and if desired, automatically) install LSPs
@@ -72,6 +72,6 @@ return require('packer').startup(function()
     use { 'folke/zen-mode.nvim',  branch = 'main' }
     use 'kyazdani42/nvim-web-devicons'
 
-    use { 'soywod/himalaya', rtp= '/vim'}
+    use { 'udalov/kotlin-vim' }
 end
 )

@@ -223,7 +223,6 @@ alias xs="xsv select"
 alias xh="xsv headers" 
 # lowercase
 alias lower="tr '[:upper:]' '[:lower:]'"
-alias bat=batcat
 # Include hidden files by default
 alias fd="fd -H"
 complete -F _complete_alias fd

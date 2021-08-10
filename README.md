@@ -35,3 +35,14 @@ sudo apt-get install fonts-powerline
 ## Install `fzf`
  - The version of `fzf` packaged in Ubuntu's apt repos is a few versions behind, so
      install from Git using instructions.
+
+## Other
+ - bat
+ - delta
+ - exa
+ - cht.sh
+ - entr
+ - sd
+ - broot
+
+
