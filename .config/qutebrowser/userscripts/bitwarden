@@ -7,33 +7,55 @@ import json
 from pyperclip import copy
 from subprocess import PIPE, Popen
 
-if url := os.environ.get("QUTE_URL", ""):
-  hostname_args = [ "--url", urlparse(url).hostname]
+if (url := os.environ.get("QUTE_URL", "")) and (hostname := urlparse(url).hostname):
+    hostname_args = ["--url", hostname]
 else:
-  hostname_args = []
+    hostname_args = []
 
 
-proc =  Popen(["bw", "list", "items"] + hostname_args, stdout=PIPE)
-if proc.stdout:
-    items = json.loads(proc.stdout.read().decode())
+proc = Popen(
+    ["bw", "list", "items"] + hostname_args,
+    text=True,
+    stdout=PIPE,
+    stderr=PIPE,
+    env=os.environ,
+)
+if proc.stdout and proc.stderr:
+    txt = proc.stdout.read()
+    err_txt = proc.stderr.read()
+    try:
+        items = json.loads(txt)
+    except json.decoder.JSONDecodeError:
+        raise Exception(
+            "Couldn't parse: "
+            + txt
+            + ". Because of stderr: "
+            + err_txt
+            + f". and environ was {json.dumps(os.environ.copy(), indent=2)}"
+        )
 else:
-    print("Proc has no stdout")
-    sys.exit()
+    raise Exception("Proc has no stdout or stdin")
 
 pwds = []
 prompts = []
 
 for i, item in enumerate(items):
-    if (login:= item.get("login")) and login.get("password"):
-        pwds.append(item["login"]["password"])
-        prompts.append(str(i) + " | " + item["name"] or "NO NAME"  + " | " + item["login"]["username"] or "NO USERNAME")
-
-proc =  Popen(["fzf", ],  stdin=PIPE, stdout=PIPE, text=True)
+    if (login := item.get("login")) and login.get("password"):
+        pwds.append(login["password"])
+        uris = ", ".join(u["uri"] for u in login.get("uris", []))
+        prompts.append(
+            str(i)
+            + (" | " + (item["name"] or "NO NAME"))
+            + (" | " + (login["username"] or "NO USERNAME"))
+            + (" | " + uris)
+        )
+proc = Popen(["rofi", "-dmenu"], stdin=PIPE, stdout=PIPE, text=True)
 stdout, stderr = proc.communicate(input="\n".join(prompts))
 if proc.stdout:
-    idx = int(stdout.strip().split(" | ")[0])
-    copy(pwds[idx])
+    possib_num =stdout.strip().split(" | ")[0]
+    if possib_num: # Pressed <C-c> probably.
+        idx = int(possib_num)
+        copy(pwds[idx])
 else:
     print("Proc has no stdout")
     sys.exit()
-

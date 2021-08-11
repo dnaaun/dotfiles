@@ -6,6 +6,7 @@ esac
 
 # TODO: This changes on different platforms. 
 FDCMD=fdfind
+BATCMD=batcat
 
 ## Fzf + Rg
 export FZF_DEFAULT_COMMAND="$FDCMD --type f --hidden"
@@ -227,6 +228,7 @@ alias xh="xsv headers"
 alias lower="tr '[:upper:]' '[:lower:]'"
 # Include hidden files by default
 alias fd="$FDCMD -H"
+alias bat="$BATCMD"
 complete -F _complete_alias fd
 
 # NO idea why I have this here.

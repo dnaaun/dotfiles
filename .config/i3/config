@@ -42,6 +42,7 @@ bindsym $mod+Shift+q kill
 bindsym $mod+t exec --no-startup-id rofi-tmux sw
 bindsym $mod+d exec --no-startup-id dmenu_run
 bindsym $mod+Shift+d exec --no-startup-id rofi -show drun -run-shell-command '{cmd}'
+bindsym $mod+p exec rofi-rbw --action=copy-password
 
 # Start custom script in dotfiles/bin/ to find files
 bindsym $mod+space exec ~/git/dotfiles/.local/bin/rofi_search.sh
@@ -129,7 +130,7 @@ bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+e exec "if [[ $(echo 'no\nyes' | dmenu -p 'Exit i3? ') == 'yes' ]]; then i3-msg exit; fi"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -202,15 +203,6 @@ for_window [class="^.*"] border pixel 0
 
 # Start redshift
 exec --no-startup-id redshift-gtk
-
-# Make CAPS an Esc
-# For wireless keyboard  as well. The device number was found out by
-# xinput -list | grep keyboard
-# and then, doing
-# xinput test <id> 
-# where <id> was observed from cmd above
-exec setxkbmap -option caps:swapescape # No device configures default keyboard
-exec setxkbmap -device 11 -option caps:swapescape
 
 #### Sway WM specific settings ####
 # window gap

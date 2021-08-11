@@ -61,6 +61,7 @@ _G.s_tab_complete = function()
   end
 end
 
+local on_attach = function()
 require'compe'.setup {
   enabled = true;
   autocomplete = false;
@@ -88,4 +89,7 @@ vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 
 -- This is needed for autoimport
 vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm('<CR>')", {silent=true, expr = true})
+end
+
+table.insert(_G.lsp_config_on_attach_callbacks, on_attach)
 

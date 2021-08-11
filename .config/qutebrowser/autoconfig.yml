@@ -62,7 +62,7 @@ settings:
   fonts.default_family:
     global: null
   fonts.default_size:
-    global: 14pt
+    global: 10pt
   fonts.messages.info:
     global: default_size default_family
   fonts.prompts:
