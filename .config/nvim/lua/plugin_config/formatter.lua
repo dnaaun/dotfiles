@@ -44,6 +44,15 @@ filetype['json'] = {
     end
 }
 
+filetype['tex'] = {
+  function()
+    return {
+      exe = "latexindent",
+      stdin = true
+    }
+  end
+}
+
 filetype['javascript.jsx'] = {jsx_prettier }
 filetype['htmldjango'] = {
     function()

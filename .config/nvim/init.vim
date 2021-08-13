@@ -50,6 +50,9 @@ inoremap <C-v> <c-g>u<Esc>[s1z=`]a<c-g>u
 " terminal finishes.
 autocmd TermClose * call feedkeys("x")
 
+" Use the system clipboard by default.
+set clipboard=unnamedplus
+
 let g:python3_host_prog=substitute(system("which python3"), "\n", '', 'g')
 
 """""""""""""""""""""""" Add plugins """""""""""""""""""""""""""""""

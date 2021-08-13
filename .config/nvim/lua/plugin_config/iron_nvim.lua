@@ -27,10 +27,25 @@ iron.core.add_repl_definitions {
   
 }
 
+iron.core.add_repl_definitions {
+  sql = {
+    pgcli = {
+      command = {"pgcli", "-u",  "terra"},
+      -- You know where I found out how to pass ANSI control sequences like below to
+      -- neovim's terminal? 
+      -- On a reply, to a comment, on a PR: https://github.com/neovim/neovim/pull/12080#discussion_r546579388
+      -- Also, the <esc>i is because PtPython has it's own vim mode that I use.
+      -- The ANSI control sequence is bracketed paste mode.
+      open = t("<esc>i\x1b[200~"),
+      close = t("\x1b[201~")
+    }
+  }
+}
+
+
 iron.core.set_config {
   preferred = {
     python = "ptpython",
-    clojure = "lein"
   },
   repl_open_cmd = 'vertical vsplit new',
   visibility  = 'focus'

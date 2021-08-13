@@ -4,9 +4,13 @@ case $- in
       *) return;;
 esac
 
-# TODO: This changes on different platforms. 
-FDCMD=fdfind
-BATCMD=batcat
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  FDCMD=fdfind
+  BATCMD=batcat
+else
+  FDCMD=fd
+  BATCMD=bat
+fi
 
 ## Fzf + Rg
 export FZF_DEFAULT_COMMAND="$FDCMD --type f --hidden"
@@ -271,7 +275,15 @@ tm () {
   fi
 }
 
+if command -v nvim > /dev/null; then
+  # Use neovim as a pager, if it's available
+  # vless is a script in .local/bin/
+  export PAGER=vless
+  export MANPAGER="vless -c 'set filetype=man'"
+fi
+
 # Auto start tmux
 if [ -z "$TMUX" ]; then
   tm
 fi
+

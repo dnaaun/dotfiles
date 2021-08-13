@@ -20,6 +20,11 @@ end
 -- Allow other files to define callbacks that get called `on_attach`
 local on_attach = function(client)
   for _, plugin_custom_attach in pairs(_G.lsp_config_on_attach_callbacks) do
+
+    -- https://github.com/nanotee/sqls.nvim#usage
+    client.resolved_capabilities.execute_command = true
+    require'sqls'.setup{}
+
     plugin_custom_attach(client)
   end
 
@@ -60,16 +65,32 @@ local lsp_specific_configs = {
   kotlin_language_server = {
     cmd = { vim.fn.expand("~") .. "/src/kotlin-language-server/server/build/install/server/bin/kotlin-language-server" },
     root_dir = lspconfig.util.root_pattern("settings.gradle.kts") or lspconfig.util.root_pattern("settings.gradle")
+  },
+
+  sqlls = {
+    cmd = {"sql-language-server", "up", "--method", "stdio", "-d"};
+    root_dir = lspconfig.util.root_pattern(".sqllsrc.json") or lspconfig.util.root_pattern(".git")
+  },
+
+  sqls = {
+    connections = {
+      {
+        driver = 'postgresql';
+        dataSourceName = 'host=localhost port=5432 user=terra dbname=terra'
+      }
+    }
   }
 }
 
 
-for _, lspname in ipairs({'pyright', 'tsserver', 'cssls', 'vimls', 'rls','kotlin_language_server'}) do
+for _, lspname in ipairs({'pyright', 'tsserver', 'cssls',
+'vimls', 'rls','kotlin_language_server', 'sqls', 'lua'}) do
   local  config = lsp_specific_configs[lspname]
   if (config ~= nil) then
     config = vim.tbl_extend("force", common_config, config)
   else
     config = common_config
   end
+
   lspconfig[lspname].setup(config)
 end

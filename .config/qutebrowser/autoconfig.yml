@@ -19,7 +19,7 @@ settings:
     global:
       normal:
         ',,': config-cycle content.javascript.enabled
-        ',b': spawn --userscript bitwarden
+        ',b': spawn --userscript ~/.local/bin/get_bitwarden_pass
         <Ctrl+h>: null
         <Ctrl+o>: tab-focus last
         Ctrl-O: tab-focus last

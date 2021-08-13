@@ -64,7 +64,7 @@ end
 local on_attach = function()
 require'compe'.setup {
   enabled = true;
-  autocomplete = false;
+  autocomplete = true;
   debug = false;
   min_length = 1;
   documentation = true;

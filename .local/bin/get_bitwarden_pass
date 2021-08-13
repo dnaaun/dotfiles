@@ -1,25 +1,33 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
-from urllib.parse import urlparse
 import sys
+from urllib.parse import urlparse
+import platform
 import os
 import json
-from pyperclip import copy
 from subprocess import PIPE, Popen
+try:
+    from pyperclip import copy
+except ImportError as e:
+    raise Exception(f"{e}. sys.path={sys.path} executable={sys.executable}")
 
 if (url := os.environ.get("QUTE_URL", "")) and (hostname := urlparse(url).hostname):
     hostname_args = ["--url", hostname]
 else:
     hostname_args = []
 
+try:
 
-proc = Popen(
+    proc = Popen(
     ["bw", "list", "items"] + hostname_args,
     text=True,
     stdout=PIPE,
     stderr=PIPE,
     env=os.environ,
 )
+except FileNotFoundError as e:
+    raise Exception(f"{e}: $PATH={os.environ.get('PATH')}")
+
 if proc.stdout and proc.stderr:
     txt = proc.stdout.read()
     err_txt = proc.stderr.read()
@@ -49,7 +57,16 @@ for i, item in enumerate(items):
             + (" | " + (login["username"] or "NO USERNAME"))
             + (" | " + uris)
         )
-proc = Popen(["rofi", "-dmenu"], stdin=PIPE, stdout=PIPE, text=True)
+
+if platform.system() == 'Linux':
+    fuzzy_chooser_cmd = [ 'fzf', '-dmenu' ]
+elif platform.system() == 'Darwin':
+    fuzzy_chooser_cmd = ['choose']
+else:
+    raise Exception("Don't know a fuzzy chooser on windows.")
+
+proc = Popen(fuzzy_chooser_cmd, stdin=PIPE, stdout=PIPE, text=True)
+
 stdout, stderr = proc.communicate(input="\n".join(prompts))
 if proc.stdout:
     possib_num =stdout.strip().split(" | ")[0]

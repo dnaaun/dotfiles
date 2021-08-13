@@ -14,10 +14,11 @@
               ]
             }
           },
-          "to_if_held_down": [
+          "to": [
             {
               "key_code": "left_control",
-              "halt": true
+              "halt": true,
+              "lazy": true
             }
           ],
           "to_after_key_up": [
