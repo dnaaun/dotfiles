@@ -7,3 +7,6 @@ set nowrap
 " https://stackoverflow.com/a/57930716
 autocmd ExitPre * q!
 nmap <silent> <buffer> q :quit<CR>
+
+" Activate norcalli/nvim-terminal.lua
+set filetype=terminal

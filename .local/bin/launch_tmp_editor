@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo -en "\033]0;Temporary Neovim Buffer\a";
+vim "$@"

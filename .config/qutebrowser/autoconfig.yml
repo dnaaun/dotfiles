@@ -52,13 +52,24 @@ settings:
     global: true
   content.register_protocol_handler:
     https://mail.google.com?extsrc=mailto&url=%25s: true
+  content.webgl:
+    global: true
+  downloads.remove_finished:
+    global: -1
   editor.command:
+    global:
+    - alacritty
+    - -e
+    - launch_tmp_editor
+    - '{file}'
+  editor.encoding:
+    global: utf-8
+  fileselect.multiple_files.command:
     global:
     - xterm
     - -e
-    - vim {file}
-  editor.encoding:
-    global: utf-8
+    - ranger
+    - --choosefiles={}
   fonts.default_family:
     global: null
   fonts.default_size:
@@ -115,6 +126,7 @@ settings:
   url.searchengines:
     global:
       DEFAULT: https://www.google.com/search?q={}
+      h: https://hn.algolia.com/?q={}
       l: https://libgen.is/search.php?req={}
       p: https://www.google.com/search?q={}+site:docs.python.org
   url.start_pages:

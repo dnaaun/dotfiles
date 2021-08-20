@@ -1,6 +1,7 @@
 lua <<EOF
 vim.lsp.set_log_level("debug")    
 EOF
+"
 
 """""""""""""""""""""" not plugin-specific login """""""""""""""""""""""
 " Prevent wierd de-endentation when writing python
@@ -49,9 +50,6 @@ inoremap <C-v> <c-g>u<Esc>[s1z=`]a<c-g>u
 " A hack to avoid having press a key before the terminal closes when the process in the
 " terminal finishes.
 autocmd TermClose * call feedkeys("x")
-
-" Use the system clipboard by default.
-set clipboard=unnamedplus
 
 let g:python3_host_prog=substitute(system("which python3"), "\n", '', 'g')
 
@@ -256,6 +254,3 @@ let s:secondary_init_vim=expand('~/.secondary.init.vim')
 if filereadable(s:secondary_init_vim)
     execute 'source' s:secondary_init_vim
 endif
-
-
-

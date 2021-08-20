@@ -2,6 +2,8 @@ local dap = require('dap')
 dap.set_log_level('TRACE')
 
 
+dap.defaults.fallback.terminal_win_cmd = '10split new'
+
 
 dap.adapters.python = {
 	type = 'executable';
@@ -28,8 +30,8 @@ _G.djangoDapConfig = {
 		request = 'launch';
 		name = "Django application";
 		program = "${workspaceFolder}/manage.py";
-        args = { "runserver"; "--noreload"};
-        console = "integratedTerminal";
+        args = { "runserver", "--noreload"};
+        -- console = "integratedTerminal";
         django = true;
         autoReload = {
             enable = true

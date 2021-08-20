@@ -20,11 +20,6 @@ end
 -- Allow other files to define callbacks that get called `on_attach`
 local on_attach = function(client)
   for _, plugin_custom_attach in pairs(_G.lsp_config_on_attach_callbacks) do
-
-    -- https://github.com/nanotee/sqls.nvim#usage
-    client.resolved_capabilities.execute_command = true
-    require'sqls'.setup{}
-
     plugin_custom_attach(client)
   end
 
@@ -40,6 +35,19 @@ local lspconfig = require('lspconfig')
 
 -- Configuration for each LSP
 local lsp_specific_configs = {
+  html = {
+    cmd = { "vscode-html-language-server", "--stdio" },
+    filetypes = { "html"},
+    init_options = {
+      configurationSection = { "html", "css", "javascript" },
+      embeddedLanguages = {
+        css = true,
+        javascript = true
+      }
+    },
+    root_dir = lspconfig.util.root_pattern('.git') or vim.loop.os_homedir(),
+    settings = {}
+  },
   lua = {
     settings = {
       Lua = {
@@ -67,24 +75,14 @@ local lsp_specific_configs = {
     root_dir = lspconfig.util.root_pattern("settings.gradle.kts") or lspconfig.util.root_pattern("settings.gradle")
   },
 
-  sqlls = {
-    cmd = {"sql-language-server", "up", "--method", "stdio", "-d"};
-    root_dir = lspconfig.util.root_pattern(".sqllsrc.json") or lspconfig.util.root_pattern(".git")
-  },
-
-  sqls = {
-    connections = {
-      {
-        driver = 'postgresql';
-        dataSourceName = 'host=localhost port=5432 user=terra dbname=terra'
-      }
-    }
-  }
 }
 
 
+-- https://github.com/ms-jpq/coq_nvim#lsp
+local coq = require("coq")
+
 for _, lspname in ipairs({'pyright', 'tsserver', 'cssls',
-'vimls', 'rls','kotlin_language_server', 'sqls', 'lua'}) do
+'vimls', 'rls','kotlin_language_server',  'lua', 'html'}) do
   local  config = lsp_specific_configs[lspname]
   if (config ~= nil) then
     config = vim.tbl_extend("force", common_config, config)
@@ -92,5 +90,5 @@ for _, lspname in ipairs({'pyright', 'tsserver', 'cssls',
     config = common_config
   end
 
-  lspconfig[lspname].setup(config)
+  lspconfig[lspname].setup(coq.lsp_ensure_capabilities(config))
 end

@@ -1,4 +1,4 @@
-cfg = {
+local cfg = {
   bind = true, -- This is mandatory, otherwise border config won't get registered.
                -- If you want to hook lspsaga or other signature handler, pls set to false
   doc_lines = 20, -- will show two lines of comment/doc(if there are more than two lines in doc, will be truncated);

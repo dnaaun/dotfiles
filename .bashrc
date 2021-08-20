@@ -183,14 +183,16 @@ auto_change_venv() {
     parent=${parent%/*} # (shortest match) parameter subsiution ${param%word}
   done
 
-  # TODO: If checking whether 'deactivate' is actually 
-  # valid right now would be more efficient, we should do it.
-  deactivate  > /dev/null 2>&1
+  if [[  ! -z "$VIRTUAL_ENV" && ("$(which python)" != "$parent/.venv/bin/python") ]];  then
+    # TODO: If checking whether 'deactivate' is actually 
+    # valid right now would be more efficient, we should do it.
+    echo "deactivating"
+    deactivate  > /dev/null 2>&1
+  fi
 
   if [ $found_venv = 0 ]; then
     return
   fi
-
   
   # shellcheck disable=SC1090
   source "$parent/.venv/bin/activate";
@@ -278,8 +280,9 @@ tm () {
 if command -v nvim > /dev/null; then
   # Use neovim as a pager, if it's available
   # vless is a script in .local/bin/
-  export PAGER=vless
-  export MANPAGER="vless -c 'set filetype=man'"
+  #export PAGER=vless
+  #export MANPAGER="vless -c 'set filetype=man'"
+  :
 fi
 
 # Auto start tmux
