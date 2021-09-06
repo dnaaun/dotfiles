@@ -186,7 +186,6 @@ auto_change_venv() {
   if [[  ! -z "$VIRTUAL_ENV" && ("$(which python)" != "$parent/.venv/bin/python") ]];  then
     # TODO: If checking whether 'deactivate' is actually 
     # valid right now would be more efficient, we should do it.
-    echo "deactivating"
     deactivate  > /dev/null 2>&1
   fi
 
@@ -290,3 +289,5 @@ if [ -z "$TMUX" ]; then
   tm
 fi
 
+
+alias luamake=/Users/elemental/src/lua-language-server/3rd/luamake/luamake

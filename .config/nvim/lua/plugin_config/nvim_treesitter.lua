@@ -4,7 +4,7 @@ local highlight = {
   enable = true
 }
 local indent = {
-  enable = true
+  enable = false
 }
 -- requires https://github.com/nvim-treesitter/nvim-treesitter-refactor
 local refactor = {
@@ -52,16 +52,15 @@ local textobjects = {
 
       },
       goto_next_end = { -- Note that @class.outer is missing
-        ["[F"] = "@function.outer",
+        ["]F"] = "@function.outer",
         ["]}"] = "@class.outer",
-        ["[K"] = "@comment.outer",
-        ["[B"] = "@block.outer",
-        ["[C"] = "@call.outer",
-        ["[I"] = "@conditional.outer",
-        ["[L"] = "@loop.outer",
-        ["[P"] = "@parameter.outer",
-        ["[T"] = "@statement.outer"
-
+        ["]K"] = "@comment.outer",
+        ["]B"] = "@block.outer",
+        ["]C"] = "@call.outer",
+        ["]I"] = "@conditional.outer",
+        ["]L"] = "@loop.outer",
+        ["]P"] = "@parameter.outer",
+        ["]T"] = "@statement.outer"
       },
       goto_previous_start = {
         ["[f"] = "@function.outer",

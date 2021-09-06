@@ -1,8 +1,3 @@
-lua <<EOF
-vim.lsp.set_log_level("debug")    
-EOF
-"
-
 """""""""""""""""""""" not plugin-specific login """""""""""""""""""""""
 " Prevent wierd de-endentation when writing python
 set indentkeys-=:
@@ -28,9 +23,13 @@ let &grepprg='rg -nH' " Use ripgrep as a grep program
 
 let mapleader = ","
 let maplocalleader = ","
-" open and close quickfix
+
+" Copied from / inspired by tpope/unimpaired.vim
 nnoremap <Leader>qo :copen<CR>
 nnoremap <Leader>qc :cclose<CR>
+nnoremap ]c :cnext<CR>
+nnoremap [c :cprev<CR>
+
 " Same pattern for loclist
 nnoremap <Leader>lo :lopen<CR>
 nnoremap <Leader>lc :lclose<CR>
@@ -62,12 +61,8 @@ EOF
 """"""""""""""""""""""" Colorscheme """"""""""""""""""""""""""""""""""
 " This section must come before loading nvim-dap for it not to mess up
 " nvim-dap colors.
-let g:nvcode_termcolors=256
-
-syntax on
-colorscheme snazzy
-
-
+let g:tokyonight_style='storm'
+colorscheme tokyonight
 " checks if your terminal has 24-bit color support
 if (has("termguicolors"))
     set termguicolors
@@ -90,6 +85,32 @@ end
 
 require("plugin_config.lsp_config")
 EOF
+
+
+"""""""""""""""""""" vim-tmux-navigator """""""""""""""""""""""""
+" I bring this after the plugins sections because I haven't yet figured
+" out how to turn of conflicting keybinds from coq.nvim
+vnoremap <C-j> <cmd>:TmuxNavigateDown<CR>
+vnoremap <C-k> <cmd>:TmuxNavigateUp<CR>
+vnoremap <C-h> <cmd>:TmuxNavigateLeft<CR>
+vnoremap <C-l> <cmd>:TmuxNavigateRight<CR>
+
+nnoremap <C-j> <cmd>:TmuxNavigateDown<CR>
+nnoremap <C-k> <cmd>:TmuxNavigateUp<CR>
+nnoremap <C-h> <cmd>:TmuxNavigateLeft<CR>
+nnoremap <C-l> <cmd>:TmuxNavigateRight<CR>
+
+inoremap <C-j> <cmd>:TmuxNavigateDown<CR>
+inoremap <C-k> <cmd>:TmuxNavigateUp<CR>
+inoremap <C-h> <cmd>:TmuxNavigateLeft<CR>
+inoremap <C-l> <cmd>:TmuxNavigateRight<CR>
+
+" Repeat same mappings for terminal mode in neovim
+tnoremap <C-j> <cmd>:TmuxNavigateDown<CR>
+tnoremap <C-k> <cmd>:TmuxNavigateUp<CR>
+tnoremap <C-h> <cmd>:TmuxNavigateLeft<CR>
+tnoremap <C-l> <cmd>:TmuxNavigateRight<CR>
+
 
 """""""""""""""""""""""""""" himalaya """""""""""""""""""""""
 let g:himalaya_mailbox_picker =  'telescope'
@@ -115,7 +136,7 @@ autocmd FileType vim,lua nnoremap <buffer> <leader>cc :source %<CR>
 """""""""""""""""""""""""""" vimtex """""""""""""""""""""""""""""""""
 "" Vimtex settings
 let g:tex_flavor='latex'
-let g:vimtex_view_method='zathura'
+let g:vimtex_view_method='skim'
 let g:vimtex_quickfix_ignore_filters = [ '\v(Under|Over)full \\(h|v)box'] " Ignore some latex 'errors'
 let g:vimtex_quickfix_open_on_warning=0
 
@@ -189,16 +210,6 @@ augroup MarkdownRelated
 augroup END
 
 
-""""""""""""""""""" vim-test """""""""""""""""""""""""""
-let test#strategy = "dispatch"
-let g:dispatch_tmux_height = 10 " Foundt this by reading dispatch.vim source code
-nmap <silent> <leader>tn :TestNearest<CR>
-nmap <silent> <leader>tf :TestFile<CR>
-nmap <silent> <leader>ts :TestSuite<CR>
-nmap <silent> <leader>tl :TestLast<CR>
-nmap <silent> <leader>tv :TestVisit<CR>
-
-
 """""""""""""""""""" fugitive.vim """""""""""""""""""""""
 nnoremap <Leader>gs :Git!<CR>
 nnoremap <Leader>gd :Gdiffsplit<CR>
@@ -210,18 +221,6 @@ nnoremap <Leader>gp :Gpush<CR>
 nnoremap <Leader>gg :Git 
 
 
-"""""""""""""""""""" vim-tmux-navigator """""""""""""""""""""""""
-inoremap <C-j> <C-\><C-o>:TmuxNavigateDown<CR>
-inoremap <C-k> <C-\><C-o>:TmuxNavigateUp<CR>
-inoremap <C-h> <C-\><C-o>:TmuxNavigateLeft<CR>
-inoremap <C-l> <C-\><C-o>:TmuxNavigateRight<CR>
-" Repeat same mappings for terminal mode in neovim
-tnoremap <C-j> <C-\><C-n>:TmuxNavigateDown<CR>
-tnoremap <C-k> <C-\><C-n>:TmuxNavigateUp<CR>
-tnoremap <C-h> <C-\><C-n>:TmuxNavigateLeft<CR>
-tnoremap <C-l> <C-\><C-n>:TmuxNavigateRight<CR>
-
-
 """""""""""""""""""""" netrw """""""""""""""""""""""
 let g:netrw_localrmdir='rm -r' " Allow netrw to remove non-empty local directories
 let g:netrw_keepdir=1 " Make netrw moving work 
@@ -229,19 +228,8 @@ let g:netrw_sort_by='time' " Netrw sort by time in descending order
 let g:netrw_sort_direction='reverse'
 
 
-""""""""""""""""""""""""" Ultisnips """""""""""""""""""""""""""""""""'
-imap <C-f> <cmd>call UltiSnips#JumpForwards()<CR>
-
 """""""""""""""""""""""""""" indent-blankline """""""""""""""""""""""""""
 let g:indent_blankline_buftype_exclude = ['terminal']
-
-
-"""""""""""""""""""""""""""" vim-sneak """""""""""""""""""""""""""
-let g:sneak#label = 1
-
-
-"""""""""""""""""""""""""""" vim-vsnip """""""""""""""""""""""""""
-let g:vsnip_snippet_dir = expand('~/.config/nvim/vsnip')
 
 
 """""""""""""""""""""""""""" dap-virtual-text """""""""""""""""""""""

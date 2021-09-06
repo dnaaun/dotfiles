@@ -97,5 +97,5 @@ function Format_range_operator(fmt_line)
   vim.go.operatorfunc = 'v:lua.op_func_formatting'
   vim.api.nvim_feedkeys('g@', 'nt', false)
 end
-vim.api.nvim_set_keymap("n", "gq", "<cmd>lua Format_range_operator()<CR>", {noremap = true})
-vim.api.nvim_set_keymap("v", "gq", "<cmd>lua Format_range_operator()<CR>", {noremap = true})
+--vim.api.nvim_set_keymap("n", "gq", "<cmd>lua Format_range_operator()<CR>", {noremap = true})
+--vim.api.nvim_set_keymap("v", "gq", "<cmd>lua Format_range_operator()<CR>", {noremap = true})

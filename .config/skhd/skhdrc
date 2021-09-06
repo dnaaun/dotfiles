@@ -2,6 +2,8 @@
 ctrl + cmd - i : cmus-remote -C player-pause
 ctrl + cmd - u : cmus-remote -C player-prev
 ctrl + cmd - o : cmus-remote -C player-next
+ctrl + cmd - h : cmus-remote --seek -1m
+ctrl + cmd - l : cmus-remote --seek +1m
 
 # Launch things
 alt - return : alacritty

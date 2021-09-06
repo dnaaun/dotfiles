@@ -117,8 +117,10 @@ settings:
       left: 5
       right: 5
       top: 5
+  tabs.select_on_remove:
+    global: next
   tabs.show:
-    global: multiple
+    global: always
   tabs.wrap:
     global: true
   url.default_page:
@@ -128,6 +130,7 @@ settings:
       DEFAULT: https://www.google.com/search?q={}
       h: https://hn.algolia.com/?q={}
       l: https://libgen.is/search.php?req={}
+      n: https://www.google.com/search?q={}+site:https://onlinereadfreenovel.com
       p: https://www.google.com/search?q={}+site:docs.python.org
   url.start_pages:
     global: 'https://www.google.com  '

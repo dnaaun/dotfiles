@@ -24,7 +24,7 @@ def configure(repl):
     repl.show_signature = True
 
     # Show docstring (bool).
-    repl.show_docstring = False
+    repl.show_docstring = True
 
     # Show the "[Meta+Enter] Execute" message when pressing [Enter] only
     # inserts a newline instead of executing the code.
@@ -38,7 +38,7 @@ def configure(repl):
     repl.completion_menu_scroll_offset = 0
 
     # Show line numbers (when the input contains multiple lines.)
-    repl.show_line_numbers = False
+    repl.show_line_numbers = True
 
     # Show status bar.
     repl.show_status_bar = True
@@ -47,7 +47,7 @@ def configure(repl):
     repl.show_sidebar_help = True
 
     # Swap light/dark colors on or off
-    repl.swap_light_and_dark = False
+    repl.swap_light_and_dark = True
 
     # Highlight matching parethesis.
     repl.highlight_matching_parenthesis = True
@@ -106,14 +106,15 @@ def configure(repl):
     repl.enable_input_validation = True
 
     # Use this colorscheme for the code.
-    repl.use_code_colorscheme("monokai")
+    repl.use_code_colorscheme("rainbow_dash")
     # repl.use_code_colorscheme("pastie")
 
     # Set color depth (keep in mind that not all terminals support true color).
 
     # repl.color_depth = "DEPTH_1_BIT"  # Monochrome.
-    # repl.color_depth = "DEPTH_4_BIT"  # ANSI colors only.
-    repl.color_depth = "DEPTH_8_BIT"  # The default, 256 colors.
+    # The reason I have this is that it apprently works better with my colorschemes.
+    repl.color_depth = "DEPTH_4_BIT"  # ANSI colors only. 
+    # repl.color_depth = "DEPTH_8_BIT"  # The default, 256 colors.
     # repl.color_depth = "DEPTH_24_BIT"  # True color.
 
     # Min/max brightness
