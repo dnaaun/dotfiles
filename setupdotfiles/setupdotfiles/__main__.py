@@ -1,11 +1,11 @@
 from __future__ import annotations
 from argparse import ArgumentParser
+import sys
 import os
 from typing import cast
 from .setup_symlinks import setup_all_symlinks
 import re
 from pathlib import Path
-import sys
 
 
 def main() -> int:
@@ -23,6 +23,7 @@ def main() -> int:
             r".*\.gitmodules",
             r".*\.git/.*",
             r".*README\.md",
+            r".*index.lock",
             r".*setupdotfiles.*",
             r".*\.Session\.vim",
             r".*submodules.*",
@@ -30,9 +31,8 @@ def main() -> int:
             r".*__pycache__/.*",
             r".*.tmuxp.yaml",
             # Saving in neovim creates these temporary files
-            r"/.*[0-9]{3,}",
-            r".*~" 
-            r".*\.st"  # axel temporary file
+            r".*[0-9]{3,}",
+            r".*~" r".*\.st",  # axel temporary file
         ],
     )
     args = parser.parse_args()
@@ -40,7 +40,7 @@ def main() -> int:
     base = Path(args.dotfiles_dir) if args.dotfiles_dir is not None else None
     if base is None:
         if home_dir := os.getenv("HOME"):
-            base=Path(home_dir) / "git"/ "dotfiles"
+            base = Path(home_dir) / "git" / "dotfiles"
         else:
             print("No $HOME env var, and no explicitly passed dotfiles dir")
             return 1
@@ -53,18 +53,26 @@ def main() -> int:
     if not to.exists():
         print("$HOME from_ env vars doesn't exist as a directory.")
         return 1
-    exclude = [ re.compile(cast(str, ptrn)) for ptrn in args.exclude ]
+    exclude = [re.compile(cast(str, ptrn)) for ptrn in args.exclude]
     setup_all_symlinks(
         base,
         to,
         dry_run=args.dry_run,
         exclude=exclude,
         force=args.force,
-        verbose=args.verbose
+        verbose=args.verbose,
     )
     if args.daemonize:
         from .daemonize import daemonize
-        daemonize(base, to, dry_run=args.dry_run, force=args.force, exclude=exclude, verbose=args.verbose)
+
+        daemonize(
+            base,
+            to,
+            dry_run=args.dry_run,
+            force=args.force,
+            exclude=exclude,
+            verbose=args.verbose,
+        )
 
     return 0
 

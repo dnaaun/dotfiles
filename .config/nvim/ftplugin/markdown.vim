@@ -8,16 +8,16 @@ set softtabstop=2
 " when indenting with '>', use 2 spaces width
 set shiftwidth=2
 
-
 " Enable spelling
 set spell
 
-"  Make bold, italics, and so forth
-let g:vim_markdown_conceal=1
-
-" Spelling corrections are quicker when completion inserts the first match (or subsequent matches)
-" without having to press a combo.
-set completeopt-=noinsert
 
 " Vim sources it's own ftpluign/html.vim which sets "r"
 setlocal formatoptions-=r " Don't conitnue quotes on next line when pressing return
+
+" 'code block' text objects
+" https://vim.fandom.com/wiki/Creating_new_text_objects
+vnoremap a` :<C-u>?```<CR>v/```<CR>ll
+vnoremap i` :<C-u>?```<CR>jv/```<CR>k
+omap a` :normal Va`<CR>
+omap i` :normal Vi`<CR>

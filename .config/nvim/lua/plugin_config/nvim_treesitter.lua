@@ -1,7 +1,8 @@
 -- Various Treesitter modules config
 
 local highlight = {
-  enable = true
+  enable = true,
+  disable = { "markdown" }
 }
 local indent = {
   enable = false

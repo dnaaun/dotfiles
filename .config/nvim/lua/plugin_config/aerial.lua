@@ -11,6 +11,7 @@ local custom_attach = function(client)
   -- Jump up the tree with '[[' or ']]'
   vim.api.nvim_buf_set_keymap(0, 'n', '[[', '<cmd>AerialPrevUp<CR>', {})
   vim.api.nvim_buf_set_keymap(0, 'n', ']]', '<cmd>AerialNextUp<CR>', {})
+  vim.api.nvim_set_keymap('n', 'gs', "<cmd>Telescope aerial<CR>", { noremap= true } )
 end
 
 table.insert(_G.lsp_config_on_attach_callbacks, custom_attach)

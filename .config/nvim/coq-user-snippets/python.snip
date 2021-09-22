@@ -1,0 +1,56 @@
+snippet log 
+	import logging
+	logger = logging.getLogger(__name__)
+
+snippet ann 
+alias "from __future__ import annotations"
+	from __future__ import annotations
+
+
+snippet withf 
+alias  "open file in the context-manager way"
+	with ${1:path}.open(${2:}) as ${3:fb}:
+	    ${4:}
+
+
+snippet ifm 
+alias "ifmain"
+	if __name__ == "__main__":
+		${1}
+
+snippet class 
+alias "class SomeClass"
+	class ${1:SomeClass}:
+		${2:pass}
+
+snippet sup 
+alias "super()."
+	super().
+
+
+snippet impp 
+alias "from pathlib import Path"
+	from pathlib import Path
+
+snippet Tv 
+alias "TypeVar"
+	${1} = TypeVar("$1"${3:, bound=${2:something to subclass}})
+
+
+snippet TYPE_CHECKING 
+alias "if TYPE_CHECKING"
+	if TYPE_CHECKING:
+	    ${1:pass}
+	else:
+	    ${2:pass}
+
+
+snippet attr.s 
+alias "autoattrib"
+	@attr.s(auto_attribs=True)
+
+snippet def 
+alias "def func() -> None:"
+	def ${1:func}(${2:args}) -> ${3:None}:
+		${4:${VISUAL:pass}}
+

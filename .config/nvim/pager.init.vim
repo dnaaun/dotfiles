@@ -1,4 +1,4 @@
-source ~/.config/nvim/init.vim
+source ~/.config/nvim/init.lua
 
 set nomodifiable
 set nowrap

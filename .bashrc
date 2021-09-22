@@ -291,3 +291,5 @@ fi
 
 
 alias luamake=/Users/elemental/src/lua-language-server/3rd/luamake/luamake
+
+source /Users/elemental/.bash_completions/__main__.py.sh

@@ -1,10 +1,21 @@
 import os
-import subprocess
-from typing import List
-from typing_extensions import Protocol
-import pyinotify
 from pathlib import Path
 import re
+import subprocess
+import time
+from typing import List, Union
+from typing_extensions import Protocol
+
+from watchdog.events import (
+    DirCreatedEvent,
+    DirDeletedEvent,
+    DirMovedEvent,
+    FileCreatedEvent,
+    FileDeletedEvent,
+    FileMovedEvent,
+    RegexMatchingEventHandler,
+)
+from watchdog.observers import Observer
 
 from .setup_symlinks import setup_symlink
 
@@ -12,38 +23,87 @@ from .setup_symlinks import setup_symlink
 class EventProtocol(Protocol):
     pathname: str
 
+
 def Notification(body: str, title: str) -> None:
     """
     It's capitalized to keep the same interface as
     notify.Notification
     """
-    subprocess.Popen(['notify-send', title, body])
+    print(f"{title}: {body}")
+    subprocess.Popen(["notify-send", title, body])
 
-class EventHandler(pyinotify.ProcessEvent):
-    def my_init(self, base: Path, to: Path, dry_run: bool, force: bool, verbose: bool):
+
+class EventHandler(RegexMatchingEventHandler):
+    def __init__(
+        self,
+        base: Path,
+        to: Path,
+        dry_run: bool,
+        force: bool,
+        verbose: bool,
+        exclude: list[re.Pattern],
+    ):
         self._base = base
         self._to = to
         self._dry_run = dry_run
         self._force = force
         self._verbose = verbose
+        self._exclude = exclude
+        super().__init__(
+            ignore_regexes=list(map(str, exclude)),
+            ignore_directories=False,
+            case_sensitive=False,
+        )
 
-    def process_IN_DELETE(self, event: EventProtocol) -> None:
-        self._handle_delete_file(event)
+    def on_moved(self, event: Union[FileMovedEvent, DirMovedEvent]):
+        """Called when a file or a directory is moved or renamed.
 
-    def process_IN_MOVE_FROM(self, event: EventProtocol) -> None:
-        self._handle_delete_file(event)
+        :param event:
+            Event representing file/directory movement.
+        :type event:
+            :class:`DirMovedEvent` or :class:`FileMovedEvent`
+        """
+        if isinstance(event, DirMovedEvent):
+            return
 
-    def process_IN_CREATE(self, event: EventProtocol) -> None:
-        self._handle_new_file(event)
+        if (path := Path(event.dest_path).resolve()).is_relative_to(self._to):
+            self._handle_delete_file(path)
 
-    def process_IN_MOVE_TO(self, event: EventProtocol) -> None:
-        self._handle_new_file(event)
+    def on_created(self, event: Union[DirCreatedEvent, FileCreatedEvent]):
+        """Called when a file or directory is created.
 
-    def _handle_delete_file(self, event: EventProtocol) -> None:
-        path = Path(event.pathname)
-        
+        :param event:
+            Event representing file/directory creation.
+        :type event:
+            :class:`DirCreatedEvent` or :class:`FileCreatedEvent`
+        """
+        if isinstance(event, DirCreatedEvent):
+            return
+
+        self._handle_new_file(Path(event.src_path))
+
+    def on_deleted(self, event: Union[DirDeletedEvent, FileDeletedEvent]):
+        """Called when a file or directory is deleted.
+
+        :param event:
+            Event representing file/directory deletion.
+        :type event:
+            :class:`DirDeletedEvent` or :class:`FileDeletedEvent`
+        """
+        if isinstance(event, DirDeletedEvent):
+            return
+        self._handle_delete_file(Path(event.src_path).resolve())
+
+    def _is_excluded(self, path: Path) -> bool:
+        return any(ptrn.match(str(path)) for ptrn in self._exclude)
+
+    def _handle_delete_file(self, path: Path) -> None:
         to_resolved = self._to / path.relative_to(self._base)
-        if path.is_dir() or not path.exists():
+        if (
+            self._is_excluded(path)
+            or to_resolved.is_dir()
+            or not to_resolved.is_symlink()
+        ):
             return
         if self._dry_run:
             print(f"DELETE {to_resolved}")
@@ -51,9 +111,8 @@ class EventHandler(pyinotify.ProcessEvent):
             os.unlink(to_resolved)
         Notification(f"Deleted {to_resolved}", "Dotfiles watcher")
 
-    def _handle_new_file(self, event: EventProtocol) -> None:
-        path = Path(event.pathname)
-        if path.is_dir():
+    def _handle_new_file(self, path: Path) -> None:
+        if self._is_excluded(path) or path.is_dir():
             return
         from_ = path.relative_to(self._base)
         to_resolved = setup_symlink(
@@ -62,36 +121,71 @@ class EventHandler(pyinotify.ProcessEvent):
             to=self._to,
             dry_run=self._dry_run,
             force=self._force,
-            verbose=self._verbose
+            verbose=self._verbose,
         )
         if to_resolved:
             Notification(f"Setup {to_resolved}", "Dotfiles watcher")
-        else:
-            Notification(f"Failed to setup {to_resolved}.", "Dotfiles watcher")
+
 
 def daemonize(
-        base: Path, to: Path, dry_run: bool, force: bool, exclude: List[re.Pattern], verbose: bool
+    base: Path,
+    to: Path,
+    dry_run: bool,
+    force: bool,
+    exclude: List[re.Pattern],
+    verbose: bool,
 ) -> None:
     _daemonize(base, to, dry_run, force, exclude, verbose)
     # with daemon.DaemonContext(pidfile="/tmp/setupdotfiles.pid", detach_process=False):
 
+
 def _daemonize(
-        base: Path, to: Path, dry_run: bool, force: bool, exclude: List[re.Pattern], verbose: bool
+    base: Path,
+    to: Path,
+    dry_run: bool,
+    force: bool,
+    exclude: List[re.Pattern],
+    verbose: bool,
 ) -> None:
 
-    mask = (
-        pyinotify.IN_CREATE  # type: ignore
-        | pyinotify.IN_DELETE  # type: ignore
-        | pyinotify.IN_MOVED_FROM  # type: ignore
-        | pyinotify.IN_MOVED_TO  # type: ignore
+    observer = Observer()
+    event_handler = EventHandler(
+        base=base, to=to, dry_run=dry_run, force=force, verbose=verbose, exclude=exclude
     )
+    observer.schedule(event_handler, str(base), recursive=True)
+    observer.start()
 
-    event_handler = EventHandler(base=base, to=to, dry_run=dry_run, force=force, verbose=verbose)
-    wm = pyinotify.WatchManager()
+    try:
+        while True:
+            time.sleep(1)
+    finally:
+        observer.stop()
+        observer.join()
 
-    def exclude_func(path: str):
-        return any(ptrn.search(path) for ptrn in exclude)
 
-    wm.add_watch([str(base)], mask, rec=True, exclude_filter=exclude_func)
-    notifier = pyinotify.Notifier(wm, event_handler)
-    notifier.loop()
+if __name__ == "__main__":
+    daemonize(
+        base=Path("/Users/elemental/git/dotfiles"),
+        to=Path("/Users/elemental"),
+        dry_run=False,
+        exclude=[
+            re.compile(pat)
+            for pat in [
+                r".*\.gitmodules",
+                r".*\.git/.*",
+                r".*README\.md",
+                r".*index.lock",
+                r".*setupdotfiles.*",
+                r".*\.Session\.vim",
+                r".*submodules.*",
+                r".*\.mypy_cache/.*",
+                r".*__pycache__/.*",
+                r".*.tmuxp.yaml",
+                # Saving in neovim creates these temporary files
+                r".*[0-9]{3,}",
+                r".*~" r".*\.st",  # axel temporary file
+            ]
+        ],
+        force=False,
+        verbose=True,
+    )
