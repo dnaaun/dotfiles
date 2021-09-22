@@ -62,12 +62,14 @@ require('plugins')
 ---- Colorscheme ----
 -- This section must come before loading nvim-dap for it not to mess up
 -- nvim-dap colors.
-vim.g.tokyonight_style='storm'
-nvim_command("colorscheme tokyonight")
 -- checks if your terminal has 24-bit color support
 if vim.fn.has("termguicolors") then
+    vim.g.tokyonight_style='storm'
+    nvim_command("colorscheme tokyonight")
     vim.opt.termguicolors = true
     nvim_command("highlight LineNr ctermbg=NONE guibg=NONE")
+else
+  nvim_command("colorscheme base16-snazzy")
 end
 
 ---- Lua plugin configuration separated out to files ----
@@ -208,7 +210,7 @@ vim.g.dap_virtual_text = 'all frames'
 
 ---- Secondary init file ----
 -- Include a "secondary" init file that is machine-specific (ie, not racked in this repo)
-local secondary_init_vim=vim.fn.expand('~/.secondary.init.vim')
+local secondary_init_vim=vim.fn.expand('~/.secondary.init.lua')
 if vim.fn.filereadable(secondary_init_vim) == true then
     nvim_command('source ' .. secondary_init_vim)
 end

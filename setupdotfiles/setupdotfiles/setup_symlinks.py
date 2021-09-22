@@ -59,8 +59,11 @@ def setup_all_symlinks(
         if not dir_.exists():
             continue
         for fp in dir_.iterdir():
-            if fp.is_symlink() and  not fp.readlink().exists():
+	    # this hasattr() check is a workaround for a bug I don't understand yet. On the SCC,
+	    # pathlib.PosixPath doesnt' have a .readlink() method????
+            if fp.is_symlink() and hasattr(fp, 'readlink') and not fp.readlink().exists():
                 print(f"Removed {str(fp)} because it's a stale symlink.")
+                import ipdb;ipdb.set_trace()
                 fp.unlink()
 
 

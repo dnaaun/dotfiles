@@ -30,8 +30,12 @@ require("telescope").setup({
   },
 })
 
-require("telescope").load_extension("fzf")
-require("telescope").load_extension("aerial")
+if not pcall(function() require("telescope").load_extension("fzf") end) then
+  print("FZF extension for telescope not installed.")
+end
+if not pcall(function() require("telescope").load_extension("aerial") end) then
+  print("Aerial extension for telescope not installed.")
+end
 
 -- Mappings
 local mapping_opts = { noremap = true }

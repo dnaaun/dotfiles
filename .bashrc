@@ -288,3 +288,6 @@ fi
 if [ -z "$TMUX" ]; then
   tm
 fi
+eval "$(pyenv init -)"
+eval "$(pyenv init -)"
+eval "$(pyenv init -)"

@@ -4,6 +4,7 @@ require('packer').startup {
     use 'vim-airline/vim-airline-themes'
     use 'christoomey/vim-tmux-navigator'
     use 'folke/tokyonight.nvim' -- colorscheme
+    use 'chriskempson/base16-vim'
     use { "lukas-reineke/indent-blankline.nvim", ft = { 'html', 'htmldjango', 'python' } }
 
     use { 'plasticboy/vim-markdown',  ft = { 'markdown' } }
@@ -22,9 +23,8 @@ require('packer').startup {
     use 'kosayoda/nvim-lightbulb'
     use 'folke/lua-dev.nvim' -- Provides type annotations for neovim's Lua interface. Needs Sumenkos' Lua LSP. TODO: Not actually set up yet: https://github.com/folke/lua-dev.nvim#%EF%B8%8F--configuration
     use 'ray-x/lsp_signature.nvim' -- Show func signatures automatically
-    use '~/git/coq_nvim'  -- Super fast, super feature complete, completion plugin
-    use '~/git/coq.artifacts' -- Snippets for coq_nvim
-    use '~/git/coq.thirdparty' -- Non standard and third party sources for coq
+    use 'ms-jpq/coq_nvim'  -- Super fast, super feature complete, completion plugin
+    -- use 'ms-jpq/coq.thirdparty' -- Non standard and third party sources for coq
     use 'stevearc/aerial.nvim' -- Symbol tree. Better than symbols-outline.nvim because it allows filtering by symbol type.
 
     -- Tree sitter
@@ -80,7 +80,7 @@ require('packer').startup {
 
     -- A quick-and-dirty solution to typing Amharic in vim,
     -- without having to rely on changing the system-wide keyboard layout
-    use '~/git/amharic.nvim'
+    use 'davidatbu/amharic.nvim'
 
 
     -- SQL autocompletion. Sadly, not an LSP, needed for default sql omnifunc. But will do.
