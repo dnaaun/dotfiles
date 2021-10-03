@@ -13,18 +13,35 @@ end
 
 iron.core.add_repl_definitions {
   python = {
-    ptpython = {
-      command = {"ptpython"},
+    -- ptpython = {
+    --   command = {"ptpython"},
+    --   -- You know where I found out how to pass ANSI control sequences like below to
+    --   -- neovim's terminal?
+    --   -- On a reply, to a comment, on a PR: https://github.com/neovim/neovim/pull/12080#discussion_r546579388
+    --   -- Also, the <esc>i is because PtPython has it's own vim mode that I use.
+    --   -- The ANSI control sequence is bracketed paste mode.
+    --   open = t("<esc>i\x1b[200~"),
+    --   close = t("\x1b[201~")
+    -- },
+    -- ptpython = {
+    --   command = {"python", "manage.py", "shell_plus", "--ptpython"},
+    --   -- You know where I found out how to pass ANSI control sequences like below to
+    --   -- neovim's terminal?
+    --   -- On a reply, to a comment, on a PR: https://github.com/neovim/neovim/pull/12080#discussion_r546579388
+    --   -- Also, the <esc>i is because PtPython has it's own vim mode that I use.
+    --   -- The ANSI control sequence is bracketed paste mode.
+    --   open = t("<esc>i\x1b[200~"),
+    --   close = t("\x1b[201~")
+    -- },
+    django_ptpython = {
+      command = {"python", "manage.py", "shell_plus", "--ptpython"},
       -- You know where I found out how to pass ANSI control sequences like below to
-      -- neovim's terminal? 
+      -- neovim's terminal?
       -- On a reply, to a comment, on a PR: https://github.com/neovim/neovim/pull/12080#discussion_r546579388
-      -- Also, the <esc>i is because PtPython has it's own vim mode that I use.
-      -- The ANSI control sequence is bracketed paste mode.
-      open = t("<esc>i\x1b[200~"),
+      open = t("\x1b[200~"),
       close = t("\x1b[201~")
-    }
+    },
   },
-  
 }
 
 iron.core.add_repl_definitions {
@@ -45,7 +62,7 @@ iron.core.add_repl_definitions {
 
 iron.core.set_config {
   preferred = {
-    python = "ptpython",
+    python = "django_ptpython",
   },
   repl_open_cmd = 'vertical vsplit new',
   visibility  = 'focus'

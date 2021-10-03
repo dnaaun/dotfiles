@@ -129,12 +129,19 @@ local lsp_specific_configs = {
 				diagnosticsDelay = 300,
 				formatterLineLength = 80,
 				forwardSearch = {
-					args = {},
+          executable = "/Applications/Skim.app/Contents/SharedSupport/displayline",
+					args = { "%l", "%p", "%f" }
 				},
 				latexFormatter = "latexindent",
 				latexindent = {
 					modifyLineBreaks = true,
 				},
+        build = {
+          args = { "%f", "--synctex", "--keep-logs", "--keep-intermediates" },
+          executable = "tectonic",
+          forwardSearchAfter = true,
+          onSave = true
+        },
 			},
 		},
 	},

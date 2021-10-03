@@ -63,7 +63,6 @@ def setup_all_symlinks(
 	    # pathlib.PosixPath doesnt' have a .readlink() method????
             if fp.is_symlink() and hasattr(fp, 'readlink') and not fp.readlink().exists():
                 print(f"Removed {str(fp)} because it's a stale symlink.")
-                import ipdb;ipdb.set_trace()
                 fp.unlink()
 
 

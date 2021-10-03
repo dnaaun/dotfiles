@@ -1,7 +1,8 @@
 vim.g.coq_settings = {
   keymap = {
     recommended=false,
-    jump_to_mark='<C-g>' -- <c-h> conflicts with my binding for :TmuxNavigateLeft
+    jump_to_mark='<C-g>', -- <c-h> conflicts with my binding for :TmuxNavigateLeft
+--     eval_snips = '<leader>r'
   },
   auto_start = 'shut-up',
   clients = {

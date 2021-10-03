@@ -6,7 +6,7 @@ require("telescope").setup({
     layout_config = {
       height = 0.6,
       width = 0.99, -- Works better because usually my terminal takes only half my screen
-      preview_height = 0.2,
+      preview_height = 0.8,
     },
   },
   pickers = {

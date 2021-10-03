@@ -25,6 +25,7 @@ settings:
         Ctrl-O: tab-focus last
         M: hint links spawn /Users/elemental/.local/bin/mpv {hint-url}
         T: set-cmd-text -sr :tab-select
+        m: bookmark-add
         mf: hint links spawn bash -c "mpv {hint-url}"
         sf: hint scrollable
         tf: hint toc

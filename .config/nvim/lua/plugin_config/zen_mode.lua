@@ -1,3 +1,4 @@
+
 require'zen-mode'.setup {
   window = {
     backdrop = 1, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
@@ -28,7 +29,7 @@ require'zen-mode'.setup {
     },
     twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
     gitsigns = { enabled = false }, -- disables git signs
-    tmux = { enabled = false }, -- disables the tmux statusline
+    tmux = { enabled = true }, -- disables the tmux statusline
     -- this will change the font size on kitty when in zen mode
     -- to make this work, you need to set the following kitty options:
     -- - allow_remote_control socket-only
@@ -45,3 +46,6 @@ require'zen-mode'.setup {
   on_close = function()
   end,
 }
+
+local mapfunc = require('std2').mapfunc
+mapfunc("n", "<leader>v", require('zen-mode').toggle, {})

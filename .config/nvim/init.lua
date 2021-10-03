@@ -3,6 +3,7 @@ nvim_set_keymap = vim.api.nvim_set_keymap
 nvim_command = vim.api.nvim_command
 
 ---- not plugin-specific login ----
+vim.opt.number = true
 -- Prevent wierd de-endentation when writing python
 vim.opt.indentkeys:remove({":"})
 

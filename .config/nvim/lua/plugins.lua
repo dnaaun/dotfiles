@@ -12,7 +12,7 @@ require('packer').startup {
     use({ 'dhruvasagar/vim-table-mode', ft = { 'markdown' } })
 
     -- Tex
-    use { 'lervag/vimtex',  ft = { 'tex' } }
+    --use { 'lervag/vimtex',  ft = { 'tex' } }
 
     use 'embear/vim-localvimrc' -- Enable sourcing .lnvimrc files
     use 'sedm0784/vim-resize-mode' -- After doing <C-w>,  be able to type consecutive +,-,<,>
@@ -23,8 +23,8 @@ require('packer').startup {
     use 'kosayoda/nvim-lightbulb'
     use 'folke/lua-dev.nvim' -- Provides type annotations for neovim's Lua interface. Needs Sumenkos' Lua LSP. TODO: Not actually set up yet: https://github.com/folke/lua-dev.nvim#%EF%B8%8F--configuration
     use 'ray-x/lsp_signature.nvim' -- Show func signatures automatically
-    use 'ms-jpq/coq_nvim'  -- Super fast, super feature complete, completion plugin
-    -- use 'ms-jpq/coq.thirdparty' -- Non standard and third party sources for coq
+    use '~/git/coq_nvim'  -- Super fast, super feature complete, completion plugin
+    use 'ms-jpq/coq.thirdparty' -- Non standard and third party sources for coq
     use 'stevearc/aerial.nvim' -- Symbol tree. Better than symbols-outline.nvim because it allows filtering by symbol type.
 
     -- Tree sitter
@@ -35,7 +35,7 @@ require('packer').startup {
 
 
     -- Debugging/REPLs
-    use 'mfussenegger/nvim-dap'
+    use '~/git/nvim-dap'
     use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
     use 'theHamsta/nvim-dap-virtual-text'
     use 'hkupty/iron.nvim' -- Spin up a repl in a neovim terminal and send text to it
@@ -60,7 +60,7 @@ require('packer').startup {
     use 'machakann/vim-sandwich' -- Surround textobjects with {(<p>"'
     use 'tpope/vim-commentary' -- *Un)comment stuff with gc
     use 'folke/which-key.nvim' -- show candidate mappings after pressing a key
-    use 'rmagatti/auto-session'
+    -- use 'rmagatti/auto-session'
 
     -- Git and diffs
     use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }

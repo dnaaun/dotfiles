@@ -11,7 +11,8 @@ setup(
     install_requires=[
         "typing-extensions>=3.7.4.2,<4",
         "python-daemon",
-        "pyperclip"
+        "pyperclip",
+        "watchdog"
     ],
     extras_require={
         "dev": [

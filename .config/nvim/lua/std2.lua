@@ -4,6 +4,7 @@ M = {
 
 -- String related
 local str = {}
+M.str = str
 
 --- For example,
 ---   times("hi", 3) === "hihihi"
@@ -15,6 +16,19 @@ function str.times(s, times)
   while times > 0 do
     res = res .. s
     times = times - 1
+  end
+  return res
+end
+
+---@param del string
+---@param array string[]
+---@return string
+function str.concat(del, array)
+  local res = ""
+  local i = 1
+  while array[i] ~= nil do
+    res = res .. del .. array[i]
+    i = i + 1
   end
   return res
 end
@@ -39,12 +53,15 @@ end
 local package_name, _ = ...
 
 
+
+
 ---@param mode string
 ---@param keys string
 ---@param function_ fun():nil
 ---@param buf_only boolean
-function M.mapfunc(mode, keys, function_, opts, buf_only)
-  local funcname = get_next_functionname()
+---@param name string | nil
+local function _mapfunc(mode, keys, function_, opts, buf_only, name)
+  local funcname = ((name and (name .. " | ")) or "") .. get_next_functionname()
   M._bound_funcs[funcname] = function_
   local fmt_string = "<cmd>lua require('%s')._bound_funcs['%s']()<CR>"
   if buf_only then
@@ -57,8 +74,45 @@ end
 ---@param mode string
 ---@param keys string
 ---@param function_ fun():nil
-function M.buf_mapfunc(mode,  keys, function_, opts)
-  return M.mapfunc(mode, keys, function_, opts, true)
+---@param name string | nil
+function M.mapfunc(mode, keys, function_, opts, name)
+  _mapfunc(mode, keys, function_, opts, false, name)
+end
+
+---@param mode string
+---@param keys string
+---@param function_ fun():nil
+---@param name string | nil
+function M.buf_mapfunc(mode,  keys, function_, opts, name)
+  return _mapfunc(mode, keys, function_, opts, true, name)
+end
+
+
+---@param buffer number
+---@return string[]
+function M.get_visual_selection_text(buffer)
+  local beg_col, beg_row, end_col, end_row
+  _, beg_row, beg_col, _ = unpack(vim.fn.getpos("v")) -- :help line()
+  _, end_row, end_col, _ = unpack(vim.fn.getpos(".")) -- :help line()
+
+  return M.get_text_in_range(buffer, beg_row - 1, beg_col - 1, end_row, end_col)
+end
+
+
+---@param buffer number
+---@param beg_row number Zero indexed, exclusive.
+---@param beg_col number Zero indexed, inclusive.
+---@param end_row number Zero indexed, exclusive.
+---@param end_col number Zero indexed, exclusive.
+---@return string[]
+function M.get_text_in_range(buffer, beg_row, beg_col, end_row, end_col)
+  ---@type string[]
+  local lines = vim.api.nvim_buf_get_lines(buffer, beg_row, end_row, false)
+  if #lines > 0 then
+    lines[1] = lines[1]:sub(beg_col + 1, -1)
+    lines[#lines] = lines[#lines]:sub(1, end_col)
+  end
+  return lines
 end
 
 
