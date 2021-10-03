@@ -1,48 +1,31 @@
-# NOTE: 
-This is definitely a "note-to-self" kinda page, don't expect a coherent and meaningful
-README targeted at a general audience (i.e., an audience that's not me).
+# Dotfiles
+These dotfiles are for either a Linux OS, or MacOS.
 
-# Steps to do before running `setup.sh`
 
-Install `picom`. Last I checked, only way is to [build from source](https://github.com/yshui/picom).
+## Installing
 
-Also install, `fd-find`, `ripgrep`
+### Prerequisites
+- The `neovim` setup assumes you have installed
+    [`packer.nvim`](https://github.com/wbthomason/packer.nvim).
+- The `tmux` setup assumes you have installed [tmux plugin
+    manager](https://github.com/tmux-plugins/tpm).
+- The `bash` setup assumes that you already have installed
+ [`fzf`](https://github.com/junegunn/fzf).
+- The `i3wm` setup assumes that you have [`picom`](https://github.com/yshui/picom) (a
+compositor) installed.
 
-## Install i3blocks (and i3wm of course)
+### Actual Installing
+The installation of the dotfiles is through symbolic links. There's a python app that
+will setup the symbolic links, and, if you'd like, keep watching the dotfiles directory
+and setup any new files that you will add to the dotfiles directory. The reason I wrote
+this is because I found myself editing my dotfiles often, and the process of setting up
+the symlinks manually every time was laborious.
+
+Here's how you'd go about using the python app:
 ```bash
-sudo apt-get install i3blocks
+pip install -e setupdotfiles
+python -m setupdotfiles  --daemonize --verbose
 ```
 
-## Install Tmux Package Manager
-
-```bash
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-```
-
-## Install powerline fonts to prevent tmux being ugly when using the powerline plugin
-```bash
-sudo apt-get install fonts-powerline
-```
-# TODOs
- - Figure out why `Cmus` doesn't obey MPRIS so that we don't have to launch
-   a process (`cmus-cremote`) to control music.
-
-
-# Other requirements
-## `Litecli` 
-`pip install litecli`
-
-## Install `fzf`
- - The version of `fzf` packaged in Ubuntu's apt repos is a few versions behind, so
-     install from Git using instructions.
-
-## Other
- - bat
- - delta
- - exa
- - cht.sh
- - entr
- - sd
- - broot
 
 

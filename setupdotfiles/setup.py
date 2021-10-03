@@ -10,7 +10,6 @@ setup(
     packages=["setupdotfiles"],
     install_requires=[
         "typing-extensions>=3.7.4.2,<4",
-        "python-daemon",
         "pyperclip",
         "watchdog"
     ],
