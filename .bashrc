@@ -288,6 +288,7 @@ fi
 if [ -z "$TMUX" ]; then
   tm
 fi
-eval "$(pyenv init -)"
-eval "$(pyenv init -)"
-eval "$(pyenv init -)"
+
+# Doing --path instead of - will break some commmands (pyenv shell).  https://github.com/pyenv/pyenv/issues/1906#issuecomment-835027647
+# But aint nobody got time to fix something they don't use.
+eval "$(pyenv init --path)"

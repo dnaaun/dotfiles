@@ -1,6 +1,10 @@
 require('packer').startup {
   function(use)
     use 'wbthomason/packer.nvim' -- package/plugin manager
+    use {
+    'glacambre/firenvim',
+    run = function() vim.fn['firenvim#install'](0) end
+}
     use 'vim-airline/vim-airline-themes'
     use 'christoomey/vim-tmux-navigator'
     use 'folke/tokyonight.nvim' -- colorscheme

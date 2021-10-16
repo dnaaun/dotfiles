@@ -1,3 +1,7 @@
+# Restart yabai cuz it glitches out sometimes (AKA, open source woes)
+ctrl + cmd - y : brew services restart yabai
+ 
+
 # Control music/cmus
 ctrl + cmd - i : cmus-remote -C player-pause
 ctrl + cmd - u : cmus-remote -C player-prev

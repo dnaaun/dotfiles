@@ -62,7 +62,7 @@ iron.core.add_repl_definitions {
 
 iron.core.set_config {
   preferred = {
-    python = "django_ptpython",
+    python = "ptpython",
   },
   repl_open_cmd = 'vertical vsplit new',
   visibility  = 'focus'

@@ -215,3 +215,9 @@ local secondary_init_vim=vim.fn.expand('~/.secondary.init.lua')
 if vim.fn.filereadable(secondary_init_vim) == true then
     nvim_command('source ' .. secondary_init_vim)
 end
+
+---- Firenvim!
+print('asdfsdfasdfasdfasdfKERJER')
+if vim.fn.exists('g:started_by_firenvim') then
+  vim.opt.guifont='monospace:h16'
+end
