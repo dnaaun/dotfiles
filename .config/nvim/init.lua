@@ -35,7 +35,7 @@ nvim_set_keymap("n", "[q", ":cprev<CR>", {})
 nvim_set_keymap("n", "<Leader>lo", ":lopen<CR>", {})
 nvim_set_keymap("n", "<Leader>lc", ":lclose<CR>", {})
 -- cr stands for 'config reload'
-mapfunc("n", "<Leader>cr", require('nvim-reload').Reload, {})
+-- mapfunc("n", "<Leader>cr", require('nvim-reload').Reload, {})
 
 
 -- WHen in visual/select/operator mode, I want searching with / to be an inclusive
@@ -76,15 +76,22 @@ end
 ---- Lua plugin configuration separated out to files ----
 -- Need to source lsp_config last because we collect some callbacks
 -- from other plugin configs that are needed to set it up. Namely:
+
+local function try_require(mod)
+  if not pcall(function() require(mod) end) then
+    print("Couldn't require " .. mod)
+  end
+end
+
 _G.lsp_config_on_attach_callbacks = {}
 for filename in io.popen('ls ~/.config/nvim/lua/plugin_config'):lines() do
     local module_name = string.gsub(filename, "%.lua$", "")
     if module_name ~= "lsp_config" then
-        require("plugin_config."..module_name)
+        try_require("plugin_config."..module_name)
     end
 end
 
-require("plugin_config.lsp_config")
+try_require("plugin_config.lsp_config")
 
 
 ---- vim-tmux-navigator ----
