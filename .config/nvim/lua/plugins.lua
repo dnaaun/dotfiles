@@ -26,7 +26,7 @@ require('packer').startup {
     use 'nvim-lua/lsp_extensions.nvim' -- TODO: Setup inlay hints for rust, or just fix rust-tools.nvim's inlay hints
     use 'kosayoda/nvim-lightbulb'
     use 'folke/lua-dev.nvim' -- Provides type annotations for neovim's Lua interface. Needs Sumenkos' Lua LSP. TODO: Not actually set up yet: https://github.com/folke/lua-dev.nvim#%EF%B8%8F--configuration
-    use 'ray-x/lsp_signature.nvim' -- Show func signatures automatically
+    --use 'ray-x/lsp_signature.nvim' -- Show func signatures automatically
     use '~/git/coq_nvim'  -- Super fast, super feature complete, completion plugin
     use 'ms-jpq/coq.thirdparty' -- Non standard and third party sources for coq
     use 'stevearc/aerial.nvim' -- Symbol tree. Better than symbols-outline.nvim because it allows filtering by symbol type.
