@@ -31,6 +31,8 @@ settings:
         tf: hint toc
         wi: devtools bottom
         yf: hint all yank
+  colors.webpage.darkmode.enabled:
+    global: false
   completion.open_categories:
     global:
     - searchengines

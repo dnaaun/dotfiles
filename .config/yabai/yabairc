@@ -6,7 +6,7 @@ yabai -m config layout bsp
 # Focus follows mouse
 # Setting focus_follows_mouse makes hovering over context menus and docks click on the hovered-on items
 yabai -m config focus_follows_mouse autofocus
-yabai -m config mouse_follows_focus on
+yabai -m config mouse_follows_focus off # I hope this reduces the bug of autoclicking on menu items when hovering.
 
 # floating windows are always on top
 yabai -m config window_topmost on

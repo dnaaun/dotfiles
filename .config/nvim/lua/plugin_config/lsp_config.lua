@@ -192,7 +192,8 @@ for _, lspname in ipairs({
 	"sumneko_lua",
 	"texlab",
 	"null-ls",
-  "sqlls"
+  "sqlls",
+  "solargraph"
 }) do
 	local config = lsp_specific_configs[lspname]
 	if config ~= nil then
