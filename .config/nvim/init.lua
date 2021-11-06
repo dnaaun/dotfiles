@@ -166,13 +166,20 @@ vim.g["airline#extensions#whitespace#enabled"] = 0
 -- Without this, airline truncates the filename instead of the git branch when 
 -- space gets tight
 vim.g["airline#extensions#default#section_truncate_width"] = {
-      b= 79,
+      b= 100,
       x= 60,
-      y= 88,
+      y= 79,
       z= 45,
       warning= 80,
       error= 80
       }
+
+
+vim.g["airline#extensions#default#layout"] = {
+     { 'a', 'b', 'c' },
+    { 'x', 'z', 'error', 'warning' },
+    }
+vim.g["airline#extensions#branch#displayed_head_limit"] = 10
 
 ---- vim-markdown ----
 -- Markdown fenced languages support
@@ -224,7 +231,6 @@ if vim.fn.filereadable(secondary_init_vim) == true then
 end
 
 ---- Firenvim!
-print('asdfsdfasdfasdfasdfKERJER')
 if vim.fn.exists('g:started_by_firenvim') then
   vim.opt.guifont='monospace:h16'
 end

@@ -136,12 +136,12 @@ local lsp_specific_configs = {
 				latexindent = {
 					modifyLineBreaks = true,
 				},
-        build = {
-          args = { "%f", "--synctex", "--keep-logs", "--keep-intermediates" },
-          executable = "tectonic",
-          forwardSearchAfter = true,
-          onSave = true
-        },
+        -- build = {
+        --   args = { "%f", "--synctex", "--keep-logs", "--keep-intermediates" },
+        --   executable = "tectonic",
+        --   forwardSearchAfter = true,
+        --   onSave = true
+        -- },
 			},
 		},
 	},
