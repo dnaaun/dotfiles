@@ -41,7 +41,7 @@ class EventHandler(RegexMatchingEventHandler):
         dry_run: bool,
         force: bool,
         verbose: bool,
-        exclude: list[re.Pattern],
+        exclude: List[re.Pattern],
     ):
         self._base = base
         self._to = to

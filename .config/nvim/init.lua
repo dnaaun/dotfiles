@@ -218,11 +218,6 @@ vim.g.netrw_sort_direction='reverse'
 ---- indent-blankline ----
 vim.g.indent_blankline_buftype_exclude = {'terminal'}
 
-
----- dap-virtual-text ----
-vim.g.dap_virtual_text = 'all frames'
-
-
 ---- Secondary init file ----
 -- Include a "secondary" init file that is machine-specific (ie, not racked in this repo)
 local secondary_init_vim=vim.fn.expand('~/.secondary.init.lua')

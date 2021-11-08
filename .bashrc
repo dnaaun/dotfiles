@@ -12,17 +12,7 @@ else
   BATCMD=bat
 fi
 
-## Fzf + Rg
-export FZF_DEFAULT_COMMAND="$FDCMD --type f --hidden"
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-# Fzf completion when typing in ** doesn't use $FZF_DEFAULT_COMMAND. The below
-# is necessary.
-_fzf_compgen_path() {
-  command $FDCMD . --hidden "$1" 2>/dev/null
-}
-_fzf_compgen_dir() {
-  command $FDCMD . --type d --hidden "$1" 2>/dev/null
-}
+
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -35,15 +25,12 @@ if ! shopt -oq posix; then
   fi
 fi
 
-
-
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
 
 # Expand shell variables on bash-compleition
-# Unsupported on MacOS.
-# shopt -s direxpand
+shopt -s direxpand
 
 # append to the history file, don't overwrite it
 shopt -s histappend
@@ -68,7 +55,6 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-
 for comp_file in ~/.bash_completion.d/*; do
   source "$comp_file"
 done
@@ -90,8 +76,6 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-
-
 # Some systems still have old vi by default
 alias vi=vim
 
@@ -110,7 +94,6 @@ alias tmux='tmux -u'
 # I don't know where this is getting set, but I need to unset it
 export PYTHONPATH=
 export PYTHONBREAKPOINT=ptpdb.set_trace
-
 
 # Scripts in dotfiles/bin/
 for bin_dir in {$HOME/git/dotfiles/bin,$HOME/.local/bin}; do
@@ -148,7 +131,6 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 # Color prompt according to exit code: https://stackoverflow.com/a/16715681
 PROMPT_COMMAND=__prompt_command # Func to gen PS1 after CMDs
-
 
 set_ps1() {
     local EXIT="$?"             # This needs to be first
@@ -203,8 +185,6 @@ __prompt_command() {
   auto_change_venv
 }
 
-
-
 export EDITOR=nvim
 
 # Define a shortcut to copy to clipboard
@@ -238,11 +218,6 @@ complete -F _complete_alias fd
 
 # NO idea why I have this here.
 alias bash="bash --noprofile"
-
-
-# (I tHink) this line must come below the sourcing of /etc/bashcompletion
-# above
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # Eternal bash history.
 # ---------------------
@@ -291,3 +266,30 @@ fi
 
 # Doing --path instead of - will break some commmands (pyenv shell).  https://github.com/pyenv/pyenv/issues/1906#issuecomment-835027647
 # But aint nobody got time to fix something they don't use.
+
+# This section must come below the sourcing of /etc/bash/completion
+# above
+export FZF_DEFAULT_COMMAND="$FDCMD --type f --hidden"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+# Fzf completion when typing in ** doesn't use $FZF_DEFAULT_COMMAND. The below
+# is necessary.
+_fzf_compgen_path() {
+  command $FDCMD . --hidden "$1" 2>/dev/null
+}
+_fzf_compgen_dir() {
+  command $FDCMD . --type d --hidden "$1" 2>/dev/null
+}
+
+# If we're on macos
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# If we're on ubuntu
+FZF_BASH_BINDINGS=/usr/share/doc/fzf/examples/key-bindings.bash 
+FZF_COMPLETION_BINDINGS=/usr/share/doc/fzf/examples/completion.bash
+if [[ -f $FZF_COMPLETION_BINDINGS ]]; then
+  source $FZF_BASH_BINDINGS
+  source $FZF_COMPLETION_BINDINGS
+fi
+
+CARGO_PATH="$HOME/.cargo/env"
+[ -f $CARGO_PATH ] && source $CARGO_PATH;

@@ -39,7 +39,6 @@ bindsym $mod+Shift+q kill
 
 # start rofi (a launcher) with ssh and app options
 # bindsym $mod+d exec --no-startup-id rofi -modi combi -show combi -combi-modi "drun#ssh" -run-shell-command '{cmd}'
-bindsym $mod+t exec --no-startup-id rofi-tmux sw
 bindsym $mod+d exec --no-startup-id dmenu_run
 bindsym $mod+Shift+d exec --no-startup-id rofi -show drun -run-shell-command '{cmd}'
 bindsym $mod+p exec rofi-rbw --action=copy-password
@@ -53,6 +52,9 @@ bindsym $mod+Tab exec rofi -modi window -show window
 
 # Rename workspace script
 bindsym $mod+x exec rename_ws
+
+# Toggle floating/tiling
+bindsym $mod+t floating toggle
 
 # change focus
 bindsym $mod+h focus left
@@ -193,7 +195,10 @@ exec --no-startup-id python -m setupdotfiles -b -d
 # Start xscreensaver
 exec --no-startup-id xscreensaver
 # Start Window compositor that allows dimming innactive windows by 5%
-exec --no-startup-id picom  --inactive-dim 0.05 &
+exec --no-startup-id picom  --inactive-dim 0.1 &
+# Map caps lock to both ctrl and escape
+exec setxkbmap -option ctrl:nocaps
+exec xcape -e 'Control_L=Escape'
 
 # Remove title bars
 # The following line is apprently not compatible with old versions of i3
@@ -231,16 +236,16 @@ client.urgent #C20000 #C20000 #FFFFFF #FFFFFF
 # The (ubuntu/debian installed binary version of) Cmus player doesn't support
 # MPRIS, despite claiming otherwise in it's man page, so we gotta 
 # accomodate.
-bindsym XF86AudioPlay exec playerctl play; exec cmus-remote -C player-play
-bindsym XF86AudioPause exec playerctl pause; exec cmus-remote -C player-pause-playback
-bindsym XF86AudioNext exec playerctl next; exec cmus-remote -C player-next
-bindsym XF86AudioPrev exec playerctl previous; exec cmus-remote -C player-prev
+bindsym XF86AudioPlay exec cmus-remote -C player-play
+bindsym XF86AudioPause exec cmus-remote -C player-pause-playback
+bindsym XF86AudioNext exec cmus-remote -C player-next
+bindsym XF86AudioPrev exec cmus-remote -C player-prev
 
 
 # Control media (MPRIS, and Cmus)
-bindsym Control+$alt+l exec playerctl next; exec cmus-remote -C player-next
-bindsym Control+$alt+h exec playerctl previous; exec cmus-remote -C player-prev
-bindsym Control+$alt+j exec playerctl play-pause; exec cmus-remote -C player-pause
+bindsym Control+$alt+l exec cmus-remote -C player-next
+bindsym Control+$alt+h exec cmus-remote -C player-prev
+bindsym Control+$alt+j exec cmus-remote -C player-pause
 
 # The pkill business below is to update i3blocks.
 # the [volume] section in .config/i3blocks/config specifies that this signal
