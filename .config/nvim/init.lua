@@ -65,7 +65,7 @@ require('plugins')
 -- nvim-dap colors.
 -- checks if your terminal has 24-bit color support
 if vim.fn.has("termguicolors") then
-    vim.g.tokyonight_style='storm'
+    vim.g.tokyonight_style='night'
     nvim_command("colorscheme tokyonight")
     vim.opt.termguicolors = true
     nvim_command("highlight LineNr ctermbg=NONE guibg=NONE")

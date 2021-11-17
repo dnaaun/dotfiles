@@ -29,3 +29,4 @@ python -m setupdotfiles  --daemonize --verbose
 
 
 
+xbacklight

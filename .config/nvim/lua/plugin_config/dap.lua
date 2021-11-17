@@ -5,6 +5,64 @@ dap.set_log_level("TRACE")
 
 dap.defaults.fallback.terminal_win_cmd = "10split new"
 
+-- Rust/C/C++
+local dap = require('dap')
+dap.adapters.lldb = {
+  type = 'executable',
+  command = 'lldb-vscode-11', -- adjust as needed
+  name = "lldb"
+}
+
+local dap = require('dap')
+dap.configurations.rust = {
+  {
+    name = "Launch",
+    type = "lldb",
+    request = "launch",
+    program = function()
+      local cwd = vim.fn.getcwd() 
+      local beg, end_ = vim.regex('[^/]*$'):match_str(cwd)
+      local exec_name = cwd:sub(beg, end_) -- Aint nobody got time to parse Cargo.toml.
+      return cwd .. '/target/debug/' .. exec_name
+    end,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = false,
+    args = {},
+
+    -- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:
+    --
+    --    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
+    --
+    -- Otherwise you might get the following error:
+    --
+    --    Error on launch: Failed to attach to the target process
+    --
+    -- But you should be aware of the implications:
+    -- https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html
+    runInTerminal = false,
+  },
+}
+
+--- Rails
+local dap = require('dap')
+dap.adapters.ruby = {
+  type = 'executable';
+  command = 'readapt';
+  args = {'stdio'};
+}
+
+dap.configurations.ruby = {
+  {
+    type = 'ruby';
+    request = 'launch';
+    name = 'Rails';
+    program = 'bundle';
+    programArgs = {'exec', 'puma', 't', '1:1', '-w', '0'};
+    useBundler = true;
+  },
+}
+
+-- Python
 dap.adapters.python = {
   type = "executable",
   command = vim.g.python3_host_prog,
@@ -41,6 +99,7 @@ _G.djangoDapConfig = {
   end,
 }
 
+-- Run django: manage.py test
 _G.djangoTestDapConfig = {
   type = "python",
   request = "launch",

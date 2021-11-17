@@ -4,9 +4,9 @@ require("telescope").setup({
   defaults = {
     layout_strategy = "vertical",
     layout_config = {
-      height = 0.6,
+      height = 0.99,
       width = 0.99, -- Works better because usually my terminal takes only half my screen
-      preview_height = 0.8,
+      preview_height = 0.6,
     },
   },
   pickers = {

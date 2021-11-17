@@ -47,6 +47,9 @@ settings:
     global: true
   content.blocking.method:
     global: adblock
+  content.blocking.whitelist:
+    global:
+    - https://*.slack.com/*
   content.geolocation:
     https://www.google.com: false
   content.javascript.can_access_clipboard:
@@ -135,6 +138,7 @@ settings:
       l: https://libgen.is/search.php?req={}
       n: https://www.google.com/search?q={}+site:https://onlinereadfreenovel.com
       p: https://www.google.com/search?q={}+site:docs.python.org
+      y: https://you.com/search?q={}
   url.start_pages:
     global: 'https://www.google.com  '
   window.transparent:

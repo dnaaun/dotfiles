@@ -1,0 +1,3 @@
+#!/bin/bash
+[[ $(echo -e "no\nyes" | dmenu -p 'Exit i3? ') == "yes" ]] && i3-msg exit
+

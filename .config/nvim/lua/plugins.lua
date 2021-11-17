@@ -35,7 +35,9 @@ require('packer').startup {
     use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' } -- Do highlighting, indenting, based on ASTs
     use 'nvim-treesitter/nvim-treesitter-textobjects' -- Text objects based on syntax trees!!
     use 'nvim-treesitter/nvim-treesitter-refactor' -- Highlight definition of current symbol, current scope
-    use 'romgrk/nvim-treesitter-context' -- Show "code breadcrumbs"
+
+    -- Disabled because it's erroring out on ruby
+    -- use 'romgrk/nvim-treesitter-context' -- Show "code breadcrumbs"
 
 
     -- Debugging/REPLs
@@ -62,14 +64,16 @@ require('packer').startup {
     -- Misc
     use 'tpope/vim-vinegar' -- Make netrw better. What I for sure know I use from this is the - mapping to go up a directory.
     use 'machakann/vim-sandwich' -- Surround textobjects with {(<p>"'
-    use 'tpope/vim-commentary' -- *Un)comment stuff with gc
+    use 'tpope/vim-commentary' -- (Un)comment stuff with gc
     use 'folke/which-key.nvim' -- show candidate mappings after pressing a key
-    -- use 'rmagatti/auto-session'
+    use 'Shatur/neovim-session-manager' -- Save sessions by directory
 
-    -- Git and diffs
-    use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
-    use { 'tpope/vim-fugitive', requires = { 'nvim-lua/plenary.nvim' } }
 
+    -- Git and Github
+    use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } } -- Look at lines added/modified/taken away, all at a glance.
+    use { 'tpope/vim-fugitive', requires = { 'nvim-lua/plenary.nvim' } } -- And I quote tpope, "A git plugin so awesome, it should be illegal."
+    use { 'tpope/vim-rhubarb' }
+    use { 'pwntester/octo.nvim', requires = { 'kyazdani42/nvim-web-devicons' } } -- Who needs web interfaces when you have neovim interfaces (for Github)?
 
     -- Colors and other niceties
     use 'vim-airline/vim-airline'

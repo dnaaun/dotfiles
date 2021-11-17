@@ -283,6 +283,16 @@ _fzf_compgen_dir() {
 # If we're on macos
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
+CARGO_PATH="$HOME/.cargo/env"
+[ -f $CARGO_PATH ] && source $CARGO_PATH;
+
+# On ubuntu
+RVM_INIT=/etc/profile.d/rvm.sh
+[ -f $RVM_INIT ] && source $RVM_INIT;
+
+# We need to set this here (despite having an .inputrc saying the same thing)
+# because fzf bindings get messed up if we set -o vi after we souurce the fzf bindings scripts.
+set -o vi
 # If we're on ubuntu
 FZF_BASH_BINDINGS=/usr/share/doc/fzf/examples/key-bindings.bash 
 FZF_COMPLETION_BINDINGS=/usr/share/doc/fzf/examples/completion.bash
@@ -291,5 +301,7 @@ if [[ -f $FZF_COMPLETION_BINDINGS ]]; then
   source $FZF_COMPLETION_BINDINGS
 fi
 
-CARGO_PATH="$HOME/.cargo/env"
-[ -f $CARGO_PATH ] && source $CARGO_PATH;
+
+# On ubuntu, gem requires sudo if this is nto there.
+export GEM_HOME=$HOME/.gem
+export PATH=$GEM_HOME/bin/:$PATH

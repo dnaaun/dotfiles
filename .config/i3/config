@@ -41,7 +41,7 @@ bindsym $mod+Shift+q kill
 # bindsym $mod+d exec --no-startup-id rofi -modi combi -show combi -combi-modi "drun#ssh" -run-shell-command '{cmd}'
 bindsym $mod+d exec --no-startup-id dmenu_run
 bindsym $mod+Shift+d exec --no-startup-id rofi -show drun -run-shell-command '{cmd}'
-bindsym $mod+p exec rofi-rbw --action=copy-password
+bindsym $mod+p exec rofi-rbw
 
 # Start custom script in dotfiles/bin/ to find files
 bindsym $mod+space exec ~/git/dotfiles/.local/bin/rofi_search.sh
@@ -132,7 +132,7 @@ bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "if [[ $(echo 'no\nyes' | dmenu -p 'Exit i3? ') == 'yes' ]]; then i3-msg exit; fi"
+bindsym $mod+Shift+e exec i3_exit
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -173,10 +173,10 @@ bindsym Mod2+F2 exec "amixer -q sset Master,0 1- unmute"
 bindsym Mod2+F3 exec "amixer -q sset Master,0 1+ unmute"
 
 # Sreen brightness controls
-# bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
-# bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
-bindsym XF86MonBrightnessUp exec brightnessctl set 5%+
-bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
+# bindsym XF86MonBrightnessUp exec brightnessctl set 5%+
+# bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
 
 
 # Printscreen
