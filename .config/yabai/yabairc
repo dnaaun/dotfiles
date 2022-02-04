@@ -5,34 +5,35 @@ yabai -m config layout bsp
 
 # Focus follows mouse
 # Setting focus_follows_mouse makes hovering over context menus and docks click on the hovered-on items
-yabai -m config focus_follows_mouse autofocus
-yabai -m config mouse_follows_focus off # I hope this reduces the bug of autoclicking on menu items when hovering.
+# yabai -m config focus_follows_mouse autofocus
+# yabai -m config mouse_follows_focus off # I hope this reduces the bug of autoclicking on menu items when hovering.
 
 # floating windows are always on top
-yabai -m config window_topmost on
+# yabai -m config window_topmost on
 
 # Exclude some windows from being managed
-# Mostly from: https://github.com/Julian-Heng/yabai-config/blob/master/yabairc
-yabai -m rule --add app="^System Preferences$" manage=off
-yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
-yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
-yabai -m rule --add label="App Store" app="^App Store$" manage=off
-yabai -m rule --add label="Activity Monitor" app="^Activity Monitor$" manage=off
-yabai -m rule --add label="Calculator" app="^Calculator$" manage=off
-yabai -m rule --add label="Dictionary" app="^Dictionary$" manage=off
+# # Mostly from: https://github.com/Julian-Heng/yabai-config/blob/master/yabairc
+# yabai -m rule --add app="^System Preferences$" manage=off
+# yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
+# yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
+# yabai -m rule --add label="App Store" app="^App Store$" manage=off
+# yabai -m rule --add label="Activity Monitor" app="^Activity Monitor$" manage=off
+# yabai -m rule --add label="Calculator" app="^Calculator$" manage=off
+# yabai -m rule --add label="Dictionary" app="^Dictionary$" manage=off
 
 # The setting window is named acc to the current tab for Skim
-yabai -m rule --add label="Skim Sync" title="Sync" app="^Skim$" manage=off
-yabai -m rule --add label="Skim General" title="General" app="^Skim$" manage=off
+# yabai -m rule --add label="Skim Sync" title="Sync" app="^Skim$" manage=off
+# yabai -m rule --add label="Skim General" title="General" app="^Skim$" manage=off
 
-yabai -m rule --add label="Software Update" title="Software Update" manage=off
-yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
-yabai -m rule --add label="Archive Utility" title="Archive Utility" manage=off
-yabai -m rule --add label="Problem Report for *" title="Problem Report for *" manage=off
-yabai -m rule --add label="Microsoft AutoUpdate" title="Microsoft AutoUpdate" manage=off
+# yabai -m rule --add label="Software Update" title="Software Update" manage=off
+# yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
+# yabai -m rule --add label="Archive Utility" title="Archive Utility" manage=off
+# yabai -m rule --add label="Problem Report for *" title="Problem Report for *" manage=off
+# yabai -m rule --add label="Microsoft AutoUpdate" title="Microsoft AutoUpdate" manage=off
+# yabai -m rule --add label="TgO₂" title="TgO₂" manage=off
+# yabai -m rule --add label="SelfControl" title="SelfControl" manage=off
 
 # This is for we launch neovim temporarily to edit some text from Qutebrowser
-yabai -m rule --add label="Temporary Neovim Buffer" title="Temporary Neovim Buffer" manage=off
-# Choose-gui
-yabai -m rule --add app="choose"  manage=off
-
+# yabai -m rule --add label="Temporary Neovim Buffer" title="Temporary Neovim Buffer" manage=off
+# # Choose-gui
+# yabai -m rule --add app="choose"  manage=off

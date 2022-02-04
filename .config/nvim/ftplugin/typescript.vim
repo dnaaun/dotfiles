@@ -1,6 +1,6 @@
 set formatoptions-=t
 set expandtab
-set tabstop=4 " show existing tab with 2 spaces width
-set softtabstop=4
-set shiftwidth=4 " when indenting with '>', use 2 spaces width
+set tabstop=2 " show existing tab with 2 spaces width
+set softtabstop=2
+set shiftwidth=2 " when indenting with '>', use 2 spaces width
 

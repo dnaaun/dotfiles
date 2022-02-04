@@ -75,7 +75,9 @@ dap.configurations.python = {
     request = "launch",
     justMyCode = false,
     name = "Launch file",
-    program = "${file}",
+    program = function()
+      return vim.fn.expand('%')
+    end,
     pythonPath = function()
       -- python3_host_prog is set in init.nvim
       return vim.g.python3_host_prog
@@ -138,6 +140,15 @@ end, { silent = true }, "stop debugging")
 mapfunc("n", "<leader>dp", function()
   require("dap").pause()
 end, { silent = true }, "pause debugging")
+mapfunc("n", "<leader>du", function()
+  require("dap").up()
+end, { silent = true }, "go up in stack frame without stepping")
+mapfunc("n", "<leader>dl", function()
+  require("dap").up()
+end, { silent = true }, "go lower (down) in stack frame without stepping")
+mapfunc("n", "<leader>d.", function()
+  require("dap").up()
+end, { silent = true }, "run until cursor")
 mapfunc("n", "<leader>dv", function()
   require("dap").step_over()
 end, { silent = true }, "step over debugger")
@@ -166,6 +177,4 @@ end, {
   silent = true,
 }, "run visual text in debugger repl")
 
-mapfunc("n", "<leader>dl", function()
-  require("dap").run_last()
-end, { silent = true }, "run last debugger")
+

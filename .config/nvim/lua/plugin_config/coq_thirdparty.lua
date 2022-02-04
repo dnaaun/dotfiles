@@ -6,4 +6,5 @@ end
 require("coq_3p") {
   { src = "vimtex", short_name = "vTEX" },
   { src = "dap", short_name = "vDAP" },
+  { src = "orgmode", short_name = "vORGMODE" },
 }

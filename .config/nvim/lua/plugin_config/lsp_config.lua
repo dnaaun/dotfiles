@@ -2,11 +2,11 @@
 local setup_mappings = function()
 	local opts = { noremap = true, silent = true }
 	vim.api.nvim_buf_set_keymap(0, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", opts)
-	vim.api.nvim_buf_set_keymap(0, "n", "<leader>lt", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
+	vim.api.nvim_buf_set_keymap(0, "n", "gt", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(0, "n", "gR", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(0, "n", "gh", "<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>", opts)
-	vim.api.nvim_buf_set_keymap(0, "n", "[e", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", opts)
-	vim.api.nvim_buf_set_keymap(0, "n", "]e", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", opts)
+	vim.api.nvim_buf_set_keymap(0, "n", "[e", "<cmd>lua vim.lsp.diagnostic.goto_prev({severity='Error'})<CR>", opts)
+	vim.api.nvim_buf_set_keymap(0, "n", "]e", "<cmd>lua vim.lsp.diagnostic.goto_next({severity='Error'})<CR>", opts)
 	vim.api.nvim_buf_set_keymap(0, "n", "<leader>lf", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 end
 
@@ -38,6 +38,26 @@ local setup_formatexpr = function(client)
 	vim.bo.formatexpr = "v:lua._G.lsp_formatexpr()"
 end
 
+--- null-ls.nvim sometimes conflicts with other LSPs
+local disable_formatting_sometimes = function(client)
+  if not (client.name == "null-ls" or client.name == "rust_analyzer") then
+    client.resolved_capabilities.document_formatting = false
+    client.resolved_capabilities.document_range_formatting = false
+    -- print("LSP formatting disabled for " .. client.name)
+  else
+    -- print("LSP formatting NOT disabled for " .. client.name)
+  end
+end
+
+--  We need to do this after the LSP is attached because otherwise inlay_hints doesn't work.
+local rust_tools_activate = function(client)
+
+  if (client.name == "rust_analyzer") then 
+    require('rust-tools.inlay_hints').set_inlay_hints()
+  end
+end
+
+
 -- Allow other files to define callbacks that get called `on_attach`
 local on_attach = function(client)
 	for _, plugin_custom_attach in pairs(_G.lsp_config_on_attach_callbacks) do
@@ -46,6 +66,8 @@ local on_attach = function(client)
 
 	setup_mappings()
 	setup_formatexpr(client)
+  disable_formatting_sometimes(client)
+  rust_tools_activate(client)
 end
 
 -- Config for all LSPs
@@ -65,7 +87,7 @@ else
 	print("Unsupported system for sumneko")
 end
 local sumneko_root_path = vim.fn.expand("~") .. "/src/lua-language-server"
-local sumneko_binary = sumneko_root_path .. "/bin/" .. system_name .. "/lua-language-server"
+local sumneko_binary = sumneko_root_path .. "/bin/" .. "/lua-language-server"
 
 local runtime_path = vim.split(package.path, ";")
 table.insert(runtime_path, "lua/?.lua")
@@ -88,28 +110,30 @@ local lsp_specific_configs = {
 		root_dir = lspconfig.util.root_pattern(".git") or vim.loop.os_homedir(),
 		settings = {},
 	},
-	lua = {
+	sumnko_lua = {
 		settings = {
 			Lua = {
-				runtime = {
-					-- LuaJIT in the case of Neovim
-					version = "LuaJIT",
-					path = vim.split(package.path, ";"),
-				},
-				diagnostics = {
-					-- Get the language server to recognize the `vim` global
-					globals = { "vim", "use" },
-				},
-				workspace = {
-					-- Make the server aware of Neovim runtime files
-					library = {
-						[vim.fn.expand("$VIMRUNTIME/lua")] = true,
-						[vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
-					},
-				},
-			},
-		},
-	},
+      runtime = {
+        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+        version = 'LuaJIT',
+        -- Setup your lua path
+        path = runtime_path,
+      },
+      diagnostics = {
+        -- Get the language server to recognize the `vim` global
+        globals = {'vim'},
+      },
+      workspace = {
+        -- Make the server aware of Neovim runtime files
+        library = vim.api.nvim_get_runtime_file("", true),
+      },
+      -- Do not send telemetry data containing a randomized but unique identifier
+      telemetry = {
+        enable = false,
+      },
+    },
+	 },
+  },
 	kotlin_language_server = {
 		cmd = {
 			vim.fn.expand("~") .. "/src/kotlin-language-server/server/build/install/server/bin/kotlin-language-server",
@@ -130,18 +154,18 @@ local lsp_specific_configs = {
 				formatterLineLength = 80,
 				forwardSearch = {
           executable = "/Applications/Skim.app/Contents/SharedSupport/displayline",
-					args = { "%l", "%p", "%f" }
+					args = { "-g", "%l", "%p", "%f" }
 				},
 				latexFormatter = "latexindent",
 				latexindent = {
 					modifyLineBreaks = true,
 				},
-        -- build = {
-        --   args = { "%f", "--synctex", "--keep-logs", "--keep-intermediates" },
-        --   executable = "tectonic",
-        --   forwardSearchAfter = true,
-        --   onSave = true
-        -- },
+        build = {
+           args = { "%f", "--synctex"  },
+           executable = "tectonic",
+           forwardSearchAfter = true,
+           onSave = true
+         },
 			},
 		},
 	},
@@ -149,6 +173,13 @@ local lsp_specific_configs = {
 	sqlls = {
 		cmd = { "sql-language-server", "up", "--method", "stdio" },
 	},
+
+  sqls = {
+    cmd = { "sqls" },
+    filetypes = { "sql", "mysql" },
+    settings = {},
+    single_file_support = true
+  },
 
 	sumneko_lua = {
 		cmd = { sumneko_binary, "-E", sumneko_root_path .. "/main.lua" },
@@ -175,6 +206,12 @@ local lsp_specific_configs = {
 			},
 		},
 	},
+
+  sorbet = {
+    cmd = { "srb", "tc", "--lsp" },
+    filetypes = { "ruby" },
+    root_dir = lspconfig.util.root_pattern("Gemfile", ".git")
+  },
 }
 
 -- https://github.com/ms-jpq/coq_nvim#lsp
@@ -182,18 +219,18 @@ local coq = require("coq")
 require("plugin_config.null-ls")
 
 for _, lspname in ipairs({
-	"pyright",
-	"tsserver",
-	"cssls",
-	"vimls",
-	"rust_analyzer",
 	"kotlin_language_server",
-	"html",
-	"sumneko_lua",
-	"texlab",
+  "sumneko_lua",
 	"null-ls",
-  "sqlls",
-  "solargraph"
+	"pyright",
+	"rust_analyzer",
+	"texlab",
+	"tsserver",
+	"vimls",
+  "solargraph",
+  "sorbet",
+  "sqls",
+  "tailwindcss"
 }) do
 	local config = lsp_specific_configs[lspname]
 	if config ~= nil then
@@ -204,3 +241,4 @@ for _, lspname in ipairs({
 
 	lspconfig[lspname].setup(coq.lsp_ensure_capabilities(config))
 end
+

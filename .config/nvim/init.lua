@@ -2,10 +2,13 @@ mapfunc = require("std2").mapfunc
 nvim_set_keymap = vim.api.nvim_set_keymap
 nvim_command = vim.api.nvim_command
 
+
+
 ---- not plugin-specific login ----
 vim.opt.number = true
 -- Prevent wierd de-endentation when writing python
 vim.opt.indentkeys:remove({":"})
+
 
 vim.opt.matchpairs:append({"<:>"})
 vim.opt.scrollback=100000 -- Lines to keep in neovim's terminal emulator
@@ -30,6 +33,11 @@ nvim_set_keymap("n", "<Leader>qo", ":copen<CR>", {})
 nvim_set_keymap("n", "<Leader>qc", ":cclose<CR>", {})
 nvim_set_keymap("n", "]q", ":cnext<CR>", {})
 nvim_set_keymap("n", "[q", ":cprev<CR>", {})
+
+-- Follow files under cursor in splits.
+-- This is in the spirit of Telescope's defualt open-split mappings.
+nvim_set_keymap("n", "f<C-v>", ":vertical wincmd f<CR>", {})
+nvim_set_keymap("n", "f<C-x>", ":below wincmd f<CR>", {})
 
 -- Same pattern for loclist
 nvim_set_keymap("n", "<Leader>lo", ":lopen<CR>", {})
@@ -61,17 +69,24 @@ require('plugins')
 
 
 ---- Colorscheme ----
+vim.api.nvim_exec([[
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+]], false)
+
 -- This section must come before loading nvim-dap for it not to mess up
 -- nvim-dap colors.
 -- checks if your terminal has 24-bit color support
 if vim.fn.has("termguicolors") then
-    vim.g.tokyonight_style='night'
-    nvim_command("colorscheme tokyonight")
     vim.opt.termguicolors = true
+    vim.g.tokyonight_style='day'
+    vim.g.snazzybuddy_icons = true
+    require('colorbuddy').colorscheme('snazzybuddy')
     nvim_command("highlight LineNr ctermbg=NONE guibg=NONE")
 else
-  nvim_command("colorscheme base16-snazzy")
+   -- nvim_command("colorscheme base16-snazzy")
 end
+
 
 ---- Lua plugin configuration separated out to files ----
 -- Need to source lsp_config last because we collect some callbacks
@@ -163,7 +178,7 @@ vim.g.airline_theme='base16_snazzy'
 -- No error messages about whitespaces please
 vim.g["airline#extensions#whitespace#enabled"] = 0
 
--- Without this, airline truncates the filename instead of the git branch when 
+-- Without this, airline truncates the filename instead of the git branch when
 -- space gets tight
 vim.g["airline#extensions#default#section_truncate_width"] = {
       b= 100,
@@ -205,7 +220,7 @@ nvim_set_keymap("n", "<Leader>gl", ":Glog<CR>", {noremap=true})
 nvim_set_keymap("n", "<Leader>gw", ":Gwrite<CR>", {noremap=true})
 nvim_set_keymap("n", "<Leader>gr", ":Gpull --rebase<CR>", {noremap=true})
 nvim_set_keymap("n", "<Leader>gp", ":Gpush<CR>", {noremap=true})
-nvim_set_keymap("n", "<Leader>gg", ":Git ", {noremap=true})
+-- nvim_set_keymap("n", "<Leader>gg", ":Git ", {noremap=true})
 
 
 ---- netrw ----
@@ -229,3 +244,18 @@ end
 if vim.fn.exists('g:started_by_firenvim') then
   vim.opt.guifont='monospace:h16'
 end
+
+-- Setup inverse search when compiling latex (currently using Skim as the pdf viewer, Skim also has to be configured.)
+-- This is all from: https://jdhao.github.io/2021/02/20/inverse_search_setup_neovim_vimtex/
+
+vim.api.nvim_exec([[
+function! g:WriteServerName() abort
+  let nvim_server_file = (has('win32') ? $TEMP : '/tmp') . '/vimtexserver.txt'
+  call writefile([v:servername], nvim_server_file)
+endfunction
+
+augroup vimtex_common
+  autocmd!
+  autocmd FileType tex call g:WriteServerName()
+augroup END
+]], false)

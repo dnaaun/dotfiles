@@ -26,6 +26,9 @@
 
 -- }
 
+-- -- This does nothing except to prevent the loading of the rest of this file in case the plugin is not actually installed.
+-- require 'lsp_signature';
+
 -- local custom_attach = function()
 -- 	require'lsp_signature'.on_attach(cfg)
 -- end

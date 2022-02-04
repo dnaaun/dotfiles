@@ -96,6 +96,7 @@ local opts = {
     -- see https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#rust_analyzer
     server = {} -- rust-analyer options
 }
+-- require('rust-tools').setup(opts)
+-- require('rust-tools.inlay_hints').set_inlay_hints()
 
-require('rust-tools').setup(opts)
 

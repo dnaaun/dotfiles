@@ -60,6 +60,8 @@ settings:
     https://mail.google.com?extsrc=mailto&url=%25s: true
   content.webgl:
     global: true
+  downloads.prevent_mixed_content:
+    global: false
   downloads.remove_finished:
     global: -1
   editor.command:
@@ -77,9 +79,11 @@ settings:
     - ranger
     - --choosefiles={}
   fonts.default_family:
-    global: null
+    global: iosevka
   fonts.default_size:
-    global: 10pt
+    global: 13pt
+  fonts.downloads:
+    global: default_size default_family
   fonts.messages.info:
     global: default_size default_family
   fonts.prompts:

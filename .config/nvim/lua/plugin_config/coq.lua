@@ -2,7 +2,8 @@ vim.g.coq_settings = {
   keymap = {
     recommended=false,
     jump_to_mark='<C-g>', -- <c-h> conflicts with my binding for :TmuxNavigateLeft
---     eval_snips = '<leader>r'
+    eval_snips = '<leader>cr',
+    pre_select = true -- Don't set the noselect option in completeopt (which would mean that the first item is selcted by default out of the autocomplete options)
   },
   auto_start = 'shut-up',
   clients = {
@@ -15,11 +16,12 @@ vim.g.coq_settings = {
     },
     tree_sitter = {
       enabled = true,
-      weight_adjust = -1.5
+      weight_adjust = -1.8
     },
     lsp = {
       enabled = true,
-      weight_adjust = 1.5
+      weight_adjust = 1.0,
+      resolve_timeout = 0.4, -- typescript-language-server doesn't autoimoprt without increasing this val from the default of 0.09. (https://github.com/ms-jpq/coq_nvim/issues/71#issuecomment-902946727)
     },
     snippets = {
       enabled = true,

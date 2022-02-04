@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [[ -z "$1" ]] || [[ ! -z "$2" ]]; then
+  echo "USAGE: $0 <issue_number>"
+  echo ""
+  echo "Create a branch from a Github issue"
+  exit 1
+fi
+
+PREFIX="dt/"
+pr_title="$(gh issue view --json title $1 | jq -r '.title' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z]/-/g')"
+git checkout -b "${PREFIX}${pr_title}"

@@ -1,6 +1,6 @@
 [user]
-	name = David Assefa Tofu
-	email = davidat@bu.edu
+	name = davidatsurge
+	email = 93471693+davidatsurge@users.noreply.github.com
 
 [pager]
 	diff = delta
@@ -14,7 +14,9 @@
 
 [delta]
 	line-numbers = true
-	syntax-theme = Sublime Snazzy
+	syntax-theme = Github
+	dark = true
+	side-by-side = true
 
 [interactive]
 	diffFilter = delta --color-only
@@ -33,3 +35,8 @@
 # automatically launch merge tool without displaying a prompt
 [mergetool]
   prompt = false
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

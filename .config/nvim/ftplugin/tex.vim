@@ -28,15 +28,16 @@ set formatoptions-=c " Don't insert bullet on auto-wrap
 set spell
 
 
-" We're taking notes here, stop fussing over quotes chktex
-" error code 18 found form http://www.nongnu.org/chktex/ChkTeX.pdf
-" 45 is not using $$
-let b:ale_tex_chktex_options = '-n 18' . ' -n 45'
-let b:ale_tex_chktex_options .= ' -n 3' " Don't stress about enclosing parens within curlies either
-let b:ale_tex_chktex_options .= ' -n 13' " Enter sentence spacing.  
-let b:ale_tex_chktex_options .= ' -n 26' " Allow punctuation to follow whitespace
 
 let b:ale_tex_latexindent_options  = '-m'
 
 " Vimtex doesn't load if this isn't set.
 let g:tex_flavour='latex'
+
+setlocal autoindent
+
+" Have less annoying auto indentation: https://old.reddit.com/r/neovim/comments/991kmv/annoying_auto_indentation_in_tex_files/e4ldbfk/
+setlocal autoindent
+let g:tex_indent_items=0
+let g:tex_indent_and=0
+let g:tex_indent_brace=0

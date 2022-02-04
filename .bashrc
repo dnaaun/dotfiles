@@ -12,7 +12,8 @@ else
   BATCMD=bat
 fi
 
-
+# Apparently I need to do this to get executables from both M1 and non M1 homebrew in my $PATH
+PATH=/usr/local/bin/:/opt/homebrew/bin/:$PATH
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -30,7 +31,9 @@ fi
 HISTCONTROL=ignoreboth
 
 # Expand shell variables on bash-compleition
-shopt -s direxpand
+if shopt | grep direxpand > /dev/null; then
+	shopt -s direxpand
+fi
 
 # append to the history file, don't overwrite it
 shopt -s histappend
@@ -55,8 +58,12 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-for comp_file in ~/.bash_completion.d/*; do
-  source "$comp_file"
+# Discovered that this step takes a lot of time. If ever you feel like
+# procasti-optimizing your bash startup time, you know where to look! 
+for dir in {$HOME/.bash_completion.d/,/opt/homebrew/etc/bash_completion.d,/usr/local/etc/bash_completion.d}; do
+  for comp_file in $dir/*; do
+    source "$comp_file"
+  done
 done
 
 # enable color support of ls and also add handy aliases
@@ -127,31 +134,31 @@ function virtualenv_info(){
 
 } 
 # disable the default virtualenv prompt change
-export VIRTUAL_ENV_DISABLE_PROMPT=1 
+# export VIRTUAL_ENV_DISABLE_PROMPT=1 
 
-# Color prompt according to exit code: https://stackoverflow.com/a/16715681
-PROMPT_COMMAND=__prompt_command # Func to gen PS1 after CMDs
+# # Color prompt according to exit code: https://stackoverflow.com/a/16715681
+# PROMPT_COMMAND=__prompt_command # Func to gen PS1 after CMDs
 
-set_ps1() {
-    local EXIT="$?"             # This needs to be first
+# set_ps1() {
+#     local EXIT="$?"             # This needs to be first
      
-    # Green color code
-    local Gre='\[\e[0;32m\]'
+#     # Green color code
+#     local Gre='\[\e[0;32m\]'
 
-    VENV="\$(virtualenv_info)"; 
-    PS1="${Gre}$VENV\u@\h:"
+#     VENV="\$(virtualenv_info)"; 
+#     PS1="${Gre}$VENV\u@\h:"
 
-    local RCol='\[\e[0m\]'
+#     local RCol='\[\e[0m\]'
 
-    local Red='\[\e[0;31m\]'
-    local BBlu='\[\e[1;34m\]'
+#     local Red='\[\e[0;31m\]'
+#     local BBlu='\[\e[1;34m\]'
 
-    if [ $EXIT != 0 ]; then
-        PS1+="${Red}\w\$ ${RCol}"      # Add red if exit code non 0
-    else
-        PS1+="${BBlu}\w\$ ${RCol}"
-    fi
-}
+#     if [ $EXIT != 0 ]; then
+#         PS1+="${Red}\w\$ ${RCol}"      # Add red if exit code non 0
+#     else
+#         PS1+="${BBlu}\w\$ ${RCol}"
+#     fi
+# }
 
 auto_change_venv() {
   # Check all parents from $PWD until /
@@ -305,3 +312,61 @@ fi
 # On ubuntu, gem requires sudo if this is nto there.
 export GEM_HOME=$HOME/.gem
 export PATH=$GEM_HOME/bin/:$PATH
+
+# Aint nobody got time for that (neither does anyone(read: me) have a basic understanding of maintaining a secure system, it seems)
+export HOMEBREW_NO_AUTO_UPDATE=1
+
+# MacOS has annoying "welcome" messages when I open bash if I don't do this.
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
+
+alias ibrew='arch -x86_64 /usr/local/bin/brew'
+alias mbrew='arch -arm64 /opt/homebrew/bin/brew'
+
+
+# Will ad-hoc PATH modifications ever end?
+export PATH="/usr/local/opt/node@14/bin:$PATH"
+export LDFLAGS="-L/usr/local/opt/node@14/lib"
+export CPPFLAGS="-I/usr/local/opt/node@14/include"
+
+# Apparently, it won't.
+export PATH="/Users/davidat/Library/Python/3.8/bin/:$PATH" # MacOS's "command line tools" installation location for py3
+# export PATH="/opt/homebrew/Cellar/ruby@2.7/2.7.4/bin/:$PATH" # Homebrew installed ruby.
+export PATH="/usr/local/Cellar/ruby@2.7/2.7.4/bin/:$PATH" # Homebrew installed ruby.
+
+
+# Bandaid for broken python (PATH) setup
+alias httpie='python3 -m httpie'
+
+export PATH="/Users/davidat/Library/Python/3.9/bin:$PATH"
+. "$HOME/.cargo/env"
+
+
+# Ruby
+alias be='bundle exec'
+
+if [[ -d $HOME/go/bin/ ]]; then
+  PATH="$HOME/go/bin:$PATH"
+fi
+
+# Acc to instructions spewed out after brew install heroku, to enable heroku 
+# bash completion, I need to follow instructions at https://docs.brew.sh/Shell-Completion,
+# so low and behold:
+if type brew &>/dev/null
+then
+  HOMEBREW_PREFIX="$(brew --prefix)"
+  if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]
+  then
+    source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
+  else
+    for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*
+    do
+      [[ -r "${COMPLETION}" ]] && source "${COMPLETION}"
+    done
+  fi
+fi
+
+alias luamake=/Users/davidat/src/lua-language-server/3rd/luamake/luamake
+
+eval "$(starship init bash)"
+eval "$(zoxide init bash)"

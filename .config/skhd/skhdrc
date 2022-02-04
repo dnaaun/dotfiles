@@ -1,5 +1,5 @@
 # Restart yabai cuz it glitches out sometimes (AKA, open source woes)
-ctrl + cmd - y : brew services restart yabai
+ctrl + cmd - y : /opt/homebrew/bin/brew services restart yabai
  
 
 # Control music/cmus
@@ -11,7 +11,6 @@ ctrl + cmd - l : cmus-remote --seek +1m
 
 # Launch things
 alt - return : alacritty
-alt - p : bash -c 'get_bitwarden_pass'
 
 # Close window
 shift + alt - q : yabai -m window --close
@@ -19,8 +18,12 @@ shift + alt - q : yabai -m window --close
 # Focus window
 alt - h : yabai -m window --focus west
 alt - l : yabai -m window --focus east
-alt - j : yabai -m window --focus stack.next || yabai -m window --focus south
-alt - k : yabai -m window --focus stack.prev || yabai -m window --focus north
+alt - j : yabai -m window --focus south
+alt - k : yabai -m window --focus north
+
+# Focus window, stacked mode
+alt - p : yabai -m window --focus stack.next || yabai -m window --focus stack.first
+shift + alt - p : yabai -m window --focus stack.prev || yabai -m window --focus stack.last
 
 # Swap window
 cmd + alt - h : yabai -m window --swap west
@@ -51,13 +54,12 @@ shift + alt - 7 : yabai -m window --space 7
 shift + alt - 8 : yabai -m window --space 8
 
 
-
 # Toggle window split
 alt - e : yabai -m window --toggle split
 # Toggle full screen
 alt - f : yabai -m window --toggle zoom-fullscreen
-# Toggle float
-alt - s : yabai -m window --toggle float
+# Toggle float (mnemonic: "over") # Also, don't judge me. That's hard to spell.
+alt - o : yabai -m window --toggle float
 
 # Prefxing opening a new window by either Ctrl-V or Ctrl-B enables vertical/horiizontal split insertion
 alt - v : yabai -m window --insert east
@@ -77,6 +79,3 @@ resize < j : yabai -m window north --resize bottom:0:20 2> /dev/null || yabai -m
 resize < k : yabai -m window south --resize top:0:-20 2> /dev/null || yabai -m window --resize top:0:-20
 resize < l : yabai -m window east --resize left:20:0 2> /dev/null || yabai -m window --resize left:20:0
 
-
-
-# Control cmus
