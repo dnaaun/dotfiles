@@ -17,19 +17,12 @@ setlocal softtabstop=2
 " when indenting with '>', use 2 spaces width
 setlocal shiftwidth=2
 
-" Suggestion of vimtex docs 
-" To enable adding latex environments using vim-surround
-let b:surround_{char2nr('e')} = "\\begin{\1environment: \1}\n\t\r\n\\end{\1\1}"
-let b:surround_{char2nr('c')} = "\\\1command: \1{\r}"
-
 
 set nohlsearch
 set formatoptions-=c " Don't insert bullet on auto-wrap
 set spell
 
 
-
-let b:ale_tex_latexindent_options  = '-m'
 
 " Vimtex doesn't load if this isn't set.
 let g:tex_flavour='latex'
@@ -41,3 +34,15 @@ setlocal autoindent
 let g:tex_indent_items=0
 let g:tex_indent_and=0
 let g:tex_indent_brace=0
+
+" Setup inverse search when compiling latex (currently using Skim as the pdf viewer, Skim also has to be configured.)
+" This is all from: https://jdhao.github.io/2021/02/20/inverse_search_setup_neovim_vimtex/
+function! g:WriteServerName() abort
+  let nvim_server_file = (has('win32') ? $TEMP : '/tmp') . '/vimtexserver.txt'
+  call writefile([v:servername], nvim_server_file)
+endfunction
+
+augroup vimtex_common
+  autocmd!
+  autocmd FileType tex call g:WriteServerName()
+augroup END

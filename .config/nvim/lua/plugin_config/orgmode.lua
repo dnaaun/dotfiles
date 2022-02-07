@@ -1,3 +1,0 @@
--- require('orgmode').setup{
---   org_agenda_files = '~/git/notes/org/',
--- }

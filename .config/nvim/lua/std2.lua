@@ -115,5 +115,27 @@ function M.get_text_in_range(buffer, beg_row, beg_col, end_row, end_col)
   return lines
 end
 
+--@param table_ any named table_ cuz I dunno if table is  a reserved keyword
+--@param value name of value to remove from table
+function M.remove_value(table_, value)
+  local new_table = {}
+  for k, v in pairs(table_) do
+    if v ~= value then
+      new_table[k] = v
+    end
+  end
+  return new_table
+end
+
+-- @param mod string The module name to require
+function M.try_require(mod)
+  local status, err = pcall(function()
+		return require(mod)
+	end)
+	if not status then
+		print("Couldn't require " .. mod .. " because of: " .. err)
+    return false
+	end
+end
 
 return M
