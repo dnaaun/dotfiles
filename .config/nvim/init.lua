@@ -4,27 +4,25 @@ let g:loaded_matchit           = 1
 let g:loaded_logiPat           = 1
 let g:loaded_rrhelper          = 1
 let g:loaded_tarPlugin         = 1
-" let g:loaded_man               = 1
+let g:loaded_man               = 1
 let g:loaded_gzip              = 1
 let g:loaded_zipPlugin         = 1
 let g:loaded_2html_plugin      = 1
 let g:loaded_shada_plugin      = 1
 let g:loaded_spellfile_plugin  = 1
-let g:loaded_netrw             = 1
-let g:loaded_netrwPlugin       = 1
+" let g:loaded_netrw             = 1
+" let g:loaded_netrwPlugin       = 1
 let g:loaded_tutor_mode_plugin = 1
-let g:loaded_remote_plugins    = 1
+" let g:loaded_remote_plugins    = 1
 ]], false)
 
 _G.lsp_config_on_attach_callbacks = {}
 
-mapfunc = require("std2").mapfunc
-try_require = require("std2").try_require
-nvim_set_keymap = vim.api.nvim_set_keymap
-nvim_command = vim.api.nvim_command
+local nvim_set_keymap = vim.api.nvim_set_keymap
+local nvim_command = vim.api.nvim_command
 
----- not plugin-specific login ----
-vim.opt.number = true
+--- not filetype-specific, or plugin-specific
+vim.opt.number = false
 -- Prevent wierd de-endentation when writing python
 vim.opt.indentkeys:remove({ ":" })
 
@@ -89,8 +87,8 @@ require("plugins")
 -- checks if your terminal has 24-bit color support
 vim.g.tokyonight_style = "day"
 -- vim.g.snazzybuddy_icons = true
--- vim.g.vscode_style = "dark"
-vim.cmd([[colorscheme tokyonight]])
+vim.g.vscode_style = "dark"
+vim.cmd([[colorscheme vscode]])
 
 
 
@@ -118,21 +116,7 @@ nvim_set_keymap("t", "<C-k>", "<cmd>:TmuxNavigateUp<CR>", { noremap = true })
 nvim_set_keymap("t", "<C-h>", "<cmd>:TmuxNavigateLeft<CR>", { noremap = true })
 nvim_set_keymap("t", "<C-l>", "<cmd>:TmuxNavigateRight<CR>", { noremap = true })
 
----- himalaya ----
-vim.g.himalaya_mailbox_picker = "telescope"
-vim.g.himalaya_telescope_preview_enabled = 0
--- packer has issues with loading rtp: https://github.com/wbthomason/packer.nvim/issues/274
-vim.opt.rtp = vim.o.rtp .. "," .. vim.fn.stdpath("data") .. "/site/pack/packer/start/himalaya/vim/"
 
----- zen-mode ----
-nvim_set_keymap("n", "<silent>", "<leader>v :ZenMode<CR>", { noremap = true })
-
----- packer  ----
--- TODO: Move this section to plugins.lua
--- Make it quicker to install plugins
-nvim_command("autocmd FileType vim,lua nnoremap <buffer> <leader>ci :source %<bar>PackerInstall<CR>")
--- Sometimes I just wanna load the current file
-nvim_command("autocmd FileType vim,lua nnoremap <buffer> <leader>cc :source %<CR>")
 
 ---- lnvimrc.vim ----
 ---- Local vimrc
@@ -178,15 +162,3 @@ vim.g.netrw_localrmdir = "rm -r" -- Allow netrw to remove non-empty local direct
 vim.g.netrw_keepdir = 1 -- Make netrw moving work
 vim.g.netrw_sort_by = "time" -- Netrw sort by time in descending order
 vim.g.netrw_sort_direction = "reverse"
-
----- indent-blankline ----
-vim.g.indent_blankline_buftype_exclude = { "terminal" }
-
----- Secondary init file ----
--- Include a "secondary" init file that is machine-specific (ie, not racked in this repo)
-local secondary_init_vim = vim.fn.expand("~/.secondary.init.lua")
-if vim.fn.filereadable(secondary_init_vim) == true then
-	nvim_command("source " .. secondary_init_vim)
-end
-
-

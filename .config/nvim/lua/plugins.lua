@@ -6,6 +6,7 @@ local lsp_enabled_filetypes = {
 	"javascriptreact",
 	"typescriptreact",
 	"typescript",
+	"ruby",
 	"react",
 	"python",
 	"lua",
@@ -20,16 +21,23 @@ local dap_enabled_filetypes = {
 
 require("packer").startup({
 	function(use)
-		use("wbthomason/packer.nvim") -- package/plugin manager
-		-- use({
-		-- 	"glacambre/firenvim",
-		-- 	run = function()
-		-- 		vim.fn["firenvim#install"](0)
-		-- 	end,
-		-- })
+		-- package/plugin manager
+		use({
+			"wbthomason/packer.nvim",
+
+			config = function()
+				vim.api.nvim_exec(
+					[[
+autocmd FileType vim,lua nnoremap <buffer> <leader>ci :source %<bar>PackerInstall<CR>
+autocmd FileType vim,lua nnoremap <buffer> <leader>cc :source %<CR>
+]],
+					false
+				)
+			end,
+		})
+
 		use("christoomey/vim-tmux-navigator")
 		use("embear/vim-localvimrc") -- Enable sourcing .lnvimrc files
-
 		use({
 			"lukas-reineke/indent-blankline.nvim",
 			config = function()
@@ -37,6 +45,7 @@ require("packer").startup({
 					space_char_blankline = " ",
 					show_end_of_line = false,
 				})
+				vim.g.indent_blankline_buftype_exclude = { "terminal" }
 			end,
 		})
 
@@ -311,7 +320,8 @@ require("packer").startup({
 			end,
 		}) -- Configure neovim's builtin LSP client easier
 
-		use({ "nvim-lua/lsp_extensions.nvim", ft = { "rust" } }) -- TODO: Setup inlay hints for rust, or just fix rust-tools.nvim's inlay hints
+		-- TODO: Setup inlay hints for rust, or just fix rust-tools.nvim's inlay hints
+		use({ "nvim-lua/lsp_extensions.nvim", ft = { "rust" } })
 
 		use({
 			"kosayoda/nvim-lightbulb",
@@ -328,50 +338,16 @@ require("packer").startup({
 			end,
 		})
 
-		use({ "folke/lua-dev.nvim", ft = { "lua" } }) -- Provides type annotations for neovim's Lua interface. Needs Sumenkos' Lua LSP. TODO: Not actually set up yet: https://github.com/folke/lua-dev.nvim#%EF%B8%8F--configuration
+		-- Provides type annotations for neovim's Lua interface. Needs Sumenkos' Lua LSP. TODO: Not actually set up yet: https://github.com/folke/lua-dev.nvim#%EF%B8%8F--configuration
+		use({ "folke/lua-dev.nvim", ft = { "lua" } })
 
+		-- Show func signatures automatically. some filetypes cause issues.
 		use({
 			"ray-x/lsp_signature.nvim",
 			ft = remove_value(lsp_enabled_filetypes, "typescriptreact"),
+		})
 
-			config = function()
-				local cfg = {
-					bind = true, -- This is mandatory, otherwise border config won't get registered.
-					-- If you want to hook lspsaga or other signature handler, pls set to false
-					doc_lines = 20, -- will show two lines of comment/doc(if there are more than two lines in doc, will be truncated);
-					-- set to 0 if you DO NOT want any API comments be shown
-					-- This setting only take effect in insert mode, it does not affect signature help in normal
-					-- mode, 10 by default
-
-					floating_window = true, -- show hint in a floating window, set to false for virtual text only mode
-					fix_pos = true, -- set to true, the floating window will not auto-close until finish all parameters
-					hint_enable = true, -- virtual hint enable
-					hint_prefix = "🐼 ", -- Panda for parameter
-					hint_scheme = "String",
-					use_lspsaga = false, -- set to true if you want to use lspsaga popup
-					hi_parameter = "Search", -- how your parameter will be highlight
-					max_height = 32, -- max height of signature floating_window, if content is more than max_height, you can scroll down
-					-- to view the hiding contents
-					max_width = 80, -- max_width of signature floating_window, line will be wrapped if exceed max_width
-					handler_opts = {
-						border = "shadow", -- double, single, shadow, none
-					},
-					extra_trigger_chars = {}, -- Array of extra characters that will trigger signature completion, e.g., {"(", ","}
-					-- deprecate !!
-					-- decorator = {"`", "`"}  -- this is no longer needed as nvim give me a handler and it allow me to highlight active parameter in floating_window
-					zindex = 50,
-				}
-
-				-- This does nothing except to prevent the loading of the rest of this file in case the plugin is not actually installed.
-				require("lsp_signature")
-
-				local custom_attach = function()
-					require("lsp_signature").on_attach(cfg)
-				end
-				table.insert(_G.lsp_config_on_attach_callbacks, custom_attach)
-			end,
-		}) -- Show func signatures automatically. some filetypes cause issues.
-
+		-- Super fast, super feature complete, completion plugin
 		use({
 			"~/git/coq_nvim",
 			config = function()
@@ -424,8 +400,9 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 					false
 				)
 			end,
-		}) -- Super fast, super feature complete, completion plugin
+		})
 
+		-- Non standard and third party sources for coq
 		use({
 			"ms-jpq/coq.thirdparty",
 			ft = { "tex" }, -- TODO: Add dap-supported filetypes too
@@ -435,7 +412,7 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 					{ src = "dap", short_name = "vDAP" },
 				})
 			end,
-		}) -- Non standard and third party sources for coq
+		})
 
 		-- Symbol tree. Better than symbols-outline.nvim because it allows filtering by symbol type.
 		use({
@@ -462,6 +439,8 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 		})
 
 		-- Tree sitter
+
+		-- The package, the pyth, the pegend.
 		use({
 			"nvim-treesitter/nvim-treesitter",
 			run = ":TSUpdate",
@@ -473,27 +452,6 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 				ft_to_parser.javascriptreact = "tsx"
 				ft_to_parser.typescriptreact = "tsx"
 				ft_to_parser.tex = "latex"
-
-				-- -- Setup for nvim-neorg/neorg
-				-- local parser_configs = require("nvim-treesitter.parsers").get_parser_configs()
-
-				-- parser_configs.norg = {
-				-- 	install_info = {
-				-- 		url = "https://github.com/nvim-neorg/tree-sitter-norg",
-				-- 		files = { "src/parser.c", "src/scanner.cc" },
-				-- 		branch = "main",
-				-- 	},
-				-- }
-
-				-- -- Setup for nvim-orgmode/orgmode
-				-- parser_config.org = {
-				-- 	install_info = {
-				-- 		url = "https://github.com/milisims/tree-sitter-org",
-				-- 		revision = "main",
-				-- 		files = { "src/parser.c", "src/scanner.cc" },
-				-- 	},
-				-- 	filetype = "org",
-				-- }
 
 				-- Various Treesitter modules config
 				local highlight = {
@@ -538,6 +496,7 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 					move = {
 						enable = true,
 						set_jumps = true, -- whether to set jumps in the jumplist
+						-- disabled ]t, ]T, etc because we want to use it for vim-test/vim-ultest
 						goto_next_start = {
 							["]f"] = "@function.outer",
 							["]{"] = "@class.outer",
@@ -557,7 +516,7 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 							["]I"] = "@conditional.outer",
 							["]L"] = "@loop.outer",
 							["]P"] = "@parameter.outer",
-							["]T"] = "@statement.outer",
+							-- ["]T"] = "@statement.outer",
 						},
 						goto_previous_start = {
 							["[f"] = "@function.outer",
@@ -568,7 +527,7 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 							["[i"] = "@conditional.outer",
 							["[l"] = "@loop.outer",
 							["[p"] = "@parameter.outer",
-							["[t"] = "@statement.outer",
+							-- ["[t"] = "@statement.outer",
 						},
 						goto_previous_end = { -- Note that @class.outer is missing
 							["[F"] = "@function.outer",
@@ -579,7 +538,7 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 							["[I"] = "@conditional.outer",
 							["[L"] = "@loop.outer",
 							["[P"] = "@parameter.outer",
-							["[T"] = "@statement.outer",
+							--["[T"] = "@statement.outer",
 						},
 					},
 					lsp_interop = {
@@ -618,9 +577,14 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 
 				vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 			end,
-		}) -- Do highlighting, indenting, based on ASTs
-		use("nvim-treesitter/nvim-treesitter-textobjects") -- Text objects based on syntax trees!!
-		use("nvim-treesitter/nvim-treesitter-refactor") -- Highlight definition of current symbol, current scope
+		})
+
+		-- Text objects based on syntax trees!!
+		use("nvim-treesitter/nvim-treesitter-textobjects")
+
+		-- Highlight definition of current symbol, current scope
+		use("nvim-treesitter/nvim-treesitter-refactor")
+
 		-- Disabled because it's erroring out on ruby
 		-- use 'romgrk/nvim-treesitter-context' -- Show "code breadcrumbs"
 		use({
@@ -663,23 +627,11 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 						cwd = "${workspaceFolder}",
 						stopOnEntry = false,
 						args = {},
-
-						-- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:
-						--
-						--    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
-						--
-						-- Otherwise you might get the following error:
-						--
-						--    Error on launch: Failed to attach to the target process
-						--
-						-- But you should be aware of the implications:
-						-- https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html
 						runInTerminal = false,
 					},
 				}
 
 				--- Rails
-				local dap = require("dap")
 				dap.adapters.ruby = {
 					type = "executable",
 					command = "readapt",
@@ -752,6 +704,8 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 					end,
 				}
 
+				local mapfunc = require("std2").mapfunc
+
 				mapfunc("n", "<leader>dja", function()
 					require("dap").run(_G.djangoDapConfig)
 				end, {}, "Debug django application")
@@ -812,6 +766,7 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 				}, "run visual text in debugger repl")
 			end,
 		})
+
 		use({
 			"rcarriga/nvim-dap-ui",
 			ft = dap_enabled_filetypes,
@@ -872,26 +827,16 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 				vim.api.nvim_set_keymap("v", "<leader>de", '<cmd>lua require("dapui").eval()<CR>', {})
 			end,
 		})
+
 		use({
 			"theHamsta/nvim-dap-virtual-text",
 			ft = dap_enabled_filetypes,
 			config = function()
-				require("nvim-dap-virtual-text").setup({
-					enabled = true, -- enable this plugin (the default)
-					enabled_commands = true, -- create commands DapVirtualTextEnable, DapVirtualTextDisable, DapVirtualTextToggle, (DapVirtualTextForceRefresh for refreshing when debug adapter did not notify its termination)
-					highlight_changed_variables = true, -- highlight changed values with NvimDapVirtualTextChanged, else always NvimDapVirtualText
-					highlight_new_as_changed = false, -- highlight new variables in the same way as changed variables (if highlight_changed_variables)
-					show_stop_reason = true, -- show stop reason when stopped for exceptions
-					commented = false, -- prefix virtual text with comment string
-					-- experimental features:
-					virt_text_pos = "eol", -- position of virtual text, see `:h nvim_buf_set_extmark()`
-					all_frames = false, -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
-					virt_lines = false, -- show virtual lines instead of virtual text (will flicker!)
-					virt_text_win_col = nil, -- position the virtual text at a fixed window column (starting from the first text column) ,
-					-- e.g. 80 to position at column 80, see `:h nvim_buf_set_extmark()`
-				})
+				require("nvim-dap-virtual-text").setup({})
 			end,
 		})
+
+		-- Spin up a repl in a neovim terminal and send text to it
 		use({
 			"hkupty/iron.nvim",
 			ft = { "python" },
@@ -990,9 +935,12 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 					{}
 				)
 			end,
-		}) -- Spin up a repl in a neovim terminal and send text to it
+		})
 
-		-- Turn good ol' linters and formattesr as an LSP.
+		-- The unofficial standard library for neovim plugins.
+		use("nvim-lua/plenary.nvim")
+
+		-- Turn good ol' linters and formatters to an LSP.
 		use({
 			"jose-elias-alvarez/null-ls.nvim",
 			requires = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
@@ -1008,7 +956,6 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 		})
 
 		-- (Fuzzy) search everything!
-		use("nvim-lua/plenary.nvim") -- The unofficial standard library for neovim plugins.
 		use({
 			"nvim-telescope/telescope.nvim",
 			config = function()
@@ -1042,18 +989,6 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 						},
 					},
 				})
-
-				if not pcall(function()
-					telescope.load_extension("fzf")
-				end) then
-					print("FZF extension for telescope not installed.")
-				end
-				if not pcall(function()
-					telescope.load_extension("aerial")
-				end) then
-					print("Aerial extension for telescope not installed.")
-				end
-
 				-- Mappings
 				local mapping_opts = { noremap = true }
 				local mapfunc = require("std2").mapfunc
@@ -1119,9 +1054,8 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 			end,
 		})
 
-		use({ "nvim-telescope/telescope-fzf-native.nvim", branch = "main", run = "make" })
-
 		-- Git and Github
+		-- Look at lines added/modified/taken away, all at a glance.
 		use({
 			"lewis6991/gitsigns.nvim",
 			requires = { "nvim-lua/plenary.nvim" },
@@ -1157,13 +1091,19 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 					},
 				})
 			end,
-		}) -- Look at lines added/modified/taken away, all at a glance.
-		use({ "tpope/vim-fugitive", requires = { "nvim-lua/plenary.nvim" } }) -- And I quote tpope, "A git plugin so awesome, it should be illegal."
-		use({ "tpope/vim-rhubarb" })
+		})
+
+		-- And I quote tpope, "A git plugin so awesome, it should be illegal."
+		use({ "tpope/vim-fugitive", requires = { "nvim-lua/plenary.nvim" } })
+
+		-- Basically use it only for :GBrowse
+		use({ "tpope/vim-rhubarb", cmd = { "GBrowse" } })
+
+		-- Who needs web interfaces when you have neovim interfaces (for Github)?
 		use({
 			"pwntester/octo.nvim",
 			requires = { "kyazdani42/nvim-web-devicons" },
-		}) -- Who needs web interfaces when you have neovim interfaces (for Github)?
+		})
 
 		-- Misc
 		use("tpope/vim-vinegar") -- Make netrw better. What I for sure know I use from this is the - mapping to go up a directory.
@@ -1174,12 +1114,14 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 				require("which-key").setup({})
 			end,
 		}) -- show candidate mappings after pressing a key
+
+		-- Save sessions by directory
 		use({
 			"Shatur/neovim-session-manager",
 			config = function()
 				require("session_manager").setup({})
 			end,
-		}) -- Save sessions by directory
+		})
 
 		-- A quick-and-dirty solution to typing Amharic in vim,
 		-- without having to rely on changing the system-wide keyboard layout
@@ -1208,14 +1150,32 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 		-- Testing things
 		use({ "tpope/vim-dispatch", opt = true, cmd = { "Dispatch", "Make", "Focus", "Start" } })
 
+		-- FYI, dispatch.vim is not a strict requirement, but it's nicer.
 		use({
 			"vim-test/vim-test",
 			requires = { "tpope/vim-dispatch" },
 			ft = { "ruby" },
 			config = function()
-				vim.g["test#strategy"] = "dispatch" -- Use tpope/vim-dispatch to run tests (the default (neovim terminal) one doesn't relay errors to quickfix.
+				vim.g["test#strategy"] = "dispatch"
 				vim.g["test#ruby#rspec#executable"] = "bundle exec rspec"
+				vim.g["test#ruby#rspec#options"] = "--force-color"
+			end,
+		})
 
+		-- Let's see how much better this is.
+		use({
+			"rcarriga/vim-ultest",
+			requires = { "vim-test/vim-test" },
+			run = ":UpdateRemotePlugins",
+			ft = { "ruby" },
+			config = function()
+				-- (From README) easy way to trick unittest/rspec/testing frameworks into outputting color.
+				vim.g.ultest_use_pty = 1
+
+				-- Aint spending another minute this week editing my .dotfiles, including
+				-- standardizing the two ways of mapping things below.
+				vim.api.nvim_set_keymap("n", "]t", "<Plug>(ultest-next-fail)", {})
+				vim.api.nvim_set_keymap("n", "[t", "<Plug>(ultest-prev-fail)", {})
 				vim.cmd([[
 nmap <silent> <leader>tn :TestNearest<CR>
 nmap <silent> <leader>tf :TestFile<CR>
@@ -1224,7 +1184,7 @@ nmap <silent> <leader>tl :TestLast<CR>
 nmap <silent> <leader>tg :TestVisit<CR>
 ]])
 			end,
-		}) -- FYI, dispatch.vim is not a strict requirement, but it's nicer.
+		})
 
 		-- Improved definition of the "word" text object.
 		use("chaoren/vim-wordmotion")
@@ -1251,11 +1211,57 @@ nmap <silent> <leader>tg :TestVisit<CR>
 				require("nvim-web-devicons").setup({})
 			end,
 		})
-		use("folke/tokyonight.nvim") -- colorscheme
+		-- use("folke/tokyonight.nvim") -- colorscheme
 		-- use("joshdick/onedark.vim") -- colorscheme
 		-- use 'tjdevries/colorbuddy.nvim'
-		-- use 'Mofiqul/vscode.nvim'
+		use("Mofiqul/vscode.nvim")
 		-- use( { 'bbenzikry/snazzybuddy.nvim', requires = "tjdevries/snazzybuddy.nvim" } )
+
+		-- Capture output of ex commands (slightly quicker than doing :redir /tmp/SOMEFILE | the_ex_command | redir END)
+		use({ "tyru/capture.vim", cmd = "Capture" })
+
+		-- A sidebar.
+		use({
+			"sidebar-nvim/sidebar.nvim",
+			ft = { "lua", "ruby", "python" },
+			config = function()
+				local sidebar = require("sidebar-nvim")
+				local opts = { open = true }
+				sidebar.setup(opts)
+			end,
+		})
+
+		-- Clipboard manager.
+		use({
+			"AckslD/nvim-neoclip.lua",
+			requires = {
+				{ "tami5/sqlite.lua", module = "sqlite" },
+				-- you'll need at least one of these
+				{ "nvim-telescope/telescope.nvim" },
+				-- {'ibhagwan/fzf-lua'},
+			},
+			config = function()
+				require("neoclip").setup()
+				require("telescope").load_extension("neoclip")
+			end,
+		})
+
+		-- Telescope file browser.
+		use({
+			"nvim-telescope/telescope-file-browser.nvim",
+			config = function()
+				require("telescope").load_extension("file_browser")
+			end,
+		})
+
+		-- Indicate LSP progress
+		use({
+			"j-hui/fidget.nvim",
+			ft = lsp_enabled_filetypes,
+			config = function()
+				require("fidget").setup({})
+			end,
+		})
 	end,
 
 	config = {
