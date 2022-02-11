@@ -127,6 +127,13 @@ function M.remove_value(table_, value)
   return new_table
 end
 
+--@param table_ any[]
+--@param another_table any[]
+function M.list_concat(table_, another_table)
+  return vim.list_extend(vim.list_extend({}, table_), another_table)
+end
+
+
 -- @param mod string The module name to require
 function M.try_require(mod)
   local status, err = pcall(function()

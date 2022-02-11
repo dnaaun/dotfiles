@@ -22,9 +22,11 @@ local nvim_set_keymap = vim.api.nvim_set_keymap
 local nvim_command = vim.api.nvim_command
 
 --- not filetype-specific, or plugin-specific
-vim.opt.number = false
+vim.opt.number = true
 -- Prevent wierd de-endentation when writing python
 vim.opt.indentkeys:remove({ ":" })
+
+vim.opt.fillchars = vim.opt.fillchars + "diff:╱"
 
 vim.opt.matchpairs:append({ "<:>" })
 vim.opt.scrollback = 100000 -- Lines to keep in neovim's terminal emulator
@@ -44,22 +46,7 @@ vim.opt.grepprg = "rg -nH" -- Use ripgrep as a grep program
 vim.g.mapleader = ","
 vim.g.maplocalleader = ","
 
--- Copied from / inspired by tpope/unimpaired.vim
-nvim_set_keymap("n", "<Leader>qo", ":copen<CR>", {})
-nvim_set_keymap("n", "<Leader>qc", ":cclose<CR>", {})
-nvim_set_keymap("n", "]q", ":cnext<CR>", {})
-nvim_set_keymap("n", "[q", ":cprev<CR>", {})
 
--- Follow files under cursor in splits.
--- This is in the spirit of Telescope's defualt open-split mappings.
-nvim_set_keymap("n", "f<C-v>", ":vertical wincmd f<CR>", {})
-nvim_set_keymap("n", "f<C-x>", ":below wincmd f<CR>", {})
-
--- Same pattern for loclist
-nvim_set_keymap("n", "<Leader>lo", ":lopen<CR>", {})
-nvim_set_keymap("n", "<Leader>lc", ":lclose<CR>", {})
--- cr stands for 'config reload'
--- mapfunc("n", "<Leader>cr", require('nvim-reload').Reload, {})
 
 -- WHen in visual/select/operator mode, I want searching with / to be an inclusive
 -- motion. This is acheived by doing /pattern/e, but I don't wanna have to type
@@ -147,15 +134,6 @@ augroup END
 	false
 )
 
----- fugitive.vim ----
-nvim_set_keymap("n", "<Leader>gs", ":Git!<CR>", { noremap = true })
-nvim_set_keymap("n", "<Leader>gd", ":Gdiffsplit<CR>", { noremap = true })
-nvim_set_keymap("n", "<Leader>gc", ":Git commit<CR>", { noremap = true })
-nvim_set_keymap("n", "<Leader>gl", ":Glog<CR>", { noremap = true })
-nvim_set_keymap("n", "<Leader>gw", ":Gwrite<CR>", { noremap = true })
-nvim_set_keymap("n", "<Leader>gr", ":Gpull --rebase<CR>", { noremap = true })
-nvim_set_keymap("n", "<Leader>gp", ":Gpush<CR>", { noremap = true })
--- nvim_set_keymap("n", "<Leader>gg", ":Git ", {noremap=true})
 
 ---- netrw ----
 vim.g.netrw_localrmdir = "rm -r" -- Allow netrw to remove non-empty local directories

@@ -17,7 +17,10 @@ local lsp_enabled_filetypes = {
 -- For the nvim-dap plugin
 local dap_enabled_filetypes = {
 	"python",
+	"ruby",
 }
+
+local mapfunc = require("std2").mapfunc
 
 require("packer").startup({
 	function(use)
@@ -36,7 +39,16 @@ autocmd FileType vim,lua nnoremap <buffer> <leader>cc :source %<CR>
 			end,
 		})
 
-		use("christoomey/vim-tmux-navigator")
+		use({
+			"christoomey/vim-tmux-navigator",
+			cmd = {
+				"TmuxNavigateDown",
+				"TmuxNavigateUp",
+				"TmuxNavigateLeft",
+				"TmuxNavigateRight",
+			},
+		})
+
 		use("embear/vim-localvimrc") -- Enable sourcing .lnvimrc files
 		use({
 			"lukas-reineke/indent-blankline.nvim",
@@ -49,43 +61,43 @@ autocmd FileType vim,lua nnoremap <buffer> <leader>cc :source %<CR>
 			end,
 		})
 
+		-- When opening splits, let the remaining one remain "stable"
 		use({
 			"luukvbaal/stabilize.nvim",
 			config = function()
 				require("stabilize").setup()
 			end,
-		}) -- WHen opening splits, let the remaining one remain "stable"
+		})
 
 		-- LSP dependent/related
+		-- The LSPConfig, the lyth, the legend
 		use({
 			"neovim/nvim-lspconfig",
+			as = "neovim/nvim-lspconfig",
 			ft = lsp_enabled_filetypes,
 			config = function()
+				local buf_mapfunc = require("std2").buf_mapfunc
 				-- Keybindings
 				local setup_mappings = function()
 					local opts = { noremap = true, silent = true }
 					vim.api.nvim_buf_set_keymap(0, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", opts)
 					vim.api.nvim_buf_set_keymap(0, "n", "gt", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
 					vim.api.nvim_buf_set_keymap(0, "n", "gR", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-					vim.api.nvim_buf_set_keymap(
-						0,
-						"n",
-						"gh",
-						"<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>",
-						opts
-					)
+					buf_mapfunc("n", "gh", function()
+						vim.diagnostic.open_float({source=true})
+					end, opts, "show line diagnostics")
 					vim.api.nvim_buf_set_keymap(
 						0,
 						"n",
 						"[e",
-						"<cmd>lua vim.lsp.diagnostic.goto_prev({severity='Error'})<CR>",
+						"<cmd>lua vim.diagnostic.goto_prev({severity='Error'})<CR>",
 						opts
 					)
 					vim.api.nvim_buf_set_keymap(
 						0,
 						"n",
 						"]e",
-						"<cmd>lua vim.lsp.diagnostic.goto_next({severity='Error'})<CR>",
+						"<cmd>lua vim.diagnostic.goto_next({severity='Error'})<CR>",
 						opts
 					)
 					vim.api.nvim_buf_set_keymap(0, "n", "<leader>lf", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
@@ -240,7 +252,7 @@ autocmd FileType vim,lua nnoremap <buffer> <leader>cc :source %<CR>
 								build = {
 									args = { "%f", "--synctex" },
 									executable = "tectonic",
-									forwardSearchAfter = true,
+									forwardSearchAfter = false,
 									onSave = true,
 								},
 							},
@@ -318,14 +330,14 @@ autocmd FileType vim,lua nnoremap <buffer> <leader>cc :source %<CR>
 					lspconfig[lspname].setup(coq.lsp_ensure_capabilities(config))
 				end
 			end,
-		}) -- Configure neovim's builtin LSP client easier
+		})
 
 		-- TODO: Setup inlay hints for rust, or just fix rust-tools.nvim's inlay hints
 		use({ "nvim-lua/lsp_extensions.nvim", ft = { "rust" } })
 
 		use({
 			"kosayoda/nvim-lightbulb",
-			ft = lsp_enabled_filetypes,
+			after = { "neovim/nvim-lspconfig" },
 			config = function()
 				require("nvim-lightbulb").update_lightbulb({
 					sign = {
@@ -345,6 +357,7 @@ autocmd FileType vim,lua nnoremap <buffer> <leader>cc :source %<CR>
 		use({
 			"ray-x/lsp_signature.nvim",
 			ft = remove_value(lsp_enabled_filetypes, "typescriptreact"),
+			after = { "neovim/nvim-lspconfig" },
 		})
 
 		-- Super fast, super feature complete, completion plugin
@@ -402,22 +415,10 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 			end,
 		})
 
-		-- Non standard and third party sources for coq
-		use({
-			"ms-jpq/coq.thirdparty",
-			ft = { "tex" }, -- TODO: Add dap-supported filetypes too
-			config = function()
-				require("coq_3p")({
-					{ src = "vimtex", short_name = "vTEX" },
-					{ src = "dap", short_name = "vDAP" },
-				})
-			end,
-		})
-
 		-- Symbol tree. Better than symbols-outline.nvim because it allows filtering by symbol type.
 		use({
 			"stevearc/aerial.nvim",
-			ft = lsp_enabled_filetypes,
+			after = { "neovim/nvim-lspconfig" },
 			config = function()
 				local aerial = require("aerial")
 
@@ -565,6 +566,10 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 					},
 				}
 
+				local matchup = { -- vim-matchup experimental support for treesitter
+					enable = true,
+				}
+
 				require("nvim-treesitter.configs").setup({
 					highlight = highlight,
 					indent = indent,
@@ -572,7 +577,7 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 					textobjects = textobjects,
 					autotag = autotag,
 					incremental_selection = incremental_selection,
-					ensure_installed = { "org" },
+					matchup = matchup,
 				})
 
 				vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
@@ -599,6 +604,7 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 		use({
 			"~/git/nvim-dap",
 			ft = dap_enabled_filetypes,
+			as = "nvim-dap",
 			config = function()
 				local dap = require("dap")
 				local buf_mapfunc = require("std2").buf_mapfunc
@@ -634,8 +640,8 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 				--- Rails
 				dap.adapters.ruby = {
 					type = "executable",
-					command = "readapt",
-					args = { "stdio" },
+					command = "bundle",
+					args = { "exec", "readapt", "stdio" },
 				}
 
 				dap.configurations.ruby = {
@@ -644,7 +650,7 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 						request = "launch",
 						name = "Rails",
 						program = "bundle",
-						programArgs = { "exec", "puma", "t", "1:1", "-w", "0" },
+						programArgs = { "exec", "rails", "s" },
 						useBundler = true,
 					},
 				}
@@ -769,9 +775,7 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 
 		use({
 			"rcarriga/nvim-dap-ui",
-			ft = dap_enabled_filetypes,
-			requires = { "mfussenegger/nvim-dap" },
-
+			after = { "nvim-dap" },
 			config = function()
 				local dap = require("dap")
 				local dapui = require("dapui")
@@ -828,22 +832,24 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 			end,
 		})
 
-		use({
-			"theHamsta/nvim-dap-virtual-text",
-			ft = dap_enabled_filetypes,
-			config = function()
-				require("nvim-dap-virtual-text").setup({})
-			end,
-		})
+		-- use({
+		-- 	"theHamsta/nvim-dap-virtual-text",
+		-- 	ft = dap_enabled_filetypes,
+		-- 	requires = "mfussenegger/nvim-dap",
+		-- 	config = function()
+		-- 		require("nvim-dap-virtual-text").setup({})
+		-- 	end,
+		-- })
 
 		-- Spin up a repl in a neovim terminal and send text to it
 		use({
 			"hkupty/iron.nvim",
-			ft = { "python" },
-			config = function()
+			ft = { "python", "ruby" },
+			setup = function()
 				-- Disable default mappings
-				vim.g.iron_map_defaults = false
-
+				vim.g.iron_map_defaults = true
+			end,
+			config = function()
 				local iron = require("iron")
 
 				-- The function is called `t` for `termcodes`.
@@ -937,6 +943,18 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 			end,
 		})
 
+		-- Sessions, I really need'em
+		use({
+			"rmagatti/auto-session",
+			config = function()
+				require("auto-session").setup({
+					log_level = "info",
+					auto_save_enabled = true,
+					auto_restore_enabled = true,
+				})
+			end,
+		})
+
 		-- The unofficial standard library for neovim plugins.
 		use("nvim-lua/plenary.nvim")
 
@@ -947,9 +965,12 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 
 			config = function()
 				require("null-ls").setup({
+					debug = true,
 					sources = {
 						require("null-ls").builtins.formatting.stylua,
 						require("null-ls").builtins.formatting.black,
+						require("null-ls").builtins.formatting.prettier,
+						require("null-ls").builtins.diagnostics.eslint,
 					},
 				})
 			end,
@@ -987,6 +1008,29 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 							override_generic_sorter = true, -- override the generic sorter
 							override_file_sorter = true, -- override the file sorter
 						},
+
+						file_browser = { -- Requires the telescope-file-browser
+							mappings = {
+								["i"] = {
+									["<C-b>"] = function(prompt_bufnr)
+										print(require("telescope").extensions)
+										require("telescope").extensions.file_browser.actions.goto_parent_dir(
+											prompt_bufnr,
+											true
+										)
+									end,
+								},
+								["n"] = {
+									["-"] = function(prompt_bufnr)
+										print(require("telescope").extensions)
+										require("telescope").extensions.file_browser.actions.goto_parent_dir(
+											prompt_bufnr,
+											true
+										)
+									end,
+								},
+							},
+						},
 					},
 				})
 				-- Mappings
@@ -995,29 +1039,41 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 				local buf_mapfunc = require("std2").buf_mapfunc
 
 				local builtin = require("telescope.builtin")
-				mapfunc("n", "<leader>fw", builtin.grep_string, { noremap = true })
-				mapfunc("n", "<leader>ff", builtin.fd, { noremap = true })
+				mapfunc("n", "<leader>fw", builtin.grep_string, { noremap = true }, "grep_string")
+				mapfunc("n", "<leader>ff", builtin.fd, { noremap = true }, "fd")
 				mapfunc("n", "<leader>fcf", function()
 					builtin.fd({ search_dirs = { vim.fn.expand("%:p:h") } })
 				end, {
 					noremap = true,
-				})
+				}, "fd in cur dir")
 				mapfunc("n", "<leader>fcg", function()
 					builtin.live_grep({ search_dirs = { vim.fn.expand("%:p:h") } })
 				end, {
 					noremap = true,
-				})
-				mapfunc("n", "<leader>fg", builtin.live_grep, { noremap = true })
+				}, "live_grep in cur dir")
+				mapfunc("n", "<leader>fg", builtin.live_grep, { noremap = true }, "live_grep")
 				-- Isn't prefixed with f cuz it's so commonly used
-				mapfunc("n", "<leader>b", builtin.buffers, { noremap = true })
+				mapfunc("n", "<leader>b", builtin.buffers, { noremap = true }, "buffers")
 				-- Isn't prefixed with f cuz it's so commonly used
-				mapfunc("n", "<leader>h", builtin.oldfiles, { noremap = true })
-				mapfunc("n", "<leader>ft", builtin.help_tags, { noremap = true })
-				mapfunc("n", "<leader>f:", builtin.command_history, { noremap = true })
-				mapfunc("n", "<leader>f/", builtin.current_buffer_fuzzy_find, { noremap = true })
-				mapfunc("n", "<leader>fj", builtin.jumplist, { noremap = true })
-				mapfunc("n", "<leader>f.", builtin.resume, { noremap = true })
-				mapfunc("n", "<leader>gg", builtin.git_status, { noremap = true })
+				mapfunc("n", "<leader>h", builtin.oldfiles, { noremap = true }, "oldfiles")
+				mapfunc("n", "<leader>ft", builtin.help_tags, { noremap = true }, "help_tags")
+				mapfunc("n", "<leader>f:", builtin.command_history, { noremap = true }, "command_history")
+				mapfunc(
+					"n",
+					"<leader>f/",
+					builtin.current_buffer_fuzzy_find,
+					{ noremap = true },
+					"current_buffer_fuzzy_find"
+				)
+				mapfunc("n", "<leader>fj", builtin.jumplist, { noremap = true }, "jumplist")
+				mapfunc("n", "<leader>f.", builtin.resume, { noremap = true }, "resume")
+				mapfunc("n", ",-", function()
+					require("telescope").extensions.file_browser.file_browser({ path = vim.fn.expand("%:p:h") })
+				end, {}, "file_browser cur dir")
+				mapfunc("n", "-", function()
+					require("telescope").extensions.file_browser.file_browser()
+				end, {}, "file_browser")
+
 				local function on_attach()
 					buf_mapfunc("n", "<leader>la", builtin.lsp_code_actions, mapping_opts)
 
@@ -1074,16 +1130,14 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 							"&diff ? '[c' : '<cmd>lua require\"gitsigns.actions\".prev_hunk()<CR>'",
 						},
 
-						["n <leader>gs"] = '<cmd>lua require"gitsigns".stage_hunk()<CR>',
-						["v <leader>gs"] = '<cmd>lua require"gitsigns".stage_hunk({vim.fn.line("."), vim.fn.line("v")})<CR>',
+						["n <leader>gw"] = '<cmd>lua require"gitsigns".stage_hunk()<CR>',
+						["v <leader>gw"] = '<cmd>lua require"gitsigns".stage_hunk({vim.fn.line("."), vim.fn.line("v")})<CR>',
 						["n <leader>gu"] = '<cmd>lua require"gitsigns".undo_stage_hunk()<CR>',
 						["n <leader>gr"] = '<cmd>lua require"gitsigns".reset_hunk()<CR>',
 						["v <leader>gr"] = '<cmd>lua require"gitsigns".reset_hunk({vim.fn.line("."), vim.fn.line("v")})<CR>',
-						["n <leader>gR"] = '<cmd>lua require"gitsigns".reset_buffer()<CR>',
 						["n <leader>gp"] = '<cmd>lua require"gitsigns".preview_hunk()<CR>',
-						["n <leader>gb"] = '<cmd>lua require"gitsigns".blame_line(true)<CR>',
-						["n <leader>gS"] = '<cmd>lua require"gitsigns".stage_buffer()<CR>',
-						["n <leader>gU"] = '<cmd>lua require"gitsigns".reset_buffer_index()<CR>',
+						["n <leader>gb"] = '<cmd>lua require"gitsigns".blame_line()<CR>',
+						["n <leader>gW"] = '<cmd>lua require"gitsigns".stage_buffer()<CR>',
 
 						-- Text objects
 						["o ih"] = ':<C-U>lua require"gitsigns.actions".select_hunk()<CR>',
@@ -1096,8 +1150,17 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 		-- And I quote tpope, "A git plugin so awesome, it should be illegal."
 		use({ "tpope/vim-fugitive", requires = { "nvim-lua/plenary.nvim" } })
 
+		vim.api.nvim_set_keymap("n", "<leader>gg", ":DiffviewOpen<CR>", {})
+
+		-- Better diff view
+		use({
+			"sindrets/diffview.nvim",
+			requires = "nvim-lua/plenary.nvim",
+			cmd = { "DiffviewOpen", "DiffviewFileHistory" },
+		})
+
 		-- Basically use it only for :GBrowse
-		use({ "tpope/vim-rhubarb", cmd = { "GBrowse" } })
+		use({ "tpope/vim-rhubarb", requires = { "tpope/vim-fugitive" }, cmd = { "GBrowse" } })
 
 		-- Who needs web interfaces when you have neovim interfaces (for Github)?
 		use({
@@ -1106,31 +1169,27 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 		})
 
 		-- Misc
-		use("tpope/vim-vinegar") -- Make netrw better. What I for sure know I use from this is the - mapping to go up a directory.
 		use("tpope/vim-commentary") -- (Un)comment stuff with gc
 		use({
 			"folke/which-key.nvim",
 			config = function()
-				require("which-key").setup({})
+				require("which-key").setup({
+					layout = {
+						height = { min = 4, max = 200 },
+						width = { min = 20, max = 200 }, -- min and max width of the columns
+					},
+				})
 			end,
 		}) -- show candidate mappings after pressing a key
 
-		-- Save sessions by directory
-		use({
-			"Shatur/neovim-session-manager",
-			config = function()
-				require("session_manager").setup({})
-			end,
-		})
-
 		-- A quick-and-dirty solution to typing Amharic in vim,
 		-- without having to rely on changing the system-wide keyboard layout
-		use({ "davidatbu/amharic.nvim", ft = { "markdown" } })
+		use({ "davidatbu/amharic.nvim", cmd = { "AmharicToggle" }, ft = { "markdown" } })
 		-- Kotlin
-		use({ "udalov/kotlin-vim" })
+		use({ "udalov/kotlin-vim", ft = { "kotlin" } })
 		-- JSX
 		-- CSS / web dev
-		use("maxmellon/vim-jsx-pretty") -- I hope this fixes indentation for jSX until TreeSitter supports JSX.
+		-- use("maxmellon/vim-jsx-pretty") -- I hope this fixes indentation for jSX until TreeSitter supports JSX.
 		use({ "windwp/nvim-ts-autotag", ft = { "typescriptreact", "javascriptreact", "html" } }) -- When changing tags, change both
 		use({
 			"crivotz/nvim-colorizer.lua",
@@ -1158,7 +1217,7 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 			config = function()
 				vim.g["test#strategy"] = "dispatch"
 				vim.g["test#ruby#rspec#executable"] = "bundle exec rspec"
-				vim.g["test#ruby#rspec#options"] = "--force-color"
+				-- vim.g["test#ruby#rspec#options"] = "--force-color"
 			end,
 		})
 
@@ -1168,21 +1227,50 @@ inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<BS>"
 			requires = { "vim-test/vim-test" },
 			run = ":UpdateRemotePlugins",
 			ft = { "ruby" },
-			config = function()
+			setup = function()
+				vim.g.ultest_running_sign = "🟡"
+				-- vim.g.ultest_icons = 0
 				-- (From README) easy way to trick unittest/rspec/testing frameworks into outputting color.
 				vim.g.ultest_use_pty = 1
+			end,
+			config = function()
+				-- The default icons there.
 
 				-- Aint spending another minute this week editing my .dotfiles, including
 				-- standardizing the two ways of mapping things below.
+				vim.api.nvim_set_keymap("n", "<leader>tsn", "<Plug>(ultest-stop-nearest)", {})
+				vim.api.nvim_set_keymap("n", "<leader>tsf", "<Plug>(ultest-stop-file)", {})
+				vim.api.nvim_set_keymap("n", "<leader>ta", "<Plug>(ultest-attach)", {})
+				vim.api.nvim_set_keymap("n", "<leader>to", "<Plug>(ultest-output-jump)", {})
 				vim.api.nvim_set_keymap("n", "]t", "<Plug>(ultest-next-fail)", {})
 				vim.api.nvim_set_keymap("n", "[t", "<Plug>(ultest-prev-fail)", {})
-				vim.cmd([[
-nmap <silent> <leader>tn :TestNearest<CR>
-nmap <silent> <leader>tf :TestFile<CR>
-nmap <silent> <leader>ts :TestSuite<CR>
-nmap <silent> <leader>tl :TestLast<CR>
-nmap <silent> <leader>tg :TestVisit<CR>
-]])
+				vim.api.nvim_set_keymap("n", "<leader>tf", "<Plug>(ultest-run-file)", {})
+				vim.api.nvim_set_keymap("n", "<leader>tn", "<Plug>(ultest-run-nearest)", {})
+				vim.api.nvim_set_keymap("n", "<leader>tl", "<Plug>(ultest-run-last)", {})
+
+				--- Integrate vim-ultest with nvim-dap
+				-- https://github.com/rcarriga/vim-ultest/blob/0aa467db97a075c576e97424865a57a457fd4851/doc/ultest.txt#L345-L379
+				local rspec_dap_builder = function(cmd)
+					local programArgs = vim.list_slice(cmd, 2) -- Python version is cmd[1:]
+					local configuration = {
+						dap = {
+							type = "ruby",
+							request = "launch",
+							name = "Debugged Rspec",
+							program = "bundle",
+							programArgs = programArgs,
+							useBundler = false,
+						},
+					}
+					print(vim.inspect(configuration))
+					return configuration
+				end
+
+				require("ultest").setup({
+					builders = {
+						["ruby#rspec"] = rspec_dap_builder,
+					},
+				})
 			end,
 		})
 
@@ -1196,14 +1284,14 @@ nmap <silent> <leader>tg :TestVisit<CR>
 		use({
 			"folke/zen-mode.nvim",
 			branch = "main",
-			ft = "markdown",
-
+			module = { "zen-mode" },
 			config = function()
 				require("zen-mode").setup({})
-				local mapfunc = require("std2").mapfunc
-				mapfunc("n", "<leader>v", require("zen-mode").toggle, {})
 			end,
 		})
+		mapfunc("n", "<leader>v", function()
+			require("zen-mode").toggle()
+		end, {}, "toggle zen-mode")
 
 		use({
 			"kyazdani42/nvim-web-devicons",
@@ -1215,6 +1303,14 @@ nmap <silent> <leader>tg :TestVisit<CR>
 		-- use("joshdick/onedark.vim") -- colorscheme
 		-- use 'tjdevries/colorbuddy.nvim'
 		use("Mofiqul/vscode.nvim")
+		use({
+			"nvim-lualine/lualine.nvim",
+			requires = { "kyazdani42/nvim-web-devicons" },
+			config = function()
+				require("lualine").setup()
+			end,
+		})
+
 		-- use( { 'bbenzikry/snazzybuddy.nvim', requires = "tjdevries/snazzybuddy.nvim" } )
 
 		-- Capture output of ex commands (slightly quicker than doing :redir /tmp/SOMEFILE | the_ex_command | redir END)
@@ -1223,11 +1319,32 @@ nmap <silent> <leader>tg :TestVisit<CR>
 		-- A sidebar.
 		use({
 			"sidebar-nvim/sidebar.nvim",
-			ft = { "lua", "ruby", "python" },
+			module = { "sidebar-nvim" },
 			config = function()
 				local sidebar = require("sidebar-nvim")
-				local opts = { open = true }
+				local opts = {
+					open = true,
+					initial_width = 35,
+					sections = { "diagnostics", "git" },
+					files = {
+						icon = "",
+						show_hidden = false,
+						ignored_paths = { "%.git$" },
+					},
+				}
 				sidebar.setup(opts)
+			end,
+		})
+		mapfunc("n", "<leader>s", function()
+			require("sidebar-nvim").toggle()
+		end, {}, "toggle sidebar.nvim")
+
+		-- A "buffer" line. (like tabs, but buffers, and on top)
+		use({
+			"akinsho/bufferline.nvim",
+			requires = "kyazdani42/nvim-web-devicons",
+			config = function()
+				require("bufferline").setup({})
 			end,
 		})
 
@@ -1257,9 +1374,21 @@ nmap <silent> <leader>tg :TestVisit<CR>
 		-- Indicate LSP progress
 		use({
 			"j-hui/fidget.nvim",
-			ft = lsp_enabled_filetypes,
+			after = { "neovim/nvim-lspconfig" },
 			config = function()
 				require("fidget").setup({})
+			end,
+		})
+
+		-- vim-matchup
+		use({ "andymass/vim-matchup", ft = { "ruby" } })
+
+		--
+		use({
+			"nvim-telescope/telescope-fzf-native.nvim",
+			run = "make",
+			config = function()
+				require("telescope").load_extension("fzf")
 			end,
 		})
 	end,
@@ -1276,6 +1405,6 @@ nmap <silent> <leader>tg :TestVisit<CR>
 vim.cmd([[
   augroup packer_user_config
     autocmd!
-    autocmd BufWritePost plugins.lua source <afile> | PackerCompile
+    autocmd BufWritePost plugins.lua source <afile> |  PackerCompile
   augroup end
 ]])
