@@ -1,5 +1,6 @@
 # Which is equivalent to
 format = """
+$python\
 $directory\
 $git_branch\
 $sudo\
@@ -14,7 +15,7 @@ format="$all_status$ahead_behind"
 conflicted = "🏳"
 ahead = "🏎💨"
 behind = "😰"
-diverged = "😵"
+diverged = "✌️"
 up_to_date = "[✓](green)"
 untracked = "🤷"
 stashed = "📦"

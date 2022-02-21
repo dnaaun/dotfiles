@@ -1,52 +1,57 @@
-vim.api.nvim_exec([[
-let g:loaded_matchparen        = 1
-let g:loaded_matchit           = 1
-let g:loaded_logiPat           = 1
-let g:loaded_rrhelper          = 1
-let g:loaded_tarPlugin         = 1
-let g:loaded_man               = 1
-let g:loaded_gzip              = 1
-let g:loaded_zipPlugin         = 1
-let g:loaded_2html_plugin      = 1
-let g:loaded_shada_plugin      = 1
-let g:loaded_spellfile_plugin  = 1
-" let g:loaded_netrw             = 1
-" let g:loaded_netrwPlugin       = 1
-let g:loaded_tutor_mode_plugin = 1
-" let g:loaded_remote_plugins    = 1
-]], false)
+require('impatient') -- Speed up loading things. TOFIXLATER: This will probably (definitely?) break when impatient.nvim is not installed.
+
+local g = vim.g
+local opt = vim.opt
+
+g.loaded_matchparen = 1
+g.loaded_matchit = 1
+g.loaded_logiPat = 1
+g.loaded_rrhelper = 1
+g.loaded_tarPlugin = 1
+g.loaded_man = 1
+g.loaded_gzip = 1
+g.loaded_zipPlugin = 1
+g.loaded_2html_plugin = 1
+g.loaded_shada_plugin = 1
+g.loaded_spellfile_plugin = 1
+-- let g:loaded_netrw             = 1
+-- let g:loaded_netrwPlugin       = 1
+g.loaded_tutor_mode_plugin = 1
+-- let g:loaded_remote_plugins    = 1
 
 _G.lsp_config_on_attach_callbacks = {}
 
 local nvim_set_keymap = vim.api.nvim_set_keymap
-local nvim_command = vim.api.nvim_command
 
 --- not filetype-specific, or plugin-specific
-vim.opt.number = true
+opt.number = true
 -- Prevent wierd de-endentation when writing python
-vim.opt.indentkeys:remove({ ":" })
+opt.indentkeys:remove({ ":" })
 
-vim.opt.fillchars = vim.opt.fillchars + "diff:╱"
+opt.fillchars = opt.fillchars + "diff:╱"
 
-vim.opt.matchpairs:append({ "<:>" })
-vim.opt.scrollback = 100000 -- Lines to keep in neovim's terminal emulator
-vim.opt.spell = false
-vim.opt.conceallevel = 0
-vim.opt.splitbelow = true
-vim.opt.splitright = true
-vim.opt.hlsearch = true
-vim.opt.incsearch = true -- Incremental search highlight
-vim.opt.completeopt = { "menuone", "noselect" }
+opt.matchpairs:append({ "<:>" })
+opt.scrollback = 100000 -- Lines to keep in neovim's terminal emulator
+opt.spell = false
+opt.conceallevel = 0
+opt.splitbelow = true
+opt.splitright = true
+opt.hlsearch = true
+opt.incsearch = true -- Incremental search highlight
+opt.completeopt = { "menuone", "noselect" }
 -- Enable backspace on everything
-vim.opt.backspace = { "indent", "eol", "start" }
-vim.opt.mouse = "a" -- Resize vim splists with a mouse when inside tmux
-vim.opt.colorcolumn:append({ "+1" }) -- Draw a line at wrapwidth
-vim.opt.grepprg = "rg -nH" -- Use ripgrep as a grep program
+opt.backspace = { "indent", "eol", "start" }
+opt.mouse = "a" -- Resize vim splists with a mouse when inside tmux
+opt.colorcolumn:append({ "+1" }) -- Draw a line at wrapwidth
+opt.grepprg = "rg -nH" -- Use ripgrep as a grep program
 
-vim.g.mapleader = ","
-vim.g.maplocalleader = ","
+g.mapleader = ","
+g.maplocalleader = ","
 
-
+-- Quickfix shortcuts
+nvim_set_keymap("n", "<leader>qo", ":copen<CR>", {})
+nvim_set_keymap("n", "]q", ":cnext<CR>", {})
+nvim_set_keymap("n", "[q", ":cprev<CR>", {})
 
 -- WHen in visual/select/operator mode, I want searching with / to be an inclusive
 -- motion. This is acheived by doing /pattern/e, but I don't wanna have to type
@@ -62,9 +67,9 @@ nvim_set_keymap("i", "<C-v>", "<Esc>[s1z=``a", {})
 
 -- A hack to avoid having press a key before the terminal closes when the process in the
 -- terminal finishes.
-nvim_command("autocmd TermClose * call feedkeys('x')")
+-- vim.nvim_command("autocmd TermClose * call feedkeys('x')")
 
-vim.g.python3_host_prog = vim.fn.substitute(vim.fn.system("which python3"), "\n", "", "g")
+g.python3_host_prog = vim.fn.substitute(vim.fn.system("which python3"), "\n", "", "g")
 
 ---- Add plugins ----
 require("plugins")
@@ -72,71 +77,20 @@ require("plugins")
 -- This section must come before loading nvim-dap for it not to mess up
 -- nvim-dap colors.
 -- checks if your terminal has 24-bit color support
-vim.g.tokyonight_style = "day"
--- vim.g.snazzybuddy_icons = true
-vim.g.vscode_style = "dark"
-vim.cmd([[colorscheme vscode]])
-
-
+-- g.tokyonight_style = "day"
+-- g.snazzybuddy_icons = true
+g.vscode_style = "dark"
+vim.cmd("colorscheme vscode")
 
 ---- vim-tmux-navigator ----
 -- I bring this after the plugins sections because I haven't yet figured
 -- out how to turn of conflicting keybinds from coq.nvim
-nvim_set_keymap("v", "<C-j>", "<cmd>:TmuxNavigateDown<CR>", { noremap = true })
-nvim_set_keymap("v", "<C-k>", "<cmd>:TmuxNavigateUp<CR>", { noremap = true })
-nvim_set_keymap("v", "<C-h>", "<cmd>:TmuxNavigateLeft<CR>", { noremap = true })
-nvim_set_keymap("v", "<C-l>", "<cmd>:TmuxNavigateRight<CR>", { noremap = true })
-
-nvim_set_keymap("n", "<C-j>", "<cmd>:TmuxNavigateDown<CR>", { noremap = true })
-nvim_set_keymap("n", "<C-k>", "<cmd>:TmuxNavigateUp<CR>", { noremap = true })
-nvim_set_keymap("n", "<C-h>", "<cmd>:TmuxNavigateLeft<CR>", { noremap = true })
-nvim_set_keymap("n", "<C-l>", "<cmd>:TmuxNavigateRight<CR>", { noremap = true })
-
-nvim_set_keymap("i", "<C-j>", "<cmd>:TmuxNavigateDown<CR>", { noremap = true })
-nvim_set_keymap("i", "<C-k>", "<cmd>:TmuxNavigateUp<CR>", { noremap = true })
-nvim_set_keymap("i", "<C-h>", "<cmd>:TmuxNavigateLeft<CR>", { noremap = true })
-nvim_set_keymap("i", "<C-l>", "<cmd>:TmuxNavigateRight<CR>", { noremap = true })
-
--- Repeat same mappings for terminal mode in neovim
-nvim_set_keymap("t", "<C-j>", "<cmd>:TmuxNavigateDown<CR>", { noremap = true })
-nvim_set_keymap("t", "<C-k>", "<cmd>:TmuxNavigateUp<CR>", { noremap = true })
-nvim_set_keymap("t", "<C-h>", "<cmd>:TmuxNavigateLeft<CR>", { noremap = true })
-nvim_set_keymap("t", "<C-l>", "<cmd>:TmuxNavigateRight<CR>", { noremap = true })
-
-
-
 ---- lnvimrc.vim ----
 ---- Local vimrc
-vim.g.localvimrc_debug = 1
-vim.g.localvimrc_name = { ".lnvimrc" }
+g.localvimrc_debug = 1
+g.localvimrc_name = { ".lnvimrc" }
 -- Whitelist everything in home directory
 -- https://stackoverflow.com/a/48519356
-vim.g.localvimrc_whitelist = { vim.fn.fnamemodify("~", ":p") }
+g.localvimrc_whitelist = { vim.fn.fnamemodify("~", ":p") }
 -- Disable "sandbox" mode
-vim.g.localvimrc_sandbox = 0
-
-
----- vim-markdown ----
--- Markdown fenced languages support
--- https://github.com/plasticboy/vim-markdown/commit/04e060dc062ee981f5c9bcc8f3b700f803da285f
-vim.g.vim_markdown_fenced_languages = { "json", "bash", "tsx=typescriptreact", "lua" }
-vim.g.vim_markdown_folding_disabled = 1
-vim.g.vim_markdown_conceal = 0
----- Markdown, make preview available remotely (ie, serve on 0.0.0.0, not localhost)
-vim.g.mkdp_open_to_the_world = 1
-vim.api.nvim_exec(
-	[[
-augroup MarkdownRelated
-    au!
-	au FileType markdown nmap <Leader>m <Plug>MarkdownPreviewToggle<CR>
-augroup END
-]],
-	false
-)
-
-
----- netrw ----
-vim.g.netrw_localrmdir = "rm -r" -- Allow netrw to remove non-empty local directories
-vim.g.netrw_keepdir = 1 -- Make netrw moving work
-vim.g.netrw_sort_by = "time" -- Netrw sort by time in descending order
-vim.g.netrw_sort_direction = "reverse"
+g.localvimrc_sandbox = 0

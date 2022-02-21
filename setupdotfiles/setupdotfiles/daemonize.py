@@ -42,6 +42,7 @@ class EventHandler(RegexMatchingEventHandler):
         force: bool,
         verbose: bool,
         exclude: List[re.Pattern],
+        desktop_notify: bool,
     ):
         self._base = base
         self._to = to
@@ -49,6 +50,7 @@ class EventHandler(RegexMatchingEventHandler):
         self._force = force
         self._verbose = verbose
         self._exclude = exclude
+        self._desktop_notify = desktop_notify
         super().__init__(
             ignore_regexes=list(map(str, exclude)),
             ignore_directories=False,
@@ -109,7 +111,9 @@ class EventHandler(RegexMatchingEventHandler):
             print(f"DELETE {to_resolved}")
         else:
             os.unlink(to_resolved)
-        Notification(f"Deleted {to_resolved}", "Dotfiles watcher")
+
+        if self._desktop_notify:
+            Notification(f"Deleted {to_resolved}", "Dotfiles watcher")
 
     def _handle_new_file(self, path: Path) -> None:
         if self._is_excluded(path) or path.is_dir():
@@ -123,7 +127,7 @@ class EventHandler(RegexMatchingEventHandler):
             force=self._force,
             verbose=self._verbose,
         )
-        if to_resolved:
+        if to_resolved and self._desktop_notify:
             Notification(f"Setup {to_resolved}", "Dotfiles watcher")
 
 
@@ -134,8 +138,9 @@ def daemonize(
     force: bool,
     exclude: List[re.Pattern],
     verbose: bool,
+    desktop_notify: bool,
 ) -> None:
-    _daemonize(base, to, dry_run, force, exclude, verbose)
+    _daemonize(base, to, dry_run, force, exclude, verbose, desktop_notify)
     # with daemon.DaemonContext(pidfile="/tmp/setupdotfiles.pid", detach_process=False):
 
 
@@ -146,11 +151,18 @@ def _daemonize(
     force: bool,
     exclude: List[re.Pattern],
     verbose: bool,
+    desktop_notify: bool,
 ) -> None:
 
     observer = Observer()
     event_handler = EventHandler(
-        base=base, to=to, dry_run=dry_run, force=force, verbose=verbose, exclude=exclude
+        base=base,
+        to=to,
+        dry_run=dry_run,
+        force=force,
+        verbose=verbose,
+        exclude=exclude,
+        desktop_notify=desktop_notify,
     )
     observer.schedule(event_handler, str(base), recursive=True)
     observer.start()
@@ -188,4 +200,5 @@ if __name__ == "__main__":
         ],
         force=False,
         verbose=True,
+        desktop_notify=False,
     )

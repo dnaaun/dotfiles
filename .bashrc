@@ -154,6 +154,9 @@ function virtualenv_info(){
 #     fi
 # }
 
+alias python=python3
+alias python2=python
+
 auto_change_venv() {
   # Check all parents from $PWD until /
   parent="$PWD"
@@ -168,7 +171,7 @@ auto_change_venv() {
 
   if [[  ! -z "$VIRTUAL_ENV" && ("$(which python)" != "$parent/.venv/bin/python") ]];  then
     # TODO: If checking whether 'deactivate' is actually 
-    # valid right now would be more efficient, we should do it.
+    # valid right now would be better (possibly), we should do it.
     deactivate  > /dev/null 2>&1
   fi
 
@@ -180,11 +183,19 @@ auto_change_venv() {
   source "$parent/.venv/bin/activate";
 }
 
-
-__prompt_command() {
-  set_ps1 # This needs to be first to change color based on return value
+function cd() {
+  builtin cd "$@";
   auto_change_venv
 }
+
+# Call it on shell load
+auto_change_venv
+
+# TODO: Not needed/called since we're on a starship now.
+# __prompt_command() {
+#   set_ps1 # This needs to be first to change color based on return value
+#   auto_change_venv
+# }
 
 export EDITOR=nvim
 
@@ -440,3 +451,15 @@ if [[ $- =~ i ]]; then
   bind '"\C-g\C-r": "$(_gr)\n"'
   bind '"\C-g\C-s": "$(_gs)\n"'
 fi
+
+# To get autocomplete to work for `exa`, `_filedir` had to be defined, which  necessitated one/both of
+# `mbrew uninstall bash-completion && mbrew install bash-completion@2` and
+# `mbrew install bash` (upgrading bash).
+# After that, it turns out I need to source this to get`_filedir`
+source /opt/homebrew/share/bash-completion/bash_completion
+
+
+# Docker doesn't work without this on MacOS
+# https://stackoverflow.com/questions/64221861/an-error-failed-to-solve-with-frontend-dockerfile-v0
+export DOCKER_BUILDKIT=0
+export COMPOSE_DOCKER_CLI_BUILD=0

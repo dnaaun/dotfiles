@@ -15,6 +15,7 @@ def main() -> int:
     parser.add_argument("-v", "--verbose", action="store_true")
     parser.add_argument("-b", "--daemonize", action="store_true")
     parser.add_argument("-t", "--dotfiles-dir", default=None)
+    parser.add_argument("-n", "--desktop-notify", default=False)
     parser.add_argument(
         "-e",
         "--exclude",
@@ -72,6 +73,7 @@ def main() -> int:
             force=args.force,
             exclude=exclude,
             verbose=args.verbose,
+            desktop_notify=args.desktop_notify
         )
 
     return 0
