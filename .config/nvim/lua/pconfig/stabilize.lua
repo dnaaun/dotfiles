@@ -1,6 +1,7 @@
 return {
 	"luukvbaal/stabilize.nvim",
 	config = function()
-		require("stabilize").setup()
+    -- Erroring out a bunch recently
+		-- require("stabilize").setup()
 	end,
 }

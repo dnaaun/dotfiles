@@ -3,8 +3,6 @@ require("packer").startup({
 		-- package/plugin manager
 		use(require("pconfig.packer"))
 
-		use("lewis6991/impatient.nvim") -- Speed up by caching lua module resolution, and bytecode (genius!)
-
 		use(require("pconfig.tmux_navigator"))
 
 		use("embear/vim-localvimrc") -- Enable sourcing .lnvimrc files
@@ -76,8 +74,14 @@ require("packer").startup({
 		-- Sessions, I really need'em
 		use(require("pconfig.auto_session"))
 
-		-- The unofficial standard library for neovim plugins.
+		-- The  unofficial standard library for neovim plugins.
 		use("nvim-lua/plenary.nvim")
+
+    -- A see-results-immediately REPL for neovim's lua
+    use(require("pconfig.luapad"))
+
+    -- A see-results-immediately REPL for everything that is not noevim's lua.
+    use(require("pconfig.codi"))
 
 		-- Turn good ol' linters and formatters to an LSP.
 		use(require("pconfig.null_ls"))
@@ -122,6 +126,7 @@ require("packer").startup({
 		use({ "plasticboy/vim-markdown", ft = { "markdown" } })
 		use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", ft = { "markdown" } })
 		use({ "dhruvasagar/vim-table-mode", ft = { "markdown" } })
+    use({ "dkarter/bullets.vim", ft = { "markdown" }})
 
 		-- Testing things
 		use({ "tpope/vim-dispatch", opt = true, cmd = { "Dispatch", "Make", "Focus", "Start" } })
@@ -180,5 +185,8 @@ vim.cmd([[
   augroup packer_user_config
     autocmd!
     autocmd BufWritePost plugins.lua source <afile> |  PackerCompile
+    " Reload packer, after reloading the lua module corresponding to the packer config for a plugin, when the packer config file is edited.
+    " TODO (David): Write a function for heavens sake.
+    autocmd BufWritePost *pconfig/*.lua call v:lua.require('plenary.reload').reload_module('pconfig.' .. expand('<afile>:t:r'), 1) |  source ~/.config/nvim/lua/plugins.lua | PackerCompile
   augroup end
 ]])

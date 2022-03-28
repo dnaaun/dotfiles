@@ -62,7 +62,7 @@ return {
 					["]c"] = "@call.outer",
 					["]i"] = "@conditional.outer",
 					["]l"] = "@loop.outer",
-					["]p"] = "@parameter.outer",
+					["]p"] = "@parameter.inner",
 				},
 				goto_next_end = { -- Note that @class.outer is missing
 					["]F"] = "@function.outer",
@@ -72,7 +72,7 @@ return {
 					["]C"] = "@call.outer",
 					["]I"] = "@conditional.outer",
 					["]L"] = "@loop.outer",
-					["]P"] = "@parameter.outer",
+					["]P"] = "@parameter.inner",
 					-- ["]T"] = "@statement.outer",
 				},
 				goto_previous_start = {

@@ -45,14 +45,7 @@ return {
 
 		--- null-ls.nvim sometimes conflicts with other LSPs
 		local disable_formatting_sometimes = function(client)
-			if
-				not (
-					client.name == "rust_analyzer"
-					or client.name == "solargraph"
-					or client.name == "texlab"
-					or client.name == "null-ls"
-				)
-			then
+			if not (client.name == "rust_analyzer" or client.name == "texlab" or client.name == "null-ls") then
 				client.resolved_capabilities.document_formatting = false
 				client.resolved_capabilities.document_range_formatting = false
 				-- print("LSP formatting disabled for " .. client.name)
@@ -174,7 +167,7 @@ return {
 						build = {
 							args = { "%f", "--synctex" },
 							executable = "tectonic",
-							forwardSearchAfter = false,
+							forwardSearchAfter = true,
 							onSave = true,
 						},
 					},
@@ -219,7 +212,7 @@ return {
 			},
 
 			sorbet = {
-				cmd = { "srb", "tc", "--lsp" },
+				cmd = { "bundle", "exec", "srb", "tc", "--lsp" },
 				filetypes = { "ruby" },
 				root_dir = lspconfig.util.root_pattern("Gemfile", ".git"),
 			},
@@ -234,9 +227,9 @@ return {
 			"pyright",
 			"rust_analyzer",
 			"texlab",
+			"solargraph",
 			"tsserver",
 			"vimls",
-			"solargraph",
 			"sorbet",
 			"sqls",
 			"tailwindcss",

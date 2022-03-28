@@ -1,4 +1,4 @@
-require('impatient') -- Speed up loading things. TOFIXLATER: This will probably (definitely?) break when impatient.nvim is not installed.
+-- require('impatient') -- Speed up loading things. TOFIXLATER: This will probably (definitely?) break when impatient.nvim is not installed.
 
 local g = vim.g
 local opt = vim.opt
@@ -38,7 +38,7 @@ opt.splitbelow = true
 opt.splitright = true
 opt.hlsearch = true
 opt.incsearch = true -- Incremental search highlight
-opt.completeopt = { "menuone", "noselect" }
+opt.completeopt = { "longest", "preview", "noinsert" }
 -- Enable backspace on everything
 opt.backspace = { "indent", "eol", "start" }
 opt.mouse = "a" -- Resize vim splists with a mouse when inside tmux
@@ -69,7 +69,11 @@ nvim_set_keymap("i", "<C-v>", "<Esc>[s1z=``a", {})
 -- terminal finishes.
 -- vim.nvim_command("autocmd TermClose * call feedkeys('x')")
 
-g.python3_host_prog = vim.fn.substitute(vim.fn.system("which python3"), "\n", "", "g")
+if vim.loop.os_uname().sysname == "Darwin" then
+	g.python3_host_prog = "/usr/local/bin/python3"
+else
+	print("Umm, not sure what platform(MacOS/linux) I'm on, so won't guess the locaiton of the python binary.")
+end
 
 ---- Add plugins ----
 require("plugins")

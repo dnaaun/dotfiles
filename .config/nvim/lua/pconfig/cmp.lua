@@ -49,35 +49,11 @@ return {
 					end
 				end, { "i", "s" }),
 			},
-			sources = cmp.config.sources({
-				-- { name = "luasnip" },
-				{ name = "nvim_lsp" },
-			}, {
-				{ name = "buffer" },
-			}),
-		})
-
-		-- Set configuration for specific filetype.
-		cmp.setup.filetype("gitcommit", {
-			sources = cmp.config.sources({
-				{ name = "buffer" },
-			}),
-		})
-
-		-- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-		cmp.setup.cmdline("/", {
 			sources = {
+				{ name = "luasnip" },
+				{ name = "nvim_lsp" },
 				{ name = "buffer" },
 			},
-		})
-
-		-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-		cmp.setup.cmdline(":", {
-			sources = cmp.config.sources({
-				{ name = "path" },
-			}, {
-				{ name = "cmdline" },
-			}),
 		})
 	end,
 }

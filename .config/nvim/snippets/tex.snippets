@@ -1,0 +1,19 @@
+# Take notes in right column. I could use
+# slc and then bl, but I do this frequently enough to justify it's own snippet.
+snippet tn "take notes (in right column)" bw
+	\end{leftcolumn}
+	\begin{rightcolumn*}
+	\small
+	\begin{itemize}
+		\item ${1:${VISUAL}}
+	\end{itemize}
+	\end{rightcolumn*}
+	\begin{leftcolumn}
+	${2}
+
+snippet l "\item" w
+	\item ${1:${VISUAL}}
+snippet bl "\item" w
+	\begin{itemize}
+		\item ${1:${VISUAL}}
+	\end{itemize}

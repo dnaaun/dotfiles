@@ -3,6 +3,7 @@ return {
 	after = { "nvim-lspconfig" },
 	config = function()
 		local aerial = require("aerial")
+    require('telescope').load_extension('aerial')
 
 		local custom_attach = function(client)
 			aerial.on_attach(client)

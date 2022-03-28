@@ -11,7 +11,10 @@ return {
 				mappings = "<leader>gy",
 			},
 			callbacks = {
-				["github-surge"] = require("gitlinker.hosts").get_github_type_url,
+				["github-surge"] = function(url_data)
+					url_data.host = "github.com"
+					return require("gitlinker.hosts").get_github_type_url(url_data)
+				end,
 			},
 		})
 	end,

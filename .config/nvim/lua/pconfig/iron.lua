@@ -17,6 +17,15 @@ return {
 
 		iron.core.add_repl_definitions({
 			python = {
+				ipython = {
+				  command = {"ipython"},
+				  -- You know where I found out how to pass ANSI control sequences like below to
+				  -- neovim's terminal?
+				  -- On a reply, to a comment, on a PR: https://github.com/neovim/neovim/pull/12080#discussion_r546579388
+				  -- The ANSI control sequence is bracketed paste mode.
+				  open = t("\x1b[200~"),
+				  close = t("\x1b[201~")
+				},
 				-- ptpython = {
 				--   command = {"ptpython"},
 				--   -- You know where I found out how to pass ANSI control sequences like below to
@@ -37,14 +46,14 @@ return {
 				--   open = t("<esc>i\x1b[200~"),
 				--   close = t("\x1b[201~")
 				-- },
-				django_ptpython = {
-					command = { "python", "manage.py", "shell_plus", "--ptpython" },
-					-- You know where I found out how to pass ANSI control sequences like below to
-					-- neovim's terminal?
-					-- On a reply, to a comment, on a PR: https://github.com/neovim/neovim/pull/12080#discussion_r546579388
-					open = t("\x1b[200~"),
-					close = t("\x1b[201~"),
-				},
+				-- django_ptpython = {
+				-- 	command = { "python", "manage.py", "shell_plus", "--ptpython" },
+				-- 	-- You know where I found out how to pass ANSI control sequences like below to
+				-- 	-- neovim's terminal?
+				-- 	-- On a reply, to a comment, on a PR: https://github.com/neovim/neovim/pull/12080#discussion_r546579388
+				-- 	open = t("\x1b[200~"),
+				-- 	close = t("\x1b[201~"),
+				-- },
 			},
 		})
 
@@ -77,7 +86,7 @@ return {
 
 		iron.core.set_config({
 			preferred = {
-				python = "ptpython",
+				python = "ipython",
 				ruby = "rails",
 			},
 			repl_open_cmd = "vertical vsplit new",
@@ -88,7 +97,7 @@ return {
 		vim.api.nvim_set_keymap("n", "<leader>r", "<Plug>(iron-send-motion)", {})
 		vim.api.nvim_set_keymap("n", "<leader>rr", "<Plug>(iron-send-lines)", {})
 		vim.api.nvim_set_keymap("v", "<leader>r", "<Plug>(iron-visual-send)", {})
-		vim.api.nvim_set_keymap("n", "<leader>rc", "<Plug>(iron-interrupt)", {})
+		vim.api.nvim_set_keymap("n", "<leader>ri", "<Plug>(iron-interrupt)", {})
 		vim.api.nvim_set_keymap("n", "<leader>rl", "<Plug>(iron-clear)", {})
 		vim.api.nvim_set_keymap(
 			"n",

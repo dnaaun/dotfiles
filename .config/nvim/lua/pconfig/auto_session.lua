@@ -1,3 +1,12 @@
+vim.api.nvim_exec(
+	[[
+augroup VimLeaveSaveSession
+  autocmd VimLeave * SaveSession
+augroup END
+]],
+	false
+)
+
 return {
 	"rmagatti/auto-session",
 	config = function()

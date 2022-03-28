@@ -11,10 +11,11 @@ return {
 				require("null-ls").builtins.formatting.stylua,
 				require("null-ls").builtins.formatting.black,
 				require("null-ls").builtins.formatting.prettier,
-				require("null-ls").builtins.formatting.standardrb,
-				require("null-ls").builtins.diagnostics.eslint.with({
-					method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE,
-				}),
+				require("null-ls").builtins.diagnostics.rubocop,
+				require("null-ls").builtins.diagnostics.haml_lint,
+				require("null-ls").builtins.formatting.rufo,
+				require("null-ls").builtins.diagnostics.eslint_d, --.with({ method = require("null-ls").methods.DIAGNOSTICS_ON_SAVE, }),
+
 			},
 		})
 	end,

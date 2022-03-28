@@ -69,8 +69,13 @@ return {
 					return vim.fn.expand("%")
 				end,
 				pythonPath = function()
-					-- python3_host_prog is set in init.nvim
-					return vim.g.python3_host_prog
+					if vim.env.VIRTUAL_ENV then
+						local bin_path = vim.env.VIRTUAL_ENV .. "/bin/python"
+						if vim.fn.filereadable(bin_path) then
+							return bin_path
+						end
+					end
+          return nil
 				end,
 			},
 		}
@@ -136,7 +141,7 @@ return {
 			require("dap").up()
 		end, { silent = true }, "go up in stack frame without stepping")
 		mapfunc("n", "<leader>dl", function()
-			require("dap").up()
+			require("dap").down()
 		end, { silent = true }, "go lower (down) in stack frame without stepping")
 		mapfunc("n", "<leader>d.", function()
 			require("dap").up()

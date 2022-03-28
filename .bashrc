@@ -100,7 +100,7 @@ alias tmux='tmux -u'
 
 # I don't know where this is getting set, but I need to unset it
 export PYTHONPATH=
-export PYTHONBREAKPOINT=ptpdb.set_trace
+export PYTHONBREAKPOINT=ipdb.set_trace
 
 
 # Source customizations that differ across machines
@@ -334,10 +334,10 @@ export PATH="/usr/local/opt/node@14/bin:$PATH"
 export LDFLAGS="-L/usr/local/opt/node@14/lib"
 export CPPFLAGS="-I/usr/local/opt/node@14/include"
 
-# Apparently, it won't.
+# Apparently, they won't.
 export PATH="/Users/davidat/Library/Python/3.8/bin/:$PATH" # MacOS's "command line tools" installation location for py3
-# export PATH="/opt/homebrew/Cellar/ruby@2.7/2.7.4/bin/:$PATH" # Homebrew installed ruby.
-export PATH="/usr/local/Cellar/ruby@2.7/2.7.4/bin/:$PATH" # Homebrew installed ruby.
+export PATH="/opt/homebrew/Cellar/ruby@2.7/2.7.5/bin/:$PATH" # Homebrew installed ruby.
+# export PATH="/usr/local/Cellar/ruby@2.7/2.7.4/bin/:$PATH" # Homebrew installed ruby.
 
 
 # Bandaid for broken python (PATH) setup
@@ -382,7 +382,7 @@ alias luamake=/Users/davidat/src/lua-language-server/3rd/luamake/luamake
 
 eval "$(starship init bash)"
 eval "$(zoxide init bash)"
-eval "$(complete_bundle_bash_command init)"
+# eval "$(complete_bundle_bash_command init)" # This broke at some point. Not sure why.
 
 ##### Use fzf to make gitting easier ####
 # https://gist.github.com/junegunn/8b572b8d4b5eddd8b85e5f4d40f17236

@@ -1,6 +1,7 @@
 return {
-	"L3MON4D3/LuaSnip",
+	"~/git/LuaSnip",
 	config = function()
+
 		local ls = require("luasnip")
 		-- some shorthands...
 		local s = ls.snippet
@@ -22,6 +23,7 @@ return {
 		local types = require("luasnip.util.types")
 		local conds = require("luasnip.extras.expand_conditions")
 
+
 		ls.snippets = {
 			-- When trying to expand a snippet, luasnip first searches the tables for
 			-- each filetype specified in 'filetype' followed by 'all'.
@@ -31,8 +33,11 @@ return {
 			--     - luasnip.all
 			-- are searched in that order.
 			all = {
+
+				-- put in the \begin{quote} environment whatever is in the clipboard.
+        -- Had trouble doing it with a VSCode style snippet, so here goes.
 				s(
-					"clip",
+					"cq",
 					f(function()
 						return vim.list_extend(
 							vim.list_extend({ "\\begin{quote}" }, vim.fn.getreg("+", 1, true)),
@@ -42,5 +47,8 @@ return {
 				),
 			},
 		}
+
+    -- Load my snipmate style snippets
+    require("luasnip.loaders.from_snipmate").load()
 	end,
 }

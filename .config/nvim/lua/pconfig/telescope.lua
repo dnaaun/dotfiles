@@ -88,41 +88,48 @@ return {
 
 			buf_mapfunc("n", "gd", function()
 				builtin.lsp_definitions({ jump_type = "jump" })
-			end, mapping_opts)
+			end, mapping_opts, "go to definition")
 
 			-- Open definition in horizontal splits with gsd
 			buf_mapfunc("n", "gsd", function()
 				builtin.lsp_definitions({ jump_type = "split" })
-			end, mapping_opts)
+			end, mapping_opts, "go to definition in horizontal split")
 
 			-- Open definition in vertical splits with gad.
 			buf_mapfunc("n", "gad", function()
 				builtin.lsp_definitions({ jump_type = "vsplit" })
-			end, mapping_opts)
+			end, mapping_opts, "go to definition in vertical split")
 
 			-- Repeat the same story with splits and going to references as with splits and going to definitions above.
 			buf_mapfunc("n", "gr", function()
 				builtin.lsp_references({ jump_type = "jump" })
-			end, mapping_opts)
+			end, mapping_opts, "go to reference")
 			buf_mapfunc("n", "gsr", function()
 				builtin.lsp_references({ jump_type = "split" })
-			end, mapping_opts)
+			end, mapping_opts, "go to reference in horizontal split")
 			buf_mapfunc("n", "gar", function()
 				builtin.lsp_references({ jump_type = "jump" })
-			end, mapping_opts)
+			end, mapping_opts, "go to reference in vertical split")
 
 			buf_mapfunc("n", "gt", function()
 				builtin.lsp_type_definitions({ jump_type = "jump" })
-			end, mapping_opts)
+			end, mapping_opts, "go to type definition")
 			buf_mapfunc("n", "gst", function()
 				builtin.lsp_type_definitions({ jump_type = "split" })
-			end, mapping_opts)
+			end, mapping_opts, "go to type definition in horizontal split")
 			buf_mapfunc("n", "gat", function()
 				builtin.lsp_type_definitions({ jump_type = "jump" })
-			end, mapping_opts)
+			end, mapping_opts, "go to type definition in vertical split")
 
 			buf_mapfunc("n", "<leader>li", builtin.lsp_implementations, mapping_opts)
 			buf_mapfunc("n", "<leader>le", builtin.diagnostics, mapping_opts, "telescope workspace diagnostics")
+			buf_mapfunc(
+				"n",
+				"<leader>lw",
+				builtin.lsp_dynamic_workspace_symbols,
+				mapping_opts,
+				"telescope dynamic workspace symbols"
+			)
 		end
 
 		table.insert(_G.lsp_config_on_attach_callbacks, on_attach)
