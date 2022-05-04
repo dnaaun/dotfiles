@@ -12,8 +12,7 @@ else
   BATCMD=bat
 fi
 
-# Apparently I need to do this to get executables from both M1 and non M1 homebrew in my $PATH
-PATH=/usr/local/bin:/opt/homebrew/bin:$PATH
+
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -315,9 +314,6 @@ if [[ -f $FZF_COMPLETION_BINDINGS ]]; then
 fi
 
 
-# On ubuntu, gem requires sudo if this is nto there.
-export GEM_HOME=$HOME/.gem
-export PATH=$GEM_HOME/bin/:$PATH
 
 # Aint nobody got time for that (neither does anyone(read: me) have a basic understanding of maintaining a secure system, it seems)
 export HOMEBREW_NO_AUTO_UPDATE=1
@@ -330,19 +326,13 @@ alias ibrew='arch -x86_64 /usr/local/bin/brew'
 alias mbrew='arch -arm64 /opt/homebrew/bin/brew'
 
 
-# Will ad-hoc PATH modifications ever end?
-export PATH="/usr/local/opt/node@14/bin:$PATH"
 export LDFLAGS="-L/usr/local/opt/node@14/lib"
 export CPPFLAGS="-I/usr/local/opt/node@14/include"
 
-# Apparently, they won't.
-export PATH="/Users/davidat/Library/Python/3.8/bin/:$PATH" # MacOS's "command line tools" installation location for py3
-export PATH="/opt/homebrew/Cellar/ruby@2.7/2.7.6/bin/:$PATH" # Homebrew installed ruby.
 
 # Bandaid for broken python (PATH) setup
 alias httpie='python3 -m httpie'
 
-export PATH="/Users/davidat/Library/Python/3.9/bin:$PATH"
 
 . "$HOME/.cargo/env"
 
@@ -373,12 +363,6 @@ alias be='bundle exec'
 #   fi
 # fi
 
-# Scripts in dotfiles/bin/
-for bin_dir in {$HOME/git/dotfiles/bin,$HOME/.local/bin}; do
-	if [[ -d "$bin_dir"  ]]; then
-	    export PATH=$bin_dir:$PATH
-	fi
-done
 
 eval "$(starship init bash)"
 eval "$(zoxide init bash)"
@@ -394,3 +378,15 @@ eval "$(zoxide init bash)"
 # https://stackoverflow.com/questions/64221861/an-error-failed-to-solve-with-frontend-dockerfile-v0
 export DOCKER_BUILDKIT=0
 export COMPOSE_DOCKER_CLI_BUILD=0
+
+PATH=\
+$HOME/.local/bin:\
+/usr/local/bin:\
+/opt/homebrew/bin:\
+$HOME/.gem/bin:\
+/usr/local/opt/node@14/bin:\
+/Users/davidat/Library/Python/3.8/bin:\
+/opt/homebrew/Cellar/ruby@2.7/2.7.6/bin:\
+/Users/davidat/Library/Python/3.9/bin:\
+$HOME/git/dotfiles/bin_dir:\
+$PATH
