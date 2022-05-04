@@ -13,7 +13,7 @@ else
 fi
 
 # Apparently I need to do this to get executables from both M1 and non M1 homebrew in my $PATH
-PATH=/usr/local/bin/:/opt/homebrew/bin/:$PATH
+PATH=/usr/local/bin:/opt/homebrew/bin:$PATH
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -51,12 +51,12 @@ shopt -s checkwinsize
 shopt -s lithist
 
 # make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+# [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
+# if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+#     debian_chroot=$(cat /etc/debian_chroot)
+# fi
 
 # Discovered that this step takes a lot of time. If ever you feel like
 # procasti-optimizing your bash startup time, you know where to look! 
@@ -111,22 +111,22 @@ fi
 
 # Show virtual env in custom prompt
 # https://stackoverflow.com/a/20026992
-function virtualenv_info(){
-    # Get Virtual Env
-    if [[ -n "$VIRTUAL_ENV" ]]; then
-        # Strip out the path and just leave the env name
-        venv="${VIRTUAL_ENV##*/}"
+# function virtualenv_info(){
+#     # Get Virtual Env
+#     if [[ -n "$VIRTUAL_ENV" ]]; then
+#         # Strip out the path and just leave the env name
+#         venv="${VIRTUAL_ENV##*/}"
         
-        # Strip out everything after the first hyphen.
-        # Poetry creates names with random strings after a hyphen to make things unique.
-        venv=${venv%%-*}
-    else
-        # In case you don't have one activated
-        venv=''
-    fi
-    [[ -n "$venv" ]] && echo "(venv:$venv) "
+#         # Strip out everything after the first hyphen.
+#         # Poetry creates names with random strings after a hyphen to make things unique.
+#         venv=${venv%%-*}
+#     else
+#         # In case you don't have one activated
+#         venv=''
+#     fi
+#     [[ -n "$venv" ]] && echo "(venv:$venv) "
 
-} 
+# } 
 # disable the default virtualenv prompt change
 # export VIRTUAL_ENV_DISABLE_PROMPT=1 
 
@@ -244,9 +244,10 @@ export HISTFILE=~/.bash_eternal_history
 
 ## jq
 # Setup an alias for previewing JSON
-jeqq () {
-  jq -C "$@" | less -r
-}
+# LETSSEE: If this helps speed.
+# jeqq () {
+#   jq -C "$@" | less -r
+# }
 
 
 ## Load .tmuxp sessions automatically if they are in the current directory
@@ -336,40 +337,41 @@ export CPPFLAGS="-I/usr/local/opt/node@14/include"
 
 # Apparently, they won't.
 export PATH="/Users/davidat/Library/Python/3.8/bin/:$PATH" # MacOS's "command line tools" installation location for py3
-export PATH="/opt/homebrew/Cellar/ruby@2.7/2.7.5/bin/:$PATH" # Homebrew installed ruby.
-# export PATH="/usr/local/Cellar/ruby@2.7/2.7.4/bin/:$PATH" # Homebrew installed ruby.
-
+export PATH="/opt/homebrew/Cellar/ruby@2.7/2.7.6/bin/:$PATH" # Homebrew installed ruby.
 
 # Bandaid for broken python (PATH) setup
 alias httpie='python3 -m httpie'
 
 export PATH="/Users/davidat/Library/Python/3.9/bin:$PATH"
+
 . "$HOME/.cargo/env"
 
 
 # Ruby
 alias be='bundle exec'
 
-if [[ -d $HOME/go/bin/ ]]; then
-  PATH="$HOME/go/bin:$PATH"
-fi
+# LETSSEE: If this helps speed.
+# if [[ -d $HOME/go/bin/ ]]; then
+#   PATH="$HOME/go/bin:$PATH"
+# fi
 
 # Acc to instructions spewed out after brew install heroku, to enable heroku 
 # bash completion, I need to follow instructions at https://docs.brew.sh/Shell-Completion,
-# so low and behold:
-if type brew &>/dev/null
-then
-  HOMEBREW_PREFIX="$(brew --prefix)"
-  if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]
-  then
-    source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
-  else
-    for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*
-    do
-      [[ -r "${COMPLETION}" ]] && source "${COMPLETION}"
-    done
-  fi
-fi
+# so lo and behold:
+# LETSSEE: If this helps speed.
+# if type brew &>/dev/null
+# then
+#   HOMEBREW_PREFIX="$(brew --prefix)"
+#   if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]
+#   then
+#     source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
+#   else
+#     for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*
+#     do
+#       [[ -r "${COMPLETION}" ]] && source "${COMPLETION}"
+#     done
+#   fi
+# fi
 
 # Scripts in dotfiles/bin/
 for bin_dir in {$HOME/git/dotfiles/bin,$HOME/.local/bin}; do
@@ -378,85 +380,14 @@ for bin_dir in {$HOME/git/dotfiles/bin,$HOME/.local/bin}; do
 	fi
 done
 
-alias luamake=/Users/davidat/src/lua-language-server/3rd/luamake/luamake
-
 eval "$(starship init bash)"
 eval "$(zoxide init bash)"
-# eval "$(complete_bundle_bash_command init)" # This broke at some point. Not sure why.
-
-##### Use fzf to make gitting easier ####
-# https://gist.github.com/junegunn/8b572b8d4b5eddd8b85e5f4d40f17236
-is_in_git_repo() {
-  git rev-parse HEAD > /dev/null 2>&1
-}
-
-fzf-down() {
-  fzf --height 50% --min-height 20 --border --bind ctrl-/:toggle-preview "$@"
-}
-
-_gf() {
-  is_in_git_repo || return
-  git -c color.status=always status --short |
-  fzf-down -m --ansi --nth 2..,.. \
-    --preview '(git diff --color=always -- {-1} | sed 1,4d; cat {-1})' |
-  cut -c4- | sed 's/.* -> //'
-}
-
-_gb() {
-  is_in_git_repo || return
-  git branch -a --color=always | grep -v '/HEAD\s' | sort |
-  fzf-down --ansi --multi --tac --preview-window right:70% \
-    --preview 'git log --oneline --graph --date=short --color=always --pretty="format:%C(auto)%cd %h%d %s" $(sed s/^..// <<< {} | cut -d" " -f1)' |
-  sed 's/^..//' | cut -d' ' -f1 |
-  sed 's#^remotes/##'
-}
-
-_gt() {
-  is_in_git_repo || return
-  git tag --sort -version:refname |
-  fzf-down --multi --preview-window right:70% \
-    --preview 'git show --color=always {}'
-}
-
-_gh() {
-  is_in_git_repo || return
-  git log --date=short --format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" --graph --color=always |
-  fzf-down --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
-    --header 'Press CTRL-S to toggle sort' \
-    --preview 'grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always' |
-  grep -o "[a-f0-9]\{7,\}"
-}
-
-_gr() {
-  is_in_git_repo || return
-  git remote -v | awk '{print $1 "\t" $2}' | uniq |
-  fzf-down --tac \
-    --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" {1}' |
-  cut -d$'\t' -f1
-}
-
-_gs() {
-  is_in_git_repo || return
-  git stash list | fzf-down --reverse -d: --preview 'git show --color=always {1}' |
-  cut -d: -f1
-}
-
-##### Now for the keybindings
-if [[ $- =~ i ]]; then
-  bind '"\er": redraw-current-line'
-  bind '"\C-g\C-f": "$(_gf)\n"'
-  bind '"\C-g\C-b": "$(_gb)\n"'
-  bind '"\C-g\C-t": "$(_gt)\n"'
-  bind '"\C-g\C-h": "$(_gh)\n"'
-  bind '"\C-g\C-r": "$(_gr)\n"'
-  bind '"\C-g\C-s": "$(_gs)\n"'
-fi
 
 # To get autocomplete to work for `exa`, `_filedir` had to be defined, which  necessitated one/both of
 # `mbrew uninstall bash-completion && mbrew install bash-completion@2` and
 # `mbrew install bash` (upgrading bash).
 # After that, it turns out I need to source this to get`_filedir`
-source /opt/homebrew/share/bash-completion/bash_completion
+# source /opt/homebrew/share/bash-completion/bash_completion
 
 
 # Docker doesn't work without this on MacOS
