@@ -20,6 +20,9 @@ require("packer").startup({
 
 		use(require("pconfig.lsp_lightbulb"))
 
+    -- I use it for slightly nicer UI for lsp code actions 
+		use(require("pconfig.dressing"))
+
 		-- Provides type annotations for neovim's Lua interface. Needs Sumenkos' Lua LSP. TODO: Not actually set up yet: https://github.com/folke/lua-dev.nvim#%EF%B8%8F--configuration
 		use(require("pconfig.lua_dev"))
 
@@ -40,7 +43,7 @@ require("packer").startup({
 		-- use(require("pconfig.coq"))
 
 		-- Symbol tree. Better than symbols-outline.nvim because it allows filtering by symbol type.
-		use(require("pconfig.aerial"))
+		-- use(require("pconfig.aerial"))
 
 		-- The package, the pyth, the pegend.
 		use(require("pconfig.treesitter"))
@@ -50,10 +53,6 @@ require("packer").startup({
 
 		-- Highlight definition of current symbol, current scope
 		use("nvim-treesitter/nvim-treesitter-refactor")
-
-		-- Disabled because it's erroring out on ruby
-		-- use 'romgrk/nvim-treesitter-context' -- Show "code breadcrumbs"
-		use(require("pconfig.gps")) -- Shows syntactical context in status bar.
 
 		-- Debugging/REPLs
 		use(require("pconfig.dap"))
@@ -77,11 +76,11 @@ require("packer").startup({
 		-- The  unofficial standard library for neovim plugins.
 		use("nvim-lua/plenary.nvim")
 
-    -- A see-results-immediately REPL for neovim's lua
-    use(require("pconfig.luapad"))
+		-- A see-results-immediately REPL for neovim's lua
+		use(require("pconfig.luapad"))
 
-    -- A see-results-immediately REPL for everything that is not noevim's lua.
-    use(require("pconfig.codi"))
+		-- A see-results-immediately REPL for everything that is not noevim's lua.
+		use(require("pconfig.codi"))
 
 		-- Turn good ol' linters and formatters to an LSP.
 		use(require("pconfig.null_ls"))
@@ -126,7 +125,7 @@ require("packer").startup({
 		use({ "plasticboy/vim-markdown", ft = { "markdown" } })
 		use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", ft = { "markdown" } })
 		use({ "dhruvasagar/vim-table-mode", ft = { "markdown" } })
-    use({ "dkarter/bullets.vim", ft = { "markdown" }})
+		use({ "dkarter/bullets.vim", ft = { "markdown" } })
 
 		-- Testing things
 		use({ "tpope/vim-dispatch", opt = true, cmd = { "Dispatch", "Make", "Focus", "Start" } })
@@ -149,6 +148,8 @@ require("packer").startup({
 		use(require("pconfig.web_devicons"))
 
 		use("Mofiqul/vscode.nvim")
+    use("folke/tokyonight.nvim")
+
 		use(require("pconfig.lualine"))
 
 		-- Capture output of ex commands (slightly quicker than doing :redir /tmp/SOMEFILE | the_ex_command | redir END)
@@ -170,6 +171,22 @@ require("packer").startup({
 		use(require("pconfig.matchup"))
 
 		use(require("pconfig.telescope_fzf_native"))
+
+		-- Foray into orgmode once more
+		use(require("pconfig.orgmode"))
+
+		--  Supposed to be the vi to vim (or vim to neovim) of orgmode
+		use(require("pconfig.neorg"))
+
+		-- Show me where I'm at in the status bar (like, what funciton/ conditional/thingy)
+		use(require("pconfig.treesitter_context"))
+
+    -- Generate docs easily for funcs/types/etc
+    use(require("pconfig.neogen"))
+
+    -- A "birds-eye view" of the code
+    -- use(require("pconfig.minimap"))
+    use(require("pconfig.sluice"))
 	end,
 
 	config = {

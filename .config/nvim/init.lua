@@ -81,10 +81,10 @@ require("plugins")
 -- This section must come before loading nvim-dap for it not to mess up
 -- nvim-dap colors.
 -- checks if your terminal has 24-bit color support
--- g.tokyonight_style = "day"
+g.tokyonight_style = "dark"
 -- g.snazzybuddy_icons = true
-g.vscode_style = "dark"
-vim.cmd("colorscheme vscode")
+-- g.vscode_style = "light"
+vim.cmd("colorscheme tokyonight")
 
 ---- vim-tmux-navigator ----
 -- I bring this after the plugins sections because I haven't yet figured
@@ -98,3 +98,9 @@ g.localvimrc_name = { ".lnvimrc" }
 g.localvimrc_whitelist = { vim.fn.fnamemodify("~", ":p") }
 -- Disable "sandbox" mode
 g.localvimrc_sandbox = 0
+
+-- Trying to get neovim's colorscheme to appear identical inside and outside of
+-- tmux (inside is messed up a bit right now)
+if (vim.fn.has("termguicolors")) then
+   vim.o.termguicolors = true
+ end

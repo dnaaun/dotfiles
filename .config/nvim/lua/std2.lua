@@ -61,14 +61,30 @@ local package_name, _ = ...
 ---@param buf_only boolean
 ---@param name string | nil
 local function _mapfunc(mode, keys, function_, opts, buf_only, name)
-  local funcname = ((name and (name .. " | ")) or "") .. get_next_functionname()
-  M._bound_funcs[funcname] = function_
-  local fmt_string = "<cmd>lua require('%s')._bound_funcs['%s']()<CR>"
+  opts = opts or {}
   if buf_only then
-    vim.api.nvim_buf_set_keymap(0, mode, keys, fmt_string:format(package_name, funcname), opts)
-  else
-    vim.api.nvim_set_keymap(mode, keys, fmt_string:format(package_name, funcname), opts)
+    opts = vim.tbl_extend("force", {}, opts, {buffer=true})
   end
+  -- print("function_, " .. vim.inspect(function_))
+  -- print("mode, " .. vim.inspect(mode))
+  -- print("keys, " .. vim.inspect(keys))
+  -- print("opts, " .. vim.inspect(opts))
+  -- print("buf_only, " .. vim.inspect(buf_only))
+  if function_ then
+    vim.keymap.set(mode, keys, function_, opts)
+  end
+
+  -- This broke on March 30-ish, 2022, after a :PackerUpdate, so I'm using the 
+  -- newly added vim.keymap, which doesn't show function names in which-key, but
+  -- oh well.
+  -- local funcname = ((name and (name .. " | ")) or "") .. get_next_functionname()
+  -- M._bound_funcs[funcname] = function_
+  -- local fmt_string = "<cmd>lua require('%s')._bound_funcs['%s']()<CR>"
+  -- if buf_only then
+  --   vim.api.nvim_buf_set_keymap(0, mode, keys, fmt_string:format(package_name, funcname), opts)
+  -- else
+  --   vim.api.nvim_set_keymap(mode, keys, fmt_string:format(package_name, funcname), opts)
+  -- end
 end
 
 ---@param mode string

@@ -53,20 +53,26 @@ return {
 
 		local builtin = require("telescope.builtin")
 		mapfunc("n", "<leader>fw", builtin.grep_string, { noremap = true }, "grep_string")
-		mapfunc("n", "<leader>ff", function()
+		mapfunc("n", "s", function()
 			builtin.fd({ hidden = true })
 		end, { noremap = true }, "fd")
-		mapfunc("n", "<leader>fcf", function()
+		mapfunc("n", "<C-s>", function()
 			builtin.fd({ search_dirs = { vim.fn.expand("%:p:h") }, hidden = true })
 		end, {
 			noremap = true,
 		}, "fd in cur dir")
-		mapfunc("n", "<leader>fcg", function()
+		mapfunc("n", "<C-a>", function()
 			builtin.live_grep({ search_dirs = { vim.fn.expand("%:p:h") } })
 		end, {
 			noremap = true,
 		}, "live_grep in cur dir")
-		mapfunc("n", "<leader>fg", builtin.live_grep, { noremap = true }, "live_grep")
+    -- Is a capital F because it turns out I use lower case f (which stands for
+    -- search forward in this line) a bunch.
+		mapfunc("n", "<leader>a", builtin.live_grep, { noremap = true }, "live_grep")
+		-- Search text through buffers
+		mapfunc("n", "<leader>fb", function()
+			builtin.live_grep({ grep_open_files = true })
+		end, { noremap = true }, "live_grep")
 		-- Isn't prefixed with f cuz it's so commonly used
 		mapfunc("n", "<leader>b", builtin.buffers, { noremap = true }, "buffers")
 		-- Isn't prefixed with f cuz it's so commonly used
@@ -84,8 +90,6 @@ return {
 		end, {}, "file_browser")
 
 		local function on_attach()
-			buf_mapfunc("n", "<leader>la", builtin.lsp_code_actions, mapping_opts)
-
 			buf_mapfunc("n", "gd", function()
 				builtin.lsp_definitions({ jump_type = "jump" })
 			end, mapping_opts, "go to definition")

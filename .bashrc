@@ -363,9 +363,8 @@ alias be='bundle exec'
 #   fi
 # fi
 
-
 eval "$(starship init bash)"
-eval "$(zoxide init bash)"
+
 
 # To get autocomplete to work for `exa`, `_filedir` had to be defined, which  necessitated one/both of
 # `mbrew uninstall bash-completion && mbrew install bash-completion@2` and

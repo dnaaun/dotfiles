@@ -1,3 +1,12 @@
 # For highlights,
 snippet O "# ONNXing: "
 	# ONNXing: 
+
+# functions
+snippet def "def func(args): .."
+	def ${1:func}(${2:}) -> ${3:None}:
+		${4:pass}
+
+snippet ifm 'if __name__ == "__main__"'
+	if __name__ == "__main__":
+		${1:main()}

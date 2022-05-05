@@ -50,6 +50,7 @@ return {
 				end, { "i", "s" }),
 			},
 			sources = {
+        { name = "orgmode" },
 				{ name = "luasnip" },
 				{ name = "nvim_lsp" },
 				{ name = "buffer" },

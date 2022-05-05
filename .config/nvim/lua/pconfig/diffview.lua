@@ -1,4 +1,4 @@
-vim.api.nvim_set_keymap("n", "<tab><tab>", ":DiffviewOpen<CR>", {})
+vim.api.nvim_set_keymap("n", "<leader>g<tab>", ":DiffviewOpen<CR>", {})
 vim.api.nvim_set_keymap("n", "<leader>gg", ":DiffviewOpen<CR>", {})
 
 -- The only reason I use (and therefore, close) tabs is for diffview,

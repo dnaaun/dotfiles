@@ -1,6 +1,6 @@
 return {
 	"~/git/nvim-dap",
-	ft = require("consts").dap_enabled_filetypes,
+	-- ft = require("consts").dap_enabled_filetypes,
 	as = "nvim-dap",
 	config = function()
 		local dap = require("dap")
@@ -8,31 +8,66 @@ return {
 		dap.set_log_level("TRACE")
 
 		dap.defaults.fallback.terminal_win_cmd = "10split new"
-
-		-- Rust/C/C++
-		dap.adapters.lldb = {
-			type = "executable",
-			command = "lldb-vscode-11", -- adjust as needed
-			name = "lldb",
+		-- INFO: execute ~/Downloads/vscode-extensions/codelldb/extension/adapter/codelldb --port 13000
+		dap.adapters.codelldb = {
+			type = "server",
+			host = "127.0.0.1",
+			port = 13000,
 		}
+
+		dap.configurations.c = {
+			{
+				type = "codelldb",
+				request = "launch",
+				program = function()
+				 return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+				end,
+				--program = '${fileDirname}/${fileBasenameNoExtension}',
+				cwd = "${workspaceFolder}",
+				terminal = "integrated",
+			},
+		}
+
+		dap.configurations.cpp = dap.configurations.c
 
 		dap.configurations.rust = {
 			{
-				name = "Launch",
-				type = "lldb",
+				type = "codelldb",
 				request = "launch",
 				program = function()
-					local cwd = vim.fn.getcwd()
-					local beg, end_ = vim.regex("[^/]*$"):match_str(cwd)
-					local exec_name = cwd:sub(beg, end_) -- Aint nobody got time to parse Cargo.toml.
-					return cwd .. "/target/debug/" .. exec_name
+					-- return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+          return "/Users/davidat/git/highlights/target/debug/highlights"
 				end,
 				cwd = "${workspaceFolder}",
-				stopOnEntry = false,
-				args = {},
-				runInTerminal = false,
+				terminal = "integrated",
+				sourceLanguages = { "rust" },
 			},
 		}
+
+		-- Rust/C/C++
+		-- dap.adapters.lldb = {
+		-- 	type = "executable",
+		-- 	command = "/Users/davidat/src/codelldb/extension/lldb/bin/lldb", -- adjust as needed
+		-- 	name = "lldb",
+		-- }
+
+		-- dap.configurations.rust = {
+		-- 	{
+		-- 		name = "Launch",
+		-- 		type = "lldb",
+		-- 		request = "launch",
+		-- 		program = function()
+		-- 			local cwd = vim.fn.getcwd()
+		-- 			local beg, end_ = vim.regex("[^/]*$"):match_str(cwd)
+		-- 			local exec_name = cwd:sub(beg, end_) -- Aint nobody got time to parse Cargo.toml.
+		-- 			return cwd .. "/target/debug/" .. exec_name
+		-- 		end,
+		-- 		cwd = "${workspaceFolder}",
+		-- 		stopOnEntry = false,
+		-- 		args = {},
+		-- 		runInTerminal = false,
+		-- 	},
+		-- }
 
 		--- Rails
 		dap.adapters.ruby = {
@@ -75,7 +110,7 @@ return {
 							return bin_path
 						end
 					end
-          return nil
+					return nil
 				end,
 			},
 		}

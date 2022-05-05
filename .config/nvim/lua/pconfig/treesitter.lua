@@ -12,7 +12,7 @@ return {
 
 		-- Various Treesitter modules config
 		local highlight = {
-			enable = true,
+			enable = false,
 			disable = { "markdown", "org" }, -- Markdown is slow (I think), and org is experimental.
 			-- additional_vim_regex_highlighting = { "org" }, -- Required since TS highlighter doesn't support all syntax features (conceal)
 		}
@@ -113,7 +113,7 @@ return {
 		}
 
 		local incremental_selection = {
-			enable = true,
+			enable = false,
 			keymaps = {
 				init_selection = "<CR>",
 				node_incremental = "<CR>",

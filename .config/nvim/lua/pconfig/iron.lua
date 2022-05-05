@@ -1,6 +1,12 @@
+local node = {
+	node = {
+		command = { "node" },
+	},
+}
+
 return {
 	"hkupty/iron.nvim",
-	ft = { "python", "ruby" },
+	ft = { "python", "ruby", "javascript", "javascriptreact", "typescript", "typescriptreact" },
 	setup = function()
 		-- Disable default mappings
 		vim.g.iron_map_defaults = true
@@ -16,15 +22,27 @@ return {
 		end
 
 		iron.core.add_repl_definitions({
+			typescriptreact = {
+        node = { command = { "node" } }
+      },
+			typescript = {
+        node = { command = { "node" } }
+      },
+			javascriptreact = {
+        node = { command = { "node" } }
+      },
+			javascript = {
+        node = { command = { "node" } }
+      },
 			python = {
 				ipython = {
-				  command = {"ipython"},
-				  -- You know where I found out how to pass ANSI control sequences like below to
-				  -- neovim's terminal?
-				  -- On a reply, to a comment, on a PR: https://github.com/neovim/neovim/pull/12080#discussion_r546579388
-				  -- The ANSI control sequence is bracketed paste mode.
-				  open = t("\x1b[200~"),
-				  close = t("\x1b[201~")
+					command = { "ipython" },
+					-- You know where I found out how to pass ANSI control sequences like below to
+					-- neovim's terminal?
+					-- On a reply, to a comment, on a PR: https://github.com/neovim/neovim/pull/12080#discussion_r546579388
+					-- The ANSI control sequence is bracketed paste mode.
+					open = t("\x1b[200~"),
+					close = t("\x1b[201~"),
 				},
 				-- ptpython = {
 				--   command = {"ptpython"},
@@ -83,11 +101,14 @@ return {
 				},
 			},
 		})
-
 		iron.core.set_config({
 			preferred = {
 				python = "ipython",
 				ruby = "rails",
+				javascriptreact = "node",
+				javascript = "node",
+				typescriptreact = "node",
+				typescript = "node",
 			},
 			repl_open_cmd = "vertical vsplit new",
 			visibility = "focus",

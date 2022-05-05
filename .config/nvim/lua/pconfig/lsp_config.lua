@@ -13,13 +13,14 @@ return {
 			end, opts, "show line diagnostics")
 			vim.api.nvim_buf_set_keymap(0, "n", "[e", "<cmd>lua vim.diagnostic.goto_prev({severity='Error'})<CR>", opts)
 			vim.api.nvim_buf_set_keymap(0, "n", "]e", "<cmd>lua vim.diagnostic.goto_next({severity='Error'})<CR>", opts)
-			vim.api.nvim_buf_set_keymap(0, "n", "<leader>lf", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+			vim.keymap.set("n", "<leader>lf", function() vim.lsp.buf.format({async=true}) end, {buffer=true})
+      vim.keymap.set("n", "<leader>la", function() vim.lsp.buf.code_action({}) end)
 		end
 
 		-- Use LSP formatting. Note this doesn't get invoked if LSP
 		-- isn't attached since we call it in on_attach
 		local setup_formatexpr = function(client)
-			if not client.resolved_capabilities.document_range_formatting then
+			if not client.document_range_formatting then
 				return 1
 			end
 
@@ -46,9 +47,8 @@ return {
 		--- null-ls.nvim sometimes conflicts with other LSPs
 		local disable_formatting_sometimes = function(client)
 			if not (client.name == "rust_analyzer" or client.name == "texlab" or client.name == "null-ls") then
-				client.resolved_capabilities.document_formatting = false
-				client.resolved_capabilities.document_range_formatting = false
-				-- print("LSP formatting disabled for " .. client.name)
+				client.server_capabilities.documentFormattingProvider = false
+				client.server_capabilities.documentRangeFormattingProvider = false
 			else
 				-- print("LSP formatting NOT disabled for " .. client.name)
 			end
@@ -93,7 +93,6 @@ return {
 				settings = {
 					["rust-analyzer"] = {
 						cargo = {
-							features = { "python" },
 						},
 					},
 				},
@@ -232,7 +231,7 @@ return {
 			"vimls",
 			"sorbet",
 			"sqls",
-			"tailwindcss",
+			-- "tailwindcss",
 			"clangd",
 			"dockerls",
 		}) do

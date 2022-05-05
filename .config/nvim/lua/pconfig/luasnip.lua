@@ -30,6 +30,14 @@ return {
 			--     - luasnip.c
 			--     - luasnip.all
 			-- are searched in that order.
+			markdown = {
+				s(
+					"ct",
+					f(function()
+						return vim.fn.system({ "gdate", "--iso-8601=minutes" })
+					end, {})
+				),
+			},
 
 			all = {
 				s(
