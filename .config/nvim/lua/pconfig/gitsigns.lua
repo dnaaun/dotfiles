@@ -3,7 +3,6 @@ return {
 	requires = { "nvim-lua/plenary.nvim" },
 	config = function()
 		require("gitsigns").setup({
-
 			keymaps = {
 				noremap = true,
 
@@ -19,6 +18,7 @@ return {
 				["n <leader>gw"] = '<cmd>lua require"gitsigns".stage_hunk()<CR>',
 				["v <leader>gw"] = '<cmd>lua require"gitsigns".stage_hunk({vim.fn.line("."), vim.fn.line("v")})<CR>',
 				["n <leader>gu"] = '<cmd>lua require"gitsigns".undo_stage_hunk()<CR>',
+				["v <leader>gu"] = '<cmd>lua require"gitsigns".undo_stage_hunk({vim.fn.line("."), vim.fn.line("v")})<CR>',
 				["n <leader>gr"] = '<cmd>lua require"gitsigns".reset_hunk()<CR>',
 				["v <leader>gr"] = '<cmd>lua require"gitsigns".reset_hunk({vim.fn.line("."), vim.fn.line("v")})<CR>',
 				["n <leader>gp"] = '<cmd>lua require"gitsigns".preview_hunk()<CR>',

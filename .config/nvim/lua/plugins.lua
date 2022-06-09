@@ -6,22 +6,29 @@ require("packer").startup({
 		use(require("pconfig.tmux_navigator"))
 
 		use("embear/vim-localvimrc") -- Enable sourcing .lnvimrc files
-		use(require("pconfig.indent_blankline"))
+
+		-- Don't think I'm using this
+		-- use(require("pconfig.indent_blankline"))
 
 		-- When opening splits, let the remaining one remain "stable"
-		use(require("pconfig.stabilize"))
+		-- use(require("pconfig.stabilize")) -- Not necessary. Trying to get a speed up right now.
 
 		-- LSP dependent/related
 		-- The LSPConfig, the lyth, the legend
 		use(require("pconfig.lsp_config"))
 
 		-- TODO: Setup inlay hints for rust, or just fix rust-tools.nvim's inlay hints
-		use(require("pconfig.lsp_extensions"))
+		-- use(require("pconfig.lsp_extensions"))
 
-		use(require("pconfig.lsp_lightbulb"))
+		-- I never use this really.
+		-- use(require("pconfig.lsp_lightbulb"))
 
-    -- I use it for slightly nicer UI for lsp code actions 
+		-- I use it for slightly nicer UI for lsp code actions
 		use(require("pconfig.dressing"))
+
+		-- I'm not using pconfig.notify right now, because it is too noisy (gotta figure out which
+		-- error messages are doing it, and how to disable them)
+		-- use(require("pconfig.notify"))
 
 		-- Provides type annotations for neovim's Lua interface. Needs Sumenkos' Lua LSP. TODO: Not actually set up yet: https://github.com/folke/lua-dev.nvim#%EF%B8%8F--configuration
 		use(require("pconfig.lua_dev"))
@@ -29,15 +36,13 @@ require("packer").startup({
 		-- Show func signatures automatically. some filetypes (typescript) cause issues.
 		use(require("pconfig.lsp_signature"))
 
+		use(require("pconfig.cmp"))
+		use(require("pconfig.luasnip"))
 		use("hrsh7th/cmp-nvim-lsp")
 		use("hrsh7th/cmp-buffer")
 		use("hrsh7th/cmp-path")
 		use("hrsh7th/cmp-cmdline")
-
-		use(require("pconfig.luasnip"))
 		use({ "saadparwaiz1/cmp_luasnip" })
-
-		use(require("pconfig.cmp"))
 
 		-- Super fast, super feature complete, completion plugin
 		-- use(require("pconfig.coq"))
@@ -51,8 +56,11 @@ require("packer").startup({
 		-- Text objects based on syntax trees!!
 		use("nvim-treesitter/nvim-treesitter-textobjects")
 
+		-- Treesitter text objects that are "smarter"
+		use("RRethy/nvim-treesitter-textsubjects")
+
 		-- Highlight definition of current symbol, current scope
-		use("nvim-treesitter/nvim-treesitter-refactor")
+		-- use("nvim-treesitter/nvim-treesitter-refactor") -- I don't think I've ever used this.
 
 		-- Debugging/REPLs
 		use(require("pconfig.dap"))
@@ -99,8 +107,9 @@ require("packer").startup({
 		use(require("pconfig.diffview"))
 
 		-- Who needs web interfaces when you have neovim interfaces (for Github)?
-		use(require("pconfig.octo"))
+		-- use(require("pconfig.octo")) -- Not using it
 
+		-- Get a url to the git host, for a range or a line in the current file.
 		use(require("pconfig.gitlinker"))
 
 		-- Misc
@@ -111,10 +120,10 @@ require("packer").startup({
 		-- without having to rely on changing the system-wide keyboard layout
 		use(require("pconfig.amharic"))
 
-		-- JSX
-		-- CSS / web dev
-		-- use("maxmellon/vim-jsx-pretty") -- I hope this fixes indentation for jSX until TreeSitter supports JSX.
+		-- The below is not working, so we'll go with an alternative.
 		use(require("pconfig.ts_autotag")) -- When changing tags, change both
+		-- use (require("pconfig.closetag"))
+
 		use(require("pconfig.colorizer"))
 		-- Used currently for editing JSX mostly
 		use({ "tpope/vim-surround" })
@@ -123,9 +132,19 @@ require("packer").startup({
 
 		-- Markdown
 		use({ "plasticboy/vim-markdown", ft = { "markdown" } })
-		use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", ft = { "markdown" } })
+		-- use({
+		-- 	"iamcco/markdown-preview.nvim",
+		-- 	setup = function()
+		-- 		vim.g.mkdp_filetypes = { "markdown" }
+		-- 	end,
+		-- 	run = "cd app && npm install",
+		-- 	ft = { "markdown" },
+		-- })
+		use({ "davidgranstrom/nvim-markdown-preview", ft = "markdown" })
 		use({ "dhruvasagar/vim-table-mode", ft = { "markdown" } })
-		use({ "dkarter/bullets.vim", ft = { "markdown" } })
+
+    -- Doesn't play nice with orgmode
+		-- use(require("pconfig.bullets"))
 
 		-- Testing things
 		use({ "tpope/vim-dispatch", opt = true, cmd = { "Dispatch", "Make", "Focus", "Start" } })
@@ -147,8 +166,8 @@ require("packer").startup({
 
 		use(require("pconfig.web_devicons"))
 
-		use("Mofiqul/vscode.nvim")
-    use("folke/tokyonight.nvim")
+		-- use("Mofiqul/vscode.nvim")
+		use("folke/tokyonight.nvim")
 
 		use(require("pconfig.lualine"))
 
@@ -159,7 +178,7 @@ require("packer").startup({
 		use(require("pconfig.bufferline"))
 
 		-- Clipboard manager.
-		use(require("pconfig.neoclip"))
+		-- use(require("pconfig.neoclip"))
 
 		-- Telescope file browser.
 		use(require("pconfig.telescope_file_browser"))
@@ -169,24 +188,36 @@ require("packer").startup({
 
 		-- vim-matchup
 		use(require("pconfig.matchup"))
+		-- vim-matchup slows me down, and I *think* this might help solve the issue.
+		use("antoinemadec/FixCursorHold.nvim")
 
+		-- Uses a C extension with fzf's algorithim for telescope,
+		-- but it causes issues with architecutres not matching up when
+		-- I switch from arm64 nvim to x86_64 nvim (which happens when
+		-- I switch from, say homebrew neovim to compiled-from-source-neovim,
+		-- which happens say, when there's a bug with the nightly version)
+		-- So for now, we're disabling.
 		use(require("pconfig.telescope_fzf_native"))
 
 		-- Foray into orgmode once more
 		use(require("pconfig.orgmode"))
 
-		--  Supposed to be the vi to vim (or vim to neovim) of orgmode
-		use(require("pconfig.neorg"))
+		-- Make the bullets appear nicer, for orgmode obv
+		use(require("pconfig.org_bullets"))
 
 		-- Show me where I'm at in the status bar (like, what funciton/ conditional/thingy)
 		use(require("pconfig.treesitter_context"))
 
-    -- Generate docs easily for funcs/types/etc
-    use(require("pconfig.neogen"))
+		-- Treesitter offiical plugin to show treesitter parses
+		-- Ya boy is going to start writing plugins at this rate!
+		use(require("pconfig.playground"))
 
-    -- A "birds-eye view" of the code
-    -- use(require("pconfig.minimap"))
-    use(require("pconfig.sluice"))
+		-- A "birds-eye view" of the code
+		-- use(require("pconfig.minimap"))
+
+		-- Reserves the right most column to show a "minatured" version of the
+		-- left-hand-side gutter of the whole file.
+		-- use(require("pconfig.sluice"))
 	end,
 
 	config = {

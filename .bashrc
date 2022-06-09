@@ -103,10 +103,7 @@ export PYTHONBREAKPOINT=ipdb.set_trace
 
 
 # Source customizations that differ across machines
-if [[ -f ~/.bashrc_specific  ]]; then
-    source ~/.bashrc_specific
-    :
-fi
+source ~/.bashrc_specific
 
 # Show virtual env in custom prompt
 # https://stackoverflow.com/a/20026992
@@ -326,10 +323,6 @@ alias ibrew='arch -x86_64 /usr/local/bin/brew'
 alias mbrew='arch -arm64 /opt/homebrew/bin/brew'
 
 
-export LDFLAGS="-L/usr/local/opt/node@14/lib"
-export CPPFLAGS="-I/usr/local/opt/node@14/include"
-
-
 # Bandaid for broken python (PATH) setup
 alias httpie='python3 -m httpie'
 
@@ -379,13 +372,12 @@ export DOCKER_BUILDKIT=0
 export COMPOSE_DOCKER_CLI_BUILD=0
 
 PATH=\
-$HOME/.local/bin:\
-/usr/local/bin:\
-/opt/homebrew/bin:\
-$HOME/.gem/bin:\
-/usr/local/opt/node@14/bin:\
-/Users/davidat/Library/Python/3.8/bin:\
+/opt/homebrew/opt/libpq/bin:\
 /opt/homebrew/Cellar/ruby@2.7/2.7.6/bin:\
 /Users/davidat/Library/Python/3.9/bin:\
+/opt/homebrew/bin:\
+/usr/local/bin:\
 $HOME/git/dotfiles/bin_dir:\
+$HOME/.gem/bin:\
+$HOME/.local/bin:\
 $PATH

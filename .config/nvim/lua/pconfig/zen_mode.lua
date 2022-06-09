@@ -7,6 +7,10 @@ return {
 	branch = "main",
 	module = { "zen-mode" },
 	config = function()
-		require("zen-mode").setup({})
+		require("zen-mode").setup({
+			window = {
+				width = 0.85,
+			},
+		})
 	end,
 }

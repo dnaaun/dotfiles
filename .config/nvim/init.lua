@@ -1,5 +1,10 @@
 -- require('impatient') -- Speed up loading things. TOFIXLATER: This will probably (definitely?) break when impatient.nvim is not installed.
 
+--- Easy debugging
+function _G.P(table)
+	print(vim.inspect(table))
+end
+
 local g = vim.g
 local opt = vim.opt
 
@@ -72,7 +77,7 @@ nvim_set_keymap("i", "<C-v>", "<Esc>[s1z=``a", {})
 if vim.loop.os_uname().sysname == "Darwin" then
 	g.python3_host_prog = "/usr/local/bin/python3"
 else
-	print("Umm, not sure what platform(MacOS/linux) I'm on, so won't guess the locaiton of the python binary.")
+	print("Umm, not sure what platform(MacOS/linux) I'm on, so won't guess the location of the python binary.")
 end
 
 ---- Add plugins ----
@@ -101,6 +106,13 @@ g.localvimrc_sandbox = 0
 
 -- Trying to get neovim's colorscheme to appear identical inside and outside of
 -- tmux (inside is messed up a bit right now)
-if (vim.fn.has("termguicolors")) then
-   vim.o.termguicolors = true
- end
+if vim.fn.has("termguicolors") then
+	vim.o.termguicolors = true
+end
+
+-- Show only errors in virtual text
+-- vim.diagnostic.config({
+-- 	virtual_text = {
+-- 		severity = { min = vim.diagnostic.severity.ERROR },
+-- 	},
+-- })

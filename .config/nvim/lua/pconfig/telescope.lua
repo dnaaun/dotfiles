@@ -40,7 +40,7 @@ return {
 						["n"] = {
 							["-"] = function(prompt_bufnr)
 								require("telescope").extensions.file_browser.actions.goto_parent_dir(prompt_bufnr, true)
-							end,
+							end ,
 						},
 					},
 				},
@@ -62,16 +62,32 @@ return {
 			noremap = true,
 		}, "fd in cur dir")
 		mapfunc("n", "<C-a>", function()
-			builtin.live_grep({ search_dirs = { vim.fn.expand("%:p:h") } })
+			builtin.live_grep({
+				search_dirs = { vim.fn.expand("%:p:h") },
+				additional_args = function()
+					return { "--hidden" }
+				end,
+			})
 		end, {
 			noremap = true,
 		}, "live_grep in cur dir")
-    -- Is a capital F because it turns out I use lower case f (which stands for
-    -- search forward in this line) a bunch.
-		mapfunc("n", "<leader>a", builtin.live_grep, { noremap = true }, "live_grep")
+		-- Is a capital F because it turns out I use lower case f (which stands for
+		-- search forward in this line) a bunch.
+		mapfunc("n", "<leader>a", function()
+			builtin.live_grep({
+				additional_args = function()
+					return { "--hidden" }
+				end,
+			})
+		end, { noremap = true }, "live_grep")
 		-- Search text through buffers
 		mapfunc("n", "<leader>fb", function()
-			builtin.live_grep({ grep_open_files = true })
+			builtin.live_grep({
+				grep_open_files = true,
+				additional_args = function()
+					return { "--hidden" }
+				end,
+			})
 		end, { noremap = true }, "live_grep")
 		-- Isn't prefixed with f cuz it's so commonly used
 		mapfunc("n", "<leader>b", builtin.buffers, { noremap = true }, "buffers")
@@ -88,6 +104,26 @@ return {
 		mapfunc("n", ",-", function()
 			require("telescope").extensions.file_browser.file_browser()
 		end, {}, "file_browser")
+
+		mapfunc("n", "<leader>fgcc", builtin.git_commits, {}, "Git commits")
+		mapfunc("n", "<leader>fgcb", builtin.git_bcommits, {}, "Git buffer commits")
+		mapfunc("n", "<leader>fgb", builtin.git_branches, {}, "Git branches")
+
+		-- I search through my dot files a lot, d stands for dotfiles,
+		-- and then use a and s in line with my live_grep and fd mappings above.
+		vim.keymap.set("n", "<leader>fda", function()
+			local search_dirs = { vim.fn.expand("~/") .. "git/dotfiles/" }
+			builtin.live_grep({
+				search_dirs = search_dirs,
+				additional_args = function()
+					return { "--hidden" }
+				end,
+			})
+		end, {})
+		vim.keymap.set("n", "<leader>fds", function()
+			local search_dirs = { vim.fn.expand("~/") .. "git/dotfiles/" }
+			builtin.fd({ hidden = true, search_dirs = search_dirs })
+		end, {})
 
 		local function on_attach()
 			buf_mapfunc("n", "gd", function()
@@ -134,6 +170,7 @@ return {
 				mapping_opts,
 				"telescope dynamic workspace symbols"
 			)
+			vim.keymap.set("n", "<leader>ls", builtin.lsp_document_symbols, mapping_opts)
 		end
 
 		table.insert(_G.lsp_config_on_attach_callbacks, on_attach)

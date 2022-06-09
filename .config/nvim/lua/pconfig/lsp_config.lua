@@ -13,8 +13,12 @@ return {
 			end, opts, "show line diagnostics")
 			vim.api.nvim_buf_set_keymap(0, "n", "[e", "<cmd>lua vim.diagnostic.goto_prev({severity='Error'})<CR>", opts)
 			vim.api.nvim_buf_set_keymap(0, "n", "]e", "<cmd>lua vim.diagnostic.goto_next({severity='Error'})<CR>", opts)
-			vim.keymap.set("n", "<leader>lf", function() vim.lsp.buf.format({async=true}) end, {buffer=true})
-      vim.keymap.set("n", "<leader>la", function() vim.lsp.buf.code_action({}) end)
+			vim.keymap.set("n", "<leader>lf", function()
+				vim.lsp.buf.format({ async = true })
+			end, { buffer = true })
+			vim.keymap.set("n", "<leader>la", function()
+				vim.lsp.buf.code_action({})
+			end)
 		end
 
 		-- Use LSP formatting. Note this doesn't get invoked if LSP
@@ -92,8 +96,7 @@ return {
 			rust_analyzer = {
 				settings = {
 					["rust-analyzer"] = {
-						cargo = {
-						},
+						cargo = {},
 					},
 				},
 			},
@@ -121,7 +124,31 @@ return {
 						},
 						diagnostics = {
 							-- Get the language server to recognize the `vim` global
-							globals = { "vim" },
+							globals = {
+								"vim",
+                -- The rest of these globals were taken from luasnip: https://github.com/L3MON4D3/Dotfiles/blob/1214ff2bbb567fa8bdd04a21976a1a64ae931330/.config/nvim/lua/plugins/lspconfig.lua#L155-L168
+								"s",
+								"sn",
+								"t",
+								"i",
+								"f",
+								"c",
+								"end",
+								"d",
+								"isn",
+								"psn",
+								"l",
+								"rep",
+								"r",
+								"p",
+								"types",
+								"events",
+								"util",
+								"fmt",
+								"ls",
+								"ins_generate",
+								"parse",
+							},
 						},
 						workspace = {
 							-- Make the server aware of Neovim runtime files
@@ -221,19 +248,20 @@ return {
 		-- local coq = require("coq")
 
 		for _, lspname in ipairs({
-			"kotlin_language_server",
-			"sumneko_lua",
-			"pyright",
-			"rust_analyzer",
-			"texlab",
-			"solargraph",
-			"tsserver",
-			"vimls",
-			"sorbet",
-			"sqls",
-			-- "tailwindcss",
 			"clangd",
 			"dockerls",
+      "eslint",
+			"kotlin_language_server",
+			"pyright",
+			"rust_analyzer",
+			"solargraph",
+			"sqls",
+			"sumneko_lua",
+			"tailwindcss",
+			"texlab",
+			"tsserver",
+			"vimls",
+			-- "sorbet",
 		}) do
 			local config = lsp_specific_configs[lspname]
 			if config ~= nil then

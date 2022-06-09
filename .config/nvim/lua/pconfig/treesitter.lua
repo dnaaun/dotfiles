@@ -10,14 +10,24 @@ return {
 		ft_to_parser.typescriptreact = "tsx"
 		ft_to_parser.tex = "latex"
 
+    local textsubjects = {
+        enable = true,
+        prev_selection = ',', -- (Optional) keymap to select the previous selection
+        keymaps = {
+            ['<CR>'] = 'textsubjects-smart',
+            [';'] = 'textsubjects-container-outer',
+            ['i;'] = 'textsubjects-container-inner',
+        },
+    }
+
 		-- Various Treesitter modules config
 		local highlight = {
-			enable = false,
+			enable = true,
 			disable = { "markdown", "org" }, -- Markdown is slow (I think), and org is experimental.
 			-- additional_vim_regex_highlighting = { "org" }, -- Required since TS highlighter doesn't support all syntax features (conceal)
 		}
 		local indent = {
-			enable = false,
+			enable = true,
 		}
 		-- requires https://github.com/nvim-treesitter/nvim-treesitter-refactor
 		local refactor = {
@@ -126,16 +136,27 @@ return {
 			enable = true,
 		}
 
+		local ensure_installed = { "tsx" }
+
+    -- treesitter playground taht shows you the nodes
+		local playground = {
+			enable = true,
+		}
+
 		require("nvim-treesitter.configs").setup({
+			ensure_installed = ensure_installed,
 			highlight = highlight,
 			indent = indent,
 			refactor = refactor,
 			textobjects = textobjects,
+      textsubjects = textsubjects,
 			autotag = autotag,
 			incremental_selection = incremental_selection,
 			matchup = matchup,
+			playground = playground,
 		})
 
-		vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+    -- I don't like how (I blieve this is what is causing it) the org file folidng is working out.
+		-- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 	end,
 }

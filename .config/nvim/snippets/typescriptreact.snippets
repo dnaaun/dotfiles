@@ -1,34 +1,13 @@
 snippet icon "import {ReactComponent as  SomeIcon} from  './path.svg'" w
 	import { ReactComponent as ${1:}Icon } from  "${2:./file.svg}"
-snippet newc "new component" w
-	${3}interface ${1:ComponentName}Props {
-		${2:// prop1: type1}
-	}
 
-	${3:export }function ${1}({${4: prop1 }}: ${1}Props) {
-		${5:// function body}
-	}
 
-snippet storybook "new storybook file" w
-	import { Story, Meta } from "@storybook/react";
-	import ${1:ComponentName}, {
-		${1}Props,
-	} from "${2:./ComponentNameLocation}";
+snippet tf "func signature" w
+	(${1:}) => ${2:void}
 
-	const Spec: Meta<typeof ${1}> = {
-		title: "Elements/${1}",
-		component: ${1},
-	};
-
-	export default Spec;
-
-	const Template: Story<${1}Props> = (args) => {
-		return <${1} {...args} />;
-	};
-
-	export const Default: Story<${1}Props> = Template.bind({});
-	Default.args = {${3:
-		// the args
-	}};
-
+snippet cn "className={" w
+	className={classNames("${1:}")}
 # TODO : useState(), useOtherThingsToo()
+
+snippet p "prop={prop}" w
+	${1}={${1}}
