@@ -116,3 +116,44 @@ end
 -- 		severity = { min = vim.diagnostic.severity.ERROR },
 -- 	},
 -- })
+
+-- Setup an autocmd to delete the buffer when the process ends.
+vim.api.nvim_create_autocmd({ "TermClose" }, {
+	group = vim.api.nvim_create_augroup("IronCloseWinsOnProcessEnd", {}),
+	pattern = "*",
+	callback = function(args)
+		vim.api.nvim_buf_delete(args.buf, {})
+	end,
+})
+
+-- Add current position to quicklist
+local function cur_pos_to_qflist()
+	local pos = vim.fn.getpos(".")
+	local dict = {
+		bufnr = vim.fn.bufnr("%"),
+		lnum = pos[2],
+		col = pos[3],
+    text = vim.api.nvim_get_current_line()
+	}
+	vim.fn.setqflist({ dict }, "a")
+end
+
+-- Remove quickfix items that match the current *line*
+local function remove_curpos_from_qflist()
+	local pos = vim.fn.getpos(".")
+	local lnum = pos[2]
+	local bufnr = vim.fn.bufnr("%")
+
+	local is_not_about_cur_line = function(qflist_item)
+		return qflist_item.bufnr ~= bufnr or qflist_item.lnum ~= lnum
+	end
+
+  local filtered = require("std2").list_filter(vim.fn.getqflist(), is_not_about_cur_line)
+	vim.fn.setqflist(filtered)
+end
+
+vim.keymap.set("n", "<leader>qa", cur_pos_to_qflist, {})
+vim.keymap.set("n", "<leader>qd", remove_curpos_from_qflist, {})
+vim.keymap.set("n", "<leader>qD", function()
+	vim.fn.setqflist({})
+end, {})
