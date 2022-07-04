@@ -70,6 +70,20 @@ local function get_cur_pos_as_lsp_range()
 	}
 end
 
+--- @generic K, V
+--- @param tbl table<K, V>
+--- @param func fun(value: V) -> boolean
+--- @return K | nil
+local function tbl_find(tbl, func)
+	for _, k in ipairs(vim.tbl_keys(tbl)) do
+		if func(tbl[k]) then
+			return k
+		end
+	end
+
+	return nil
+end
+
 -- Among a list of `DocumentHighlight` objects, find the position specified by
 -- one of the objects that comes after the current cursor position.
 -- if `find_prev` is `true`, then we find the position that comes before the
@@ -78,7 +92,11 @@ end
 --- @param find_prev boolean
 --- @return nil | LspRange -- Will return `nil`, or the zero indexed { lnum, col } location of the occurence.
 local function find_next_or_prev_occurence(document_highlights, find_prev)
+	if #document_highlights < 2 then
+		return
+	end
 	--- @type LspRange[]
+	-- TODO:  Refactor into a tbl_map() method to reuse.
 	local ranges = {}
 	for _, doc_highlight in ipairs(document_highlights) do
 		table.insert(ranges, #ranges + 1, doc_highlight.range)
@@ -96,24 +114,28 @@ local function find_next_or_prev_occurence(document_highlights, find_prev)
 
 	local cur_pos_range = get_cur_pos_as_lsp_range()
 
-	local jump_to = nil
-	for _, range in ipairs(ranges) do
-		if not do_ranges_overlap(range, cur_pos_range) then
-			if find_prev then
-				if range1_comes_before(range, cur_pos_range) then
-					jump_to = range
-					break
-				end
-			else
-				if range1_comes_before(cur_pos_range, range) then
-					jump_to = range
-					break
-				end
-			end
-		end
+	-- Find the document highlight that corresponds to our current position
+	local cur_pos_index = tbl_find(ranges, function(r)
+		return do_ranges_overlap(r, cur_pos_range)
+	end)
+
+	if not cur_pos_index then
+		-- Shouldn't happen really, but I mean, never hurts to check right?
+		return
 	end
 
-	return jump_to
+	-- lua's zero based indexing, combined with the behavior of modulo,
+	-- means the following expression finds the (modulo) next item in the table.
+	local next_index = math.fmod(cur_pos_index, #ranges) + 1
+
+	-- Check for wrap around and respect vim's wrapscan option
+	-- The reasonw e can do next_index < cur_pos_index without regard to `find_prev` is because
+	-- `ranges` is sorted descendingly if `find_prev` is set to true.
+	if not vim.o.wrapscan and next_index < cur_pos_index then
+		return nil
+	end
+
+	return ranges[next_index]
 end
 
 --- This makes an LSP handler function
@@ -124,9 +146,13 @@ local function make_goto_occurence_handler(find_prev)
 
 	local handler = function(err, result, _, _)
 		if not err and result then
-			local jump_to_range = find_next_or_prev_occurence(result, find_prev)
-			if jump_to_range then
-				vim.fn.setcursorcharpos(jump_to_range.start.line + 1, jump_to_range.start.character + 1)
+			local range = find_next_or_prev_occurence(result, find_prev)
+			if range then
+        -- This doesn't work https://github.com/neovim/neovim/issues/17861
+				-- vim.api.nvim_buf_set_mark(ctx.bufnr, "`", pos[2], pos[3] - 1, {})
+        -- btw, ctx would have been the third argument to handler.
+        vim.cmd("normal! m'")
+				vim.fn.setcursorcharpos(range.start.line + 1, range.start.character + 1)
 			end
 		end
 	end
@@ -156,11 +182,13 @@ local function on_attach(client, bufnr)
 	clients_by_buffer[tostring(bufnr)] = client
 
 	-- setup mappings
-	vim.keymap.set("n", "g*", function()
+	vim.keymap.set("n", "*", function()
+		vim.lsp.util.buf_clear_references()
 		vim.lsp.buf.document_highlight()
 		goto_occurence(false)
 	end, { buffer = true })
-	vim.keymap.set("n", "g#", function()
+	vim.keymap.set("n", "#", function()
+		vim.lsp.util.buf_clear_references()
 		vim.lsp.buf.document_highlight()
 		goto_occurence(true)
 	end, { buffer = true })

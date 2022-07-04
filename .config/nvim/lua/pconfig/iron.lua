@@ -1,6 +1,5 @@
 return {
 	"hkupty/iron.nvim",
-	ft = { "python", "ruby", "javascript", "javascriptreact", "typescript", "typescriptreact" },
 	setup = function()
 		-- Disable default mappings
 		vim.g.iron_map_defaults = true
@@ -13,7 +12,7 @@ return {
 		end, {})
 
 		vim.keymap.set("n", "<leader>rf", function()
-			iron.focus_on(vim.opt_local.filetype:get())
+			iron.focus_on(vim.bo.filetype)
 		end, {})
 
 		vim.api.nvim_set_keymap(
@@ -34,12 +33,38 @@ return {
 
 				-- Whether the buffers should be scratch buffers
 				scratch_repl = false,
-				repl_open_cmd = require("iron.view").curry.right(100),
+
+				---@param bufnr number
+				---@return string
+				repl_open_cmd = function(bufnr)
+					local width = vim.o.columns
+					local height = vim.o.lines
+
+					-- This is how wide I want it to be
+					local size = 100
+
+					local winid = vim.api.nvim_open_win(bufnr, false, {
+						relative = "editor",
+						width = size,
+						height = height,
+						row = 0,
+						col = vim.fn.max({ 0, width - size }),
+						zindex = 100,
+					})
+
+					-- Set a keymap to hide buffer when inside the repl
+					-- Note  how we have a "t" instead of an "i" in the modes.
+					vim.keymap.set({ "t", "n" }, "<C-q>", function()
+						vim.api.nvim_win_close(0, false)
+					end, { buffer = bufnr })
+
+					return winid
+				end,
 
 				repl_definition = {
 					python = require("iron.fts.python").ipython,
 					typescript = require("iron.fts.typescript").ts,
-					typescriptreact = require("iron.fts.typescript").ts,
+					tsx = require("iron.fts.typescript").ts,
 					lua = require("iron.fts.lua").lua,
 					ruby = {
 						command = { "bundle", "exec", "rails", "console" },

@@ -50,6 +50,17 @@ local function get_prop_names(id_node)
 	return prop_names
 end
 
+local function get_probable_react_comp_name()
+	local dir_name = vim.fn.expand("%"):match("([^/]+)/[^/]+$")
+	local file_name = vim.fn.expand("%:t")
+
+	if vim.fn.match(file_name, "index\\..*tsx\\?") == 0 then
+		return dir_name
+	else
+		return vim.fn.substitute(file_name, "\\..*$", "", "g")
+	end
+end
+
 return {
 	-- Escaping braces makings things look crazy here.
 	s(
@@ -66,15 +77,10 @@ return {
 ]],
 			{
 				i(1, "export "),
-				-- dl(2, function()
-				-- 	return sn(nil, { i(1, "Component") })
-				-- end, { 1 }),
-				d(2, function(_, snip)
-					-- the returned snippetNode doesn't need a position; it's inserted
-					-- "inside" the dynamicNode.
+				d(2, function()
 					return sn(nil, {
 						-- jump-indices are local to each snippetNode, so restart at 1.
-						i(1, vim.fn.substitute(snip.env.TM_FILENAME, "\\..*$", "", "g")),
+						i(1, get_probable_react_comp_name()),
 					})
 				end, { 1 }),
 				i(3, "// props"),
@@ -137,13 +143,9 @@ Default.args = {{
 }};
 ]],
 			{
-				-- TODO: Refactor to use plenary.
-				d(1, function(_, snip)
-					local basename = vim.fn.substitute(snip.env.TM_FILENAME, ".*/", "", "")
-					basename = vim.fn.substitute(basename, "\\..*$", "", "")
-					P(basename)
+				d(1, function()
 					return sn(nil, {
-						i(1, basename),
+						i(1, get_probable_react_comp_name()),
 					})
 				end),
 				rep(1),
@@ -151,14 +153,6 @@ Default.args = {{
 				rep(1),
 				f(function(_, _snip)
 					return "Elements"
-					-- P(snip.env.TM_FILENAME)
-					-- local abs = Path:new(snip.env.TM_FILENAME):absolute():expand()
-					-- P(abs)
-					-- local parts = vim.fn.split(abs, "/")
-					-- P(parts)
-					-- local dirname = parts[#parts - 1]
-					-- if dirname == nil then return "" end
-					-- return require('std2').str.first_to_upper(dirname)
 				end, { 1 }),
 				rep(1),
 				rep(1),
@@ -169,33 +163,11 @@ Default.args = {{
 			}
 		)
 	),
-
 	s(
-		{ trig = "um", dscr = "useMemo()" },
-		fmt(
-			[[
-const {} = useMemo(() => {}, [])
-  ]],
-			{ i(1, ""), i(2, "") }
-		)
-	),
-
-	s(
-		{ trig = "uc", dscr = "useCallback()" },
-		fmt(
-			[[
-const {} = useCallback(() => {}, [])
-  ]],
-			{ i(1, ""), i(2, "") }
-		)
-	),
-	s(
-		{ trig = "ue", dscr = "useEffect()" },
-		fmt(
-			[[
-const {} = useEffect(() => {}, [])
-  ]],
-			{ i(1, ""), i(2, "") }
-		)
+		{ trig = "p", dscr = "prop={prop}" },
+		fmt("{}={{{}}}", {
+			i(1, "prop"),
+			rep(1),
+		})
 	),
 }

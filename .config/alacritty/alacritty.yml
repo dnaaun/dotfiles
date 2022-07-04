@@ -924,7 +924,16 @@ selection:
 #
 # If the same trigger is assigned to multiple actions, all of them are executed
 # in the order they were defined in.
-#key_bindings:
+key_bindings:
+
+  # alacritty requires two attempts to send ctrl-q without the below workaround.
+  # https://github.com/alacritty/alacritty/issues/1359
+  # https://github.com/rust-windowing/winit/issues/1267
+  - { key: Q, mods: Control, chars: "\x11" }
+
+  # <C-space> wasn't workign for me without this. This fix was found here:
+  # https://github.com/alacritty/alacritty/issues/1703#issuecomment-433445979
+  - { key: Space, mods: Control, chars: "\x00" }
   #- { key: Paste,                                       action: Paste          }
   #- { key: Copy,                                        action: Copy           }
   #- { key: L,         mods: Control,                    action: ClearLogNotice }

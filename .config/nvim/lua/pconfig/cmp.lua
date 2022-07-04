@@ -1,6 +1,6 @@
 return {
 
-  "hrsh7th/nvim-cmp",
+	"hrsh7th/nvim-cmp",
 	config = function()
 		-- Setup nvim-cmp.
 		local has_words_before = function()
@@ -46,11 +46,17 @@ return {
 					end
 				end, { "i", "s" }),
 			},
+			enabled = function()
+				-- nvim-cmp by defaults disables autocomplete for prompt buffers
+				return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt" or require("cmp_dap").is_dap_buffer()
+			end,
 			sources = {
+				{ name = "dap" },
 				{ name = "orgmode" },
 				{ name = "nvim_lsp" },
 				{ name = "luasnip" },
-        { name = "path" },
+				{ name = "path" },
+				{ name = "git" },
 				{ name = "buffer", keyword_length = 5 },
 			},
 		})

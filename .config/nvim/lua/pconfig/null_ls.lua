@@ -3,7 +3,7 @@ return {
 	requires = { "plenary.nvim" },
 
 	config = function()
-		null_ls = require("null-ls")
+		local null_ls = require("null-ls")
 		null_ls.setup({
 			debug = false,
 			debounce = 2000, -- 2 secs after the dust settles, fire off diagnostics.
@@ -11,7 +11,9 @@ return {
 			sources = {
 				null_ls.builtins.formatting.stylua,
 				null_ls.builtins.formatting.black,
-				null_ls.builtins.formatting.prettier,
+				null_ls.builtins.formatting.prettier.with({
+					filetypes = vim.list_extend({ "css" }, require("consts").javascripty_filetypes),
+				}),
 				null_ls.builtins.diagnostics.rubocop,
 				-- null_ls.builtins.formatting.rubocop,
 				null_ls.builtins.diagnostics.haml_lint,

@@ -22,7 +22,7 @@ return {
 	"rcarriga/vim-ultest",
 	requires = { "vim-test/vim-test" },
 	run = ":UpdateRemotePlugins",
-	ft = { "ruby", "typescript", "typescriptreact" },
+	ft = { "ruby", "typescript", "tsx" },
 	setup = function()
 		vim.g.ultest_running_sign = "🟡"
 		-- vim.g.ultest_icons = 0

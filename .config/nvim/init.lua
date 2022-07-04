@@ -2,7 +2,7 @@
 
 --- Easy debugging
 function _G.P(table)
-	print(vim.inspect(table))
+	vim.notify(vim.inspect(table))
 end
 
 local g = vim.g
@@ -53,10 +53,6 @@ opt.grepprg = "rg -nH" -- Use ripgrep as a grep program
 g.mapleader = ","
 g.maplocalleader = ","
 
--- Quickfix shortcuts
-nvim_set_keymap("n", "<leader>qo", ":copen<CR>", {})
-nvim_set_keymap("n", "]q", ":cnext<CR>", {})
-nvim_set_keymap("n", "[q", ":cprev<CR>", {})
 
 -- WHen in visual/select/operator mode, I want searching with / to be an inclusive
 -- motion. This is acheived by doing /pattern/e, but I don't wanna have to type
@@ -126,6 +122,12 @@ vim.api.nvim_create_autocmd({ "TermClose" }, {
 	end,
 })
 
+-- Quickfix shortcuts
+vim.keymap.set("n", "<leader>qo", ":copen<CR>", {})
+vim.keymap.set("n", "]q", ":cnext<CR>", {})
+vim.keymap.set("n", "[q", ":cprev<CR>", {})
+vim.keymap.set("n", "<leader>qq", ":cclose<CR>", {})
+
 -- Add current position to quicklist
 local function cur_pos_to_qflist()
 	local pos = vim.fn.getpos(".")
@@ -157,3 +159,9 @@ vim.keymap.set("n", "<leader>qd", remove_curpos_from_qflist, {})
 vim.keymap.set("n", "<leader>qD", function()
 	vim.fn.setqflist({})
 end, {})
+
+
+-- Neovim win!
+-- vim.o.cmdheight = 0
+-- I disabled that because (I belive) the which-key key plugin messes up my "gg" movement
+-- because it tries to show a message, but cmdheight=0 prevents it, or something like that.

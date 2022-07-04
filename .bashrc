@@ -102,8 +102,6 @@ export PYTHONPATH=
 export PYTHONBREAKPOINT=ipdb.set_trace
 
 
-# Source customizations that differ across machines
-source ~/.bashrc_specific
 
 # Show virtual env in custom prompt
 # https://stackoverflow.com/a/20026992
@@ -269,9 +267,9 @@ if command -v nvim > /dev/null; then
 fi
 
 # Auto start tmux
-if [ -z "$TMUX" ]; then
-  tm
-fi
+# if [ -z "$TMUX" ]; then
+#   tm
+# fi
 
 # Doing --path instead of - will break some commmands (pyenv shell).  https://github.com/pyenv/pyenv/issues/1906#issuecomment-835027647
 # But aint nobody got time to fix something they don't use.
@@ -292,8 +290,6 @@ _fzf_compgen_dir() {
 # If we're on macos
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-CARGO_PATH="$HOME/.cargo/env"
-[ -f $CARGO_PATH ] && source $CARGO_PATH;
 
 # On ubuntu
 RVM_INIT=/etc/profile.d/rvm.sh
@@ -326,8 +322,6 @@ alias mbrew='arch -arm64 /opt/homebrew/bin/brew'
 # Bandaid for broken python (PATH) setup
 alias httpie='python3 -m httpie'
 
-
-. "$HOME/.cargo/env"
 
 
 # Ruby
@@ -381,3 +375,7 @@ $HOME/git/dotfiles/bin_dir:\
 $HOME/.gem/bin:\
 $HOME/.local/bin:\
 $PATH
+
+# Source customizations that differ across machines
+source ~/.bashrc_specific
+

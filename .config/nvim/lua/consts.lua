@@ -3,7 +3,7 @@ return {
 	lsp_enabled_filetypes = {
 		"javascript",
 		"javascriptreact",
-		"typescriptreact",
+		"tsx",
 		"typescript",
 		"ruby",
 		"react",
@@ -19,5 +19,23 @@ return {
 	dap_enabled_filetypes = {
 		"python",
 		"ruby",
+	},
+
+	javascripty_filetypes = {
+		"javascript",
+		"javascriptreact",
+		"typescript",
+		"typescriptreact",
+		"tsx", -- Basically only to add this, I modified the defualt.
+		"vue",
+		"less",
+		"html",
+		"json",
+		"jsonc",
+		"yaml",
+		"markdown",
+		"graphql",
+		"handlebars",
+		"svelte",
 	},
 }

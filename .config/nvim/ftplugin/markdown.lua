@@ -16,7 +16,7 @@ vim.opt.spell = true
 ---- vim-markdown ----
 -- Markdown fenced languages support
 -- https://github.com/plasticboy/vim-markdown/commit/04e060dc062ee981f5c9bcc8f3b700f803da285f
-vim.g.vim_markdown_fenced_languages = { "json", "bash", "tsx=typescriptreact", "lua" }
+vim.g.vim_markdown_fenced_languages = { "json", "bash", "lua" }
 vim.g.vim_markdown_folding_disabled = 1
 vim.g.vim_markdown_conceal = 0
 ---- Markdown, make preview available remotely (ie, serve on 0.0.0.0, not localhost)

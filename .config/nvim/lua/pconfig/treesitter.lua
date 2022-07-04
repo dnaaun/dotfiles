@@ -7,18 +7,18 @@ return {
 		-- use tsserver for
 		ft_to_parser.jsx = "tsx"
 		ft_to_parser.javascriptreact = "tsx"
-		ft_to_parser.typescriptreact = "tsx"
+		ft_to_parser.typescriptreact = "tsx" -- TODO: Remove this since you have ftdetectk/tsx.lua that sets filetype=tsx
 		ft_to_parser.tex = "latex"
 
-    local textsubjects = {
-        enable = true,
-        prev_selection = ',', -- (Optional) keymap to select the previous selection
-        keymaps = {
-            ['<CR>'] = 'textsubjects-smart',
-            [';'] = 'textsubjects-container-outer',
-            ['i;'] = 'textsubjects-container-inner',
-        },
-    }
+		local textsubjects = {
+			enable = true,
+			prev_selection = ",", -- (Optional) keymap to select the previous selection
+			keymaps = {
+				["<CR>"] = "textsubjects-smart",
+				[";"] = "textsubjects-container-outer",
+				["i;"] = "textsubjects-container-inner",
+			},
+		}
 
 		-- Various Treesitter modules config
 		local highlight = {
@@ -65,6 +65,7 @@ return {
 				set_jumps = true, -- whether to set jumps in the jumplist
 				-- disabled ]t, ]T, etc because we want to use it for vim-test/vim-ultest
 				goto_next_start = {
+					-- I'm using syntax_tree_surfer, so no need to do this.
 					["]f"] = "@function.outer",
 					["]{"] = "@class.outer",
 					["]k"] = "@comment.outer",
@@ -75,6 +76,7 @@ return {
 					["]p"] = "@parameter.inner",
 				},
 				goto_next_end = { -- Note that @class.outer is missing
+					-- I'm using syntax_tree_surfer, so no need to do this.
 					["]F"] = "@function.outer",
 					["]}"] = "@class.outer",
 					["]K"] = "@comment.outer",
@@ -83,9 +85,10 @@ return {
 					["]I"] = "@conditional.outer",
 					["]L"] = "@loop.outer",
 					["]P"] = "@parameter.inner",
-					-- ["]T"] = "@statement.outer",
+					["]T"] = "@statement.outer",
 				},
 				goto_previous_start = {
+					-- I'm using syntax_tree_surfer, so no need to do this.
 					["[f"] = "@function.outer",
 					["[{"] = "@class.outer",
 					["[k"] = "@comment.outer",
@@ -94,9 +97,10 @@ return {
 					["[i"] = "@conditional.outer",
 					["[l"] = "@loop.outer",
 					["[p"] = "@parameter.outer",
-					-- ["[t"] = "@statement.outer",
+					["[t"] = "@statement.outer",
 				},
 				goto_previous_end = { -- Note that @class.outer is missing
+					-- I'm using syntax_tree_surfer, so no need to do this.
 					["[F"] = "@function.outer",
 					["[}"] = "@class.outer",
 					["[K"] = "@comment.outer",
@@ -105,7 +109,7 @@ return {
 					["[I"] = "@conditional.outer",
 					["[L"] = "@loop.outer",
 					["[P"] = "@parameter.outer",
-					--["[T"] = "@statement.outer",
+					["[T"] = "@statement.outer",
 				},
 			},
 			lsp_interop = {
@@ -123,11 +127,11 @@ return {
 		}
 
 		local incremental_selection = {
-			enable = false,
+			enable = true,
 			keymaps = {
 				init_selection = "<CR>",
 				node_incremental = "<CR>",
-				scope_incremental = "<CR>",
+				--scope_incremental = "<CR>",
 				node_decremental = "g<CR>",
 			},
 		}
@@ -138,25 +142,41 @@ return {
 
 		local ensure_installed = { "tsx" }
 
-    -- treesitter playground taht shows you the nodes
+		-- treesitter playground taht shows you the nodes
 		local playground = {
 			enable = true,
 		}
 
+		-- requires the nvim-ts-context-commentstring plugin
+		local context_commentstring = {
+			enable = true,
+		}
+
+		local rainbow = {
+			enable = true,
+			-- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+			extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+			max_file_lines = nil, -- Do not enable for files with more than n lines, int
+			-- colors = {}, -- table of hex strings
+			-- termcolors = {} -- table of colour name strings
+		}
+
 		require("nvim-treesitter.configs").setup({
+			context_commentstring = context_commentstring,
 			ensure_installed = ensure_installed,
 			highlight = highlight,
 			indent = indent,
 			refactor = refactor,
 			textobjects = textobjects,
-      textsubjects = textsubjects,
+			textsubjects = textsubjects,
 			autotag = autotag,
 			incremental_selection = incremental_selection,
 			matchup = matchup,
 			playground = playground,
+      rainbow = rainbow
 		})
 
-    -- I don't like how (I blieve this is what is causing it) the org file folidng is working out.
+		-- I don't like how (I blieve this is what is causing it) the org file folidng is working out.
 		-- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 	end,
 }

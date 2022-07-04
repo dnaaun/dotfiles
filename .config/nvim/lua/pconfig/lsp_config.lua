@@ -1,25 +1,51 @@
+local wk = require("which-key")
+
+-- method 3
+wk.register({
+	K = { vim.lsp.buf.hover, "hover" },
+	g = {
+		d = { vim.lsp.buf.definition, "rename" },
+		R = { vim.lsp.buf.rename, "rename" },
+		h = {
+			function()
+				vim.diagnostic.open_float({ source = true })
+			end,
+			"diagnostic float",
+		},
+	},
+	["[e"] = {
+		function()
+			vim.diagnostic.goto_prev({ severity = "Error" })
+		end,
+		"previous diagnostic",
+	},
+	["]e"] = {
+		function()
+			vim.diagnostic.goto_next({ severity = "Error" })
+		end,
+		"next diagnostic",
+	},
+	["<leader>l"] = {
+		f = {
+			function()
+				vim.lsp.buf.format({ async = true })
+			end,
+			"format",
+		},
+		a = {
+			function()
+				vim.lsp.buf.code_action({})
+			end,
+			"code action",
+		},
+	},
+}, { mode = "n" })
+
 return {
 	"neovim/nvim-lspconfig",
 	ft = require("consts").lsp_enabled_filetypes,
 	config = function()
-		local buf_mapfunc = require("std2").buf_mapfunc
-		-- Keybindings
-		local setup_mappings = function(bufnr)
-			local opts = { noremap = true, silent = true }
-			vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", opts)
-			vim.api.nvim_buf_set_keymap(bufnr, "n", "gR", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-			buf_mapfunc("n", "gh", function()
-				vim.diagnostic.open_float({ source = true })
-			end, opts, "show line diagnostics")
-			vim.api.nvim_buf_set_keymap(0, "n", "[e", "<cmd>lua vim.diagnostic.goto_prev({severity='Error'})<CR>", opts)
-			vim.api.nvim_buf_set_keymap(0, "n", "]e", "<cmd>lua vim.diagnostic.goto_next({severity='Error'})<CR>", opts)
-			vim.keymap.set("n", "<leader>lf", function()
-				vim.lsp.buf.format({ async = true })
-			end, { buffer = true })
-			vim.keymap.set("n", "<leader>la", function()
-				vim.lsp.buf.code_action({})
-			end)
-		end
+		vim.lsp.set_log_level(vim.lsp.log_levels.INFO)
 
 		-- Use LSP formatting. Note this doesn't get invoked if LSP
 		-- isn't attached since we call it in on_attach
@@ -58,23 +84,18 @@ return {
 			end
 		end
 
-		--  We need to do this after the LSP is attached because otherwise inlay_hints doesn't work.
-		local rust_tools_activate = function(client)
-			if client.name == "rust_analyzer" then
-				-- require("rust-tools.inlay_hints").set_inlay_hints()
-			end
-		end
-
 		-- Allow other files to define callbacks that get called `on_attach`
 		local on_attach = function(client, bufnr)
+			-- go to next/previous occurence of variable under cursor using g* and g#
+			require("lsp_occurence").on_attach(client, bufnr)
+
 			for _, plugin_custom_attach in pairs(_G.lsp_config_on_attach_callbacks) do
 				plugin_custom_attach(client)
 			end
 
-			setup_mappings(bufnr)
+			-- setup_mappings(bufnr)
 			setup_formatexpr(client)
 			disable_formatting_sometimes(client)
-			rust_tools_activate(client)
 		end
 
 		-- Config for all LSPs
@@ -93,10 +114,19 @@ return {
 
 		-- Configuration for each LSP
 		local lsp_specific_configs = {
+			-- Tring out rust-tools right now
 			rust_analyzer = {
 				settings = {
 					["rust-analyzer"] = {
+						diagnostics = {
+							enable = true,
+							disabled = { "unresolved-proc-macro" },
+							-- enableExperimental = true,
+						},
 						cargo = {},
+						-- checkOnSave = {
+						-- 	command = "clippy",
+						-- },
 					},
 				},
 			},
@@ -126,7 +156,7 @@ return {
 							-- Get the language server to recognize the `vim` global
 							globals = {
 								"vim",
-                -- The rest of these globals were taken from luasnip: https://github.com/L3MON4D3/Dotfiles/blob/1214ff2bbb567fa8bdd04a21976a1a64ae931330/.config/nvim/lua/plugins/lspconfig.lua#L155-L168
+								-- The rest of these globals were taken from luasnip: https://github.com/L3MON4D3/Dotfiles/blob/1214ff2bbb567fa8bdd04a21976a1a64ae931330/.config/nvim/lua/plugins/lspconfig.lua#L155-L168
 								"s",
 								"sn",
 								"t",
@@ -184,20 +214,29 @@ return {
 						formatterLineLength = 80,
 						forwardSearch = {
 							executable = "/Applications/Skim.app/Contents/SharedSupport/displayline",
-							args = { "-g", "%l", "%p", "%f" },
+							args = { "%l", "%p", "%f" },
 						},
 						latexFormatter = "latexindent",
 						latexindent = {
 							modifyLineBreaks = true,
 						},
 						build = {
-							args = { "%f", "--synctex" },
+							args = { "--synctex", "%f" },
 							executable = "tectonic",
 							forwardSearchAfter = true,
 							onSave = true,
 						},
 					},
 				},
+			},
+
+			tsserver = {
+				filetypes = require("consts").javascripty_filetypes,
+				init_options = { codeActionsOnSave = { source = { organizeImports = true } } },
+			},
+
+			tailwindcss = {
+				filetypes = require("consts").javascripty_filetypes,
 			},
 
 			sqlls = {
@@ -242,6 +281,9 @@ return {
 				filetypes = { "ruby" },
 				root_dir = lspconfig.util.root_pattern("Gemfile", ".git"),
 			},
+			eslint = {
+				filetypes = require("consts").javascripty_filetypes,
+			},
 		}
 
 		-- https://github.com/ms-jpq/coq_nvim#lsp
@@ -250,17 +292,16 @@ return {
 		for _, lspname in ipairs({
 			"clangd",
 			"dockerls",
-      "eslint",
+			"eslint",
 			"kotlin_language_server",
 			"pyright",
-			"rust_analyzer",
 			"solargraph",
 			"sqls",
+			"rust_analyzer",
 			"sumneko_lua",
 			"tailwindcss",
 			"texlab",
 			"tsserver",
-			"vimls",
 			-- "sorbet",
 		}) do
 			local config = lsp_specific_configs[lspname]

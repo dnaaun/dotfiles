@@ -160,6 +160,20 @@ function M.try_require(mod)
 	end
 end
 
+---@generic T
+---@param list T[]
+---@param func fun(t: T) -> boolean
+---@return T[]
+function M.list_filter(list, func)
+	local new_list = {}
+	for i = 1, #list do
+		local item = list[i]
+		if func(item) then
+			new_list[#new_list + 1] = item
+		end
+	end
 
+	return new_list
+end
 
 return M

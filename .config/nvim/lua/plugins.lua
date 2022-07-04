@@ -2,8 +2,15 @@ require("packer").startup({
 	function(use)
 		-- package/plugin manager
 		use(require("pconfig.packer"))
-
-		use(require("pconfig.tmux_navigator"))
+		--
+		use({
+			"miversen33/import.nvim",
+			config = function()
+				require("import")
+			end,
+		})
+		-- use(require("pconfig.tmux_navigator"))
+		use(require("pconfig.tmux"))
 
 		use("embear/vim-localvimrc") -- Enable sourcing .lnvimrc files
 
@@ -17,8 +24,8 @@ require("packer").startup({
 		-- The LSPConfig, the lyth, the legend
 		use(require("pconfig.lsp_config"))
 
-		-- TODO: Setup inlay hints for rust, or just fix rust-tools.nvim's inlay hints
-		-- use(require("pconfig.lsp_extensions"))
+		use(require("pconfig.lsp_extensions"))
+		-- use(require("pconfig.rust_tools"))
 
 		-- I never use this really.
 		-- use(require("pconfig.lsp_lightbulb"))
@@ -28,7 +35,7 @@ require("packer").startup({
 
 		-- I'm not using pconfig.notify right now, because it is too noisy (gotta figure out which
 		-- error messages are doing it, and how to disable them)
-		-- use(require("pconfig.notify"))
+		use(require("pconfig.notify"))
 
 		-- Provides type annotations for neovim's Lua interface. Needs Sumenkos' Lua LSP. TODO: Not actually set up yet: https://github.com/folke/lua-dev.nvim#%EF%B8%8F--configuration
 		use(require("pconfig.lua_dev"))
@@ -41,8 +48,10 @@ require("packer").startup({
 		use("hrsh7th/cmp-nvim-lsp")
 		use("hrsh7th/cmp-buffer")
 		use("hrsh7th/cmp-path")
+    use("rcarriga/cmp-dap")
 		use("hrsh7th/cmp-cmdline")
 		use({ "saadparwaiz1/cmp_luasnip" })
+		use(require("pconfig.cmp_git"))
 
 		-- Super fast, super feature complete, completion plugin
 		-- use(require("pconfig.coq"))
@@ -57,23 +66,25 @@ require("packer").startup({
 		use("nvim-treesitter/nvim-treesitter-textobjects")
 
 		-- Treesitter text objects that are "smarter"
-		use("RRethy/nvim-treesitter-textsubjects")
+		use(require("pconfig.treesitter_subjects"))
+
+		-- Treesitter-based, "virtual-text hinting", text objects. Mind blown emoji. Seriously. Just makes too much sense.
+		use(require("pconfig.treehopper"))
+
+		-- I use it for treesitter-based,"virtual-text hinting", jumping/movement.
+		use(require("pconfig.syntax_tree_surfer"))
 
 		-- Highlight definition of current symbol, current scope
 		-- use("nvim-treesitter/nvim-treesitter-refactor") -- I don't think I've ever used this.
 
+    -- highlight brackets and things like that in differnet colors
+    use("p00f/nvim-ts-rainbow")
+
+    use(require("pconfig.rust_tools"))
+
 		-- Debugging/REPLs
 		use(require("pconfig.dap"))
 		use(require("pconfig.dap_ui"))
-
-		-- use({
-		-- 	"theHamsta/nvim-dap-virtual-text",
-		-- 	ft = dap_enabled_filetypes,
-		-- 	requires = "mfussenegger/nvim-dap",
-		-- 	config = function()
-		-- 		require("nvim-dap-virtual-text").setup({})
-		-- 	end,
-		-- })
 
 		-- Spin up a repl in a neovim terminal and send text to it
 		use(require("pconfig.iron"))
@@ -107,13 +118,15 @@ require("packer").startup({
 		use(require("pconfig.diffview"))
 
 		-- Who needs web interfaces when you have neovim interfaces (for Github)?
-		-- use(require("pconfig.octo")) -- Not using it
+		use(require("pconfig.octo")) -- Not using it
 
 		-- Get a url to the git host, for a range or a line in the current file.
 		use(require("pconfig.gitlinker"))
 
 		-- Misc
 		use("tpope/vim-commentary") -- (Un)comment stuff with gc
+		use("JoosepAlviste/nvim-ts-context-commentstring")
+
 		use(require("pconfig.which_key")) -- show candidate mappings after pressing a key
 
 		-- A quick-and-dirty solution to typing Amharic in vim,
@@ -132,19 +145,8 @@ require("packer").startup({
 
 		-- Markdown
 		use({ "plasticboy/vim-markdown", ft = { "markdown" } })
-		-- use({
-		-- 	"iamcco/markdown-preview.nvim",
-		-- 	setup = function()
-		-- 		vim.g.mkdp_filetypes = { "markdown" }
-		-- 	end,
-		-- 	run = "cd app && npm install",
-		-- 	ft = { "markdown" },
-		-- })
 		use({ "davidgranstrom/nvim-markdown-preview", ft = "markdown" })
 		use({ "dhruvasagar/vim-table-mode", ft = { "markdown" } })
-
-    -- Doesn't play nice with orgmode
-		-- use(require("pconfig.bullets"))
 
 		-- Testing things
 		use({ "tpope/vim-dispatch", opt = true, cmd = { "Dispatch", "Make", "Focus", "Start" } })
@@ -153,10 +155,7 @@ require("packer").startup({
 		use(require("pconfig.test"))
 
 		-- Let's see how much better this is.
-		use(require("pconfig.ultest"))
-
-		-- Improved definition of the "word" text object.
-		use("chaoren/vim-wordmotion")
+		use(require("pconfig.neotest"))
 
 		-- Tex
 		--use { 'lervag/vimtex',  ft = { 'tex' } }
@@ -173,12 +172,6 @@ require("packer").startup({
 
 		-- Capture output of ex commands (slightly quicker than doing :redir /tmp/SOMEFILE | the_ex_command | redir END)
 		use(require("pconfig.capture"))
-
-		-- A "buffer" line. (like tabs, but buffers, and on top)
-		use(require("pconfig.bufferline"))
-
-		-- Clipboard manager.
-		-- use(require("pconfig.neoclip"))
 
 		-- Telescope file browser.
 		use(require("pconfig.telescope_file_browser"))
@@ -202,9 +195,6 @@ require("packer").startup({
 		-- Foray into orgmode once more
 		use(require("pconfig.orgmode"))
 
-		-- Make the bullets appear nicer, for orgmode obv
-		use(require("pconfig.org_bullets"))
-
 		-- Show me where I'm at in the status bar (like, what funciton/ conditional/thingy)
 		use(require("pconfig.treesitter_context"))
 
@@ -212,12 +202,14 @@ require("packer").startup({
 		-- Ya boy is going to start writing plugins at this rate!
 		use(require("pconfig.playground"))
 
-		-- A "birds-eye view" of the code
-		-- use(require("pconfig.minimap"))
+		-- Convert between all the cases, with LSP and preview integration
+		use(require("pconfig.text_case"))
 
-		-- Reserves the right most column to show a "minatured" version of the
-		-- left-hand-side gutter of the whole file.
-		-- use(require("pconfig.sluice"))
+		-- use cht.sh easily inside vim
+		use(require("pconfig.cheat"))
+
+
+		use(require("pconfig.twilight"))
 	end,
 
 	config = {

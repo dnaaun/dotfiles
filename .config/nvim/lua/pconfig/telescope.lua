@@ -5,11 +5,6 @@ return {
 		telescope.setup({
 			defaults = {
 				layout_strategy = "vertical",
-				layout_config = {
-					height = 0.99,
-					width = 0.99, -- Works better because usually my terminal takes only half my screen
-					preview_height = 0.6,
-				},
 			},
 			pickers = {
 				buffers = {
@@ -40,7 +35,7 @@ return {
 						["n"] = {
 							["-"] = function(prompt_bufnr)
 								require("telescope").extensions.file_browser.actions.goto_parent_dir(prompt_bufnr, true)
-							end ,
+							end,
 						},
 					},
 				},
@@ -53,7 +48,7 @@ return {
 
 		local builtin = require("telescope.builtin")
 		mapfunc("n", "<leader>fw", builtin.grep_string, { noremap = true }, "grep_string")
-		mapfunc("n", "s", function()
+		mapfunc("n", "<leader>s", function()
 			builtin.fd({ hidden = true })
 		end, { noremap = true }, "fd")
 		mapfunc("n", "<C-s>", function()
@@ -172,6 +167,63 @@ return {
 			)
 			vim.keymap.set("n", "<leader>ls", builtin.lsp_document_symbols, mapping_opts)
 		end
+
+    -- which-key mappings
+		local wk = require("which-key")
+		wk.register({
+			["<leader>le"] = { builtin.diagnostics, "telescope workspace diagnostics" },
+			g = {
+				r = {
+					function()
+						builtin.lsp_references({ jump_type = "jump" })
+					end,
+					"LSP references",
+				},
+				t = {
+					function()
+						builtin.lsp_type_definitions({ jump_type = "jump" })
+					end,
+					"LSP type definition",
+				},
+				d = {
+					function()
+						builtin.lsp_definitions({ jump_type = "jump" })
+					end,
+					"LSP definition",
+				},
+
+				s = {
+					name = "goto LSP things in horizontal split",
+					r = {
+						function()
+							builtin.lsp_references({ jump_type = "split" })
+						end,
+						"references",
+					},
+					d = {
+						function()
+							builtin.lsp_definitions({ jump_type = "split" })
+						end,
+						"go to definition in horizontal split",
+					},
+				},
+				v = {
+					name = "goto LSP things in vertical split",
+					d = {
+						function()
+							builtin.lsp_definitions({ jump_type = "vsplit" })
+						end,
+						"definition",
+					},
+					i = {
+						function()
+							builtin.lsp_implementations({ jump_type = "vsplit" })
+						end,
+						"definition",
+					},
+				},
+			},
+		})
 
 		table.insert(_G.lsp_config_on_attach_callbacks, on_attach)
 	end,

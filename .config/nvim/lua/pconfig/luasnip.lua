@@ -1,6 +1,11 @@
 local config = function()
 	local ls = require("luasnip")
 
+
+	-- Since treehopper.nvim requires that we use `tsx` as a filetype,
+	-- and luasnip doesn't work when I just do ls.add_snippets("tsx", ...)
+	ls.filetype_extend("tsx", { "typescript" })
+
 	vim.keymap.set({ "v", "i" }, "<C-n>", function()
 		if ls.expand_or_locally_jumpable() then
 			ls.expand_or_jump()
@@ -31,26 +36,6 @@ local config = function()
 	-- (At least when reloading this file), snippets get added multipel times
 	-- sometimes, so remove all before adding them.
 	ls.cleanup()
-
-	--- Used for useState() so far
-	--- @param str string
-	local function first_to_upper(str)
-		return (str:gsub("^%l", string.upper))
-	end
-
-	ls.add_snippets("typescriptreact", {
-		s(
-			"us",
-			fmt("const [{}, {}] = useState({{{}}})", {
-				i(1, "name"),
-				f(function(arg)
-					local state_name = arg[1][1]
-					return "set" .. first_to_upper(state_name)
-				end, { 1 }),
-				i(2),
-			})
-		),
-	})
 
 	ls.add_snippets("all", {
 		-- put in the \begin{quote} environment whatever is in the clipboard.

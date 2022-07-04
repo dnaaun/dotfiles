@@ -1,46 +1,80 @@
 return {
 	"~/git/nvim-dap",
+	requires = "folke/which-key.nvim",
 	-- ft = require("consts").dap_enabled_filetypes,
 	as = "nvim-dap",
 	config = function()
 		local dap = require("dap")
-		local buf_mapfunc = require("std2").buf_mapfunc
-		dap.set_log_level("TRACE")
 
 		dap.defaults.fallback.terminal_win_cmd = "10split new"
-		-- INFO: execute ~/Downloads/vscode-extensions/codelldb/extension/adapter/codelldb --port 13000
-		dap.adapters.codelldb = {
-			type = "server",
-			host = "127.0.0.1",
-			port = 13000,
-		}
 
-		dap.configurations.c = {
-			{
-				type = "codelldb",
-				request = "launch",
-				program = function()
-				 return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-				end,
-				--program = '${fileDirname}/${fileBasenameNoExtension}',
-				cwd = "${workspaceFolder}",
-				terminal = "integrated",
-			},
-		}
+		-- 💀 Adjust the path to your executable
+		local cmd = "/Users/davidat/src/codelldb-aarch64-darwin/extension/adapter/codelldb"
 
-		dap.configurations.cpp = dap.configurations.c
+		-- https://github.com/mfussenegger/nvim-dap/wiki/C-C---Rust-(via--codelldb)#autolaunch-codelldb
+		dap.adapters.codelldb = function(on_adapter)
+			-- This asks the system for a free port
+			local tcp = vim.loop.new_tcp()
+			tcp:bind("127.0.0.1", 0)
+			local port = tcp:getsockname().port
+			tcp:shutdown()
+			tcp:close()
+
+			-- Start codelldb with the port
+			local stdout = vim.loop.new_pipe(false)
+			local stderr = vim.loop.new_pipe(false)
+			local opts = {
+				stdio = { nil, stdout, stderr },
+				args = { "--port", tostring(port) },
+			}
+			local handle
+			local pid_or_err
+			handle, pid_or_err = vim.loop.spawn(cmd, opts, function(code)
+				stdout:close()
+				stderr:close()
+				handle:close()
+				if code ~= 0 then
+					print("codelldb exited with code", code)
+				end
+			end)
+			if not handle then
+				vim.notify("Error running codelldb: " .. tostring(pid_or_err), vim.log.levels.ERROR)
+				stdout:close()
+				stderr:close()
+				return
+			end
+			vim.notify("codelldb started. pid=" .. pid_or_err)
+			stderr:read_start(function(err, chunk)
+				assert(not err, err)
+				if chunk then
+					vim.schedule(function()
+						require("dap.repl").append(chunk)
+					end)
+				end
+			end)
+			local adapter = {
+				type = "server",
+				host = "127.0.0.1",
+				port = port,
+			}
+			-- 💀
+			-- Wait for codelldb to get ready and start listening before telling nvim-dap to connect
+			-- If you get connect errors, try to increase 500 to a higher value, or check the stderr (Open the REPL)
+			vim.defer_fn(function()
+				on_adapter(adapter)
+			end, 500)
+		end
 
 		dap.configurations.rust = {
 			{
+				name = "Launch file",
 				type = "codelldb",
 				request = "launch",
 				program = function()
-					-- return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-          return "/Users/davidat/git/highlights/target/debug/highlights"
+					return "/Users/davidat/git/highlights/target/debug/highlights"
 				end,
 				cwd = "${workspaceFolder}",
-				terminal = "integrated",
-				sourceLanguages = { "rust" },
+				stopOnEntry = true,
 			},
 		}
 
@@ -49,24 +83,6 @@ return {
 		-- 	type = "executable",
 		-- 	command = "/Users/davidat/src/codelldb/extension/lldb/bin/lldb", -- adjust as needed
 		-- 	name = "lldb",
-		-- }
-
-		-- dap.configurations.rust = {
-		-- 	{
-		-- 		name = "Launch",
-		-- 		type = "lldb",
-		-- 		request = "launch",
-		-- 		program = function()
-		-- 			local cwd = vim.fn.getcwd()
-		-- 			local beg, end_ = vim.regex("[^/]*$"):match_str(cwd)
-		-- 			local exec_name = cwd:sub(beg, end_) -- Aint nobody got time to parse Cargo.toml.
-		-- 			return cwd .. "/target/debug/" .. exec_name
-		-- 		end,
-		-- 		cwd = "${workspaceFolder}",
-		-- 		stopOnEntry = false,
-		-- 		args = {},
-		-- 		runInTerminal = false,
-		-- 	},
 		-- }
 
 		--- Rails
@@ -147,7 +163,82 @@ return {
 			end,
 		}
 
+		local wk = require("which-key")
+
+		-- method 3
+		wk.register({
+			["<leader>d"] = {
+				name = "+dap (debugging)",
+				c = {
+					function()
+						require("dap").continue()
+						-- require("dapui").open()
+					end,
+					"continue",
+				},
+				h = {
+					function()
+						require("dap.ui.widgets").hover()
+					end,
+					"hover info from DAP",
+				},
+				p = {
+					require("dap").pause,
+					"pause debugging",
+				},
+				d = {
+					function()
+						dap.close()
+						dap.disconnect()
+						require("dapui").close()
+					end,
+					"stop debugging",
+				},
+				u = {
+					require("dap").up,
+					"go up in stack frame without stepping",
+				},
+				l = {
+					require("dap").down,
+					"go lower (down) in stack frame without stepping",
+				},
+				["."] = {
+					require("dap").up,
+					"run until cursor",
+				},
+				v = {
+					require("dap").step_over,
+					"step over debugger",
+				},
+				i = {
+					require("dap").step_into,
+					"step into debugger",
+				},
+				o = {
+					require("dap").step_out,
+					"step out debugger",
+				},
+				b = {
+					require("dap").toggle_breakpoint,
+					"toggle breakpoint",
+				},
+				B = {
+					function()
+						require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+					end,
+					"set conditional breakpoint",
+				},
+				r = {
+					require("dap").repl.open,
+					"toggle debugger repl",
+				},
+			},
+		})
+
 		local mapfunc = require("std2").mapfunc
+		mapfunc("v", "<leader>dr", function()
+			require("dap.repl").evaluate(require("std2").get_visual_selection_text(0))
+		end, { silent = true }, "run visual text in debugger repl")
 
 		mapfunc("n", "<leader>dja", function()
 			require("dap").run(_G.djangoDapConfig)
@@ -155,57 +246,8 @@ return {
 		mapfunc("n", "<leader>djt", function()
 			require("dap").run(_G.djangoTestDapConfig)
 		end, {}, "Debug django tests")
-		mapfunc("n", "<leader>dc", function()
-			require("dap").continue()
-		end, { silent = true }, "continue debugging")
-		mapfunc("n", "<leader>dh", function()
-			require("dap.ui.widgets").hover()
-		end, { silent = true }, "hover info from DAP")
 		mapfunc("v", "<leader>dh", function()
 			require("dap.ui.widgets").hover()
 		end, { silent = true }, "hover info from DAP")
-		buf_mapfunc("n", "<leader>dd", function()
-			dap.close()
-			dap.disconnect()
-			require("dapui").close()
-		end, { silent = true }, "stop debugging")
-		mapfunc("n", "<leader>dp", function()
-			require("dap").pause()
-		end, { silent = true }, "pause debugging")
-		mapfunc("n", "<leader>du", function()
-			require("dap").up()
-		end, { silent = true }, "go up in stack frame without stepping")
-		mapfunc("n", "<leader>dl", function()
-			require("dap").down()
-		end, { silent = true }, "go lower (down) in stack frame without stepping")
-		mapfunc("n", "<leader>d.", function()
-			require("dap").up()
-		end, { silent = true }, "run until cursor")
-		mapfunc("n", "<leader>dv", function()
-			require("dap").step_over()
-		end, { silent = true }, "step over debugger")
-		mapfunc("n", "<leader>di", function()
-			require("dap").step_into()
-		end, { silent = true }, "step into debugger")
-		mapfunc("n", "<leader>do", function()
-			require("dap").step_out()
-		end, { silent = true }, "step out debugger")
-		mapfunc("n", "<leader>db", function()
-			require("dap").toggle_breakpoint()
-		end, { silent = true }, "toggle breakpoint")
-		mapfunc("n", "<leader>dB", function()
-			require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
-		end, {
-			silent = true,
-		}, "set conditional breakpoint")
-		mapfunc("n", "<leader>dr", function()
-			require("dap").repl.open()
-		end, { silent = true }, "toggle debugger repl")
-
-		mapfunc("v", "<leader>dr", function()
-			require("dap.repl").evaluate(require("std2").get_visual_selection_text(0))
-		end, {
-			silent = true,
-		}, "run visual text in debugger repl")
 	end,
 }
