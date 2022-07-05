@@ -120,111 +120,57 @@ return {
 			builtin.fd({ hidden = true, search_dirs = search_dirs })
 		end, {})
 
-		local function on_attach()
-			buf_mapfunc("n", "gd", function()
-				builtin.lsp_definitions({ jump_type = "jump" })
-			end, mapping_opts, "go to definition")
-
-			-- Open definition in horizontal splits with gsd
-			buf_mapfunc("n", "gsd", function()
-				builtin.lsp_definitions({ jump_type = "split" })
-			end, mapping_opts, "go to definition in horizontal split")
-
-			-- Open definition in vertical splits with gad.
-			buf_mapfunc("n", "gad", function()
-				builtin.lsp_definitions({ jump_type = "vsplit" })
-			end, mapping_opts, "go to definition in vertical split")
-
-			-- Repeat the same story with splits and going to references as with splits and going to definitions above.
-			buf_mapfunc("n", "gr", function()
-				builtin.lsp_references({ jump_type = "jump" })
-			end, mapping_opts, "go to reference")
-			buf_mapfunc("n", "gsr", function()
-				builtin.lsp_references({ jump_type = "split" })
-			end, mapping_opts, "go to reference in horizontal split")
-			buf_mapfunc("n", "gar", function()
-				builtin.lsp_references({ jump_type = "jump" })
-			end, mapping_opts, "go to reference in vertical split")
-
-			buf_mapfunc("n", "gt", function()
-				builtin.lsp_type_definitions({ jump_type = "jump" })
-			end, mapping_opts, "go to type definition")
-			buf_mapfunc("n", "gst", function()
-				builtin.lsp_type_definitions({ jump_type = "split" })
-			end, mapping_opts, "go to type definition in horizontal split")
-			buf_mapfunc("n", "gat", function()
-				builtin.lsp_type_definitions({ jump_type = "jump" })
-			end, mapping_opts, "go to type definition in vertical split")
-
-			buf_mapfunc("n", "<leader>li", builtin.lsp_implementations, mapping_opts)
-			buf_mapfunc("n", "<leader>le", builtin.diagnostics, mapping_opts, "telescope workspace diagnostics")
-			buf_mapfunc(
-				"n",
-				"<leader>lw",
-				builtin.lsp_dynamic_workspace_symbols,
-				mapping_opts,
-				"telescope dynamic workspace symbols"
-			)
-			vim.keymap.set("n", "<leader>ls", builtin.lsp_document_symbols, mapping_opts)
-		end
-
-    -- which-key mappings
-		local wk = require("which-key")
-		wk.register({
-			["<leader>le"] = { builtin.diagnostics, "telescope workspace diagnostics" },
-			g = {
+		--- @param jump_type "jump" | "vsplit" | "split"
+		--- @param descriptor_prefix string | nil
+		local function lsp_gotos_with_jump_type(jump_type, descriptor_prefix)
+			descriptor_prefix = descriptor_prefix or ""
+			return {
 				r = {
 					function()
-						builtin.lsp_references({ jump_type = "jump" })
+						builtin.lsp_references({ jump_type = jump_type })
 					end,
-					"LSP references",
+					descriptor_prefix .. "references",
 				},
 				t = {
 					function()
-						builtin.lsp_type_definitions({ jump_type = "jump" })
+						builtin.lsp_type_definitions({ jump_type = jump_type })
 					end,
-					"LSP type definition",
+					descriptor_prefix .. "type definition",
 				},
 				d = {
 					function()
-						builtin.lsp_definitions({ jump_type = "jump" })
+						builtin.lsp_definitions({ jump_type = jump_type })
 					end,
-					"LSP definition",
+					descriptor_prefix .. "definition",
 				},
+				w = {
+					function()
+						builtin.lsp_dynamic_workspace_symbols({ jump_type = jump_type })
+					end,
+					descriptor_prefix .. "dynamic workspace symbols",
+				},
+				e = {
+					function()
+						builtin.diagnostics({ jump_type = jump_type })
+					end,
+					descriptor_prefix .. "diagnostics",
+				},
+				i = {
+					function()
+						builtin.lsp_implementations({ jump_type = jump_type })
+					end,
+					"implementation",
+				},
+			}
+		end
 
-				s = {
-					name = "goto LSP things in horizontal split",
-					r = {
-						function()
-							builtin.lsp_references({ jump_type = "split" })
-						end,
-						"references",
-					},
-					d = {
-						function()
-							builtin.lsp_definitions({ jump_type = "split" })
-						end,
-						"go to definition in horizontal split",
-					},
-				},
-				v = {
-					name = "goto LSP things in vertical split",
-					d = {
-						function()
-							builtin.lsp_definitions({ jump_type = "vsplit" })
-						end,
-						"definition",
-					},
-					i = {
-						function()
-							builtin.lsp_implementations({ jump_type = "vsplit" })
-						end,
-						"definition",
-					},
-				},
-			},
+		-- which-key mappings
+		local wk = require("which-key")
+		wk.register({
+			g = vim.tbl_extend("force", {
+				v = vim.tbl_extend("force", { name = "open vertically" }, lsp_gotos_with_jump_type("vsplit")),
+				s = vim.tbl_extend("force", { name = "open horizontally" }, lsp_gotos_with_jump_type("split")),
+			}, lsp_gotos_with_jump_type("jump", "LSP ")),
 		})
-
-		table.insert(_G.lsp_config_on_attach_callbacks, on_attach)
 	end,
 }

@@ -175,7 +175,7 @@ end
 
 local function on_attach(client, bufnr)
 	-- register which client we're using for which server.
-	if not client.server_capabilities.documentHighlightProvider then
+	if not client.server_capabilities.documentHighlightProvider or client.name == "solargraph" then
 		return
 	end
 
