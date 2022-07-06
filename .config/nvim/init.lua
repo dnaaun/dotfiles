@@ -22,7 +22,7 @@ g.loaded_spellfile_plugin = 1
 -- let g:loaded_netrw             = 1
 -- let g:loaded_netrwPlugin       = 1
 g.loaded_tutor_mode_plugin = 1
--- let g:loaded_remote_plugins    = 1
+g.loaded_remote_plugins    = 1
 
 _G.lsp_config_on_attach_callbacks = {}
 
