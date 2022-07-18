@@ -13,7 +13,7 @@ wk.register({
 			"diagnostic float",
 		},
 	},
-	["[e"] = {
+["[e"] = {
 		function()
 			vim.diagnostic.goto_prev({ severity = "Error" })
 		end,
@@ -22,6 +22,18 @@ wk.register({
 	["]e"] = {
 		function()
 			vim.diagnostic.goto_next({ severity = "Error" })
+		end,
+		"next diagnostic",
+	},
+	["[lh"] = {
+		function()
+			vim.diagnostic.goto_prev({ severity = "Warn" })
+		end,
+		"previous diagnostic",
+	},
+	["]lh"] = {
+		function()
+			vim.diagnostic.goto_next({ severity = "Warn" })
 		end,
 		"next diagnostic",
 	},
@@ -224,7 +236,7 @@ return {
 							args = { "--synctex", "%f" },
 							executable = "tectonic",
 							forwardSearchAfter = true,
-							onSave = true,
+							onSave = false,
 						},
 					},
 				},
@@ -290,6 +302,7 @@ return {
 		-- local coq = require("coq")
 
 		for _, lspname in ipairs({
+     -- "ccls",
 			"clangd",
 			"dockerls",
 			"eslint",

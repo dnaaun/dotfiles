@@ -8,5 +8,5 @@ if [[ -z "$1" ]] || [[ ! -z "$2" ]]; then
 fi
 
 PREFIX="dt/"
-pr_title="$(gh issue view --json title $1 | jq -r '.title' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z]/-/g')"
+pr_title="$(gh issue view --json title $1 | jq -r '.title' | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z]+/-/g')"
 git checkout -b "${PREFIX}${pr_title}"

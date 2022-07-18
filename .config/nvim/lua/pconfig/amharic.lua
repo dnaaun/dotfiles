@@ -1,1 +1,1 @@
-return { "davidatbu/amharic.nvim", cmd = { "AmharicToggle" }, ft = { "markdown" } }
+return { "/Users/davidat/git/amharic.nvim"  }

@@ -84,9 +84,7 @@ return {
 				end,
 			})
 		end, { noremap = true }, "live_grep")
-		-- Isn't prefixed with f cuz it's so commonly used
 		mapfunc("n", "<leader>b", builtin.buffers, { noremap = true }, "buffers")
-		-- Isn't prefixed with f cuz it's so commonly used
 		mapfunc("n", "<leader>h", builtin.oldfiles, { noremap = true }, "oldfiles")
 		mapfunc("n", "<leader>ft", builtin.help_tags, { noremap = true }, "help_tags")
 		mapfunc("n", "<leader>f:", builtin.command_history, { noremap = true }, "command_history")
@@ -168,7 +166,7 @@ return {
 		local wk = require("which-key")
 		wk.register({
 			g = vim.tbl_extend("force", {
-				v = vim.tbl_extend("force", { name = "open vertically" }, lsp_gotos_with_jump_type("vsplit")),
+				a = vim.tbl_extend("force", { name = "open vertically" }, lsp_gotos_with_jump_type("vsplit")),
 				s = vim.tbl_extend("force", { name = "open horizontally" }, lsp_gotos_with_jump_type("split")),
 			}, lsp_gotos_with_jump_type("jump", "LSP ")),
 		})

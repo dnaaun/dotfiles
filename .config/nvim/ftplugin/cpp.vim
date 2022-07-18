@@ -2,13 +2,6 @@
 " Use cppman for Shift-K
 setlocal keywordprg=:term\ cppman
 
-" Use ALE for all the LSP-like things
-nnoremap gd :ALEGoToDefinition<CR>
-nnoremap gu :ALEFindReferences<CR>
-nnoremap gr :ALERename<CR>
-
-nnoremap Gd :ALEGoToDefinition -vsplit<CR>
-nnoremap Gu :ALEFindReferences -vsplit<CR>
 
 
 " https://stackoverflow.com/a/1878984
@@ -25,5 +18,3 @@ set expandtab       " Expand TABs to spaces
 
 let b:ale_linters = [ 'cc' ]
 
-" Use ALE for autocomplete
-set omnifunc=ale#completion#OmniFunc

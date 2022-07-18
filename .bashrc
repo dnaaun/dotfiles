@@ -218,9 +218,11 @@ alias xh="xsv headers"
 # lowercase
 alias lower="tr '[:upper:]' '[:lower:]'"
 # Include hidden files by default
-alias fd="$FDCMD -H"
 alias bat="$BATCMD"
-complete -F _complete_alias fd
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  alias fd="$FDCMD -H"
+  complete -F _complete_alias fd
+fi
 
 # NO idea why I have this here.
 alias bash="bash --noprofile"
@@ -379,3 +381,6 @@ $PATH
 # Source customizations that differ across machines
 source ~/.bashrc_specific
 
+alias latest_branches="git for-each-ref --sort=-committerdate refs/heads/ | choose 2"
+
+alias most_recent_mp3_in_downloads_as_tex="ls -ct ~/Downloads/*.{mp3,MP3} | head -1 | sd '.*/' '' | sd --flags i '.mp3$' '.tex'"

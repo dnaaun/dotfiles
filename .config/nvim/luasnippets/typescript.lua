@@ -122,4 +122,19 @@ useEffect(() => {{
 			{ i(1, ""), i(2, "") }
 		)
 	),
+
+	-- Mobx
+	s(
+		{ trig = "mm", descr = "User = types.model('User',  {})" },
+		fmt(
+			[[
+const {} = types.model("{}", {{{}}});
+  ]],
+			{
+				i(1, ""),
+				rep(1),
+				i(2),
+			}
+		)
+	),
 }

@@ -138,6 +138,11 @@ return {
 
 		local matchup = { -- vim-matchup experimental support for treesitter
 			enable = true,
+
+      -- Matchcup is indispensible, but it's slow, so I'll disable as
+      -- much as I can the features apart from "jump to matching tag".
+      disable_virtual_text = true,
+      include_match_words = false
 		}
 
 		local ensure_installed = { "tsx" }

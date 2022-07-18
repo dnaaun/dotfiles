@@ -9,7 +9,6 @@ require("packer").startup({
 				require("import")
 			end,
 		})
-		-- use(require("pconfig.tmux_navigator"))
 		use(require("pconfig.tmux"))
 
 		use("embear/vim-localvimrc") -- Enable sourcing .lnvimrc files
@@ -208,8 +207,12 @@ require("packer").startup({
 		-- use cht.sh easily inside vim
 		use(require("pconfig.cheat"))
 
+    -- sometimes, I want `thisWord` to take two "word" motions to traverse,
+    -- because it's camel cased.
+    -- use(require("pconfig.wordmotion"))
 
-		use(require("pconfig.twilight"))
+    -- should help with file navigation a lot
+    use(require("pconfig.harpoon"))
 	end,
 
 	config = {
