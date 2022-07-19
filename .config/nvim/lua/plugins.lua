@@ -213,6 +213,9 @@ require("packer").startup({
 
     -- should help with file navigation a lot
     use(require("pconfig.harpoon"))
+
+    -- nvim-autopairs
+    use(require("pconfig.autopairs"))
 	end,
 
 	config = {
