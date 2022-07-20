@@ -54,7 +54,7 @@ local function get_probable_react_comp_name()
 	local dir_name = vim.fn.expand("%"):match("([^/]+)/[^/]+$")
 	local file_name = vim.fn.expand("%:t")
 
-	if vim.fn.match(file_name, "index\\..*tsx\\?") == 0 then
+	if vim.fn.match(file_name, "\\(index\\|stories\\)\\..*tsx\\?") == 0 then
 		return dir_name
 	else
 		return vim.fn.substitute(file_name, "\\..*$", "", "g")

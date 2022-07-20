@@ -1,6 +1,8 @@
 return {
 	-- Filetypes for which we have LSPs configured
 	lsp_enabled_filetypes = {
+		"typescript",
+		"typescriptreact",
 		"javascript",
 		"javascriptreact",
 		"tsx",

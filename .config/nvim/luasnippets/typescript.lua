@@ -67,6 +67,17 @@ local function get_probable_react_comp_name()
 	end
 end
 
+local function cursor_in_console_log_in_ts()
+	local parser = vim.treesitter.get_parser(0, "tsx")
+	local tstree = parser:parse()
+
+	local node = tstree[1]:root():named_descendant_for_range(pos_begin[1], pos_begin[2], pos_end[1], pos_end[2])
+
+	while node ~= nil and node:type() ~= "interface_declaration" do
+		node = node:parent()
+	end
+end
+
 return {
 	-- Escaping braces makings things look crazy here.
 	s(
@@ -134,6 +145,18 @@ const {} = types.model("{}", {{{}}});
 				i(1, ""),
 				rep(1),
 				i(2),
+			}
+		)
+	),
+
+	s(
+		{ trig = "cl", descr = "console.log" },
+		fmt(
+			[[
+      console.log({})
+      ]],
+			{
+				i(1, ""),
 			}
 		)
 	),

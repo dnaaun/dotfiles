@@ -132,10 +132,6 @@ require("packer").startup({
 		-- without having to rely on changing the system-wide keyboard layout
 		use(require("pconfig.amharic"))
 
-		-- The below is not working, so we'll go with an alternative.
-		use(require("pconfig.ts_autotag")) -- When changing tags, change both
-		-- use (require("pconfig.closetag"))
-
 		use(require("pconfig.colorizer"))
 		-- Used currently for editing JSX mostly
 		use({ "tpope/vim-surround" })
@@ -216,6 +212,9 @@ require("packer").startup({
 
     -- nvim-autopairs
     use(require("pconfig.autopairs"))
+
+    -- match autotag
+    use(require("pconfig.ts_autotag"))
 	end,
 
 	config = {

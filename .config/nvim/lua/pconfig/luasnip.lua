@@ -4,7 +4,7 @@ local config = function()
 
 	-- Since treehopper.nvim requires that we use `tsx` as a filetype,
 	-- and luasnip doesn't work when I just do ls.add_snippets("tsx", ...)
-	ls.filetype_extend("tsx", { "typescript" })
+	ls.filetype_extend("typescriptreact", { "typescript" })
 
 	vim.keymap.set({ "v", "i" }, "<C-n>", function()
 		if ls.expand_or_locally_jumpable() then

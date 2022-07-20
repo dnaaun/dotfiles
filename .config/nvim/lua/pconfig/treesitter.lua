@@ -124,6 +124,24 @@ return {
 
 		local autotag = {
 			enable = true,
+			filetypes = {
+				"html",
+				"javascript",
+				"typescript",
+				"javascriptreact",
+				"typescriptreact",
+				"svelte",
+				"vue",
+				"tsx",
+				"jsx",
+				"rescript",
+				"xml",
+				"php",
+				"markdown",
+				"glimmer",
+				"handlebars",
+				"hbs",
+			},
 		}
 
 		local incremental_selection = {
@@ -139,10 +157,10 @@ return {
 		local matchup = { -- vim-matchup experimental support for treesitter
 			enable = true,
 
-      -- Matchcup is indispensible, but it's slow, so I'll disable as
-      -- much as I can the features apart from "jump to matching tag".
-      disable_virtual_text = true,
-      include_match_words = false
+			-- Matchcup is indispensible, but it's slow, so I'll disable as
+			-- much as I can the features apart from "jump to matching tag".
+			disable_virtual_text = true,
+			include_match_words = false,
 		}
 
 		local ensure_installed = { "tsx" }
@@ -178,7 +196,7 @@ return {
 			incremental_selection = incremental_selection,
 			matchup = matchup,
 			playground = playground,
-      rainbow = rainbow
+			rainbow = rainbow,
 		})
 
 		-- I don't like how (I blieve this is what is causing it) the org file folidng is working out.
