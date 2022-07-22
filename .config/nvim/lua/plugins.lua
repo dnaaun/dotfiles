@@ -215,6 +215,9 @@ require("packer").startup({
 
     -- match autotag
     use(require("pconfig.ts_autotag"))
+
+    -- Put bullets on next line if the current one has bullets
+    use(require("pconfig.bullets"))
 	end,
 
 	config = {
