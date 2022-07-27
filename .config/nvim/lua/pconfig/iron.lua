@@ -2,9 +2,10 @@ return {
 	"hkupty/iron.nvim",
 	setup = function()
 		-- Disable default mappings
-		vim.g.iron_map_defaults = true
+		vim.g.iron_map_defaults = false
 	end,
 	config = function()
+    local bracketed_paste = require("iron.fts.common").bracketed_paste
 		local iron = require("iron.core")
 
 		vim.keymap.set("n", "<leader>ro", function()
@@ -14,13 +15,6 @@ return {
 		vim.keymap.set("n", "<leader>rf", function()
 			iron.focus_on(vim.bo.filetype)
 		end, {})
-
-		vim.api.nvim_set_keymap(
-			"n",
-			"<leader>re",
-			'<Cmd>lua require("iron").core.send(vim.api.nvim_buf_get_option(0,"ft"), vim.api.nvim_buf_get_lines(0, 0, -1, false))<CR>',
-			{}
-		)
 
 		iron.setup({
 			config = {
@@ -68,6 +62,11 @@ return {
 					lua = require("iron.fts.lua").lua,
 					ruby = {
 						command = { "bundle", "exec", "rails", "console" },
+            format = bracketed_paste
+					},
+					sql = {
+						command = { "pgcli", "-d", "hybrid_development", "-u", "hybrid" },
+            format = bracketed_paste
 					},
 				},
 			},
@@ -75,7 +74,7 @@ return {
 			keymaps = {
 				send_motion = "<leader>r",
 				visual_send = "<leader>r",
-				send_file = "<leader>ra", -- a for all
+				send_file = "<leader>ra",
 				send_line = "<leader>rr",
 				cr = "<leader>r<cr>",
 				interrupt = "<leader>ri",

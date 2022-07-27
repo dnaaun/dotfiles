@@ -114,13 +114,14 @@ end
 -- })
 
 -- Setup an autocmd to delete the buffer when the process ends.
-vim.api.nvim_create_autocmd({ "TermClose" }, {
-	group = vim.api.nvim_create_augroup("IronCloseWinsOnProcessEnd", {}),
-	pattern = "*",
-	callback = function(args)
-		vim.api.nvim_buf_delete(args.buf, {})
-	end,
-})
+-- NOTE: This breaks difftastic preview for telescope git commands: https://github.com/nvim-telescope/telescope.nvim/issues/1973#issuecomment-1153082196
+-- vim.api.nvim_create_autocmd({ "TermClose" }, {
+-- 	group = vim.api.nvim_create_augroup("IronCloseWinsOnProcessEnd", {}),
+-- 	pattern = "*",
+-- 	callback = function(args)
+-- 		vim.api.nvim_buf_delete(args.buf, {})
+-- 	end,
+-- })
 
 -- Quickfix shortcuts
 vim.keymap.set("n", "<leader>qo", ":copen<CR>", {})

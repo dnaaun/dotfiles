@@ -9,6 +9,7 @@ return {
 			debounce = 2000, -- 2 secs after the dust settles, fire off diagnostics.
 			fallback_severity = vim.diagnostic.severity.WARN, -- Currently entirely for the sake of eslint "errors" that I'd like reported as warnings.
 			sources = {
+				null_ls.builtins.formatting.pg_format,
 				null_ls.builtins.formatting.stylua,
 				null_ls.builtins.formatting.black,
 				null_ls.builtins.formatting.prettier.with({

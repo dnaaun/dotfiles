@@ -162,9 +162,41 @@ return {
 			}
 		end
 
+		-- Setup difftastic as the diff tool when previewing git diffs with the telescope git commands:
+
+		local previewers = require("telescope.previewers")
+
+		local difftastic = previewers.new_termopen_previewer({
+			get_command = function(entry)
+				-- this is for status
+				-- You can get the AM things in entry.status. So we are displaying file if entry.status == '??' or 'A '
+				-- just do an if and return a different command
+				if entry.status == "??" or "A " then
+					return { "git", "-c", "core.pager=difft", "diff", entry.value }
+				end
+
+				-- note we can't use pipes
+				-- this command is for git_commits and git_bcommits
+				return { "git", "-c", "core.pager=difft", "diff", entry.value .. "^!" }
+			end,
+		})
+
+		local git_preview_opts = { previewer = difftastic }
+
 		-- which-key mappings
 		local wk = require("which-key")
 		wk.register({
+			["<leader>f"] = {
+				g = {
+					name = "git",
+					d = {
+						function()
+							builtin.git_status(git_preview_opts)
+						end,
+						"browse diffs and go to file",
+					},
+				},
+			},
 			g = vim.tbl_extend("force", {
 				a = vim.tbl_extend("force", { name = "open vertically" }, lsp_gotos_with_jump_type("vsplit")),
 				s = vim.tbl_extend("force", { name = "open horizontally" }, lsp_gotos_with_jump_type("split")),
