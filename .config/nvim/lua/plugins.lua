@@ -44,13 +44,12 @@ require("packer").startup({
 
 		use(require("pconfig.cmp"))
 		use(require("pconfig.luasnip"))
-		use("hrsh7th/cmp-nvim-lsp")
-		use("hrsh7th/cmp-buffer")
-		use("hrsh7th/cmp-path")
-    use("rcarriga/cmp-dap")
-		use("hrsh7th/cmp-cmdline")
-		use({ "saadparwaiz1/cmp_luasnip" })
-		use(require("pconfig.cmp_git"))
+		use({ "hrsh7th/cmp-nvim-lsp", after = { "nvim-cmp"} })
+		use({ "hrsh7th/cmp-buffer", after = "nvim-cmp" })
+		use({ "hrsh7th/cmp-path", after = "nvim-cmp" })
+		use({ "rcarriga/cmp-dap", after = "nvim-cmp" })
+		use({ "hrsh7th/cmp-cmdline", after = "nvim-cmp" })
+		use({ "saadparwaiz1/cmp_luasnip", after = "nvim-cmp" })
 
 		-- Super fast, super feature complete, completion plugin
 		-- use(require("pconfig.coq"))
@@ -76,10 +75,10 @@ require("packer").startup({
 		-- Highlight definition of current symbol, current scope
 		-- use("nvim-treesitter/nvim-treesitter-refactor") -- I don't think I've ever used this.
 
-    -- highlight brackets and things like that in differnet colors
-    use("p00f/nvim-ts-rainbow")
+		-- highlight brackets and things like that in differnet colors
+		use("p00f/nvim-ts-rainbow")
 
-    use(require("pconfig.rust_tools"))
+		use(require("pconfig.rust_tools"))
 
 		-- Debugging/REPLs
 		use(require("pconfig.dap"))
@@ -134,7 +133,8 @@ require("packer").startup({
 
 		use(require("pconfig.colorizer"))
 		-- Used currently for editing JSX mostly
-		use({ "tpope/vim-surround" })
+		use(require("pconfig.surround"))
+
 		--  CUrrently used for reapting the things I do with vim-surround
 		use({ "tpope/vim-repeat" })
 
@@ -190,6 +190,10 @@ require("packer").startup({
 		-- Foray into orgmode once more
 		use(require("pconfig.orgmode"))
 
+		-- Hopefully this one solves some point points with nvim-orgmode (like bullets not
+		-- working properly)
+		use(require("pconfig.neorg"))
+
 		-- Show me where I'm at in the status bar (like, what funciton/ conditional/thingy)
 		use(require("pconfig.treesitter_context"))
 
@@ -203,21 +207,24 @@ require("packer").startup({
 		-- use cht.sh easily inside vim
 		use(require("pconfig.cheat"))
 
-    -- sometimes, I want `thisWord` to take two "word" motions to traverse,
-    -- because it's camel cased.
-    -- use(require("pconfig.wordmotion"))
+		-- sometimes, I want `thisWord` to take two "word" motions to traverse,
+		-- because it's camel cased.
+		-- use(require("pconfig.wordmotion"))
 
-    -- should help with file navigation a lot
-    use(require("pconfig.harpoon"))
+		-- should help with file navigation a lot
+		use(require("pconfig.harpoon"))
 
-    -- nvim-autopairs
-    use(require("pconfig.autopairs"))
+		-- nvim-autopairs
+		use(require("pconfig.autopairs"))
 
-    -- match autotag
-    use(require("pconfig.ts_autotag"))
+		-- match autotag
+		use(require("pconfig.ts_autotag"))
 
-    -- Put bullets on next line if the current one has bullets
-    use(require("pconfig.bullets"))
+		-- Put bullets on next line if the current one has bullets
+		use(require("pconfig.bullets"))
+
+		-- Show the open buffers in a tab line at the top
+		use(require("pconfig.bufferline"))
 	end,
 
 	config = {

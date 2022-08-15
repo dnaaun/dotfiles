@@ -10,7 +10,13 @@ return {
 		-- Replace the usual notify with this plugin so that `print()` uses this plugin
 		vim.notify = notify
 
-		vim.keymap.set("n", "<leader>fn", require("telescope").extensions.notify.notify)
-		vim.keymap.set("n", "<Leader>nd", notify.dismiss, {})
+		local wk = require("which-key")
+		wk.register({
+			["<Leader>n"] = {
+				name = "notifications",
+				d = { notify.dismiss, "dismiss notifictions" },
+				f = { require("telescope").extensions.notify.notify, "show past notifications" },
+			},
+		})
 	end,
 }

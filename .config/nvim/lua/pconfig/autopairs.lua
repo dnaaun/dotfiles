@@ -14,9 +14,11 @@ return {
 		local always = function()
 			return true
 		end
+    local cond = require('nvim-autopairs.conds')
 
 		npairs.add_rules({
 			Rule("~", "~", { "org" }):with_move(always),
+      Rule("do", "end", { "ruby" }):with_move(cond:none()),
 		})
 	end,
 }

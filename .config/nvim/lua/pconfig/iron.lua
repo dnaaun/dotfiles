@@ -5,16 +5,38 @@ return {
 		vim.g.iron_map_defaults = false
 	end,
 	config = function()
-    local bracketed_paste = require("iron.fts.common").bracketed_paste
+		local bracketed_paste = require("iron.fts.common").bracketed_paste
 		local iron = require("iron.core")
 
-		vim.keymap.set("n", "<leader>ro", function()
-			iron.repl_for(vim.opt_local.filetype:get())
-		end, {})
+		local wk = require("which-key")
 
-		vim.keymap.set("n", "<leader>rf", function()
-			iron.focus_on(vim.bo.filetype)
-		end, {})
+		wk.register({
+			["<leader>r"] = {
+				name = "(iron) repl",
+				f = {
+					function()
+						iron.focus_on(vim.opt.filetype:get())
+					end,
+					"focus on repl",
+				},
+				o = {
+					function()
+						iron.repl_for(vim.opt.filetype:get())
+					end,
+					"open repl",
+				},
+			},
+		})
+
+		local rails_console = {
+			command = { "bundle", "exec", "rails", "console" },
+			format = bracketed_paste,
+		}
+
+		-- local irb = {
+		-- 	command = { "irb" },
+		-- 	format = bracketed_paste,
+		-- }
 
 		iron.setup({
 			config = {
@@ -60,19 +82,15 @@ return {
 					typescript = require("iron.fts.typescript").ts,
 					tsx = require("iron.fts.typescript").ts,
 					lua = require("iron.fts.lua").lua,
-					ruby = {
-						command = { "bundle", "exec", "rails", "console" },
-            format = bracketed_paste
-					},
+					ruby = rails_console,
 					sql = {
 						command = { "pgcli", "-d", "hybrid_development", "-u", "hybrid" },
-            format = bracketed_paste
+						format = bracketed_paste,
 					},
 				},
 			},
 
 			keymaps = {
-				send_motion = "<leader>r",
 				visual_send = "<leader>r",
 				send_file = "<leader>ra",
 				send_line = "<leader>rr",

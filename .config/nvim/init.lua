@@ -1,3 +1,4 @@
+-- I don't know why I disabled you, but I must have a pretty good reason.
 -- require('impatient') -- Speed up loading things. TOFIXLATER: This will probably (definitely?) break when impatient.nvim is not installed.
 
 --- Easy debugging
@@ -22,7 +23,7 @@ g.loaded_spellfile_plugin = 1
 -- let g:loaded_netrw             = 1
 -- let g:loaded_netrwPlugin       = 1
 g.loaded_tutor_mode_plugin = 1
-g.loaded_remote_plugins    = 1
+g.loaded_remote_plugins = 1
 
 _G.lsp_config_on_attach_callbacks = {}
 
@@ -52,7 +53,6 @@ opt.grepprg = "rg -nH" -- Use ripgrep as a grep program
 
 g.mapleader = ","
 g.maplocalleader = ","
-
 
 -- WHen in visual/select/operator mode, I want searching with / to be an inclusive
 -- motion. This is acheived by doing /pattern/e, but I don't wanna have to type
@@ -136,7 +136,7 @@ local function cur_pos_to_qflist()
 		bufnr = vim.fn.bufnr("%"),
 		lnum = pos[2],
 		col = pos[3],
-    text = vim.api.nvim_get_current_line()
+		text = vim.api.nvim_get_current_line(),
 	}
 	vim.fn.setqflist({ dict }, "a")
 end
@@ -151,7 +151,7 @@ local function remove_curpos_from_qflist()
 		return qflist_item.bufnr ~= bufnr or qflist_item.lnum ~= lnum
 	end
 
-  local filtered = require("std2").list_filter(vim.fn.getqflist(), is_not_about_cur_line)
+	local filtered = require("std2").list_filter(vim.fn.getqflist(), is_not_about_cur_line)
 	vim.fn.setqflist(filtered)
 end
 
@@ -161,6 +161,19 @@ vim.keymap.set("n", "<leader>qD", function()
 	vim.fn.setqflist({})
 end, {})
 
+local wk = require("which-key")
+-- a shortcut to clear searches since I do that a lot
+-- A double slash (//) should work well since slash itself has a special
+-- purpose in that it delineates the search pattern from the flags, which
+-- means it's extremely unlikely that I'll double type slash.
+wk.register({
+	["//"] = {
+		function()
+			vim.cmd("nohlsearch")
+		end,
+		"clear search highlights",
+	},
+})
 
 -- Neovim win!
 -- vim.o.cmdheight = 0

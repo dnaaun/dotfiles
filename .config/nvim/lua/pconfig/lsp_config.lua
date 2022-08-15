@@ -13,7 +13,7 @@ wk.register({
 			"diagnostic float",
 		},
 	},
-["[e"] = {
+	["[e"] = {
 		function()
 			vim.diagnostic.goto_prev({ severity = "Error" })
 		end,
@@ -135,7 +135,9 @@ return {
 							disabled = { "unresolved-proc-macro" },
 							-- enableExperimental = true,
 						},
-						cargo = {},
+						cargo = {
+							target = "wasm32-unknown-unknown",
+						},
 						-- checkOnSave = {
 						-- 	command = "clippy",
 						-- },
@@ -248,7 +250,23 @@ return {
 			},
 
 			tailwindcss = {
-				filetypes = require("consts").javascripty_filetypes,
+				filetypes = vim.list_extend({ "rust" }, require("consts").javascripty_filetypes),
+				init_options = {
+					userLanguages = {
+						rust = "rust",
+					},
+				},
+				settings = {
+					tailwindCSS = {
+						includeLanguages = {
+							rust = "html",
+						},
+						emmetCompletions = true,
+						classAttributes = { "class", "className", "classList", "ngClass" },
+						lint = {},
+						validate = true,
+					},
+				},
 			},
 
 			sqlls = {
@@ -293,6 +311,7 @@ return {
 				filetypes = { "ruby" },
 				root_dir = lspconfig.util.root_pattern("Gemfile", ".git"),
 			},
+			-- requires npm i -g vscode-langservers-extracted
 			eslint = {
 				filetypes = require("consts").javascripty_filetypes,
 			},
@@ -302,7 +321,7 @@ return {
 		-- local coq = require("coq")
 
 		for _, lspname in ipairs({
-     -- "ccls",
+			-- "ccls",
 			"clangd",
 			"dockerls",
 			"eslint",

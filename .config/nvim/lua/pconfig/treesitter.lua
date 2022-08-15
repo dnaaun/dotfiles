@@ -11,8 +11,8 @@ return {
 		ft_to_parser.tex = "latex"
 
 		local textsubjects = {
-			enable = true,
-			prev_selection = ",", -- (Optional) keymap to select the previous selection
+			enable = false,
+			prev_selection = "<C-CR>", -- (Optional) keymap to select the previous selection
 			keymaps = {
 				["<CR>"] = "textsubjects-smart",
 				[";"] = "textsubjects-container-outer",
@@ -191,7 +191,7 @@ return {
 			indent = indent,
 			refactor = refactor,
 			textobjects = textobjects,
-			textsubjects = textsubjects,
+			-- textsubjects = textsubjects,
 			autotag = autotag,
 			incremental_selection = incremental_selection,
 			matchup = matchup,
