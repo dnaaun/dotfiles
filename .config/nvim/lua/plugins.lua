@@ -1,5 +1,5 @@
 require("packer").startup({
-	function(use)
+  function(use)
 		-- package/plugin manager
 		use(require("pconfig.packer"))
 		--
@@ -147,12 +147,15 @@ require("packer").startup({
 		use({ "tpope/vim-dispatch", opt = true, cmd = { "Dispatch", "Make", "Focus", "Start" } })
 
 		-- FYI, dispatch.vim is not a strict requirement, but it's nicer.
-		use(require("pconfig.test"))
+		-- use(require("pconfig.test"))
 
-		-- Let's see how much better this is.
+		-- An amazing testing plugin. Really showcases the possiblities of treesitter.
 		use(require("pconfig.neotest"))
 
-		-- Tex
+    -- I've listed the below in the `requires = ` of neotest, but
+    -- packer keeps thinking this is not installed.
+    use("olimorris/neotest-rspec")
+
 		--use { 'lervag/vimtex',  ft = { 'tex' } }
 
 		-- Colors and other niceties

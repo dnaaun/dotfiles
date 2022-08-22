@@ -4,6 +4,12 @@ local wk = require("which-key")
 wk.register({
 	K = { vim.lsp.buf.hover, "hover" },
 	g = {
+		a = {
+			function()
+				vim.lsp.buf.code_action({})
+			end,
+			"code action",
+		},
 		d = { vim.lsp.buf.definition, "rename" },
 		R = { vim.lsp.buf.rename, "rename" },
 		h = {
@@ -25,31 +31,23 @@ wk.register({
 		end,
 		"next diagnostic",
 	},
-	["[lh"] = {
+	["[gh"] = {
 		function()
 			vim.diagnostic.goto_prev({ severity = "Warn" })
 		end,
 		"previous diagnostic",
 	},
-	["]lh"] = {
+	["]gh"] = {
 		function()
 			vim.diagnostic.goto_next({ severity = "Warn" })
 		end,
 		"next diagnostic",
 	},
-	["<leader>l"] = {
-		f = {
-			function()
-				vim.lsp.buf.format({ async = true })
-			end,
-			"format",
-		},
-		a = {
-			function()
-				vim.lsp.buf.code_action({})
-			end,
-			"code action",
-		},
+	["gql"] = {
+		function()
+			vim.lsp.buf.format({ async = true })
+		end,
+		"format",
 	},
 }, { mode = "n" })
 
@@ -136,7 +134,7 @@ return {
 							-- enableExperimental = true,
 						},
 						cargo = {
-							target = "wasm32-unknown-unknown",
+							-- target = "wasm32-unknown-unknown",
 						},
 						-- checkOnSave = {
 						-- 	command = "clippy",

@@ -5,7 +5,6 @@ vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "BufCreate" }, {
 	pattern = { "org" },
 	group = vim.api.nvim_create_augroup("WorkAroundForBulletsVimBreakingOrgFiles", {}),
 	callback = function()
-    P("SDF")
 		vim.keymap.set("i", "<CR>", "<cmd>:InsertNewBullet<CR>", { remap = false, buffer = true })
 	end,
 })

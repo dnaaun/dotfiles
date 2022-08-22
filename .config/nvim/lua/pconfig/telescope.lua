@@ -123,6 +123,12 @@ return {
 		local function lsp_gotos_with_jump_type(jump_type, descriptor_prefix)
 			descriptor_prefix = descriptor_prefix or ""
 			return {
+				a = {
+					function()
+						vim.lsp.buf.code_action({})
+					end,
+					descriptor_prefix .. "code actions",
+				},
 				r = {
 					function()
 						builtin.lsp_references({ jump_type = jump_type })
@@ -149,7 +155,7 @@ return {
 				},
 				e = {
 					function()
-						builtin.diagnostics({ jump_type = jump_type })
+						builtin.diagnostics({ jump_type = jump_type, severity = vim.diagnostic.severity.ERROR })
 					end,
 					descriptor_prefix .. "diagnostics",
 				},
@@ -198,7 +204,7 @@ return {
 				},
 			},
 			g = vim.tbl_extend("force", {
-				a = vim.tbl_extend("force", { name = "open vertically" }, lsp_gotos_with_jump_type("vsplit")),
+				x = vim.tbl_extend("force", { name = "open vertically" }, lsp_gotos_with_jump_type("vsplit")),
 				s = vim.tbl_extend("force", { name = "open horizontally" }, lsp_gotos_with_jump_type("split")),
 			}, lsp_gotos_with_jump_type("jump", "LSP ")),
 		})

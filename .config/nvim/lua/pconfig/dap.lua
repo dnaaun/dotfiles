@@ -70,9 +70,10 @@ return {
 				name = "Launch file",
 				type = "codelldb",
 				request = "launch",
-				program = function()
-					return "/Users/davidat/git/highlights/target/debug/highlights"
-				end,
+				program = "/Users/davidat/git/gsheets_verify_macro/rust/target/debug/rust",
+				args = {
+          "test.csv"
+				},
 				cwd = "${workspaceFolder}",
 				stopOnEntry = true,
 			},

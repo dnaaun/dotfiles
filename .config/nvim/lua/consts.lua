@@ -35,7 +35,6 @@ return {
 		"json",
 		"jsonc",
 		"yaml",
-		"markdown",
 		"graphql",
 		"handlebars",
 		"svelte",

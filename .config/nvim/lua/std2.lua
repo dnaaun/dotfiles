@@ -109,8 +109,8 @@ end
 ---@return string[]
 function M.get_visual_selection_text(buffer)
 	local beg_col, beg_row, end_col, end_row
-	_, beg_row, beg_col, _ = unpack(vim.fn.getpos("v")) -- :help line()
-	_, end_row, end_col, _ = unpack(vim.fn.getpos(".")) -- :help line()
+	_, beg_row, beg_col, _ = unpack(vim.fn.getpos("'<")) -- :help line()
+	_, end_row, end_col, _ = unpack(vim.fn.getpos("'>")) -- :help line()
 
 	return M.get_text_in_range(buffer, beg_row - 1, beg_col - 1, end_row, end_col)
 end

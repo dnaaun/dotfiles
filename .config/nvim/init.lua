@@ -39,7 +39,7 @@ opt.fillchars = opt.fillchars + "diff:╱"
 opt.matchpairs:append({ "<:>" })
 opt.scrollback = 100000 -- Lines to keep in neovim's terminal emulator
 opt.spell = false
-opt.conceallevel = 0
+opt.conceallevel = 2 -- for neorg to hide links right now.
 opt.splitbelow = true
 opt.splitright = true
 opt.hlsearch = true
@@ -179,3 +179,14 @@ wk.register({
 -- vim.o.cmdheight = 0
 -- I disabled that because (I belive) the which-key key plugin messes up my "gg" movement
 -- because it tries to show a message, but cmdheight=0 prevents it, or something like that.
+
+-- exercute neovim
+wk.register({
+	["<leader>lr"] = {
+		function()
+			local text = vim.fn.join(require("std2").get_visual_selection_text(0), "\n")
+			vim.fn.luaeval(text)
+		end,
+    "source the visual (hopefully lua code) selection into neovim"
+	},
+}, { mode = "v" })
