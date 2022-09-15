@@ -30,13 +30,12 @@ return {
 
 		local rails_console = {
 			command = { "bundle", "exec", "rails", "console" },
-			format = bracketed_paste			-- function(lines)
-			-- -- Add semi colons to the end to suppress "print what was returned" output
+			format = bracketed_paste			-- -- Add semi colons to the end to suppress "print what was returned" output
 			-- local new_lines = vim.list_extend({}, lines)
 			-- new_lines[#new_lines] = new_lines[#new_lines] .. ";"
 			-- return bracketed_paste(new_lines)
 			-- end
-,
+,			-- function(lines)
 		}
 
 		-- local irb = {
@@ -80,6 +79,21 @@ return {
 						vim.api.nvim_win_close(0, false)
 					end, { buffer = bufnr })
 
+					-- Create a buffer local autocmd that deletes the buffer when the terminal
+					-- process ends. Otherwise, trying to send text to  a repl for a file type
+					-- that I just closed the repl for gives me an error about trying to send data
+					-- to a closed stream, while it should simply just start a new repl.
+          -- I'd like this behavior for *all* terminal buffers (not just
+          -- iron.nvim ones), but that breaks my telescope-git-diff setup:
+          -- https://github.com/nvim-telescope/telescope.nvim/issues/1973#issuecomment-1153082196
+					vim.api.nvim_create_autocmd({ "TermClose" }, {
+						group = vim.api.nvim_create_augroup("IronCloseWinsOnProcessEnd", {}),
+            buffer = bufnr,
+						desc = "Close a terminal emulator buffer when the process ends",
+						callback = function(args)
+							vim.api.nvim_buf_delete(args.buf, {})
+						end,
+					})
 					return winid
 				end,
 
