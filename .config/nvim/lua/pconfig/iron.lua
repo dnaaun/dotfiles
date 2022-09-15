@@ -155,6 +155,7 @@ return {
 
 			keymaps = {
 				visual_send = "<leader>r",
+				send_motion = "<leader>rm",
 				send_file = "<leader>ra",
 				send_line = "<leader>rr",
 				cr = "<leader>r<cr>",
