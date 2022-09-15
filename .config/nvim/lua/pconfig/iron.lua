@@ -13,6 +13,21 @@ return {
 		wk.register({
 			["<leader>r"] = {
 				name = "(iron) repl",
+				h = {
+					function()
+						iron.close_repl(vim.opt.filetype:get())
+					end,
+					"close repl",
+				},
+				s = {
+					name = "send specific keys",
+					q = {
+						function()
+							iron.send(vim.opt.filetype:get(), { "q" })
+						end,
+						"q",
+					},
+				},
 				f = {
 					function()
 						iron.focus_on(vim.opt.filetype:get())
@@ -30,12 +45,7 @@ return {
 
 		local rails_console = {
 			command = { "bundle", "exec", "rails", "console" },
-			format = bracketed_paste			-- -- Add semi colons to the end to suppress "print what was returned" output
-			-- local new_lines = vim.list_extend({}, lines)
-			-- new_lines[#new_lines] = new_lines[#new_lines] .. ";"
-			-- return bracketed_paste(new_lines)
-			-- end
-,			-- function(lines)
+			format = bracketed_paste,
 		}
 
 		-- local irb = {
@@ -67,7 +77,7 @@ return {
 					local winid = vim.api.nvim_open_win(bufnr, false, {
 						relative = "editor",
 						width = size,
-						height = height,
+						height = height - 2, -- -2 to avoid hiding the status line
 						row = 0,
 						col = vim.fn.max({ 0, width - size }),
 						zindex = 100,
@@ -83,12 +93,12 @@ return {
 					-- process ends. Otherwise, trying to send text to  a repl for a file type
 					-- that I just closed the repl for gives me an error about trying to send data
 					-- to a closed stream, while it should simply just start a new repl.
-          -- I'd like this behavior for *all* terminal buffers (not just
-          -- iron.nvim ones), but that breaks my telescope-git-diff setup:
-          -- https://github.com/nvim-telescope/telescope.nvim/issues/1973#issuecomment-1153082196
+					-- I'd like this behavior for *all* terminal buffers (not just
+					-- iron.nvim ones), but that breaks my telescope-git-diff setup:
+					-- https://github.com/nvim-telescope/telescope.nvim/issues/1973#issuecomment-1153082196
 					vim.api.nvim_create_autocmd({ "TermClose" }, {
 						group = vim.api.nvim_create_augroup("IronCloseWinsOnProcessEnd", {}),
-            buffer = bufnr,
+						buffer = bufnr,
 						desc = "Close a terminal emulator buffer when the process ends",
 						callback = function(args)
 							vim.api.nvim_buf_delete(args.buf, {})
