@@ -94,6 +94,39 @@ return {
 							vim.api.nvim_buf_delete(args.buf, {})
 						end,
 					})
+
+					-- Set the timeoutlen to a value that is not zero
+					-- (which is what I've set it to in order to render whichkey ASAP).
+					-- This is necessary to use a tnoremap to
+					-- escape from terminal mode (because which key
+					-- doesn't show up in terminal mode, and because the
+					-- default keys to escape termianl mode, <C-\><C-n>
+					-- are not ergonomic.
+					local previous_timeoutlen = 0
+					local shadow_timeoutlen = vim.api.nvim_create_augroup("IronShadowTimeoutlen", {})
+					vim.api.nvim_create_autocmd({ "TermEnter" }, {
+						group = shadow_timeoutlen,
+						buffer = bufnr,
+						desc = "Save previous timeoutlen and set it to 500",
+						callback = function()
+							previous_timeoutlen = vim.opt.timeoutlen
+							vim.opt.timeoutlen = 500
+						end,
+					})
+					vim.api.nvim_create_autocmd({ "TermLeave" }, {
+						group = shadow_timeoutlen,
+						buffer = bufnr,
+						desc = "Restore previous value of timeoutlen",
+						callback = function()
+							vim.opt.timeoutlen = previous_timeoutlen
+						end,
+					})
+					vim.keymap.set(
+						{ "t" },
+						"<Esc><Esc>",
+						"<C-\\><C-n>",
+						{ desc = "Escape easier from terminal mode", buffer = bufnr }
+					)
 					return winid
 				end,
 
