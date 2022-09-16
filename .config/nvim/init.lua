@@ -103,7 +103,7 @@ g.localvimrc_sandbox = 0
 -- Have one global status line
 opt.laststatus=3
 -- Have a thin line separating the splits
-vim.cmd("highlight WinSeparator guibg=None")
+vim.cmd([[highlight WinSeparator guifg=None guifg=#aaa]])
 
 
 -- Trying to get neovim's colorscheme to appear identical inside and outside of
