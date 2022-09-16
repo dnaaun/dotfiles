@@ -5,8 +5,8 @@ local preparatory_lines_by_filetype = {
 	ruby = { "# frozen_string_literal: true" },
 }
 
--- s for scratchpad
-mapfunc("n", "<leader>rs", function()
+-- l for lua
+mapfunc("n", "<leader>rl", function()
 	local filetype = vim.opt.filetype
 
 	-- Temp file to open

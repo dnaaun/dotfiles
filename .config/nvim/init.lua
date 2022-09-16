@@ -100,6 +100,12 @@ g.localvimrc_whitelist = { vim.fn.fnamemodify("~", ":p") }
 -- Disable "sandbox" mode
 g.localvimrc_sandbox = 0
 
+-- Have one global status line
+opt.laststatus=3
+-- Have a thin line separating the splits
+vim.cmd("highlight WinSeparator guibg=None")
+
+
 -- Trying to get neovim's colorscheme to appear identical inside and outside of
 -- tmux (inside is messed up a bit right now)
 if vim.fn.has("termguicolors") then
@@ -111,16 +117,6 @@ end
 -- 	virtual_text = {
 -- 		severity = { min = vim.diagnostic.severity.ERROR },
 -- 	},
--- })
-
--- Setup an autocmd to delete the buffer when the process ends.
--- NOTE: This breaks difftastic preview for telescope git commands: https://github.com/nvim-telescope/telescope.nvim/issues/1973#issuecomment-1153082196
--- vim.api.nvim_create_autocmd({ "TermClose" }, {
--- 	group = vim.api.nvim_create_augroup("IronCloseWinsOnProcessEnd", {}),
--- 	pattern = "*",
--- 	callback = function(args)
--- 		vim.api.nvim_buf_delete(args.buf, {})
--- 	end,
 -- })
 
 -- Quickfix shortcuts
@@ -176,9 +172,9 @@ wk.register({
 })
 
 -- Neovim win!
--- vim.o.cmdheight = 0
 -- I disabled that because (I belive) the which-key key plugin messes up my "gg" movement
 -- because it tries to show a message, but cmdheight=0 prevents it, or something like that.
+-- vim.o.cmdheight = 0
 
 -- exercute neovim
 wk.register({
@@ -187,6 +183,6 @@ wk.register({
 			local text = vim.fn.join(require("std2").get_visual_selection_text(0), "\n")
 			vim.fn.luaeval(text)
 		end,
-    "source the visual (hopefully lua code) selection into neovim"
+		"source the visual (hopefully lua code) selection into neovim",
 	},
 }, { mode = "v" })
