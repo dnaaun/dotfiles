@@ -47,77 +47,6 @@ return {
 		local buf_mapfunc = require("std2").buf_mapfunc
 
 		local builtin = require("telescope.builtin")
-		mapfunc("n", "<leader>fw", builtin.grep_string, { noremap = true }, "grep_string")
-		mapfunc("n", "<leader>s", function()
-			builtin.fd({ hidden = true })
-		end, { noremap = true }, "fd")
-		mapfunc("n", "<C-s>", function()
-			builtin.fd({ search_dirs = { vim.fn.expand("%:p:h") }, hidden = true })
-		end, {
-			noremap = true,
-		}, "fd in cur dir")
-		mapfunc("n", "<C-a>", function()
-			builtin.live_grep({
-				search_dirs = { vim.fn.expand("%:p:h") },
-				additional_args = function()
-					return { "--hidden" }
-				end,
-			})
-		end, {
-			noremap = true,
-		}, "live_grep in cur dir")
-		-- Is a capital F because it turns out I use lower case f (which stands for
-		-- search forward in this line) a bunch.
-		mapfunc("n", "<leader>a", function()
-			builtin.live_grep({
-				additional_args = function()
-					return { "--hidden" }
-				end,
-			})
-		end, { noremap = true }, "live_grep")
-		-- Search text through buffers
-		mapfunc("n", "<leader>fb", function()
-			builtin.live_grep({
-				grep_open_files = true,
-				additional_args = function()
-					return { "--hidden" }
-				end,
-			})
-		end, { noremap = true }, "live_grep")
-		mapfunc("n", "<leader>b", builtin.buffers, { noremap = true }, "buffers")
-		mapfunc("n", "<leader>h", builtin.oldfiles, { noremap = true }, "oldfiles")
-		mapfunc("n", "<leader>ft", builtin.help_tags, { noremap = true }, "help_tags")
-		mapfunc("n", "<leader>f:", builtin.command_history, { noremap = true }, "command_history")
-		mapfunc("n", "<leader>f/", builtin.current_buffer_fuzzy_find, { noremap = true }, "current_buffer_fuzzy_find")
-		mapfunc("n", "<leader>fj", builtin.jumplist, { noremap = true }, "jumplist")
-		mapfunc("n", "<leader>f.", builtin.resume, { noremap = true }, "resume")
-		mapfunc("n", "-", function()
-			require("telescope").extensions.file_browser.file_browser({ path = vim.fn.expand("%:p:h") })
-		end, {}, "file_browser cur dir")
-		mapfunc("n", ",-", function()
-			require("telescope").extensions.file_browser.file_browser()
-		end, {}, "file_browser")
-
-		mapfunc("n", "<leader>fgcc", builtin.git_commits, {}, "Git commits")
-		mapfunc("n", "<leader>fgcb", builtin.git_bcommits, {}, "Git buffer commits")
-		mapfunc("n", "<leader>fgb", builtin.git_branches, {}, "Git branches")
-
-		-- I search through my dot files a lot, d stands for dotfiles,
-		-- and then use a and s in line with my live_grep and fd mappings above.
-		vim.keymap.set("n", "<leader>fda", function()
-			local search_dirs = { vim.fn.expand("~/") .. "git/dotfiles/" }
-			builtin.live_grep({
-				search_dirs = search_dirs,
-				additional_args = function()
-					return { "--hidden" }
-				end,
-			})
-		end, {})
-		vim.keymap.set("n", "<leader>fds", function()
-			local search_dirs = { vim.fn.expand("~/") .. "git/dotfiles/" }
-			builtin.fd({ hidden = true, search_dirs = search_dirs })
-		end, {})
-
 		--- @param jump_type "jump" | "vsplit" | "split"
 		--- @param descriptor_prefix string | nil
 		local function lsp_gotos_with_jump_type(jump_type, descriptor_prefix)
@@ -189,23 +118,106 @@ return {
 
 		local git_preview_opts = { previewer = difftastic }
 
+		-- I search through my dot files a lot, d stands for dotfiles,
+		-- and then use a and s in line with my live_grep and fd mappings above.
+		vim.keymap.set("n", "<leader>fda", function()
+			local search_dirs = { vim.fn.expand("~/") .. "git/dotfiles/" }
+			builtin.live_grep({
+				search_dirs = search_dirs,
+				additional_args = function()
+					return { "--hidden" }
+				end,
+			})
+		end, {})
+		vim.keymap.set("n", "<leader>fds", function()
+			local search_dirs = { vim.fn.expand("~/") .. "git/dotfiles/" }
+			builtin.fd({ hidden = true, search_dirs = search_dirs })
+		end, {})
+
 		-- which-key mappings
 		local wk = require("which-key")
 		wk.register({
-			["<leader>f"] = {
-				g = {
-					name = "git",
-					d = {
+			["-"] = {
+				function()
+					require("telescope").extensions.file_browser.file_browser({ path = vim.fn.expand("%:p:h") })
+				end,
+				"file_browser cur dir",
+			},
+			["<leader>-"] = {
+				function()
+					require("telescope").extensions.file_browser.file_browser()
+				end,
+				"file_browser",
+			},
+
+			["<leader>"] = {
+				a = {
+					function()
+						builtin.live_grep({
+							additional_args = function()
+								return { "--hidden" }
+							end,
+						})
+					end,
+					"live_grep",
+				},
+
+				f = {
+					name = "telescopy things",
+					w = { builtin.grep_string, "grep buffer for string" },
+					b = { builtin.buffers, "buffers" },
+					h = { builtin.oldfiles, "oldfiles" },
+					t = { builtin.help_tags, "help_tags" },
+					j = { builtin.jumplist, "jumplist" },
+					[":"] = { builtin.command_history, "command_history" },
+					["/"] = { builtin.current_buffer_fuzzy_find, "current_buffer_fuzzy_find" },
+					["."] = { builtin.resume, "last telscope invocation" },
+					s = {
 						function()
-							builtin.git_status(git_preview_opts)
+							builtin.fd({ hidden = true })
 						end,
-						"browse diffs and go to file",
+						"fd files",
+					},
+
+					g = {
+						name = "git",
+						c = {
+							name = "commit related",
+							c = { builtin.git_commits, "commits in current branch" },
+							b = { builtin.git_bcommits, "commits that affect current buffer" },
+						},
+            b = { builtin.git_branches, "git braches" },
+						d = {
+							function()
+								builtin.git_status(git_preview_opts)
+							end,
+							"browse diffs and go to file",
+						},
 					},
 				},
 			},
+			["<C-s>"] = {
+				function()
+					builtin.fd({ search_dirs = { vim.fn.expand("%:p:h") }, hidden = true })
+				end,
+				"fd files in cur dir",
+			},
+			["<C-a>"] = {
+				function()
+					builtin.live_grep({
+						search_dirs = { vim.fn.expand("%:p:h") },
+						additional_args = function()
+							return { "--hidden" }
+						end,
+					})
+				end,
+				"live_grep in cur dir",
+			},
+
 			g = vim.tbl_extend("force", {
 				x = vim.tbl_extend("force", { name = "open vertically" }, lsp_gotos_with_jump_type("vsplit")),
 				s = vim.tbl_extend("force", { name = "open horizontally" }, lsp_gotos_with_jump_type("split")),
+				name = "lsp related",
 			}, lsp_gotos_with_jump_type("jump", "LSP ")),
 		})
 	end,
