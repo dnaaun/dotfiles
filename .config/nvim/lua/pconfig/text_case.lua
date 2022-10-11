@@ -11,7 +11,13 @@ return {
 					function()
 						require("textcase").current_word("to_snake_case")
 					end,
-					"convert to snake case (manual mapping)",
+					"convert_to_snake_case (manual mapping)",
+				},
+				S = {
+					function()
+						require("textcase").lsp_rename("to_snake_case")
+					end,
+					"LSP convert_to_snake_case (manual mapping)",
 				},
 			},
 		})

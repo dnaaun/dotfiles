@@ -88,6 +88,18 @@ return {
 					end,
 					descriptor_prefix .. "diagnostics",
 				},
+				l = {
+					name = "less often used LSP mappings",
+					d = {
+						name = "diagnostics by error level",
+						w = {
+							function()
+								builtin.diagnostics({ jump_type = jump_type, severity = vim.diagnostic.severity.WARN })
+							end,
+							descriptor_prefix .. "warn diagnostics",
+						},
+					},
+				},
 				i = {
 					function()
 						builtin.lsp_implementations({ jump_type = jump_type })
@@ -161,12 +173,18 @@ return {
 					end,
 					"live_grep",
 				},
+				s = {
+					function()
+						builtin.fd()
+					end,
+					"fd files in cur dir",
+				},
+				b = { builtin.buffers, "buffers" },
+				h = { builtin.oldfiles, "oldfiles" },
 
 				f = {
 					name = "telescopy things",
 					w = { builtin.grep_string, "grep buffer for string" },
-					b = { builtin.buffers, "buffers" },
-					h = { builtin.oldfiles, "oldfiles" },
 					t = { builtin.help_tags, "help_tags" },
 					j = { builtin.jumplist, "jumplist" },
 					[":"] = { builtin.command_history, "command_history" },
@@ -186,7 +204,7 @@ return {
 							c = { builtin.git_commits, "commits in current branch" },
 							b = { builtin.git_bcommits, "commits that affect current buffer" },
 						},
-            b = { builtin.git_branches, "git braches" },
+						b = { builtin.git_branches, "git branches" },
 						d = {
 							function()
 								builtin.git_status(git_preview_opts)

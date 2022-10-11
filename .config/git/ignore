@@ -18,3 +18,8 @@ Caches/
 
 # Saw it on macos once. Probably should be here.
 .DS_Store
+
+# My way of passing args to the rust debugger in neovim
+.nvim_dap_rust_args
+
+.airmux.yml

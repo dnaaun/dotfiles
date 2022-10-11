@@ -274,7 +274,16 @@ return {
 			sqls = {
 				cmd = { "sqls" },
 				filetypes = { "sql", "mysql" },
-				settings = {},
+				settings = {
+					sqls = {
+						connections = {
+							{
+								driver = "sqlite3",
+								dataSourceName = "crushedgarlic.sqlite",
+							},
+						},
+					},
+				},
 				single_file_support = true,
 			},
 
@@ -309,6 +318,11 @@ return {
 				filetypes = { "ruby" },
 				root_dir = lspconfig.util.root_pattern("Gemfile", ".git"),
 			},
+
+			ruby_ls = {
+				cmd = { "/opt/homebrew/lib/ruby/gems/2.7.0/bin/ruby-lsp" },
+			},
+
 			-- requires npm i -g vscode-langservers-extracted
 			eslint = {
 				filetypes = require("consts").javascripty_filetypes,
@@ -326,12 +340,14 @@ return {
 			"kotlin_language_server",
 			"pyright",
 			"solargraph",
+			"ruby_ls",
 			"sqls",
 			"rust_analyzer",
 			"sumneko_lua",
 			"tailwindcss",
 			"texlab",
 			"tsserver",
+			"html",
 			-- "sorbet",
 		}) do
 			local config = lsp_specific_configs[lspname]

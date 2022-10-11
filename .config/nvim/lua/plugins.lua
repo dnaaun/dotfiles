@@ -1,5 +1,5 @@
 require("packer").startup({
-  function(use)
+	function(use)
 		-- package/plugin manager
 		use(require("pconfig.packer"))
 		--
@@ -44,7 +44,7 @@ require("packer").startup({
 
 		use(require("pconfig.cmp"))
 		use(require("pconfig.luasnip"))
-		use({ "hrsh7th/cmp-nvim-lsp", after = { "nvim-cmp"} })
+		use({ "hrsh7th/cmp-nvim-lsp", after = { "nvim-cmp" } })
 		use({ "hrsh7th/cmp-buffer", after = "nvim-cmp" })
 		use({ "hrsh7th/cmp-path", after = "nvim-cmp" })
 		use({ "rcarriga/cmp-dap", after = "nvim-cmp" })
@@ -152,9 +152,8 @@ require("packer").startup({
 		-- An amazing testing plugin. Really showcases the possiblities of treesitter.
 		use(require("pconfig.neotest"))
 
-    -- I've listed the below in the `requires = ` of neotest, but
-    -- packer keeps thinking this is not installed.
-    use("olimorris/neotest-rspec")
+		use("olimorris/neotest-rspec")
+		use("rouge8/neotest-rust")
 
 		--use { 'lervag/vimtex',  ft = { 'tex' } }
 
@@ -228,6 +227,8 @@ require("packer").startup({
 
 		-- Show the open buffers in a tab line at the top
 		use(require("pconfig.bufferline"))
+
+		-- use(require("pconfig.sqls"))
 	end,
 
 	config = {

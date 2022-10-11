@@ -1,7 +1,6 @@
 return {
 	"aserowy/tmux.nvim",
 	config = function()
-
 		require("tmux").setup({
 			-- overwrite default configuration
 			-- here, e.g. to enable default bindings
@@ -19,5 +18,16 @@ return {
 				enable_default_keybindings = true,
 			},
 		})
+
+		local tmux = require("tmux")
+
+		local wk = require("which-key")
+
+		wk.register({
+			["<C-l>"] = { tmux.move_right, "move right" },
+			["<C-h>"] = { tmux.move_left, "move left" },
+			["<C-j>"] = { tmux.move_down, "move down" },
+			["<C-k>"] = { tmux.move_up, "move up" },
+		}, { mode = "i" })
 	end,
 }

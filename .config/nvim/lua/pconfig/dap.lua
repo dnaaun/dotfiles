@@ -70,10 +70,37 @@ return {
 				name = "Launch file",
 				type = "codelldb",
 				request = "launch",
-				program = "/Users/davidat/git/gsheets_verify_macro/rust/target/debug/rust",
-				args = {
-          "test.csv"
-				},
+				program = "${workspaceFolder}/target/debug/${workspaceFolderBasename}",
+				args = function()
+					local Path = require("plenary.path")
+					local path = Path.path
+
+					local cur_dir = vim.fn.getcwd()
+
+					-- A file that contains one per line the arguments to pass as args to the debugged binary
+					local NVIM_DAP_RUST_ARGS_BASENAME = ".nvim_dap_rust_args"
+
+					local args_filename = Path:new(cur_dir, NVIM_DAP_RUST_ARGS_BASENAME)
+					local abs = args_filename:absolute()
+					if not args_filename:exists() then
+						P("Didn't find " .. abs .. ". Passing no args.")
+						return {}
+					end
+
+					local file = io.open(abs, "r")
+
+					if not file then
+						P("Couldn't open file " .. abs .. ". Passing no args.")
+						return {}
+					end
+
+					local content = file:read("*a")
+
+					local args = vim.fn.split(content, "\\n", false)
+					P(args)
+
+					return args
+				end,
 				cwd = "${workspaceFolder}",
 				stopOnEntry = true,
 			},
@@ -173,7 +200,7 @@ return {
 				c = {
 					function()
 						require("dap").continue()
-						-- require("dapui").open()
+						require("dapui").open()
 					end,
 					"continue",
 				},
