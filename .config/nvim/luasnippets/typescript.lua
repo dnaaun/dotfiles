@@ -153,9 +153,10 @@ const {} = types.model("{}", {{{}}});
 		{ trig = "cl", descr = "console.log" },
 		fmt(
 			[[
-      console.log({})
+      console.log("{}", {})
       ]],
 			{
+        rep(1),
 				i(1, ""),
 			}
 		)
