@@ -82,7 +82,7 @@ require("plugins")
 -- This section must come before loading nvim-dap for it not to mess up
 -- nvim-dap colors.
 -- checks if your terminal has 24-bit color support
-g.tokyonight_style = "dark"
+g.tokyonight_style = "day"
 -- g.snazzybuddy_icons = true
 -- g.vscode_style = "light"
 vim.cmd("colorscheme tokyonight")

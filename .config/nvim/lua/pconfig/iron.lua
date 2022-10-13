@@ -45,7 +45,13 @@ return {
 
 		local rails_console = {
 			command = { "bundle", "exec", "rails", "console" },
-			format = bracketed_paste,
+			format = bracketed_paste			-- function(lines)
+			-- -- Add semi colons to the end to suppress "print what was returned" output
+			-- local new_lines = vim.list_extend({}, lines)
+			-- new_lines[#new_lines] = new_lines[#new_lines] .. ";"
+			-- return bracketed_paste(new_lines)
+			-- end
+,
 		}
 
 		-- local irb = {
