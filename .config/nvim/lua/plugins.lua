@@ -229,6 +229,11 @@ require("packer").startup({
 		use(require("pconfig.bufferline"))
 
 		-- use(require("pconfig.sqls"))
+		--
+		use({
+			"mrjones2014/dash.nvim",
+			run = "make install",
+		})
 	end,
 
 	config = {
