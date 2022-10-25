@@ -359,9 +359,8 @@ return {
 			-- lspconfig[lspname].setup(coq.lsp_ensure_capabilities(config))
 
 			-- Setup nvim-cmp
-			local capabilities = require("cmp_nvim_lsp").update_capabilities(
-				vim.lsp.protocol.make_client_capabilities()
-			)
+      local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
 			lspconfig[lspname].setup(vim.tbl_extend("force", config, {
 				capabilities = capabilities,
 			}))
