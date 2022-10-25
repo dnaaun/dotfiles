@@ -55,7 +55,7 @@ require("packer").startup({
 		-- use(require("pconfig.coq"))
 
 		-- Symbol tree. Better than symbols-outline.nvim because it allows filtering by symbol type.
-		-- use(require("pconfig.aerial"))
+		use(require("pconfig.aerial"))
 
 		-- The package, the pyth, the pegend.
 		use(require("pconfig.treesitter"))
