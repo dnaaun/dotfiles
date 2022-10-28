@@ -130,22 +130,6 @@ return {
 
 		local git_preview_opts = { previewer = difftastic }
 
-		-- I search through my dot files a lot, d stands for dotfiles,
-		-- and then use a and s in line with my live_grep and fd mappings above.
-		vim.keymap.set("n", "<leader>fda", function()
-			local search_dirs = { vim.fn.expand("~/") .. "git/dotfiles/" }
-			builtin.live_grep({
-				search_dirs = search_dirs,
-				additional_args = function()
-					return { "--hidden" }
-				end,
-			})
-		end, {})
-		vim.keymap.set("n", "<leader>fds", function()
-			local search_dirs = { vim.fn.expand("~/") .. "git/dotfiles/" }
-			builtin.fd({ hidden = true, search_dirs = search_dirs })
-		end, {})
-
 		-- which-key mappings
 		local wk = require("which-key")
 		wk.register({
@@ -190,6 +174,30 @@ return {
 					[":"] = { builtin.command_history, "command_history" },
 					["/"] = { builtin.current_buffer_fuzzy_find, "current_buffer_fuzzy_find" },
 					["."] = { builtin.resume, "last telscope invocation" },
+					d = {
+						a = {
+							function()
+								local search_dirs = { vim.fn.expand("~/") .. "git/dotfiles/" }
+								builtin.live_grep({
+									search_dirs = search_dirs,
+									additional_args = function()
+										return { "--hidden" }
+									end,
+								})
+							end,
+							"grep through dot files",
+						},
+						s = {
+							function()
+								local search_dirs = { vim.fn.expand("~/") .. "git/dotfiles/" }
+								builtin.fd({ hidden = true, search_dirs = search_dirs })
+							end,
+							"find dotfiles",
+						},
+
+						name = "look through dot files",
+					},
+
 					s = {
 						function()
 							builtin.fd({ hidden = true })
