@@ -135,13 +135,18 @@ return {
 		wk.register({
 			["-"] = {
 				function()
-					require("telescope").extensions.file_browser.file_browser({ path = vim.fn.expand("%:p:h") })
+					require("telescope").extensions.file_browser.file_browser({
+						path = vim.fn.expand("%:p:h"),
+						respect_gitignore = false,
+					})
 				end,
 				"file_browser cur dir",
 			},
 			["<leader>-"] = {
 				function()
-					require("telescope").extensions.file_browser.file_browser()
+					require("telescope").extensions.file_browser.file_browser({
+						respect_gitignore = false,
+					})
 				end,
 				"file_browser",
 			},
