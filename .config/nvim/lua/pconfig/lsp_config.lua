@@ -280,18 +280,18 @@ return {
 
 			sqls = {
 				cmd = { "sqls" },
-				filetypes = { "sql", "mysql" },
-				settings = {
-					sqls = {
-						connections = {
-							{
-								driver = "sqlite3",
-								dataSourceName = "crushedgarlic.sqlite",
-							},
-						},
-					},
-				},
-				single_file_support = true,
+				-- 	filetypes = { "sql", "mysql" },
+				-- 	settings = {
+				-- 		sqls = {
+				-- 			connections = {
+				-- 				{
+				-- 					driver = "sqlite3",
+				-- 					dataSourceName = "crushedgarlic.sqlite",
+				-- 				},
+				-- 			},
+				-- 		},
+				-- 	},
+				-- 	single_file_support = true,
 			},
 
 			sumneko_lua = {
