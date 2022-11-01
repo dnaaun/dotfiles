@@ -26,6 +26,9 @@ return {
 				},
 
 				file_browser = { -- Requires the telescope-file-browser
+					opts = {
+						respect_gitignore = false,
+					},
 					mappings = {
 						["i"] = {
 							["<C-b>"] = function(prompt_bufnr)
