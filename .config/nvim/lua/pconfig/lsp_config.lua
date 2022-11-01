@@ -355,6 +355,7 @@ return {
 			"texlab",
 			"tsserver",
 			"html",
+			"marksman",
 			-- "sorbet",
 		}) do
 			local config = lsp_specific_configs[lspname]
