@@ -41,6 +41,9 @@ require("packer").startup({
 
 		-- Show func signatures automatically. some filetypes (typescript) cause issues.
 		use(require("pconfig.lsp_signature"))
+    
+    --  Easier installation of LSPs.
+		use(require("pconfig.mason"))
 
 		use(require("pconfig.cmp"))
 		use(require("pconfig.luasnip"))
@@ -229,11 +232,7 @@ require("packer").startup({
 		use(require("pconfig.bufferline"))
 
 		-- use(require("pconfig.sqls"))
-		--
-		use({
-			"mrjones2014/dash.nvim",
-			run = "make install",
-		})
+
 	end,
 
 	config = {
