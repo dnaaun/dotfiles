@@ -49,6 +49,8 @@ return {
 		local mapfunc = require("std2").mapfunc
 		local buf_mapfunc = require("std2").buf_mapfunc
 
+		local default_lsp_telescope_opts = { fname_width = 60 }
+
 		local builtin = require("telescope.builtin")
 		--- @param jump_type "jump" | "vsplit" | "split"
 		--- @param descriptor_prefix string | nil
@@ -63,31 +65,39 @@ return {
 				},
 				r = {
 					function()
-						builtin.lsp_references({ jump_type = jump_type })
+						builtin.lsp_references(
+							vim.tbl_extend("force", {}, default_lsp_telescope_opts, { jump_type = jump_type })
+						)
 					end,
 					descriptor_prefix .. "references",
 				},
 				t = {
 					function()
-						builtin.lsp_type_definitions({ jump_type = jump_type })
+						builtin.lsp_type_definitions(
+							vim.tbl_extend("force", {}, default_lsp_telescope_opts, { jump_type = jump_type })
+						)
 					end,
 					descriptor_prefix .. "type definition",
 				},
 				d = {
 					function()
-						builtin.lsp_definitions({ jump_type = jump_type })
+						builtin.lsp_definitions(
+							vim.tbl_extend("force", {}, default_lsp_telescope_opts, { jump_type = jump_type })
+						)
 					end,
 					descriptor_prefix .. "definition",
 				},
 				w = {
 					function()
-						builtin.lsp_dynamic_workspace_symbols({ jump_type = jump_type })
+						builtin.lsp_dynamic_workspace_symbols(
+							vim.tbl_extend("force", {}, default_lsp_telescope_opts, { jump_type = jump_type })
+						)
 					end,
 					descriptor_prefix .. "dynamic workspace symbols",
 				},
 				e = {
 					function()
-						builtin.diagnostics({ jump_type = jump_type, severity = vim.diagnostic.severity.ERROR })
+						builtin.diagnostics({ jump_type = jump_type })
 					end,
 					descriptor_prefix .. "diagnostics",
 				},
@@ -105,7 +115,9 @@ return {
 				},
 				i = {
 					function()
-						builtin.lsp_implementations({ jump_type = jump_type })
+						builtin.lsp_implementations(
+							vim.tbl_extend("force", {}, default_lsp_telescope_opts, { jump_type = jump_type })
+						)
 					end,
 					"implementation",
 				},
@@ -167,7 +179,9 @@ return {
 				},
 				s = {
 					function()
-						builtin.fd()
+						builtin.fd({
+							hidden = true,
+						})
 					end,
 					"fd files in cur dir",
 				},
