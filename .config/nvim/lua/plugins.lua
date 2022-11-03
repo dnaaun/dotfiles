@@ -13,15 +13,27 @@ require("packer").startup({
 
 		use("embear/vim-localvimrc") -- Enable sourcing .lnvimrc files
 
-		-- Don't think I'm using this
-		-- use(require("pconfig.indent_blankline"))
+    -- cmp-related, might be useful when using neovim in pager mode.
+		use(require("pconfig.cmp"))
+		use({ "hrsh7th/cmp-buffer", after = "nvim-cmp" })
+		use({ "hrsh7th/cmp-path", after = "nvim-cmp" })
+		use({ "hrsh7th/cmp-cmdline", after = "nvim-cmp" })
 
-		-- When opening splits, let the remaining one remain "stable"
-		-- use(require("pconfig.stabilize")) -- Not necessary. Trying to get a speed up right now.
+		-- Used currently for editing JSX mostly
+		use(require("pconfig.surround"))
+
+		--  CUrrently used for reapting the things I do with vim-surround
+		use({ "tpope/vim-repeat" })
+
+
+    if _G.PAGER_MODE then
+      return
+    end
 
 		-- LSP dependent/related
 		-- The LSPConfig, the lyth, the legend
 		use(require("pconfig.lsp_config"))
+
 
 		use(require("pconfig.lsp_extensions"))
 		-- use(require("pconfig.rust_tools"))
@@ -44,14 +56,11 @@ require("packer").startup({
     
     --  Easier installation of LSPs.
 		use(require("pconfig.mason"))
-
-		use(require("pconfig.cmp"))
 		use(require("pconfig.luasnip"))
+
+    -- cmp related, not useful in pager mode.
 		use({ "hrsh7th/cmp-nvim-lsp", after = { "nvim-cmp" } })
-		use({ "hrsh7th/cmp-buffer", after = "nvim-cmp" })
-		use({ "hrsh7th/cmp-path", after = "nvim-cmp" })
 		use({ "rcarriga/cmp-dap", after = "nvim-cmp" })
-		use({ "hrsh7th/cmp-cmdline", after = "nvim-cmp" })
 		use({ "saadparwaiz1/cmp_luasnip", after = "nvim-cmp" })
 
 		-- Super fast, super feature complete, completion plugin
@@ -135,11 +144,6 @@ require("packer").startup({
 		use(require("pconfig.amharic"))
 
 		use(require("pconfig.colorizer"))
-		-- Used currently for editing JSX mostly
-		use(require("pconfig.surround"))
-
-		--  CUrrently used for reapting the things I do with vim-surround
-		use({ "tpope/vim-repeat" })
 
 		-- Markdown
 		use({ "plasticboy/vim-markdown", ft = { "markdown" } })
