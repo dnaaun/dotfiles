@@ -3,11 +3,21 @@
 -- https://github.com/ThePrimeagen/harpoon/issues/195
 -- This makes it so that in harpoon buffers, which-key will only show up 10 seconds
 -- after being in operator pending mode.
-vim.api.nvim_create_autocmd({ "FileType" }, {
-	pattern = { "harpoon" },
-	group = vim.api.nvim_create_augroup("WhichKeyBeNiceToHarpoon", {}),
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+	group = vim.api.nvim_create_augroup("IncreaseTimeoutLenForHarpoon", {}),
 	callback = function()
-		vim.opt_local.timeoutlen = 10000
+    if vim.opt.filetype == "harpoon" then
+      vim.opt_local.timeoutlen = 10000
+    end
+	end,
+})
+
+vim.api.nvim_create_autocmd({ "BufLeave" }, {
+	group = vim.api.nvim_create_augroup("ResetTimeoutlenAfterHarpoon", {}),
+	callback = function()
+    if vim.opt.filetype == "harpoon" then
+      vim.opt_local.timeoutlen = 0
+    end
 	end,
 })
 
