@@ -243,7 +243,7 @@ return {
 							args = { "--synctex", "%f" },
 							executable = "tectonic",
 							forwardSearchAfter = true,
-							onSave = false,
+							onSave = true,
 						},
 					},
 				},
@@ -332,7 +332,7 @@ return {
 
 			-- requires npm i -g vscode-langservers-extracted
 			eslint = {
-				filetypes = require("consts").javascripty_filetypes,
+				filetypes = vim.list_extend({"json"}, require("consts").javascripty_filetypes),
 			},
 		}
 

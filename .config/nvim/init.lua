@@ -101,10 +101,9 @@ g.localvimrc_whitelist = { vim.fn.fnamemodify("~", ":p") }
 g.localvimrc_sandbox = 0
 
 -- Have one global status line
-opt.laststatus=3
+opt.laststatus = 3
 -- Have a thin line separating the splits
 vim.cmd([[highlight WinSeparator guifg=None guifg=#aaa]])
-
 
 -- Trying to get neovim's colorscheme to appear identical inside and outside of
 -- tmux (inside is messed up a bit right now)
@@ -158,18 +157,6 @@ vim.keymap.set("n", "<leader>qD", function()
 end, {})
 
 local wk = require("which-key")
--- a shortcut to clear searches since I do that a lot
--- A double slash (//) should work well since slash itself has a special
--- purpose in that it delineates the search pattern from the flags, which
--- means it's extremely unlikely that I'll double type slash.
-wk.register({
-	["//"] = {
-		function()
-			vim.cmd("nohlsearch")
-		end,
-		"clear search highlights",
-	},
-})
 
 -- Neovim win!
 -- I disabled that because (I belive) the which-key key plugin messes up my "gg" movement
@@ -186,3 +173,23 @@ wk.register({
 		"source the visual (hopefully lua code) selection into neovim",
 	},
 }, { mode = "v" })
+
+wk.register({ ["<leader>lc"] = {
+	function()
+		vim.cmd("nohlsearch")
+		vim.lsp.util.buf_clear_references(0)
+	end,
+  "clear both vim search and LSP reference highlights"
+} })
+-- Highlight what I yanked
+---Highlight yanked text
+--
+local ag = vim.api.nvim_create_augroup
+local au = vim.api.nvim_create_autocmd
+au("TextYankPost", {
+	group = ag("yank_highlight", {}),
+	pattern = "*",
+	callback = function()
+		vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
+	end,
+})

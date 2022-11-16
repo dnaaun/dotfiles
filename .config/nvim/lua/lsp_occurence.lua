@@ -148,10 +148,10 @@ local function make_goto_occurence_handler(find_prev)
 		if not err and result then
 			local range = find_next_or_prev_occurence(result, find_prev)
 			if range then
-        -- This doesn't work https://github.com/neovim/neovim/issues/17861
+				-- This doesn't work https://github.com/neovim/neovim/issues/17861
 				-- vim.api.nvim_buf_set_mark(ctx.bufnr, "`", pos[2], pos[3] - 1, {})
-        -- btw, ctx would have been the third argument to handler.
-        vim.cmd("normal! m'")
+				-- btw, ctx would have been the third argument to handler.
+				vim.cmd("normal! m'")
 				vim.fn.setcursorcharpos(range.start.line + 1, range.start.character + 1)
 			end
 		end
@@ -193,10 +193,6 @@ local function on_attach(client, bufnr)
 		goto_occurence(true)
 	end, { buffer = true })
 
-	-- setup a mapping to clear the highlights
-	vim.keymap.set("n", "<leader>lc", function()
-		vim.lsp.util.buf_clear_references(0)
-	end, {})
 
 	-- use the g-prefixed version to actually mean the previusly g-unprefixed version
 	-- vim.keymap.set("n", "g*", "*", { remap = false })

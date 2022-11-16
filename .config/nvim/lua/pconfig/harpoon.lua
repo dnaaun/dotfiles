@@ -39,7 +39,7 @@ return {
 			m = { ui.toggle_quick_menu, "toggle quick menu" },
 		}
 
-		for i = 2, 9 do
+		for i = 1, 9 do
 			wk_mappings[tostring(i)] = {
 				function()
 					ui.nav_file(i)

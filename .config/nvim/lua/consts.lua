@@ -32,8 +32,6 @@ return {
 		"tsx", -- Basically only to add this, I modified the defualt.
 		"vue",
 		"less",
-		"json",
-		"jsonc",
 		"yaml",
 		"graphql",
 		"handlebars",

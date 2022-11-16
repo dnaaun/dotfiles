@@ -214,7 +214,6 @@ complete -F _complete_alias tw
 alias x=xsv
 complete -F _complete_alias x
 alias xs="xsv select"
-alias xh="xsv headers" 
 # lowercase
 alias lower="tr '[:upper:]' '[:lower:]'"
 # Include hidden files by default

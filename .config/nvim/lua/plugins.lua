@@ -237,6 +237,14 @@ require("packer").startup({
 
 		-- use(require("pconfig.sqls"))
 
+    use(require("pconfig.codewindow"))
+
+    -- structural search and replce.
+    use(require("pconfig.ssr"))
+
+    -- I use it for: jump to a locaiton in the jumplist that is in a different
+    -- buffer than the one I have now.
+    use(require("pconfig.portal"))
 	end,
 
 	config = {
