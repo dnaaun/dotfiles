@@ -49,8 +49,9 @@ return {
 		end
 
 		wk.register({
-			-- I chose m because it's close to my <leader>: ","
-			["<leader>m"] = wk_mappings,
+      -- I've never used vim marks (which `m` is supposed to operate),
+      -- Si I think this is ok.
+			["m"] = wk_mappings,
 		})
 
 		require("harpoon").setup({
