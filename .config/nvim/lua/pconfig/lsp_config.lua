@@ -347,7 +347,7 @@ return {
 			"kotlin_language_server",
 			"pyright",
 			"solargraph",
-			"ruby_ls",
+			-- "ruby_ls",
 			"sqls",
 			"rust_analyzer",
 			"sumneko_lua",
