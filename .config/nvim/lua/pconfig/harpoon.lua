@@ -6,28 +6,31 @@
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
 	group = vim.api.nvim_create_augroup("IncreaseTimeoutLenForHarpoon", {}),
 	callback = function()
-    if vim.opt.filetype == "harpoon" then
-      vim.opt_local.timeoutlen = 10000
-    end
+		if vim.opt.filetype == "harpoon" then
+			vim.opt_local.timeoutlen = 10000
+		end
 	end,
 })
 
 vim.api.nvim_create_autocmd({ "BufLeave" }, {
 	group = vim.api.nvim_create_augroup("ResetTimeoutlenAfterHarpoon", {}),
 	callback = function()
-    if vim.opt.filetype == "harpoon" then
-      vim.opt_local.timeoutlen = 0
-    end
+		if vim.opt.filetype == "harpoon" then
+			vim.opt_local.timeoutlen = 0
+		end
 	end,
 })
 
 return {
 	"ThePrimeagen/harpoon",
 	requires = "nvim-lua/plenary.nvim",
+	after = "telescope.nvim",
 	config = function()
 		local wk = require("which-key")
 		local mark = require("harpoon.mark")
 		local ui = require("harpoon.ui")
+
+		require("telescope").load_extension("harpoon")
 
 		local wk_mappings = {
 			name = "Harpoon!",
@@ -36,7 +39,7 @@ return {
 
 			-- I chose m because <leader>m is my harpoon prefix
 			-- and this is probably going to be a frequent operation.
-			m = { ui.toggle_quick_menu, "toggle quick menu" },
+			m = { require("telescope").extensions.harpoon.marks, "telescope harpoon" },
 		}
 
 		for i = 1, 9 do
@@ -49,8 +52,8 @@ return {
 		end
 
 		wk.register({
-      -- I've never used vim marks (which `m` is supposed to operate),
-      -- Si I think this is ok.
+			-- I've never used vim marks (which `m` is supposed to operate),
+			-- Si I think this is ok.
 			["m"] = wk_mappings,
 		})
 
