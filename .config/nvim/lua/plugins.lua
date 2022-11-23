@@ -13,7 +13,7 @@ require("packer").startup({
 
 		use("embear/vim-localvimrc") -- Enable sourcing .lnvimrc files
 
-    -- cmp-related, might be useful when using neovim in pager mode.
+		-- cmp-related, might be useful when using neovim in pager mode.
 		use(require("pconfig.cmp"))
 		use({ "hrsh7th/cmp-buffer", after = "nvim-cmp" })
 		use({ "hrsh7th/cmp-path", after = "nvim-cmp" })
@@ -25,15 +25,13 @@ require("packer").startup({
 		--  CUrrently used for reapting the things I do with vim-surround
 		use({ "tpope/vim-repeat" })
 
-
-    if _G.PAGER_MODE then
-      return
-    end
+		if _G.PAGER_MODE then
+			return
+		end
 
 		-- LSP dependent/related
 		-- The LSPConfig, the lyth, the legend
 		use(require("pconfig.lsp_config"))
-
 
 		use(require("pconfig.lsp_extensions"))
 		-- use(require("pconfig.rust_tools"))
@@ -53,12 +51,12 @@ require("packer").startup({
 
 		-- Show func signatures automatically. some filetypes (typescript) cause issues.
 		use(require("pconfig.lsp_signature"))
-    
-    --  Easier installation of LSPs.
+
+		--  Easier installation of LSPs.
 		use(require("pconfig.mason"))
 		use(require("pconfig.luasnip"))
 
-    -- cmp related, not useful in pager mode.
+		-- cmp related, not useful in pager mode.
 		use({ "hrsh7th/cmp-nvim-lsp", after = { "nvim-cmp" } })
 		use({ "rcarriga/cmp-dap", after = "nvim-cmp" })
 		use({ "saadparwaiz1/cmp_luasnip", after = "nvim-cmp" })
@@ -237,14 +235,21 @@ require("packer").startup({
 
 		-- use(require("pconfig.sqls"))
 
-    use(require("pconfig.codewindow"))
+		use(require("pconfig.codewindow"))
 
-    -- structural search and replce.
-    use(require("pconfig.ssr"))
+		-- structural search and replce.
+		use(require("pconfig.ssr"))
 
-    -- I use it for: jump to a locaiton in the jumplist that is in a different
-    -- buffer than the one I have now.
-    use(require("pconfig.portal"))
+		-- I use it for: jump to a locaiton in the jumplist that is in a different
+		-- buffer than the one I have now.
+		use(require("pconfig.portal"))
+
+		use({
+			"glacambre/firenvim",
+			run = function()
+				vim.fn["firenvim#install"](0)
+			end,
+		})
 	end,
 
 	config = {
