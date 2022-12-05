@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [[ -z "$1" ]]; then
+  echo "USAGE: $0 title"
+  echo ""
+  echo "Create a branch from a Github issue like statement"
+  exit 1
+fi
+
+
+echo "$@"
+
+PREFIX="dt/"
+pr_title="$(echo "$@" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z]+/-/g')"
+git checkout -b "${PREFIX}${pr_title}"
