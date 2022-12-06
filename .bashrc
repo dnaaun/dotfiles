@@ -61,7 +61,8 @@ shopt -s lithist
 # procasti-optimizing your bash startup time, you know where to look! 
 for dir in {$HOME/.bash_completion.d/,/opt/homebrew/etc/bash_completion.d,/usr/local/etc/bash_completion.d}; do
   for comp_file in $dir/*; do
-    source "$comp_file"
+    :
+    # source "$comp_file"
   done
 done
 
