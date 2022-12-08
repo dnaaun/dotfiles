@@ -57,14 +57,9 @@ shopt -s lithist
 #     debian_chroot=$(cat /etc/debian_chroot)
 # fi
 
-# Discovered that this step takes a lot of time. If ever you feel like
-# procasti-optimizing your bash startup time, you know where to look! 
-for dir in {$HOME/.bash_completion.d/,/opt/homebrew/etc/bash_completion.d,/usr/local/etc/bash_completion.d}; do
-  for comp_file in $dir/*; do
-    :
-    # source "$comp_file"
-  done
-done
+
+source /opt/homebrew/etc/bash_completion.d/git-prompt.sh
+source /opt/homebrew/etc/bash_completion.d/git-completion.bash
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then

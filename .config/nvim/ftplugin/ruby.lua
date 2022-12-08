@@ -12,9 +12,9 @@ vim.api.nvim_create_autocmd({ "BufAdd", "BufCreate", "BufEnter" }, {
 
 -- Following the blueprint: https://github.com/kylechui/nvim-surround/discussions/53#discussioncomment-3341113
 require("nvim-surround").buffer_setup({
-    surrounds = {
-        d = {
-            add = { { "do", "" }, { "", "end"} }
-        },
-    }
+	surrounds = {
+		["d"] = {
+			add = { { "do", "" }, { "", "end" } },
+		},
+	},
 })
