@@ -1,0 +1,2 @@
+$PROMPT = "{cwd}{GREEN}{branch_color}{curr_branch: {}}{RESET} {RED}{last_return_code_if_nonzero:[{BOLD_INTENSE_RED}{}{RED}] }{RESET}{BOLD_BLUE}{prompt_end}{RESET} "
+
