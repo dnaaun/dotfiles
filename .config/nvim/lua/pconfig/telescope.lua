@@ -97,7 +97,7 @@ return {
 				},
 				e = {
 					function()
-						builtin.diagnostics({ jump_type = jump_type })
+						builtin.diagnostics({ jump_type = jump_type, severity = vim.diagnostic.severity.ERROR })
 					end,
 					descriptor_prefix .. "diagnostics",
 				},
