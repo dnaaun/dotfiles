@@ -85,7 +85,9 @@ require("plugins")
 g.tokyonight_style = "day"
 -- g.snazzybuddy_icons = true
 -- g.vscode_style = "light"
-vim.cmd("colorscheme tokyonight")
+
+-- vim.cmd("colorscheme tokyonight-day")
+vim.cmd("colorscheme github_dark")
 
 ---- vim-tmux-navigator ----
 -- I bring this after the plugins sections because I haven't yet figured

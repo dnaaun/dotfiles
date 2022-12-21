@@ -517,6 +517,73 @@ colors:
   #
   #indexed_colors: []
 
+# Github Light Alacritty Colors
+# https://github.com/projekt0n/github-theme-contrib/blob/main/alacritty/github_light.yml
+# colors:
+#   # Default colors
+#   primary:
+#     background: '0xffffff'
+#     foreground: '0x24292f'
+
+#   # Normal colors
+#   normal:
+#     black:   '0x24292e'
+#     red:     '0xd73a49'
+#     green:   '0x28a745'
+#     yellow:  '0xdbab09'
+#     blue:    '0x0366d6'
+#     magenta: '0x5a32a3'
+#     cyan:    '0x0598bc'
+#     white:   '0x6a737d'
+
+#   # Bright colors
+#   bright:
+#     black:   '0x959da5'
+#     red:     '0xcb2431'
+#     green:   '0x22863a'
+#     yellow:  '0xb08800'
+#     blue:    '0x005cc5'
+#     magenta: '0x5a32a3'
+#     cyan:    '0x3192aa'
+#     white:   '0xd1d5da'
+
+#   indexed_colors:
+#     - { index: 16, color: '0xd18616' }
+#     - { index: 17, color: '0xcb2431' }
+
+# Github Dark Alacritty Colors
+# https://github.com/projekt0n/github-theme-contrib/blob/9b01e4fba8d4d08e7243b25723340fddcb35c467/alacritty/github_dark.yml
+colors:
+  # Default colors
+  primary:
+    background: '0x24292e'
+    foreground: '0xd1d5da'
+
+  # Normal colors
+  normal:
+    black:   '0x586069'
+    red:     '0xea4a5a'
+    green:   '0x34d058'
+    yellow:  '0xffea7f'
+    blue:    '0x2188ff'
+    magenta: '0xb392f0'
+    cyan:    '0x39c5cf'
+    white:   '0xd1d5da'
+
+  # Bright colors
+  bright:
+    black:   '0x959da5'
+    red:     '0xf97583'
+    green:   '0x85e89d'
+    yellow:  '0xffea7f'
+    blue:    '0x79b8ff'
+    magenta: '0xb392f0'
+    cyan:    '0x56d4dd'
+    white:   '0xfafbfc'
+
+  indexed_colors:
+    - { index: 16, color: '0xd18616' }
+    - { index: 17, color: '0xf97583' }
 # Bell
 #
 # The bell is rung every time the BEL control character is received.
