@@ -7,6 +7,10 @@ if [[ -z "$1" ]] || [[ ! -z "$2" ]]; then
   exit 1
 fi
 
+# If the whole URL to the issue was passed, take only the last part of the path.
+issue_number=$(echo "$1" | sed 's+^.*/++')
+
+
 PREFIX="dt/"
-pr_title="$(gh issue view --json title $1 | jq -r '.title' | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z]+/-/g')"
+pr_title="$(gh issue view --json title $issue_number | jq -r '.title' | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z]+/-/g')"
 git checkout -b "${PREFIX}${pr_title}"
