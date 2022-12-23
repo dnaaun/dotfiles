@@ -1,24 +1,23 @@
-local mapfunc = require('std2').mapfunc
-local nvim_set_keymap = vim.api.nvim_set_keymap
+local o = vim.opt
+local g = vim.g
 
 -- Text iwidth
-vim.opt.tw=88
+o.tw=88
 
-vim.opt.expandtab = true
+o.expandtab = true
 -- show existing tab with 2 spaces width
-vim.opt.tabstop=2
-vim.opt.softtabstop=2
+o.tabstop=2
+o.softtabstop=2
 -- when indenting with '>', use 2 spaces width
-vim.opt.shiftwidth=2
+o.shiftwidth=2
 
 -- Enable spelling
-vim.opt.spell = true
+o.spell = true
 ---- vim-markdown ----
 -- Markdown fenced languages support
 -- https://github.com/plasticboy/vim-markdown/commit/04e060dc062ee981f5c9bcc8f3b700f803da285f
-vim.g.vim_markdown_fenced_languages = { "json", "bash", "lua" }
-vim.g.vim_markdown_folding_disabled = 1
-vim.g.vim_markdown_conceal = 0
+g.vim_markdown_fenced_languages = { "json", "bash", "lua" }
+g.vim_markdown_folding_disabled = 1
+g.vim_markdown_conceal = 0
 ---- Markdown, make preview available remotely (ie, serve on 0.0.0.0, not localhost)
-vim.g.mkdp_open_to_the_world = 1
-nvim_set_keymap("n", "<Leader>m", "<Plug>MarkdownPreviewToggle<CR>", {})
+g.mkdp_open_to_the_world = 1

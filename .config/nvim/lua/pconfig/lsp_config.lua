@@ -243,7 +243,7 @@ return {
 							args = { "--synctex", "%f" },
 							executable = "tectonic",
 							forwardSearchAfter = true,
-							onSave = true,
+							onSave = false,
 						},
 					},
 				},
@@ -332,7 +332,7 @@ return {
 
 			-- requires npm i -g vscode-langservers-extracted
 			eslint = {
-				filetypes = vim.list_extend({"json"}, require("consts").javascripty_filetypes),
+				filetypes = vim.list_extend({ "json" }, require("consts").javascripty_filetypes),
 			},
 		}
 
@@ -364,14 +364,15 @@ return {
 			else
 				config = common_config
 			end
-			-- lspconfig[lspname].setup(coq.lsp_ensure_capabilities(config))
 
 			-- Setup nvim-cmp
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-			lspconfig[lspname].setup(vim.tbl_extend("force", config, {
+			config = vim.tbl_extend("force", config, {
 				capabilities = capabilities,
-			}))
+			});
+
+			lspconfig[lspname].setup(config)
 		end
 	end,
 }
