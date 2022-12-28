@@ -76,9 +76,6 @@ else
 	print("Umm, not sure what platform(MacOS/linux) I'm on, so won't guess the location of the python binary.")
 end
 
----- Add plugins ----
-require("plugins")
-
 -- This section must come before loading nvim-dap for it not to mess up
 -- nvim-dap colors.
 -- checks if your terminal has 24-bit color support
@@ -87,11 +84,12 @@ g.tokyonight_style = "day"
 -- g.vscode_style = "light"
 
 -- vim.cmd("colorscheme tokyonight-day")
-vim.cmd("colorscheme github_dark")
+-- vim.cmd("colorscheme github_dark")
+vim.cmd("colorscheme nightfox")
 
----- vim-tmux-navigator ----
--- I bring this after the plugins sections because I haven't yet figured
--- out how to turn of conflicting keybinds from coq.nvim
+---- Add plugins ----
+require("plugins")
+
 ---- lnvimrc.vim ----
 ---- Local vimrc
 g.localvimrc_debug = 1

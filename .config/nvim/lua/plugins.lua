@@ -168,7 +168,9 @@ require("packer").startup({
 		use(require("pconfig.web_devicons"))
 
 		-- use("Mofiqul/vscode.nvim")
-		use("folke/tokyonight.nvim")
+		-- use("folke/tokyonight.nvim")
+
+    use("EdenEast/nightfox.nvim")
 
 		use(require("pconfig.lualine"))
 
