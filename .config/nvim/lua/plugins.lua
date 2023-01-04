@@ -201,7 +201,7 @@ require("packer").startup({
 
 		-- Hopefully this one solves some point points with nvim-orgmode (like bullets not
 		-- working properly)
-		use(require("pconfig.neorg"))
+		-- use(require("pconfig.neorg"))
 
 		-- Show me where I'm at in the status bar (like, what funciton/ conditional/thingy)
 		use(require("pconfig.treesitter_context"))
