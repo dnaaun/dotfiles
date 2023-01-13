@@ -378,7 +378,7 @@ source ~/.bashrc_specific
 
 alias latest_branches="git for-each-ref --sort=-committerdate refs/heads/ | choose 2"
 
-alias most_recent_mp3_in_downloads_as_tex="ls -ct ~/Downloads/*.{mp3,MP3} | head -1 | sd '.*/' '' | sd --flags i '.mp3$' '.tex'"
+alias most_recent_mp3_in_downloads_as_tex="ls -ct ~/Downloads/*.{mp3,MP3} | head -1 | sd '.*/' '' | sd --flags i '.mp3$' '.tex' | sd ' ' '_'"
 
 
 

@@ -84,6 +84,13 @@ return {
 			vim.bo.formatexpr = "v:lua._G.lsp_formatexpr()"
 		end
 
+		-- A function to setup a mapping for :TexlabForward
+		local setup_texlab_forward_search = function()
+			local map = vim.api.nvim_set_keymap
+			local opts = { noremap = true, silent = true }
+			map("n", "<leader>t", ":TexlabForward<CR>", opts)
+		end
+
 		--- null-ls.nvim sometimes conflicts with other LSPs
 		local disable_formatting_sometimes = function(client)
 			if not (client.name == "rust_analyzer" or client.name == "texlab" or client.name == "null-ls") then
@@ -106,6 +113,10 @@ return {
 			-- setup_mappings(bufnr)
 			setup_formatexpr(client)
 			disable_formatting_sometimes(client)
+
+			if client.name == "texlab" then
+				setup_texlab_forward_search()
+			end
 		end
 
 		-- Config for all LSPs
@@ -128,6 +139,15 @@ return {
 			rust_analyzer = {
 				settings = {
 					["rust-analyzer"] = {
+						-- This is actually only because of crushedgarlic/ingredient_tagger_2
+						server = {
+							extraEnv = {
+								RUSTFLAGS = {
+									"-C",
+									"link-args=-Wl,-rpath,/Users/davidat/git/onnxruntime-rs/target/onnxruntime/lib",
+								},
+							},
+						},
 						diagnostics = {
 							enable = true,
 							disabled = { "unresolved-proc-macro" },
@@ -216,18 +236,18 @@ return {
 			texlab = {
 				settings = {
 					texlab = {
-						auxDirectory = ".",
+						rootDirectory = ".",
 						bibtexFormatter = "texlab",
 						chktex = {
 							onEdit = false,
-							onOpenAndSave = false,
+							onOpenAndSave = true,
 						},
 						diagnosticsDelay = 300,
 						formatterLineLength = 80,
 						forwardSearch = {
 							executable = "/Applications/Skim.app/Contents/SharedSupport/displayline",
 							args = {
-								"-g", -- don't bring skim into foregroudn
+								"-g", -- don't bring skim into foreground
 								"-b", -- indicate line using reading bar
 								"%l",
 								"%p",
@@ -243,7 +263,7 @@ return {
 							args = { "--synctex", "%f" },
 							executable = "tectonic",
 							forwardSearchAfter = true,
-							onSave = false,
+							onSave = true,
 						},
 					},
 				},
@@ -365,14 +385,18 @@ return {
 				config = common_config
 			end
 
-			-- Setup nvim-cmp
-			local capabilities = require("cmp_nvim_lsp").default_capabilities()
+			-- This step, although recommended in cmp-nvim-lsp's README, doesn't seem required
+			-- to get LSP autocomplete, and it causes errors, soo, I'm commenting it out.
+			-- local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-			config = vim.tbl_extend("force", config, {
-				capabilities = capabilities,
-			});
+			-- config = vim.tbl_extend("force", config, {
+			-- 	capabilities = capabilities,
+			-- })
 
 			lspconfig[lspname].setup(config)
 		end
 	end,
+
+	-- requires = { "hrsh7th/cmp-nvim-lsp" },
+	-- after = { "cmp-nvim-lsp" },
 }

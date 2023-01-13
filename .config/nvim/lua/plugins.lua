@@ -18,6 +18,36 @@ require("packer").startup({
 		use({ "hrsh7th/cmp-buffer", after = "nvim-cmp" })
 		use({ "hrsh7th/cmp-path", after = "nvim-cmp" })
 		use({ "hrsh7th/cmp-cmdline", after = "nvim-cmp" })
+		use({ "f3fora/cmp-spell", after = "nvim-cmp" })
+
+		-- Our future AI overlords
+		use({
+			"zbirenbaum/copilot.lua",
+			event = "VimEnter",
+			config = function()
+				vim.defer_fn(function()
+					require("copilot").setup({
+						-- "It is recommended to disable copilot.lua's suggestion and panel
+						-- modules, as they can interfere with completions properly appearing in
+						-- copilot-cmp."
+						--   - https://github.com/zbirenbaum/copilot-cmp#install
+						suggestion = { enabled = false },
+						panel = { enabled = false },
+
+						filetypes = {
+							tex = false,
+						},
+					})
+				end, 100)
+			end,
+		})
+		use({
+			"zbirenbaum/copilot-cmp",
+			after = { "copilot.lua" },
+			config = function()
+				require("copilot_cmp").setup()
+			end,
+		})
 
 		-- Used currently for editing JSX mostly
 		use(require("pconfig.surround"))
@@ -170,7 +200,7 @@ require("packer").startup({
 		-- use("Mofiqul/vscode.nvim")
 		-- use("folke/tokyonight.nvim")
 
-    use("EdenEast/nightfox.nvim")
+		use("EdenEast/nightfox.nvim")
 
 		use(require("pconfig.lualine"))
 

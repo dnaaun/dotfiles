@@ -10,6 +10,16 @@ return {
 
 		local cmp = require("cmp")
 
+		--- We have this so that we can show the completion source in the completion
+    --- menu for each item.
+		---@param entry cmp.Entry
+		---@param vim_item vim.CompletedItem
+		---@return vim.CompletedItem
+		local function cmp_item_formatting(entry, vim_item)
+			vim_item.menu = "[" .. entry.source.name .. "]"
+      return vim_item
+		end
+
 		cmp.setup({
 			experimental = {
 				ghost_text = true,
@@ -22,7 +32,6 @@ return {
 			mapping = {
 				["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
 				["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
-				["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
 				["<C-y>"] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
 				["<C-e>"] = cmp.mapping({
 					i = cmp.mapping.abort(),
@@ -40,6 +49,14 @@ return {
 					end
 				end, { "i", "s" }),
 
+				["<C-Space>"] = cmp.mapping.complete({
+					config = {
+						sources = {
+							{ name = "copilot" },
+						},
+					},
+				}),
+
 				["<S-Tab>"] = cmp.mapping(function(fallback)
 					if cmp.visible() then
 						cmp.select_prev_item()
@@ -54,13 +71,51 @@ return {
 			end,
 			sources = {
 				{ name = "dap" },
-				{ name = "orgmode" },
 				{ name = "nvim_lsp" },
-				{ name = "luasnip" },
+				{ name = "copilot" },
+				{ name = "luasnip", priority = 100 },
 				{ name = "path" },
-				{ name = "git" },
+				{
+					name = "spell",
+					option = {
+						keep_all_entries = false,
+						-- https://github.com/f3fora/cmp-spell#enable_in_context
+						enable_in_context = function()
+							return true
+							-- return require("cmp.config.context").in_treesitter_capture("spell")
+						end,
+					},
+				},
 				{ name = "buffer", keyword_length = 5 },
+			},
+
+			comparators = {
+				require("copilot_cmp.comparators").prioritize,
+				require("copilot_cmp.comparators").score,
+
+				-- Below is the default comparator list and order for nvim-cmp
+				cmp.config.compare.offset,
+				-- cmp.config.compare.scopes, --this is commented in nvim-cmp too
+
+				-- The original order of the below two was reversed.
+				-- I changed it because exact dictionary matches are being
+				-- ranked higher than (what I hope are) higher scoring,
+				-- luasnip matches.
+				cmp.config.compare.score,
+				cmp.config.compare.exact,
+
+				cmp.config.compare.recently_used,
+				cmp.config.compare.locality,
+				cmp.config.compare.kind,
+				cmp.config.compare.sort_text,
+				cmp.config.compare.length,
+				cmp.config.compare.order,
+			},
+
+			formatting = {
+				format = cmp_item_formatting,
 			},
 		})
 	end,
+	after = { "copilot-cmp" },
 }

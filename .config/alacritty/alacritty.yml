@@ -105,7 +105,7 @@ decorations: "none"
 # Font configuration
 font:
   # Normal (roman) font face
-  size: 12
+  size: 13
   normal:
     # Font family
     #
@@ -113,7 +113,7 @@ font:
     #   - (macOS) Menlo
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
-    family: "Iosevka Nerd Font Mono"
+    family: "FiraCode Nerd Font Mono"
       # family: "Abyssinica SIL"
 
     # The `style` can be specified to pick a specific face.
