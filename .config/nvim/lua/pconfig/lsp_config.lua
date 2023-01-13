@@ -96,6 +96,7 @@ return {
 			if not (client.name == "rust_analyzer" or client.name == "texlab" or client.name == "null-ls") then
 				client.server_capabilities.documentFormattingProvider = false
 				client.server_capabilities.documentRangeFormattingProvider = false
+				print("LSP formatting disabled for " .. client.name)
 			else
 				-- print("LSP formatting NOT disabled for " .. client.name)
 			end
