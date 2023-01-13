@@ -379,3 +379,21 @@ source ~/.bashrc_specific
 alias latest_branches="git for-each-ref --sort=-committerdate refs/heads/ | choose 2"
 
 alias most_recent_mp3_in_downloads_as_tex="ls -ct ~/Downloads/*.{mp3,MP3} | head -1 | sd '.*/' '' | sd --flags i '.mp3$' '.tex'"
+
+
+
+# Switch easily to a tmux session using fzf from bash
+function ta() {
+  tmux attach-session -t "$(tmux list-sessions -F '#{session_name}' | fzf)"
+}
+
+# Switch among recently-checkout-branches. Based off of: https://gist.github.com/jordan-brough/48e2803c0ffa6dc2e0bd#file-git-recent-L74
+function gcb() {
+  git checkout "$(git reflog |
+   rg 'checkout: moving from' |  # Filter
+   rg -o '\S+$' | # Grep to branch name
+   awk '!x[$0]++' | # Remove duplicates
+   fzf
+  )"
+}
+
