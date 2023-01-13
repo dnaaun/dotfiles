@@ -387,13 +387,29 @@ function ta() {
   tmux attach-session -t "$(tmux list-sessions -F '#{session_name}' | fzf)"
 }
 
-# Switch among recently-checkout-branches. Based off of: https://gist.github.com/jordan-brough/48e2803c0ffa6dc2e0bd#file-git-recent-L74
-function gcb() {
-  git checkout "$(git reflog |
+function __fzf_recent_git_branches__() {
+  git reflog |
    rg 'checkout: moving from' |  # Filter
    rg -o '\S+$' | # Grep to branch name
    awk '!x[$0]++' | # Remove duplicates
-   fzf
-  )"
+   fzf --height=40%
 }
 
+# Switch among recently-checkout-branches. Based off of: https://gist.github.com/jordan-brough/48e2803c0ffa6dc2e0bd#file-git-recent-L74
+function gcb() {
+  git checkout "$(__fzf_recent_git_branches__)"
+}
+
+
+# A function to imitate how fzf binds Ctrl-T to select files, but for git branches.
+gcb-widget ()
+{
+    local selected="$(__fzf_recent_git_branches__)";
+    READLINE_LINE="${READLINE_LINE:0:$READLINE_POINT}$selected${READLINE_LINE:$READLINE_POINT}";
+    READLINE_POINT=$(( READLINE_POINT + ${#selected} ))
+}
+
+
+bind -m emacs-standard -x '"\C-g": gcb-widget'
+bind -m vi-command -x '"\C-g": gcb-widget'
+bind -m vi-insert -x '"\C-g": gcb-widget'
