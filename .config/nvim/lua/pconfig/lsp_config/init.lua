@@ -91,10 +91,11 @@ return {
 			}, { mode = "n" })
 		end
 
+    setup_mappings()
+
 		-- Allow other files to define callbacks that get called `on_attach`
 		local on_attach = function(client, bufnr)
 			require("lsp_occurence").on_attach(client, bufnr)
-			setup_mappings()
 
 			for _, plugin_custom_attach in pairs(_G.lsp_config_on_attach_callbacks) do
 				plugin_custom_attach(client)

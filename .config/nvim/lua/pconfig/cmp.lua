@@ -11,13 +11,13 @@ return {
 		local cmp = require("cmp")
 
 		--- We have this so that we can show the completion source in the completion
-    --- menu for each item.
+		--- menu for each item.
 		---@param entry cmp.Entry
 		---@param vim_item vim.CompletedItem
 		---@return vim.CompletedItem
 		local function cmp_item_formatting(entry, vim_item)
 			vim_item.menu = "[" .. entry.source.name .. "]"
-      return vim_item
+			return vim_item
 		end
 
 		cmp.setup({
