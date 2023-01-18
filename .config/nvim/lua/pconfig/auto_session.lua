@@ -13,7 +13,7 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
 	group = g,
 	nested = true,
 	callback = function()
-		if not vim.g.started_by_firenvim and #vim.v.argv == 1 then
+		if not vim.g.started_by_firenvim and vim.fn.argc() <= 0 then
 			require("auto-session").RestoreSession()
     end
     if vim.g.started_by_firenvim then

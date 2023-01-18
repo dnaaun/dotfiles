@@ -37,20 +37,6 @@ local config = function()
 	-- sometimes, so remove all before adding them.
 	ls.cleanup()
 
-	ls.add_snippets("all", {
-		-- put in the \begin{quote} environment whatever is in the clipboard.
-		-- Had trouble doing it with a VSCode style snippet, so here goes.
-		s(
-			"cq",
-			f(function()
-				return vim.list_extend(
-					vim.list_extend({ "\\begin{quote}" }, vim.fn.getreg("+", 1, true)),
-					{ "\\end{quote}" }
-				)
-			end, {})
-		),
-	})
-
 	-- Load my snipmate style snippets
 	require("luasnip.loaders.from_snipmate").load()
 
