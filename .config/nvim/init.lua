@@ -34,8 +34,6 @@ opt.number = true
 -- Prevent wierd de-endentation when writing python
 opt.indentkeys:remove({ ":" })
 
-opt.fillchars = opt.fillchars + "diff:╱"
-
 opt.matchpairs:append({ "<:>" })
 opt.scrollback = 100000 -- Lines to keep in neovim's terminal emulator
 opt.spell = false
@@ -66,9 +64,11 @@ nvim_set_keymap("n", "<Leader>s", "]s1z=<C-X><C-S>", {})
 -- Insert mode, correct last error.
 nvim_set_keymap("i", "<C-v>", "<Esc>[s1z=``a", {})
 
--- A hack to avoid having press a key before the terminal closes when the process in the
--- terminal finishes.
--- vim.nvim_command("autocmd TermClose * call feedkeys('x')")
+opt.foldcolumn = '1'
+opt.foldlevel = 99
+opt.foldlevelstart = 99
+opt.foldenable = true
+opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 
 if vim.loop.os_uname().sysname == "Darwin" then
 	g.python3_host_prog = "/usr/local/bin/python3"
