@@ -37,7 +37,10 @@ return {
 					i = cmp.mapping.abort(),
 					c = cmp.mapping.close(),
 				}),
-				["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+				["<CR>"] = cmp.mapping.confirm({
+					select = true,
+					behavior = cmp.ConfirmBehavior.Replace,
+				}), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 
 				["<Tab>"] = cmp.mapping(function(fallback)
 					if cmp.visible() then
@@ -48,6 +51,8 @@ return {
 						fallback()
 					end
 				end, { "i", "s" }),
+
+				["<C-j>"] = cmp.mapping.complete({}),
 
 				["<C-Space>"] = cmp.mapping.complete({
 					config = {
@@ -69,11 +74,13 @@ return {
 				-- nvim-cmp by defaults disables autocomplete for prompt buffers
 				return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt" or require("cmp_dap").is_dap_buffer()
 			end,
-			sources = {
+			sources = cmp.config.sources({
+				{ name = "copilot", keyword_length = 0 },
+			}, {
+				{ name = "luasnip", priority = 100 },
+			}, {
 				{ name = "dap" },
 				{ name = "nvim_lsp" },
-				{ name = "copilot" },
-				{ name = "luasnip", priority = 100 },
 				{ name = "path" },
 				{
 					name = "spell",
@@ -87,7 +94,7 @@ return {
 					},
 				},
 				{ name = "buffer", keyword_length = 5 },
-			},
+			}),
 
 			comparators = {
 				require("copilot_cmp.comparators").prioritize,

@@ -2,7 +2,6 @@ require("packer").startup({
 	function(use)
 		-- package/plugin manager
 		use(require("pconfig.packer"))
-		--
 		use({
 			"miversen33/import.nvim",
 			config = function()
@@ -31,13 +30,17 @@ require("packer").startup({
 						-- modules, as they can interfere with completions properly appearing in
 						-- copilot-cmp."
 						--   - https://github.com/zbirenbaum/copilot-cmp#install
-						suggestion = { enabled = false },
+						suggestion = { enabled = true },
 						panel = { enabled = false },
 
 						filetypes = {
 							tex = false,
 						},
 					})
+
+					-- Map in insert mode <C-c> to call copilot.suggestion:
+					vim.keymap.set("i", "<C-c>", require("copilot.suggestion").next, { noremap = true, silent = true })
+					vim.keymap.set("i", "<C-e>", require("copilot.suggestion").accept, { noremap = true, silent = true })
 				end, 100)
 			end,
 		})
