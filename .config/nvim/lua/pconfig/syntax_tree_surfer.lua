@@ -10,7 +10,7 @@ return {
 		--	--  we include both, so this keymap will work on both languages
 		--end, opts)
 
-		vim.keymap.set("n", "gj", function() -- jump to all that you specify
+		vim.keymap.set("n", "<leader>gj", function() -- jump to all that you specify
 			sts.targeted_jump({
 				"if_statement",
 				"else_clause",

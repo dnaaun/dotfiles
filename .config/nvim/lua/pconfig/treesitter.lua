@@ -199,7 +199,6 @@ return {
 			rainbow = rainbow,
 		})
 
-		-- I don't like how (I blieve this is what is causing it) the org file folidng is working out.
-		-- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+		vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 	end,
 }
