@@ -73,21 +73,6 @@ return {
 				---@param bufnr number
 				---@return string
 				repl_open_cmd = function(bufnr)
-					local width = vim.o.columns
-					local height = vim.o.lines
-
-					-- This is how wide I want it to be
-					local size = 100
-
-					local winid = vim.api.nvim_open_win(bufnr, false, {
-						relative = "editor",
-						width = size,
-						height = height - 2, -- -2 to avoid hiding the status line
-						row = 0,
-						col = vim.fn.max({ 0, width - size }),
-						zindex = 100,
-					})
-
 					-- Set a keymap to hide buffer when inside the repl
 					-- Note  how we have a "t" instead of an "i" in the modes.
 					vim.keymap.set({ "t", "n" }, "<C-q>", function()
@@ -142,7 +127,9 @@ return {
 						"<C-\\><C-n>",
 						{ desc = "Escape easier from terminal mode", buffer = bufnr }
 					)
-					return winid
+
+					local width = vim.o.columns
+					return require("iron.view").split.vertical.botright(math.min(math.floor(width / 2), 100))(bufnr)
 				end,
 
 				repl_definition = {
