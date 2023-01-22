@@ -44,10 +44,18 @@ return {
 					2,
 					[[
 def some_func
-end
-        ]]
+end]]
 				),
 			}
 		)
+	),
+	s(
+		{ trig = "l", descr = "[markdown link](http://..(DEFAULTS TO CLIPBOARD)" },
+		fmt("[{}]({})", {
+			i(1, "link text"),
+			f(function()
+				return vim.fn.getreg("+", 1, true)
+			end, {}),
+		})
 	),
 }

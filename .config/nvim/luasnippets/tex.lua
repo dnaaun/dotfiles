@@ -52,4 +52,15 @@ return {
 			i(1, ""),
 		})
 	),
+
+	-- put in the \begin{quote} environment whatever is in the clipboard.
+	s(
+		"cq",
+		f(function()
+			return vim.list_extend(
+				vim.list_extend({ "\\begin{quote}" }, vim.fn.getreg("0", 1, true)),
+				{ "\\end{quote}" }
+			)
+		end, {})
+	),
 }
