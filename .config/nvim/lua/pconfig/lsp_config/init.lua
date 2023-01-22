@@ -91,7 +91,7 @@ return {
 			}, { mode = "n" })
 		end
 
-    setup_mappings()
+		setup_mappings()
 
 		-- Allow other files to define callbacks that get called `on_attach`
 		local on_attach = function(client, bufnr)
