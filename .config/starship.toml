@@ -6,7 +6,6 @@ $git_branch\
 $sudo\
 $cmd_duration\
 $git_status\
-$line_break\
 $jobs\
 $character"""
 
