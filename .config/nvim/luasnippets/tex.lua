@@ -41,10 +41,10 @@ return {
 \columnratio{0.6}
 \begin{sloppypar}
   \begin{paracol}{2}
-    \begin{leftcolumn}
+    \begin{rightcolumn}
       ]]) .. "{}" .. escape_curly_braces([[
 
-    \end{leftcolumn}
+    \end{rightcolumn}
   \end{paracol}
 \end{sloppypar}
 \end{document}

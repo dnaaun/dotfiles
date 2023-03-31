@@ -1,6 +1,26 @@
 -- I don't know why I disabled you, but I must have a pretty good reason.
 -- require('impatient') -- Speed up loading things. TOFIXLATER: This will probably (definitely?) break when impatient.nvim is not installed.
 
+local detect_if_in_simple_mode_group = vim.api.nvim_create_augroup("DetectIfWeAreInSimpleMode", {
+	clear = true,
+})
+
+-- When neovim is opened, detect if the file type is `gitrebase`
+vim.api.nvim_create_autocmd( { "VimEnter"}, {
+  group = detect_if_in_simple_mode_group,
+	callback = function(args)
+		local in_simple_mode = false
+
+    local bufnr = args.buf
+    local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
+		if filetype == "gitrebase" then
+			in_simple_mode = true
+		end
+
+		_G.IN_SIMPLE_MODE = in_simple_mode
+	end,
+})
+
 --- Easy debugging
 function _G.P(table)
 	vim.notify(vim.inspect(table))
@@ -25,7 +45,7 @@ g.loaded_spellfile_plugin = 1
 g.loaded_tutor_mode_plugin = 1
 g.loaded_remote_plugins = 1
 
-_G.lsp_config_on_attach_callbacks = {}
+-- _G.lsp_config_on_attach_callbacks = {}
 
 local nvim_set_keymap = vim.api.nvim_set_keymap
 
@@ -64,7 +84,7 @@ nvim_set_keymap("n", "<Leader>s", "]s1z=<C-X><C-S>", {})
 -- Insert mode, correct last error.
 nvim_set_keymap("i", "<C-v>", "<Esc>[s1z=``a", {})
 
-opt.foldcolumn = '1'
+opt.foldcolumn = "1"
 opt.foldlevel = 99
 opt.foldlevelstart = 99
 opt.foldenable = true
@@ -158,6 +178,17 @@ end, {})
 
 local wk = require("which-key")
 
+wk.register({
+	["<leader><C-g>"] = {
+		function()
+			-- Get absolute file of current file
+			local file = vim.fn.expand("%:p")
+			-- Copy the above to the system clipboard register
+			vim.fn.setreg("+", file)
+		end,
+		"copy current file path to register",
+	},
+})
 -- Neovim win!
 -- I disabled that because (I belive) the which-key key plugin messes up my "gg" movement
 -- because it tries to show a message, but cmdheight=0 prevents it, or something like that.
@@ -174,13 +205,15 @@ wk.register({
 	},
 }, { mode = "v" })
 
-wk.register({ ["<leader>lc"] = {
-	function()
-		vim.cmd("nohlsearch")
-		vim.lsp.util.buf_clear_references(0)
-	end,
-  "clear both vim search and LSP reference highlights"
-} })
+wk.register({
+	["<leader>lc"] = {
+		function()
+			vim.cmd("nohlsearch")
+			vim.lsp.util.buf_clear_references(0)
+		end,
+		"clear both vim search and LSP reference highlights",
+	},
+})
 -- Highlight what I yanked
 ---Highlight yanked text
 --

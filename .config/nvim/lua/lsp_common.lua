@@ -38,11 +38,11 @@ end
 -- Allow other files to define callbacks that get called `on_attach`
 local on_attach = function(client, bufnr)
 	-- go to next/previous occurence of variable under cursor using g* and g#
-	require("lsp_occurence").on_attach(client, bufnr)
+	-- require("lsp_occurence").on_attach(client, bufnr)
 
-	for _, plugin_custom_attach in pairs(_G.lsp_config_on_attach_callbacks) do
-		plugin_custom_attach(client)
-	end
+	-- for _, plugin_custom_attach in pairs(_G.lsp_config_on_attach_callbacks) do
+	-- 	plugin_custom_attach(client)
+	-- end
 
 	-- setup_mappings(bufnr)
 	setup_formatexpr(client)

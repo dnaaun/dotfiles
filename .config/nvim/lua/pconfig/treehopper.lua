@@ -1,9 +1,25 @@
 return {
 	"davidatsurge/nvim-treehopper",
-  branch = "add-config-to-specify-parser-for-filetypes",
+	branch = "add-config-to-specify-parser-for-filetypes",
 	config = function()
-		vim.keymap.set("o", "m", require("tsht").nodes, { silent = true })
-		vim.keymap.set("v", "m", require("tsht").nodes, { silent = true })
-    require("tsht").config.ft_to_parser.typescriptreact = "tsx"
+		local wk = require("which-key")
+
+		-- Operator-pending mode mapping
+		wk.register({
+			m = { require("tsht").nodes, "Treehopper Nodes" },
+		}, {
+			mode = "o",
+			silent = true,
+		})
+
+		-- Visual mode mapping
+		wk.register({
+			m = { require("tsht").nodes, "Treehopper Nodes" },
+		}, {
+			mode = "v",
+			silent = true,
+		})
+
+		require("tsht").config.ft_to_parser.typescriptreact = "tsx"
 	end,
 }

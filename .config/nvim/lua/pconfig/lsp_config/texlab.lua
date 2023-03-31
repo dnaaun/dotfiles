@@ -27,7 +27,7 @@ return {
 			build = {
 				args = { "--synctex", "%f" },
 				executable = "tectonic",
-				forwardSearchAfter = true,
+				forwardSearchAfter = false,
 				onSave = true,
 			},
 		},

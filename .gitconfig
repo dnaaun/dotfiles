@@ -2,24 +2,24 @@
 	name = davidatsurge
 	email = 93471693+davidatsurge@users.noreply.github.com
 
-[pager]
-	diff = delta
-	log = delta
-	reflog = delta
-	show = delta
+; [pager]
+; 	diff = delta
+; 	log = delta
+; 	reflog = delta
+; 	show = delta
 
 # Include themes from https://raw.githubusercontent.com/dandavison/delta/master/themes.gitconfig
-[include]
-	path = ~/.config/delta/themes.gitconfig
+; [include]
+; 	path = ~/.config/delta/themes.gitconfig
 
-[delta]
-	line-numbers = true
-	syntax-theme = Github
-	dark = true
-	side-by-side = true
+; [delta]
+; 	line-numbers = true
+; 	syntax-theme = Github
+; 	dark = true
+; 	side-by-side = true
 
-[interactive]
-	diffFilter = delta --color-only
+; [interactive]
+; 	diffFilter = delta --color-only
 
 
 [init]

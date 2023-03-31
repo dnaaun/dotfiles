@@ -101,6 +101,17 @@ return {
 					end,
 					descriptor_prefix .. "diagnostics",
 				},
+				-- Errors only for current buffer.
+				be = {
+					function()
+						builtin.diagnostics({
+							jump_type = jump_type,
+							severity = vim.diagnostic.severity.ERROR,
+							bufnr = 0,
+						})
+					end,
+					descriptor_prefix .. "buffer diagnostics",
+				},
 				l = {
 					name = "less often used LSP mappings",
 					d = {
@@ -190,7 +201,12 @@ return {
 
 				f = {
 					name = "telescopy things",
-					w = { builtin.grep_string, "grep buffer for string" },
+					w = {
+						function()
+							builtin.grep_string({ word_match = "-w" })
+						end,
+						"grep buffer for string",
+					},
 					t = { builtin.help_tags, "help_tags" },
 					j = { builtin.jumplist, "jumplist" },
 					[":"] = { builtin.command_history, "command_history" },

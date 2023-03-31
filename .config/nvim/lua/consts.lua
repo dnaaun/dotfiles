@@ -15,7 +15,8 @@ return {
 		"cpp",
 		"rust",
 		"dockerfile",
-    "html"
+    "html",
+    "sql"
 	},
 
 	-- For the nvim-dap plugin

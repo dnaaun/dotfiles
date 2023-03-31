@@ -146,6 +146,12 @@ return {
 
 		local incremental_selection = {
 			enable = true,
+			disable = function(_, buf)
+        -- Otherwise, it interferes with "command-line window"
+				if vim.fn.getbufvar(buf, "&buftype") == "nofile" then
+					return true
+				end
+			end,
 			keymaps = {
 				init_selection = "<CR>",
 				node_incremental = "<CR>",

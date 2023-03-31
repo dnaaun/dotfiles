@@ -52,15 +52,15 @@ return {
 					end
 				end, { "i", "s" }),
 
-				["<C-j>"] = cmp.mapping.complete({}),
-
-				["<C-Space>"] = cmp.mapping.complete({
+				["<C-j>"] = cmp.mapping.complete({
 					config = {
 						sources = {
-							{ name = "copilot" },
+							{ name = "copilot", keyword_length = 0 },
 						},
 					},
 				}),
+
+				["<C-Space>"] = cmp.mapping.complete({}),
 
 				["<S-Tab>"] = cmp.mapping(function(fallback)
 					if cmp.visible() then

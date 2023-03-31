@@ -32,29 +32,45 @@ return {
 
 		require("telescope").load_extension("harpoon")
 
-		local wk_mappings = {
-			name = "Harpoon!",
-			a = { mark.add_file, "add file" },
-			x = { mark.rm_file, "remove file" },
+		-- direction will be added to the numeric mappings' labels.
+		local make_wk_mappings = function(direction)
+			if direction ~= "horizontal" and direction ~= "vertical" then
+				direction = ""
+			end
 
-			-- I chose m because <leader>m is my harpoon prefix
-			-- and this is probably going to be a frequent operation.
-			m = { require("telescope").extensions.harpoon.marks, "telescope harpoon" },
-		}
-
-		for i = 1, 9 do
-			wk_mappings[tostring(i)] = {
-				function()
-					ui.nav_file(i)
-				end,
-				"nav to file " .. i,
+			local wk_mappings = {
+				name = "harpoon " .. direction,
 			}
+
+			for i = 1, 9 do
+				wk_mappings[tostring(i)] = {
+					function()
+						if direction == "vertical" then
+							vim.cmd("vsplit")
+						elseif direction == "horizontal" then
+							vim.cmd("split")
+						end
+						ui.nav_file(i)
+					end,
+					direction .. " nav to file" .. i,
+				}
+			end
+
+			return wk_mappings
 		end
 
 		wk.register({
 			-- I've never used vim marks (which `m` is supposed to operate),
 			-- Si I think this is ok.
-			["m"] = wk_mappings,
+			m = vim.tbl_extend("force", {
+				a = { mark.add_file, "add file" },
+				d = { mark.rm_file, "remove file" },
+				-- I chose m because <leader>m is my harpoon prefix
+				-- and this is probably going to be a frequent operation.
+				m = { ui.toggle_quick_menu, "harpoon" },
+			}, make_wk_mappings()),
+			mx = make_wk_mappings("horizontal"),
+			ms = make_wk_mappings("vertical"),
 		})
 
 		require("harpoon").setup({

@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+import sys
+import subprocess
+import string
+
+commit = sys.argv[0] if len(sys.argv) > 1 else "origin/master"
+
+# Get the output of running f"git log --online {master}...HEAD"
+# and split it into a list of lines
+commits = subprocess.run(
+    ["git", "log", "--oneline", f"{commit}...HEAD"],
+    stdout=subprocess.PIPE
+).stdout.decode("utf-8").splitlines()
+
+commits.reverse()
+
+print(commits)
+def run(*args):
+    proc = subprocess.run(args)
+    if proc.stdout: print(proc.stdout)
+    if proc.stderr: print(proc.stderr)
+
+for line in commits:
+    commit_id, commit_msg = line.split(" ", 1)
+    simpler_msg = "".join([i if i in string.ascii_letters else "_" for i in commit_msg ])
+    branch_name = f"dt/{simpler_msg}"
+  
+    run("git",  "branch",  "-qD", branch_name)
+    run("git",  "branch",  branch_name, commit_id)
+    run("git",  "push",  "origin", "-f", branch_name)

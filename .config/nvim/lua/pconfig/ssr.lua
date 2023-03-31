@@ -2,6 +2,21 @@ return {
 	"cshuaimin/ssr.nvim",
 	module = "ssr",
 	-- Calling setup is optional.
+	setup = function()
+		require("which-key").register({
+			["<leader>"] = {
+				l = {
+					s = {
+            -- Additional funciton wrapping to avoid requiring ssr on vim load
+						function()
+							require("ssr").open()
+						end,
+						"Structural Search and Replace with Treeesitter",
+					},
+				},
+			},
+		}, { mode = { "n", "x" } })
+	end,
 	config = function()
 		require("ssr").setup({
 			min_width = 50,

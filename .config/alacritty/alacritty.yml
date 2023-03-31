@@ -105,7 +105,7 @@ window:
 # Font configuration
 font:
   # Normal (roman) font face
-  size: 15
+  size: 13
   normal:
     # Font family
     #
@@ -114,11 +114,11 @@ font:
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
     # family: "FiraCode Nerd Font Mono"
-    family: "Iosevka Nerd Font Mono"
+    family: "JetBrainsMonoNL Nerd Font Mono"
       # family: "Abyssinica SIL"
 
     # The `style` can be specified to pick a specific face.
-    style: Regular
+    style: Light
 
   # Bold font face
   #bold:
@@ -737,7 +737,7 @@ selection:
 #working_directory: None
 
 # Send ESC (\x1b) before characters when alt is pressed.
-#alt_send_esc: true
+alt_send_esc: false
 
 #mouse:
   # Click settings

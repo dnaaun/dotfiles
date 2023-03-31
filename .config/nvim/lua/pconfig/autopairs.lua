@@ -3,9 +3,9 @@ return {
 	after = "nvim-cmp", -- might not be necessary, but we do require('cmp') in config() below.
 
 	config = function()
-    -- TODO:
-    -- This is probably very unideal, in that starting vim with a markdown mode means 
-    -- this plugin is never setup for any other file types either. 
+		-- TODO:
+		-- This is probably very unideal, in that starting vim with a markdown mode means
+		-- this plugin is never setup for any other file types either.
 		if vim.opt_local.filetype == "markdown" then
 			return
 		end
@@ -20,11 +20,10 @@ return {
 		local always = function()
 			return true
 		end
-		local cond = require("nvim-autopairs.conds")
+		-- local cond = require("nvim-autopairs.conds")
 
 		npairs.add_rules({
 			Rule("~", "~", { "org" }):with_move(always),
-			Rule("do", "end", { "ruby" }):with_move(cond:none()),
 		})
 	end,
 }

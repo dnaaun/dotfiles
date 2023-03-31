@@ -2,15 +2,22 @@ require("packer").startup({
 	function(use)
 		-- package/plugin manager
 		use(require("pconfig.packer"))
-		use({
-			"miversen33/import.nvim",
-			config = function()
-				require("import")
-			end,
-		})
+		-- use({
+		-- 	"miversen33/import.nvim",
+		-- 	config = function()
+		-- 		require("import")
+		-- 	end,
+		-- })
 		use(require("pconfig.tmux"))
 
 		use("embear/vim-localvimrc") -- Enable sourcing .lnvimrc files
+
+		-- Used currently for editing JSX mostly
+		use(require("pconfig.surround"))
+
+		if _G.IN_SIMPLE_MODE then
+			return
+		end
 
 		-- cmp-related, might be useful when using neovim in pager mode.
 		use(require("pconfig.cmp"))
@@ -30,8 +37,8 @@ require("packer").startup({
 						-- modules, as they can interfere with completions properly appearing in
 						-- copilot-cmp."
 						--   - https://github.com/zbirenbaum/copilot-cmp#install
-						suggestion = { enabled = true },
-						panel = { enabled = false },
+						suggestion = { enabled = true, auto_trigger = true },
+						panel = { enabled = true },
 
 						filetypes = {
 							tex = false,
@@ -40,7 +47,12 @@ require("packer").startup({
 
 					-- Map in insert mode <C-c> to call copilot.suggestion:
 					vim.keymap.set("i", "<C-c>", require("copilot.suggestion").next, { noremap = true, silent = true })
-					vim.keymap.set("i", "<C-e>", require("copilot.suggestion").accept, { noremap = true, silent = true })
+					vim.keymap.set(
+						"i",
+						"<C-e>",
+						require("copilot.suggestion").accept,
+						{ noremap = true, silent = true }
+					)
 				end, 100)
 			end,
 		})
@@ -51,9 +63,6 @@ require("packer").startup({
 				require("copilot_cmp").setup()
 			end,
 		})
-
-		-- Used currently for editing JSX mostly
-		use(require("pconfig.surround"))
 
 		--  CUrrently used for reapting the things I do with vim-surround
 		use({ "tpope/vim-repeat" })
@@ -99,6 +108,9 @@ require("packer").startup({
 
 		-- Symbol tree. Better than symbols-outline.nvim because it allows filtering by symbol type.
 		use(require("pconfig.aerial"))
+
+    -- Look at all diagnostics in workspace/document. Hopefully useful for refactoring/adding typescript.
+    use(require("pconfig.trouble"))
 
 		-- The package, the pyth, the pegend.
 		use(require("pconfig.treesitter"))
@@ -285,6 +297,11 @@ require("packer").startup({
 				vim.fn["firenvim#install"](0)
 			end,
 		})
+
+		use(require("pconfig.hop"))
+
+		-- Does one thing: map `dd` inside the quickfix list to "remove item from quicklist"
+		use({ "TamaMcGlinn/quickfixdd" })
 	end,
 
 	config = {

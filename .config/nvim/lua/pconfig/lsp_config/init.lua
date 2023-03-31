@@ -1,6 +1,16 @@
+--- null-ls.nvim sometimes conflicts with other LSPs
+local disable_formatting_sometimes = function(client)
+	if not (client.name == "rust_analyzer" or client.name == "texlab" or client.name == "null-ls") then
+		client.server_capabilities.documentFormattingProvider = false
+		client.server_capabilities.documentRangeFormattingProvider = false
+	else
+		-- print("LSP formatting NOT disabled for " .. client.name)
+	end
+end
+
 return {
 	"neovim/nvim-lspconfig",
-	ft = require("consts").lsp_enabled_filetypes,
+	-- ft = require("consts").lsp_enabled_filetypes,
 	config = function()
 		vim.lsp.set_log_level(vim.lsp.log_levels.INFO)
 
@@ -43,13 +53,6 @@ return {
 			wk.register({
 				K = { vim.lsp.buf.hover, "hover" },
 				g = {
-					a = {
-						function()
-							vim.lsp.buf.code_action({})
-						end,
-						"code action",
-					},
-					d = { vim.lsp.buf.definition, "rename" },
 					R = { vim.lsp.buf.rename, "rename" },
 					h = {
 						function()
@@ -104,6 +107,8 @@ return {
 			-- setup_mappings(bufnr)
 			setup_formatexpr(client)
 
+      disable_formatting_sometimes(client)
+
 			if client.name == "texlab" then
 				setup_texlab_forward_search()
 			end
@@ -119,11 +124,12 @@ return {
 		local lsp_specific_configs = {
 			rust_analyzer = require("pconfig.lsp_config.rust_analyzer"),
 			html = require("pconfig.lsp_config.html"),
+      cssls = require("pconfig.lsp_config.cssls"),
 			kotlin_language_server = require("pconfig.lsp_config.kotlin_language_server"),
 			texlab = require("pconfig.lsp_config.texlab"),
 			tsserver = require("pconfig.lsp_config.tsserver"),
 			tailwindcss = require("pconfig.lsp_config.tailwindcss"),
-			sqlls = require("pconfig.lsp_config.sqls"),
+			sqlls = require("pconfig.lsp_config.sqlls"),
 			sumneko_lua = require("pconfig.lsp_config.sumneko_lua"),
 			sorbet = require("pconfig.lsp_config.sorbet"),
 			ruby_ls = require("pconfig.lsp_config.ruby_ls"),
@@ -137,13 +143,14 @@ return {
 			"kotlin_language_server",
 			"pyright",
 			"solargraph",
-			"sqls",
+			"sqlls",
 			"rust_analyzer",
-			"sumneko_lua",
+			-- "sumneko_lua",
 			"tailwindcss",
 			"texlab",
 			"tsserver",
 			"html",
+      "cssls",
 			"marksman",
 		}) do
 			local config = lsp_specific_configs[lspname]
