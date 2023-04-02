@@ -88,6 +88,9 @@ require("packer").startup({
 		-- error messages are doing it, and how to disable them)
 		use(require("pconfig.notify"))
 
+		-- I'm using this mostly to filter out error messages
+		use(require("pconfig.noice"))
+
 		-- Provides type annotations for neovim's Lua interface. Needs Sumenkos' Lua LSP. TODO: Not actually set up yet: https://github.com/folke/lua-dev.nvim#%EF%B8%8F--configuration
 		use(require("pconfig.lua_dev"))
 
@@ -107,10 +110,11 @@ require("packer").startup({
 		-- use(require("pconfig.coq"))
 
 		-- Symbol tree. Better than symbols-outline.nvim because it allows filtering by symbol type.
-		use(require("pconfig.aerial"))
+		-- This is causing some errors everytime I open a file that LSP attaches to, so disabling for now.
+		-- use(require("pconfig.aerial"))
 
-    -- Look at all diagnostics in workspace/document. Hopefully useful for refactoring/adding typescript.
-    use(require("pconfig.trouble"))
+		-- Look at all diagnostics in workspace/document. Hopefully useful for refactoring/adding typescript.
+		use(require("pconfig.trouble"))
 
 		-- The package, the pyth, the pegend.
 		use(require("pconfig.treesitter"))

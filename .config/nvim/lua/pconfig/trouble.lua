@@ -7,6 +7,10 @@ return {
 
 		require("trouble").setup({
 			position = "right",
+
+      -- Trouble gives out a lot of errors when this is on.
+      -- https://github.com/folke/trouble.nvim/issues/125#issuecomment-1023980225
+      auto_preview = false
 		})
 	end,
 }
