@@ -16,9 +16,11 @@ return {
 				"Hop",
 			},
 		}
-		wk.register(mappings, { mode = "n", silent = true })
-		wk.register(mappings, { mode = "o", silent = true })
-		wk.register(mappings, { mode = "x", silent = true })
+    -- NOTE: Until I figure out how to make sure noice.lua doesn't interfere
+    -- with the entry that these mappings pull up, I've commented them out.
+		-- wk.register(mappings, { mode = "n", silent = true })
+		-- wk.register(mappings, { mode = "o", silent = true })
+		-- wk.register(mappings, { mode = "x", silent = true })
 
 		-- Create a buffer mapping in an autocmd for latex files.
 		vim.api.nvim_create_autocmd({ "BufEnter", "BufCreate" }, {
