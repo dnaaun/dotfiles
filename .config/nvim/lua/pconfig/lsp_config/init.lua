@@ -43,9 +43,8 @@ return {
 
 		-- A function to setup a mapping for :TexlabForward
 		local setup_texlab_forward_search = function()
-			local map = vim.api.nvim_set_keymap
 			local opts = { noremap = true, silent = true }
-			map("n", "<leader>t", ":TexlabForward<CR>", opts)
+			wk.register({ ["<leader>t"] = { ":TexlabForward<CR>", "Texlab forward" } }, opts)
 		end
 
 		local setup_mappings = function()
@@ -98,6 +97,10 @@ return {
 
 		-- Allow other files to define callbacks that get called `on_attach`
 		local on_attach = function(client, bufnr)
+			if client.name == "texlab" then
+				setup_texlab_forward_search()
+			end
+
 			require("lsp_occurence").on_attach(client, bufnr)
 
 			for _, plugin_custom_attach in pairs(_G.lsp_config_on_attach_callbacks) do
@@ -106,12 +109,7 @@ return {
 
 			-- setup_mappings(bufnr)
 			setup_formatexpr(client)
-
-      disable_formatting_sometimes(client)
-
-			if client.name == "texlab" then
-				setup_texlab_forward_search()
-			end
+			disable_formatting_sometimes(client)
 		end
 
 		-- Config for all LSPs
@@ -124,7 +122,7 @@ return {
 		local lsp_specific_configs = {
 			rust_analyzer = require("pconfig.lsp_config.rust_analyzer"),
 			html = require("pconfig.lsp_config.html"),
-      cssls = require("pconfig.lsp_config.cssls"),
+			cssls = require("pconfig.lsp_config.cssls"),
 			kotlin_language_server = require("pconfig.lsp_config.kotlin_language_server"),
 			texlab = require("pconfig.lsp_config.texlab"),
 			tsserver = require("pconfig.lsp_config.tsserver"),
@@ -150,7 +148,7 @@ return {
 			"texlab",
 			"tsserver",
 			"html",
-      "cssls",
+			"cssls",
 			"marksman",
 		}) do
 			local config = lsp_specific_configs[lspname]
