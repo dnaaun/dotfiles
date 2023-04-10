@@ -190,7 +190,7 @@ wk.register({
 			-- Copy the above to the system clipboard register
 			vim.fn.setreg("+", file)
 		end,
-		"copy current file path to register",
+		"copy current file path to clipboard register",
 	},
 })
 -- Neovim win!
