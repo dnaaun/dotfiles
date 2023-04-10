@@ -175,6 +175,8 @@ require("packer").startup({
 		-- And I quote tpope, "A git plugin so awesome, it should be illegal."
 		use(require("pconfig.fugitive"))
 
+		use(require("pconfig.neogit"))
+
 		-- Better diff view
 		use(require("pconfig.diffview"))
 
