@@ -95,7 +95,11 @@ require("packer").startup({
 		use(require("pconfig.lua_dev"))
 
 		-- Show func signatures automatically. some filetypes (typescript) cause issues.
-		use(require("pconfig.lsp_signature"))
+		-- DISABLED: because I _suspect_ the functianality is provide by noice, and tbh,
+		-- I'm not even sure what functinality it is. It's just that I'm getting
+		-- errors on startup complaining about "conflicting handlers for signature
+		-- help" (or something to that effect).
+		-- use(require("pconfig.lsp_signature"))
 
 		--  Easier installation of LSPs.
 		use(require("pconfig.mason"))
