@@ -13,11 +13,20 @@ return {
 					opts = { skip = true },
 				},
 
-        -- When trying to show LSP docs for a symbol that doesn't have any, I get this annoying error
-        -- I'd like to disable.
+				-- When trying to show LSP docs for a symbol that doesn't have any, I get this annoying error
+				-- I'd like to disable.
 				{
 					filter = {
 						find = "No information available",
+					},
+					opts = { skip = true },
+				},
+
+        -- When I'm offline, (I believe) copiliot.lua or copilot-cmp keep complaining
+        -- about not being able to hit Github servers.
+				{
+					filter = {
+						find = "Request getCompletions failed with message: getaddrinfo ENOTFOUND api.github.com",
 					},
 					opts = { skip = true },
 				},
