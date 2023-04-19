@@ -142,8 +142,8 @@ return {
 					ruby = rails_console,
 					sql = {
 						-- command = { "pgcli", "-d", "crushedgarlic", "-u", "crushedgarlic" },
-						-- command = { "pgcli", "-d", "hybrid_development", "-u", "hybrid" },
-						command = { "pgcli", vim.env.PRODUCTION_POSTGRES },
+						command = { "pgcli", "-d", "hybrid_development", "-u", "hybrid" },
+						-- command = { "pgcli", vim.env.PRODUCTION_POSTGRES },
 						format = bracketed_paste,
 					},
 				},
