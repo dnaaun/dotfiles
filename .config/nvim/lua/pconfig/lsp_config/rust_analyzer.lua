@@ -18,9 +18,14 @@ return {
 			-- cargo = {
 			-- 	-- target = "wasm32-unknown-unknown",
 			-- },
-			-- checkOnSave = {
-			-- 	command = "clippy",
-			-- },
+
+			-- https://github.com/rust-lang/rust-analyzer/issues/6007#issuecomment-1379342831
+			checkOnSave = {
+				extraArgs = { "--profile", "rust-analyzer" },
+			},
+			check = {
+				extraArgs = { "--profile", "rust-analyzer" },
+			},
 		},
 	},
 }
