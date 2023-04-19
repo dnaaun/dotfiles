@@ -6,9 +6,10 @@ return {
 		require("telescope").load_extension("notify")
 
 		local notify = require("notify")
-
-		-- Replace the usual notify with this plugin so that `print()` uses this plugin
-		vim.notify = notify
+    notify.setup({
+      render = "minimal",
+      stages = {},
+    })
 
 		local wk = require("which-key")
 		wk.register({

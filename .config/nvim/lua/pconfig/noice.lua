@@ -2,6 +2,10 @@ return {
 	"folke/noice.nvim",
 	config = function()
 		require("noice").setup({
+			messages = {
+				-- view for search count messages.
+				view_search = "virtualtext",
+			},
 
 			routes = {
 				-- Skip these annoying errors that show up when an LSP attaches to a buffer.
@@ -22,8 +26,8 @@ return {
 					opts = { skip = true },
 				},
 
-        -- When I'm offline, (I believe) copiliot.lua or copilot-cmp keep complaining
-        -- about not being able to hit Github servers.
+				-- When I'm offline, (I believe) copiliot.lua or copilot-cmp keep complaining
+				-- about not being able to hit Github servers.
 				{
 					filter = {
 						find = "Request getCompletions failed with message: getaddrinfo ENOTFOUND api.github.com",

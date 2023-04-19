@@ -214,6 +214,7 @@ wk.register({
 		function()
 			vim.cmd("nohlsearch")
 			vim.lsp.util.buf_clear_references(0)
+      require("noice").cmd("dismiss")
 		end,
 		"clear both vim search and LSP reference highlights",
 	},
