@@ -411,6 +411,23 @@ gcb-widget ()
 }
 
 
-bind -m emacs-standard -x '"\C-g": gcb-widget'
-bind -m vi-command -x '"\C-g": gcb-widget'
-bind -m vi-insert -x '"\C-g": gcb-widget'
+bind -m emacs-standard -x '"\C-gb": gcb-widget'
+bind -m vi-command -x '"\C-gb": gcb-widget'
+bind -m vi-insert -x '"\C-gb": gcb-widget'
+
+# Credit: GPT-4
+function __git_fzf_commit_hash() {
+  git log --pretty=format:"%h %s" |
+    fzf --height 40% --reverse --border --prompt 'Select commit: ' |
+    cut -d' ' -f1
+}
+
+function __insert_git_fzf_commit_hash() {
+  local selected="$(__git_fzf_commit_hash)";
+  READLINE_LINE="${READLINE_LINE:0:$READLINE_POINT}$selected${READLINE_LINE:$READLINE_POINT}";
+  READLINE_POINT=$(( READLINE_POINT + ${#selected} ))
+}
+
+bind -m emacs-standard -x '"\C-gc": __insert_git_fzf_commit_hash'
+bind -m vi-command -x '"\C-gc": __insert_git_fzf_commit_hash'
+bind -m vi-insert -x '"\C-gc": __insert_git_fzf_commit_hash'
