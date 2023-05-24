@@ -6,13 +6,13 @@ local detect_if_in_simple_mode_group = vim.api.nvim_create_augroup("DetectIfWeAr
 })
 
 -- When neovim is opened, detect if the file type is `gitrebase`
-vim.api.nvim_create_autocmd( { "VimEnter"}, {
-  group = detect_if_in_simple_mode_group,
+vim.api.nvim_create_autocmd({ "VimEnter" }, {
+	group = detect_if_in_simple_mode_group,
 	callback = function(args)
 		local in_simple_mode = false
 
-    local bufnr = args.buf
-    local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
+		local bufnr = args.buf
+		local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
 		if filetype == "gitrebase" then
 			in_simple_mode = true
 		end
@@ -109,7 +109,7 @@ g.tokyonight_style = "day"
 
 -- vim.cmd("colorscheme tokyonight-day")
 -- vim.cmd("colorscheme github_dark")
-vim.cmd("colorscheme nightfox")
+vim.cmd("colorscheme dayfox")
 
 ---- Add plugins ----
 require("plugins")
@@ -160,25 +160,41 @@ local function cur_pos_to_qflist()
 	vim.fn.setqflist({ dict }, "a")
 end
 
--- Remove quickfix items that match the current *line*
-local function remove_curpos_from_qflist()
-	local pos = vim.fn.getpos(".")
-	local lnum = pos[2]
-	local bufnr = vim.fn.bufnr("%")
+local function remove_quickfix_entry_on_current_line_and_move_on()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local current_line = vim.api.nvim_win_get_cursor(0)[1]
 
-	local is_not_about_cur_line = function(qflist_item)
-		return qflist_item.bufnr ~= bufnr or qflist_item.lnum ~= lnum
-	end
+  local qflist = vim.fn.getqflist()
+  local qf_index_to_remove = nil
 
-	local filtered = require("std2").list_filter(vim.fn.getqflist(), is_not_about_cur_line)
-	vim.fn.setqflist(filtered)
+  for i, entry in ipairs(qflist) do
+    if entry.bufnr == bufnr and entry.lnum == current_line then
+      qf_index_to_remove = i
+      break
+    end
+  end
+
+  if qf_index_to_remove then
+    table.remove(qflist, qf_index_to_remove)
+    vim.fn.setqflist(qflist)
+    print('Removed quickfix entry on current line')
+
+    -- Move to the quickfix item immediately after the removed item, if it exists
+    local next_qf_entry = qflist[qf_index_to_remove]
+    if next_qf_entry then
+      vim.api.nvim_set_current_win(vim.fn.win_getid(next_qf_entry.winid))
+      vim.api.nvim_win_set_cursor(0, {next_qf_entry.lnum, next_qf_entry.col})
+    end
+  else
+    print('No quickfix entry found on current line')
+  end
 end
 
-vim.keymap.set("n", "<leader>qa", cur_pos_to_qflist, {})
-vim.keymap.set("n", "<leader>qd", remove_curpos_from_qflist, {})
+vim.keymap.set("n", "<leader>qa", cur_pos_to_qflist, { desc = "Add current position to quickfix" })
+vim.keymap.set("n", "<leader>qd", remove_quickfix_entry_on_current_line_and_move_on, { desc = "Remove current position from quickfix" })
 vim.keymap.set("n", "<leader>qD", function()
 	vim.fn.setqflist({})
-end, {})
+end, { desc = "Clear quickfix" })
 
 local wk = require("which-key")
 
@@ -214,7 +230,7 @@ wk.register({
 		function()
 			vim.cmd("nohlsearch")
 			vim.lsp.util.buf_clear_references(0)
-      require("noice").cmd("dismiss")
+			require("noice").cmd("dismiss")
 		end,
 		"clear both vim search and LSP reference highlights",
 	},

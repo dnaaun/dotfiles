@@ -3,12 +3,19 @@ return {
 	run = ":TSUpdate",
 
 	config = function()
-		local ft_to_parser = require("nvim-treesitter.parsers").filetype_to_parsername
-		-- use tsserver for
-		ft_to_parser.jsx = "tsx"
-		ft_to_parser.javascriptreact = "tsx"
-		ft_to_parser.typescriptreact = "tsx" -- TODO: Remove this since you have ftdetectk/tsx.lua that sets filetype=tsx
-		ft_to_parser.tex = "latex"
+		vim.treesitter.language.register("tsx", {
+			"javascript",
+			"typescript",
+			"tsx",
+			"jsx",
+			"javascriptreact",
+			"typescriptreact",
+		})
+
+		vim.treesitter.language.register("latex", {
+			"tex",
+			"latex",
+		})
 
 		local textsubjects = {
 			enable = false,
@@ -147,7 +154,7 @@ return {
 		local incremental_selection = {
 			enable = true,
 			disable = function(_, buf)
-        -- Otherwise, it interferes with "command-line window"
+				-- Otherwise, it interferes with "command-line window"
 				if vim.fn.getbufvar(buf, "&buftype") == "nofile" then
 					return true
 				end
