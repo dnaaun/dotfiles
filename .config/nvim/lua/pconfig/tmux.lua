@@ -1,5 +1,12 @@
 return {
 	"aserowy/tmux.nvim",
+	lazy = true,
+	keys = {
+		"<C-l>",
+		"<C-h>",
+		"<C-j>",
+		"<C-k>",
+	},
 	config = function()
 		require("tmux").setup({
 			-- overwrite default configuration

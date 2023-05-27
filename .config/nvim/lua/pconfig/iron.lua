@@ -1,9 +1,14 @@
+-- Disable default mappings
+vim.g.iron_map_defaults = false
+
 return {
 	"hkupty/iron.nvim",
-	setup = function()
-		-- Disable default mappings
-		vim.g.iron_map_defaults = false
-	end,
+  keys = {
+    "<leader>rh",
+    "<leader>rsq",
+    "<leader>rf",
+    "<leader>ro",
+  },
 	config = function()
 		local bracketed_paste = require("iron.fts.common").bracketed_paste
 		local iron = require("iron.core")

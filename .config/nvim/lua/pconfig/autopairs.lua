@@ -1,7 +1,11 @@
 return {
 	"windwp/nvim-autopairs",
-	after = "nvim-cmp", -- might not be necessary, but we do require('cmp') in config() below.
-
+  event = "InsertEnter",
+	dependencies = {
+    -- might not be necessary, but we do require('cmp') in
+    -- config() below.
+    "hrsh7th/nvim-cmp"
+  },
 	config = function()
 		-- TODO:
 		-- This is probably very unideal, in that starting vim with a markdown mode means

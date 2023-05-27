@@ -1,5 +1,6 @@
 return {
 	"folke/twilight.nvim",
+  keys = { "<leader>vt" },
 	config = function()
 		require("twilight").setup({
 			dimming = {

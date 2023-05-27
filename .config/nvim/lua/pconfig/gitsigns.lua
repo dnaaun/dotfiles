@@ -1,6 +1,23 @@
 return {
 	"lewis6991/gitsigns.nvim",
 	requires = { "nvim-lua/plenary.nvim" },
+  event = "VeryLazy",
+	keys = {
+		"<leader>gw",
+		"<leader>gu",
+		"<leader>gr",
+		"<leader>gp",
+		"<leader>gb",
+		"<leader>gW",
+		{
+			"ih",
+			mode = "o",
+		},
+		{
+			"ih",
+			mode = "x",
+		},
+	},
 	config = function()
 		require("gitsigns").setup({
 			keymaps = {

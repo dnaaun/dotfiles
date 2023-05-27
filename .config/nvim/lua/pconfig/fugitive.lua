@@ -1,1 +1,1 @@
-return { "tpope/vim-fugitive", requires = { "nvim-lua/plenary.nvim" } }
+return { "tpope/vim-fugitive", dependencies = { "nvim-lua/plenary.nvim" }, cmd = { "Git" } }

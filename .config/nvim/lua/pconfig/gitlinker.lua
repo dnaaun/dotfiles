@@ -1,6 +1,7 @@
 return {
 	"ruifm/gitlinker.nvim",
-	requires = "nvim-lua/plenary.nvim",
+	dependencies = "nvim-lua/plenary.nvim",
+	keys = { "<leader>gy" },
 	config = function()
 		require("gitlinker").setup({
 

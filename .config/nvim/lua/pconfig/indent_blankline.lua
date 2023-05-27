@@ -1,5 +1,6 @@
 return {
 	"lukas-reineke/indent-blankline.nvim",
+  event = { "InsertEnter" },
 	config = function()
 		require("indent_blankline").setup({
 			space_char_blankline = " ",

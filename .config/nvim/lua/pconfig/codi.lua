@@ -29,7 +29,7 @@ end, {}, "Open Codi in a new buffer.")
 
 return {
 	"metakirby5/codi.vim",
-	-- cmd = { "Codi", "Codi!", "Codi!!" },
+	cmd = { "Codi" },
 	setup = function()
 		-- Fix irb not working with default settings
 		-- https://github.com/metakirby5/codi.vim/issues/133#issuecomment-912868183

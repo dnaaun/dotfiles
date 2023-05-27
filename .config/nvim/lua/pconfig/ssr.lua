@@ -1,13 +1,19 @@
 return {
 	"cshuaimin/ssr.nvim",
-	module = "ssr",
+
+	-- I found out about this because I got errors without treeistter.
+	dependencies = "nvim-treesitter/nvim-treesitter",
+
+	keys = { "<leader>ls" },
+  lazy = true,
+
 	-- Calling setup is optional.
-	setup = function()
+	config = function()
 		require("which-key").register({
 			["<leader>"] = {
 				l = {
 					s = {
-            -- Additional funciton wrapping to avoid requiring ssr on vim load
+						-- Additional funciton wrapping to avoid requiring ssr on vim load
 						function()
 							require("ssr").open()
 						end,

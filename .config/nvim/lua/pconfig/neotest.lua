@@ -1,13 +1,20 @@
 return {
 	"nvim-neotest/neotest",
-	requires = {
+	dependencies = {
 		"nvim-lua/plenary.nvim",
 		"nvim-treesitter/nvim-treesitter",
 		"antoinemadec/FixCursorHold.nvim",
 		"olimorris/neotest-rspec",
 	},
 	ft = { "ruby", "typescript", "tsx", "ruby", "rust" },
-
+	keys = {
+		"<leader>t",
+		"<leader>tt",
+		"<leader>tf",
+		"<leader>ta",
+		"<leader>to",
+		"<leader>tl",
+	},
 	config = function()
 		require("neotest").setup({
 			adapters = {

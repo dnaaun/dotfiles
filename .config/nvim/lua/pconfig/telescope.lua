@@ -1,5 +1,12 @@
 return {
 	"nvim-telescope/telescope.nvim",
+	keys = {
+		"<C-a>",
+		"<C-f>",
+		"<leader>f",
+		"-",
+		"<leader>-",
+	},
 	config = function()
 		local telescope = require("telescope")
 		telescope.setup({
@@ -285,4 +292,5 @@ return {
 			}, lsp_gotos_with_jump_type("jump", "LSP ")),
 		})
 	end,
+	dependencies = { "nvim-lua/plenary.nvim" },
 }

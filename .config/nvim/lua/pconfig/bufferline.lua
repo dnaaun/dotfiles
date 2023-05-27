@@ -1,6 +1,7 @@
 return {
 	"akinsho/bufferline.nvim",
-	requires = "kyazdani42/nvim-web-devicons",
+  event = { "CursorHold" },
+	dependencies = { "nvim-tree/nvim-web-devicons" },
 	config = function()
 		if vim.g.started_by_firenvim then
 			return

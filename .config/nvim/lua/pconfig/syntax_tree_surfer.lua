@@ -1,7 +1,8 @@
 return {
 	"ziontee113/syntax-tree-surfer",
+	keys = { "<leader>gj" },
 	config = function()
-    opts = {}
+		opts = { desc = "syntax tree surfer" }
 		local sts = require("syntax-tree-surfer")
 		--vim.keymap.set("n", "gfu", function() -- only jump to functions
 		--	sts.targeted_jump({ "function", "function_definition" })

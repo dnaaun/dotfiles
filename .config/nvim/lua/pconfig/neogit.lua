@@ -1,6 +1,7 @@
 return {
 	"TimUntersberger/neogit",
-	requires = "nvim-lua/plenary.nvim",
+	dependencies = "nvim-lua/plenary.nvim",
+	keys = { "<leader>gn" },
 	config = function()
 		require("neogit").setup()
 

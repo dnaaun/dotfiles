@@ -23,9 +23,29 @@ vim.api.nvim_create_autocmd({ "BufLeave" }, {
 
 return {
 	"ThePrimeagen/harpoon",
-	requires = "nvim-lua/plenary.nvim",
-	after = "telescope.nvim",
-	config = function()
+	dependencies = { "nvim-lua/plenary.nvim",
+  -- We want to use telescope's harpoon extension.
+	"nvim-telescope/telescope.nvim",
+},
+  keys = { 
+    "m1",
+    "m2",
+    "m3",
+    "m4",
+    "m5",
+    "m6",
+    "m7",
+    "m8",
+    "m9",
+    "m0",
+    "ma",
+    "ms",
+    "md",
+    "mx",
+    "mm",
+  },
+
+   config = function()
 		local wk = require("which-key")
 		local mark = require("harpoon.mark")
 		local ui = require("harpoon.ui")

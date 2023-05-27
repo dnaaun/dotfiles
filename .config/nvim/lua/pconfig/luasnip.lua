@@ -1,7 +1,6 @@
 local config = function()
 	local ls = require("luasnip")
 
-
 	-- Since treehopper.nvim requires that we use `tsx` as a filetype,
 	-- and luasnip doesn't work when I just do ls.add_snippets("tsx", ...)
 	ls.filetype_extend("typescriptreact", { "typescript" })
@@ -61,4 +60,5 @@ end
 return {
 	"L3MON4D3/LuaSnip",
 	config = config,
+  event = "InsertEnter"
 }

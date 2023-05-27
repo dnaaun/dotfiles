@@ -1,5 +1,6 @@
 return {
 	"johmsalas/text-case.nvim",
+  keys = { "<leader>c" },
 	config = function()
 		require("textcase").setup({
 			prefix = "<leader>c",

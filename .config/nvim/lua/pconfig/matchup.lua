@@ -6,5 +6,6 @@ vim.g.matchup_text_obj_enabled = false
 
 return {
 	"andymass/vim-matchup",
+  event = "VeryLazy",
 	ft = { "ruby", "typescriptreact", "typescript", "javascript", "javascriptreact", "lua" },
 }

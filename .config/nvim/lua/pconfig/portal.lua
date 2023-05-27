@@ -1,5 +1,14 @@
 return {
 	"cbochs/portal.nvim",
+	keys = {
+		"<leader>oi",
+		"<leader>od",
+		"<leader>ov",
+		"<leader>oh",
+		"<leader>id",
+		"<leader>iv",
+		"<leader>ih",
+	},
 	config = function()
 		require("portal").setup({
 			query = { "different", "harpoon", "valid" },
@@ -64,7 +73,7 @@ return {
 			},
 		})
 	end,
-	requires = {
+	dependencies = {
 		"ThePrimeagen/harpoon", -- Optional: provides the "harpoon" query item
 	},
 }

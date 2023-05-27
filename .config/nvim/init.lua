@@ -112,7 +112,7 @@ g.tokyonight_style = "day"
 vim.cmd("colorscheme dayfox")
 
 ---- Add plugins ----
-require("plugins")
+-- require("plugins")
 
 ---- lnvimrc.vim ----
 ---- Local vimrc
@@ -206,6 +206,47 @@ vim.keymap.set("n", "<leader>qD", function()
 	vim.fn.setqflist({})
 end, { desc = "Clear quickfix" })
 
+-- Highlight what I yanked
+---Highlight yanked text
+--
+local ag = vim.api.nvim_create_augroup
+local au = vim.api.nvim_create_autocmd
+au("TextYankPost", {
+	group = ag("yank_highlight", {}),
+	pattern = "*",
+	callback = function()
+		vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
+	end,
+})
+
+-- map `<leader>w` to `:silent write<CR>`
+-- Otherwise, it will show info about the saved file.
+-- Also, two, far away keys (ie,  `<leader>w`) are easier to type than three keys`:w<CR>`
+vim.keymap.set("n", "<leader>w", function()
+	vim.fn.execute("silent write")
+end, { noremap = true, desc = "<CR>silent write" })
+
+--- Bootsrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", -- latest stable release
+		lazypath,
+	})
+end
+
+-- Some users may want to split their plugin specs in multiple files. Instead of
+-- passing a spec table to setup(), you can use a Lua module. The specs from the
+-- module and any top-level sub-modules will be merged together in the final
+-- spec, so it is not needed to add require calls in your main plugin file to
+-- the other files.
+vim.opt.rtp:prepend(lazypath)
+require("lazy").setup("plugins")
+
 local wk = require("which-key")
 
 wk.register({
@@ -240,27 +281,11 @@ wk.register({
 		function()
 			vim.cmd("nohlsearch")
 			vim.lsp.util.buf_clear_references(0)
-			require("noice").cmd("dismiss")
+      if pcall(require, "noice") then
+        require("noice").cmd("dismiss")
+      end
 		end,
 		"clear both vim search and LSP reference highlights",
 	},
 })
--- Highlight what I yanked
----Highlight yanked text
---
-local ag = vim.api.nvim_create_augroup
-local au = vim.api.nvim_create_autocmd
-au("TextYankPost", {
-	group = ag("yank_highlight", {}),
-	pattern = "*",
-	callback = function()
-		vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
-	end,
-})
 
--- map `<leader>w` to `:silent write<CR>`
--- Otherwise, it will show info about the saved file.
--- Also, two, far away keys (ie,  `<leader>w`) are easier to type than three keys`:w<CR>`
-vim.keymap.set("n", "<leader>w", function()
-	vim.fn.execute("silent write")
-end, { noremap = true, desc = "<CR>silent write" })

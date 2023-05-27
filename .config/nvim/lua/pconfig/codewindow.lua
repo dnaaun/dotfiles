@@ -1,5 +1,11 @@
 return {
 	"gorbit99/codewindow.nvim",
+	keys = {
+		"<leader>mo",
+		"<leader>mc",
+		"<leader>mt",
+		"<leader>mf",
+	},
 	config = function()
 		local codewindow = require("codewindow")
 		codewindow.setup()

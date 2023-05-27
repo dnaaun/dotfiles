@@ -10,6 +10,11 @@ end
 
 return {
 	"neovim/nvim-lspconfig",
+	event = {
+		-- from the auto-session plugin
+		"SessionLoadPost",
+		"BufEnter",
+	},
 	-- ft = require("consts").lsp_enabled_filetypes,
 	config = function()
 		vim.lsp.set_log_level(vim.lsp.log_levels.INFO)
@@ -154,7 +159,7 @@ return {
 			"texlab",
 			"tsserver",
 			"html",
-      -- "sorbet",
+			-- "sorbet",
 			"cssls",
 			"marksman",
 		}) do
@@ -166,9 +171,9 @@ return {
 			end
 
 			lspconfig[lspname].setup(config)
-      if lsp_specific_configs[lspname] == "sorbet" then
-        P(config)
-      end
+			if lsp_specific_configs[lspname] == "sorbet" then
+				P(config)
+			end
 		end
 	end,
 }

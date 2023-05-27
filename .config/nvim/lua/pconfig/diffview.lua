@@ -1,16 +1,19 @@
-vim.api.nvim_set_keymap("n", "<leader>gd", ":DiffviewOpen<CR>", {})
-
--- The only reason I use (and therefore, close) tabs is for diffview,
--- so mapping for :tabclose is here.
-vim.api.nvim_set_keymap("n", "<leader>gq", ":tabclose<CR>", {})
-
 return {
 	"sindrets/diffview.nvim",
-	requires = "nvim-lua/plenary.nvim",
-	-- Keybindings  act funny when we do this.
-	-- cmd = { "DiffviewOpen", "DiffviewFileHistory" },
+	dependencies = "nvim-lua/plenary.nvim",
+	keys = { "<leader>gd", "<leader>gq" },
 	config = function()
+		local wk = require("which-key")
+		wk.register({
+			g = {
+				name = "git",
+				d = { ":DiffviewOpen<CR>", "Diffview Open" },
+				q = { ":tabclose<CR>", "Tab Close" },
+			},
+		}, { prefix = "<leader>" })
+
 		local cb = require("diffview.config").diffview_callback
+
 		require("diffview").setup({
 			key_bindings = {
 				file_panel = {

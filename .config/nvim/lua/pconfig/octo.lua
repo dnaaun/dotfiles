@@ -1,6 +1,6 @@
 return {
 	"pwntester/octo.nvim",
-	requires = { "kyazdani42/nvim-web-devicons" },
+	dependencies = { "nvim-tree/nvim-web-devicons" },
 	config = function()
 		require("octo").setup({
       github_hostname = "github.com"

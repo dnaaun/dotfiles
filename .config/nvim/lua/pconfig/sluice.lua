@@ -1,3 +1,0 @@
-return {
-  "dsummersl/nvim-sluice"
-}

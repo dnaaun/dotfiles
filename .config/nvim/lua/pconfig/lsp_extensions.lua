@@ -1,6 +1,7 @@
 return {
 	"nvim-lua/lsp_extensions.nvim",
 	ft = { "rust" },
+  event = "CursorHold",
 	config = function()
 		local g = vim.api.nvim_create_augroup("RustInLayHints", {})
 		vim.api.nvim_create_autocmd({

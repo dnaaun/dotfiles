@@ -1,5 +1,6 @@
 return {
 	"rcarriga/nvim-notify",
+  event = "VeryLazy",
 	config = function()
 		-- Using this, we can do `require('telescope').extensions.notify.notify(<opts>)` to
 		-- launch telescope and search through notification history.

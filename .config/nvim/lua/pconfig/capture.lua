@@ -1,1 +1,1 @@
-return { "tyru/capture.vim", cmd = "Capture" }
+return { "tyru/capture.vim", cmd = "Capture"  }

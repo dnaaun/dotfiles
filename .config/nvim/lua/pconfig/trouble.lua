@@ -2,7 +2,8 @@
 -- Iosevka and FiraCode, JetBrainsMono Nerd Font is what worked for me.
 return {
 	"folke/trouble.nvim",
-	requires = "nvim-tree/nvim-web-devicons",
+	dependencies = "nvim-tree/nvim-web-devicons",
+  cmd = { "Trouble" },
 	config = function()
 
 		require("trouble").setup({

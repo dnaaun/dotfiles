@@ -1,7 +1,7 @@
 return {
 	"nvim-treesitter/nvim-treesitter",
 	run = ":TSUpdate",
-
+  event = "VeryLazy",
 	config = function()
 		vim.treesitter.language.register("tsx", {
 			"javascript",

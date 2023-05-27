@@ -3,7 +3,8 @@
 -- Normal setup
 return {
 	"simrat39/rust-tools.nvim",
-	after = "nvim-lspconfig", -- otherwise, I get an error when rust-tools tries to access package.preload['lspconfig'] or something like that
+	dependencies = "nvim-lspconfig", -- otherwise, I get an error when rust-tools tries to access package.preload['lspconfig'] or something like that
+  ft = "rust",
 	config = function()
 		local extension_path = vim.env.HOME .. "/.vscode/extensions/vadimcn.vscode-lldb-1.7.0/"
 		local codelldb_path = extension_path .. "adapter/codelldb"

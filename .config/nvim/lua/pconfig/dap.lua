@@ -1,8 +1,25 @@
 return {
-	"~/git/nvim-dap",
-	requires = "folke/which-key.nvim",
-	-- ft = require("consts").dap_enabled_filetypes,
-	as = "nvim-dap",
+	"mfussenegger/nvim-dap",
+  lazy = true,
+  keys = {
+    "<leader>dc",
+    "<leader>db",
+    "<leader>dl",
+    "<leader>do",
+    "<leader>di",
+    "<leader>ds",
+    "<leader>dt",
+    "<leader>dv",
+    "<leader>de",
+    "<leader>dn",
+    "<leader>da",
+    "<leader>dr",
+    "<leader>dja",
+    "<leader>djt",
+    "<leader>dh",
+  },
+	dependencies = { "folke/which-key.nvim" },
+	ft = require("consts").dap_enabled_filetypes,
 	config = function()
 		local dap = require("dap")
 
