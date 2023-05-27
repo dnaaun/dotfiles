@@ -1,9 +1,0 @@
-# THe reason I include the trailing > in the trigger is because
-# UltiSnips#JumpForwards() is not working even though it's being
-# called when <tab> is pressed (as configured in plugin_config/nvim_compe.lua).
-# I suspect this has to do with UltiSnip's "best-effort" support for neovim.
-snippet "<(div|p)>" "<tag></tag>" rwA
-<`!p snip.rv = match.group(1)`${1:}>
-	${2:}
-</`!p snip.rv = match.group(1)`>
-endsnippet
