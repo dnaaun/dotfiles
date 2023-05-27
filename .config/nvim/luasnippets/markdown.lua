@@ -58,4 +58,14 @@ end]]
 			end, {}),
 		})
 	),
+
+	-- Written by GPT-4
+	s(
+		{ trig = "ldate", descr = "Insert current time and date" },
+		fmt("{}", {
+			f(function()
+				return os.date("%x %X")
+			end, {}),
+		})
+	),
 }
