@@ -312,6 +312,8 @@ require("packer").startup({
 
 		-- Does one thing: map `dd` inside the quickfix list to "remove item from quicklist"
 		use({ "TamaMcGlinn/quickfixdd" })
+
+		use({ "52617365/nvimanki", requires = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim" } })
 	end,
 
 	config = {

@@ -97,12 +97,11 @@ return {
 
 		-- Allow other files to define callbacks that get called `on_attach`
 		local on_attach = function(client, bufnr)
-
-      -- In typescript projects, I think two different formatters (or at least formatting configs) 
-      -- are being used, and their order is inconsistent across nvim invocations.
-      -- I hoped it was because prettier and typescript-language-server were both formatting, and so
-      -- I disabled the typescript-language-server formatting, but that didn't seem to help.
-      -- I'll just keep this here though. It can't make it worse.
+			-- In typescript projects, I think two different formatters (or at least formatting configs)
+			-- are being used, and their order is inconsistent across nvim invocations.
+			-- I hoped it was because prettier and typescript-language-server were both formatting, and so
+			-- I disabled the typescript-language-server formatting, but that didn't seem to help.
+			-- I'll just keep this here though. It can't make it worse.
 			disable_formatting_sometimes(client)
 
 			if client.name == "texlab" then
@@ -155,6 +154,7 @@ return {
 			"texlab",
 			"tsserver",
 			"html",
+      -- "sorbet",
 			"cssls",
 			"marksman",
 		}) do
@@ -166,6 +166,9 @@ return {
 			end
 
 			lspconfig[lspname].setup(config)
+      if lsp_specific_configs[lspname] == "sorbet" then
+        P(config)
+      end
 		end
 	end,
 }

@@ -161,37 +161,47 @@ local function cur_pos_to_qflist()
 end
 
 local function remove_quickfix_entry_on_current_line_and_move_on()
-  local bufnr = vim.api.nvim_get_current_buf()
-  local current_line = vim.api.nvim_win_get_cursor(0)[1]
+	local bufnr = vim.api.nvim_get_current_buf()
+	local current_line = vim.api.nvim_win_get_cursor(0)[1]
 
-  local qflist = vim.fn.getqflist()
-  local qf_index_to_remove = nil
+	local qflist = vim.fn.getqflist()
+	local qf_index_to_remove = nil
 
-  for i, entry in ipairs(qflist) do
-    if entry.bufnr == bufnr and entry.lnum == current_line then
-      qf_index_to_remove = i
-      break
-    end
-  end
+	for i, entry in ipairs(qflist) do
+		if entry.bufnr == bufnr and entry.lnum == current_line then
+			qf_index_to_remove = i
+			break
+		end
+	end
 
-  if qf_index_to_remove then
-    table.remove(qflist, qf_index_to_remove)
-    vim.fn.setqflist(qflist)
-    print('Removed quickfix entry on current line')
+	if qf_index_to_remove then
+		table.remove(qflist, qf_index_to_remove)
+		vim.fn.setqflist(qflist)
+		print("Removed quickfix entry on current line")
 
-    -- Move to the quickfix item immediately after the removed item, if it exists
-    local next_qf_entry = qflist[qf_index_to_remove]
-    if next_qf_entry then
-      vim.api.nvim_set_current_win(vim.fn.win_getid(next_qf_entry.winid))
-      vim.api.nvim_win_set_cursor(0, {next_qf_entry.lnum, next_qf_entry.col})
-    end
-  else
-    print('No quickfix entry found on current line')
-  end
+		-- Move to the quickfix item immediately after the removed item, if it exists
+		local next_qf_entry = qflist[qf_index_to_remove]
+		if next_qf_entry then
+			if next_qf_entry.bufnr and next_qf_entry.lnum then
+				vim.api.nvim_command("buffer " .. next_qf_entry.bufnr)
+				vim.api.nvim_win_set_cursor(0, { next_qf_entry.lnum, next_qf_entry.col })
+			elseif next_qf_entry.filename and next_qf_entry.lnum then
+				vim.api.nvim_command("edit " .. vim.fn.fnameescape(next_qf_entry.filename))
+				vim.api.nvim_win_set_cursor(0, { next_qf_entry.lnum, next_qf_entry.col })
+			end
+		end
+	else
+		print("No quickfix entry found on current line")
+	end
 end
 
 vim.keymap.set("n", "<leader>qa", cur_pos_to_qflist, { desc = "Add current position to quickfix" })
-vim.keymap.set("n", "<leader>qd", remove_quickfix_entry_on_current_line_and_move_on, { desc = "Remove current position from quickfix" })
+vim.keymap.set(
+	"n",
+	"<leader>qd",
+	remove_quickfix_entry_on_current_line_and_move_on,
+	{ desc = "Remove current position from quickfix" }
+)
 vim.keymap.set("n", "<leader>qD", function()
 	vim.fn.setqflist({})
 end, { desc = "Clear quickfix" })
@@ -247,3 +257,10 @@ au("TextYankPost", {
 		vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
 	end,
 })
+
+-- map `<leader>w` to `:silent write<CR>`
+-- Otherwise, it will show info about the saved file.
+-- Also, two, far away keys (ie,  `<leader>w`) are easier to type than three keys`:w<CR>`
+vim.keymap.set("n", "<leader>w", function()
+	vim.fn.execute("silent write")
+end, { noremap = true, desc = "<CR>silent write" })

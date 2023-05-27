@@ -6,8 +6,8 @@ return {
 
 		null_ls.setup({
 			debug = false,
-			debounce = 2000, -- 2 secs after the dust settles, fire off diagnostics.
-			fallback_severity = vim.diagnostic.severity.WARN, -- Currently entirely for the sake of eslint "errors" that I'd like reported as warnings.
+			debounce = 3000, -- 2 secs after the dust settles, fire off diagnostics.
+			fallback_severity = vim.diagnostic.severity.WARN,
 			sources = {
 				null_ls.builtins.formatting.pg_format,
 				null_ls.builtins.formatting.stylua,
@@ -48,6 +48,6 @@ return {
 			}),
 		}
 
-		null_ls.register({ name = "ruby-syntax", sources = { ruby_syntax_check } })
+		null_ls.register({ name = "ruby-syntax", sources = { ruby_syntax_check }, debounce = 4000 })
 	end,
 }

@@ -145,12 +145,12 @@ return {
 				-- You can get the AM things in entry.status. So we are displaying file if entry.status == '??' or 'A '
 				-- just do an if and return a different command
 				if entry.status == "??" or "A " then
-					return { "git", "-c", "core.pager=difft", "diff", entry.value }
+					return { "echo", "git", "-c", "core.pager=difft", "diff", entry.value }
 				end
 
 				-- note we can't use pipes
 				-- this command is for git_commits and git_bcommits
-				return { "git", "-c", "core.pager=difft", "diff", entry.value .. "^!" }
+				return { "echo", "git", "-c", "core.pager=difft", "diff", entry.value .. "^!" }
 			end,
 		})
 
@@ -253,7 +253,7 @@ return {
 						b = { builtin.git_branches, "git branches" },
 						d = {
 							function()
-								builtin.git_status(git_preview_opts)
+								builtin.git_status()
 							end,
 							"browse diffs and go to file",
 						},

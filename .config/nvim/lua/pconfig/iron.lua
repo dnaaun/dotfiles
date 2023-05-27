@@ -134,10 +134,10 @@ return {
 
 				repl_definition = {
 					python = require("iron.fts.python").ipython,
-					typescript = require("iron.fts.typescript").ts,
-					typescriptreact = require("iron.fts.typescript").ts,
-					ts = require("iron.fts.typescript").ts,
-					tsx = require("iron.fts.typescript").ts,
+					typescript = require("iron.fts.javascript").node,
+					typescriptreact = require("iron.fts.javascript").node,
+					ts = require("iron.fts.javascript").node,
+					tsx = require("iron.fts.javascript").node,
 					lua = require("iron.fts.lua").lua,
 					ruby = rails_console,
 					sql = {

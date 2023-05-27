@@ -9,15 +9,15 @@ return {
 	settings = {
 		tailwindCSS = {
 			includeLanguages = {
-				rust = "html",
-				["*.rs"] = "html",
+				-- rust = "html",
+				-- ["*.rs"] = "html",
 			},
 			experimental = {
 				classRegex = {
 					-- Start autocompletion when `class("...")`
 					-- This is useful for Leptos/sycamore.
-					{ [[\.class\(([^\)]*)\)]], '"([^"]*)"' },
-					{ [[\.classes\(([^\)]*)\)]], '"([^"]*)"' },
+					-- { [[\.class\(([^\)]*)\)]], '"([^"]*)"' },
+					-- { [[\.classes\(([^\)]*)\)]], '"([^"]*)"' },
 				},
 			},
 			emmetCompletions = true,

@@ -8,7 +8,7 @@ return {
 		local notify = require("notify")
     notify.setup({
       render = "minimal",
-      stages = {},
+      -- stages = {},
     })
 
 		local wk = require("which-key")
