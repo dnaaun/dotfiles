@@ -171,9 +171,6 @@ return {
 			end
 
 			lspconfig[lspname].setup(config)
-			if lsp_specific_configs[lspname] == "sorbet" then
-				P(config)
-			end
 		end
 	end,
 }
