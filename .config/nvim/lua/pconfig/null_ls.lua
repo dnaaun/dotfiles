@@ -1,6 +1,7 @@
 return {
 	"jose-elias-alvarez/null-ls.nvim",
 	event = { "InsertLeave", "CursorHold" },
+  keys = { "gql" }, -- the keybinding I set in lsp_config.lua for invoking LSP format.
 	dependencies = { "plenary.nvim" },
 	config = function()
 		local null_ls = require("null-ls")
