@@ -2,6 +2,7 @@ return {
 	"sindrets/diffview.nvim",
 	dependencies = "nvim-lua/plenary.nvim",
 	keys = { "<leader>gd", "<leader>gq" },
+  cmd = { "DiffviewFileHistory", "DiffviewOpen" },
 	config = function()
 		local wk = require("which-key")
 		wk.register({

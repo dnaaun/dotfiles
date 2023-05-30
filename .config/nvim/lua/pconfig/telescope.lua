@@ -1,3 +1,5 @@
+local default_lsp_telescope_opts = { fname_width = 60 }
+
 --- @param jump_type "jump" | "vsplit" | "split"
 --- @param descriptor_prefix string | nil
 local function lsp_gotos_with_jump_type(jump_type, descriptor_prefix)
@@ -272,7 +274,6 @@ return {
 		local mapfunc = require("std2").mapfunc
 		local buf_mapfunc = require("std2").buf_mapfunc
 
-		local default_lsp_telescope_opts = { fname_width = 60 }
 
 		-- Setup difftastic as the diff tool when previewing git diffs with the telescope git commands:
 
