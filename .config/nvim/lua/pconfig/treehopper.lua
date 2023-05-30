@@ -1,7 +1,7 @@
 return {
 	"davidatsurge/nvim-treehopper",
 	branch = "add-config-to-specify-parser-for-filetypes",
-  keys = { { "m", mode = "v" } },
+	keys = { { "m", mode = "v" }, { "m", mode = "o" } },
 	config = function()
 		local wk = require("which-key")
 
