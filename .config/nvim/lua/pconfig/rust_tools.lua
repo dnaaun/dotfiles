@@ -15,6 +15,13 @@ return {
 			dap = {
 				adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
 			},
+
+      -- https://github.com/lvimuser/lsp-inlayhints.nvim#rust
+      tools = {
+        inlay_hints = {
+            auto = false
+        }
+    }
 		}
 		require("rust-tools").setup(opts)
 	end,
