@@ -3,7 +3,9 @@ import sys
 import subprocess
 import string
 
-commit = sys.argv[0] if len(sys.argv) > 1 else "origin/master"
+commit = sys.argv[1] if len(sys.argv) > 1 else "origin/master"
+
+print(commit)
 
 # Get the output of running f"git log --online {master}...HEAD"
 # and split it into a list of lines
