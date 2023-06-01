@@ -3,7 +3,7 @@ return {
 	requires = { "nvim-lua/plenary.nvim" },
   event = "VeryLazy",
 	keys = {
-		"<leader>gw",
+    "<leader>gw",
 		"<leader>gu",
 		"<leader>gr",
 		"<leader>gp",
