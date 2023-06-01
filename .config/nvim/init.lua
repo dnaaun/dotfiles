@@ -82,8 +82,8 @@ g.maplocalleader = ","
 nvim_set_keymap("v", "/", "//e<Left><Left>", {})
 nvim_set_keymap("o", "/", "//e<Left><Left>", {})
 
--- ]s means go to next spelling error.
-nvim_set_keymap("n", "<Leader>s", "]s1z=<C-X><C-S>", {})
+-- NOTE: Disabling because I this interfers with a telescope mapping to search files.
+-- nvim_set_keymap("n", "<Leader>s", "]s1z=<C-X><C-S>", {})
 -- https://castel.dev/post/lecture-notes-1/#correcting-spelling-mistakes-on-the-fly
 -- Insert mode, correct last error.
 nvim_set_keymap("i", "<C-v>", "<Esc>[s1z=``a", {})
@@ -143,10 +143,10 @@ end
 -- })
 
 -- Quickfix shortcuts
-vim.keymap.set("n", "<leader>qo", ":copen<CR>", {})
-vim.keymap.set("n", "]q", ":cnext<CR>", {})
-vim.keymap.set("n", "[q", ":cprev<CR>", {})
-vim.keymap.set("n", "<leader>qq", ":cclose<CR>", {})
+vim.keymap.set("n", "<leader>qo", "<cmd>copen<CR>", {})
+vim.keymap.set("n", "]q", "<cmd>cnext<CR>", {})
+vim.keymap.set("n", "[q", "<cmd>cprev<CR>", {})
+vim.keymap.set("n", "<leader>qq", "<cmd>cclose<CR>", {})
 
 -- Add current position to quicklist
 local function cur_pos_to_qflist()
