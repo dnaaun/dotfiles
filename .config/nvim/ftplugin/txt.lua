@@ -1,4 +1,11 @@
 function override_yank_to_add_metadata()
+  -- Get current buffer file type
+  -- local filetype = vim.bo.filetype
+
+  -- if filetype ~= "txt" then
+  --   return
+  -- end
+
 	-- "Import" stuff from plenary
 	local Path = require("plenary.path")
 
