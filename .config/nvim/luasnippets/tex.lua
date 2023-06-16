@@ -57,10 +57,27 @@ return {
 	s(
 		"cq",
 		f(function()
-			return vim.list_extend(
+			local to_return = vim.list_extend(
 				vim.list_extend({ "\\begin{quote}" }, vim.fn.getreg("0", 1, true)),
-				{ "\\end{quote}" }
+				{ "\\end{quote}", "", "" }
 			)
+
+			-- Check if current line has any non-space text on it, and add an empty line to the
+			-- beginning of the list if it does.
+			local line_content = vim.fn.getline(".")
+			if vim.fn.matchstr(line_content, "\\S") ~= "" then
+				table.insert(to_return, 1, "")
+			end
+			-- Check if the line above has any text on it, and do the same
+			local cur_line = vim.fn.line(".")
+			if cur_line > 1 then
+				local line_above_content = vim.fn.getline(cur_line - 1)
+				if vim.fn.matchstr(line_above_content, "\\S") ~= "" then
+					table.insert(to_return, 1, "")
+				end
+			end
+
+			return to_return
 		end, {})
 	),
 }
