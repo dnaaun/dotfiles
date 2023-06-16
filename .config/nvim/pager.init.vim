@@ -1,7 +1,8 @@
 lua _G.PAGER_MODE=true
 source ~/.config/nvim/init.lua
 
-set nomodifiable
+" nomodifiable breaks which-key.
+" set nomodifiable
 set nowrap
 
 " Don't prompt to save before exiting
