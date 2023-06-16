@@ -20,6 +20,7 @@ return {
 			adapters = {
 				require("neotest-rust"),
 				require("neotest-rspec")({}),
+        require('neotest-jest')({}),
 			},
 			icons = {
 				child_indent = "│",

@@ -27,7 +27,7 @@ return {
 	require("pconfig.lsp_config"),
 	require("pconfig.lsp_extensions"),
 	require("pconfig.rust_tools"),
-  require("pconfig.lsp_inlayhints"),
+	require("pconfig.lsp_inlayhints"),
 
 	-- cmp-related, might be useful when using neovim in pager mode.
 	require("pconfig.cmp"),
@@ -87,15 +87,13 @@ return {
 	-- Convert between all the cases, with LSP and preview integration
 	require("pconfig.text_case"),
 
-	{ "lervag/vimtex", ft = { "tex" } },
+	-- { "lervag/vimtex", ft = { "tex" } },
 
 	-- Turn good ol' linters and formatters to an LSP.
 	require("pconfig.null_ls"),
 
 	-- use("Mofiqul/vscode.nvim")
 	-- use("folke/tokyonight.nvim")
-	{ "olimorris/neotest-rspec", ft = "ruby"},
-	{ "rouge8/neotest-rust", ft = "rust" },
 	{ "EdenEast/nightfox.nvim", event = "VeryLazy" },
 
 	-- vim-matchup
@@ -166,6 +164,9 @@ return {
 
 	--		-- An amazing testing plugin. Really showcases the possiblities of treesitter.
 	require("pconfig.neotest"),
+	{ "haydenmeade/neotest-jest", event = "VeryLazy", ft = require("consts").javascripty_filetypes },
+	{ "olimorris/neotest-rspec", ft = "ruby" },
+	{ "rouge8/neotest-rust", ft = "rust" },
 
 	require("pconfig.web_devicons"),
 
