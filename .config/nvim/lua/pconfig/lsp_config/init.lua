@@ -1,3 +1,52 @@
+local setup_mappings = function()
+	P("Yooo, setting up mapping!!")
+	local wk = require("which-key")
+	wk.register({
+		K = { vim.lsp.buf.hover, "hover" },
+		g = {
+			R = { vim.lsp.buf.rename, "rename" },
+			h = {
+				function()
+					vim.diagnostic.open_float({ source = true })
+				end,
+				"diagnostic float",
+			},
+		},
+		["[e"] = {
+			function()
+				vim.diagnostic.goto_prev({ severity = "Error" })
+			end,
+			"previous diagnostic",
+		},
+		["]e"] = {
+			function()
+				vim.diagnostic.goto_next({ severity = "Error" })
+			end,
+			"next diagnostic",
+		},
+		["[gh"] = {
+			function()
+				vim.diagnostic.goto_prev({ severity = "Warn" })
+			end,
+			"previous diagnostic",
+		},
+		["]gh"] = {
+			function()
+				vim.diagnostic.goto_next({ severity = "Warn" })
+			end,
+			"next diagnostic",
+		},
+		["gql"] = {
+			function()
+				vim.lsp.buf.format({ async = true })
+			end,
+			"format",
+		},
+	}, { mode = "n" })
+end
+
+setup_mappings()
+
 --- null-ls.nvim sometimes conflicts with other LSPs
 local disable_formatting_sometimes = function(client)
 	if not (client.name == "rust_analyzer" or client.name == "texlab" or client.name == "null-ls") then
@@ -14,6 +63,7 @@ return {
 		-- from the auto-session plugin
 		"SessionLoadPost",
 		"BufEnter",
+		"VeryLazy",
 	},
 	-- ft = require("consts").lsp_enabled_filetypes,
 	config = function()
@@ -52,54 +102,6 @@ return {
 			wk.register({ ["<leader>t"] = { ":TexlabForward<CR>", "Texlab forward" } }, opts)
 		end
 
-		local setup_mappings = function()
-			local wk = require("which-key")
-			wk.register({
-				K = { vim.lsp.buf.hover, "hover" },
-				g = {
-					R = { vim.lsp.buf.rename, "rename" },
-					h = {
-						function()
-							vim.diagnostic.open_float({ source = true })
-						end,
-						"diagnostic float",
-					},
-				},
-				["[e"] = {
-					function()
-						vim.diagnostic.goto_prev({ severity = "Error" })
-					end,
-					"previous diagnostic",
-				},
-				["]e"] = {
-					function()
-						vim.diagnostic.goto_next({ severity = "Error" })
-					end,
-					"next diagnostic",
-				},
-				["[gh"] = {
-					function()
-						vim.diagnostic.goto_prev({ severity = "Warn" })
-					end,
-					"previous diagnostic",
-				},
-				["]gh"] = {
-					function()
-						vim.diagnostic.goto_next({ severity = "Warn" })
-					end,
-					"next diagnostic",
-				},
-				["gql"] = {
-					function()
-						vim.lsp.buf.format({ async = true })
-					end,
-					"format",
-				},
-			}, { mode = "n" })
-		end
-
-		setup_mappings()
-
 		-- Allow other files to define callbacks that get called `on_attach`
 		local on_attach = function(client, bufnr)
 			-- In typescript projects, I think two different formatters (or at least formatting configs)
@@ -119,7 +121,6 @@ return {
 				plugin_custom_attach(client)
 			end
 
-			-- setup_mappings(bufnr)
 			setup_formatexpr(client)
 		end
 
