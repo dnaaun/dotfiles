@@ -58,7 +58,7 @@ return {
 	require("pconfig.gitlinker"),
 
 	-- Does one thing: map `dd` inside the quickfix list to "remove item from quicklist"
-	{ "TamaMcGlinn/quickfixdd", event = "QuickFixCmdPost" },
+	{ "TamaMcGlinn/quickfixdd", event = "VeryLazy" },
 
 	-- I use it for: jump to a locaiton in the jumplist that is in a different
 	-- buffer than the one I have now.
