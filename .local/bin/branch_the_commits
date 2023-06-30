@@ -2,21 +2,39 @@
 import sys
 import subprocess
 import string
+import argparse
+from dataclasses import dataclass
 
-commit = sys.argv[1] if len(sys.argv) > 1 else "origin/master"
+@dataclass
+class Args:
+    do_push: bool = False
+    base_commit: str = "origin/master"
 
-print(commit)
+def parse_args() -> Args:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--no-push", dest="do_push", action="store_false")
+    parser.add_argument("--base-commit", dest="base_commit", default="origin/master")
+    args_parsed = parser.parse_args()
+
+    return Args(
+        do_push=args_parsed.do_push,
+        base_commit=args_parsed.base_commit
+    )
+
+args = parse_args()
 
 # Get the output of running f"git log --online {master}...HEAD"
 # and split it into a list of lines
 commits = subprocess.run(
-    ["git", "log", "--oneline", f"{commit}...HEAD"],
+    ["git", "log", "--oneline", f"{args.base_commit}...HEAD"],
     stdout=subprocess.PIPE
 ).stdout.decode("utf-8").splitlines()
 
 commits.reverse()
 
-print(commits)
+
+print(repr(args))
+
 def run(*args):
     proc = subprocess.run(args)
     if proc.stdout: print(proc.stdout)
@@ -29,4 +47,6 @@ for line in commits:
   
     run("git",  "branch",  "-qD", branch_name)
     run("git",  "branch",  branch_name, commit_id)
-    run("git",  "push",  "origin", "-f", branch_name)
+
+    if args.do_push:
+        run("git",  "push",  "origin", "-f", branch_name)
