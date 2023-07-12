@@ -4,12 +4,18 @@ return {
 		["rust-analyzer"] = {
 			check = {
 				command = "check",
-				allTargets = false,
+				allTargets = true,
 				extraArgs = {
 					"--profile",
 					"rust-analyzer",
 				},
 			},
+      rustfmt = {
+				extraArgs = {
+					"--profile",
+					"rust-analyzer",
+				},
+			}
 		},
 	},
 }

@@ -1,0 +1,5 @@
+[profile.rust-analyzer]
+inherits = "dev"
+
+[profile.not-rust-analyzer]
+inherits = "dev"

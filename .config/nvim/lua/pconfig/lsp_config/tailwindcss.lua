@@ -1,10 +1,11 @@
 return {
 	filetypes = vim.list_extend({ "rust" }, require("consts").javascripty_filetypes),
 	init_options = {
-		userLanguages = {
-			rust = "html",
-			["*.rs"] = "html",
-		},
+    -- Disable cuz my regexes are messed up
+		-- userLanguages = {
+		-- 	rust = "html",
+		-- 	["*.rs"] = "html",
+		-- },
 	},
 	settings = {
 		tailwindCSS = {

@@ -93,6 +93,6 @@ return {
 			},
 		})
 
-    override_gitsigns_combos()
+    -- override_gitsigns_combos()
 	end,
 }

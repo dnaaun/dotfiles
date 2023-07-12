@@ -1,51 +1,46 @@
-local setup_mappings = function()
-	P("Yooo, setting up mapping!!")
-	local wk = require("which-key")
-	wk.register({
-		K = { vim.lsp.buf.hover, "hover" },
-		g = {
-			R = { vim.lsp.buf.rename, "rename" },
-			h = {
-				function()
-					vim.diagnostic.open_float({ source = true })
-				end,
-				"diagnostic float",
-			},
-		},
-		["[e"] = {
+local wk = require("which-key")
+wk.register({
+	K = { vim.lsp.buf.hover, "hover" },
+	g = {
+		R = { vim.lsp.buf.rename, "rename" },
+		h = {
 			function()
-				vim.diagnostic.goto_prev({ severity = "Error" })
+				vim.diagnostic.open_float({ source = true })
 			end,
-			"previous diagnostic",
+			"diagnostic float",
 		},
-		["]e"] = {
-			function()
-				vim.diagnostic.goto_next({ severity = "Error" })
-			end,
-			"next diagnostic",
-		},
-		["[gh"] = {
-			function()
-				vim.diagnostic.goto_prev({ severity = "Warn" })
-			end,
-			"previous diagnostic",
-		},
-		["]gh"] = {
-			function()
-				vim.diagnostic.goto_next({ severity = "Warn" })
-			end,
-			"next diagnostic",
-		},
-		["gql"] = {
-			function()
-				vim.lsp.buf.format({ async = true })
-			end,
-			"format",
-		},
-	}, { mode = "n" })
-end
-
-setup_mappings()
+	},
+	["[e"] = {
+		function()
+			vim.diagnostic.goto_prev({ severity = "Error" })
+		end,
+		"previous diagnostic",
+	},
+	["]e"] = {
+		function()
+			vim.diagnostic.goto_next({ severity = "Error" })
+		end,
+		"next diagnostic",
+	},
+	["[gh"] = {
+		function()
+			vim.diagnostic.goto_prev({ severity = "Warn" })
+		end,
+		"previous diagnostic",
+	},
+	["]gh"] = {
+		function()
+			vim.diagnostic.goto_next({ severity = "Warn" })
+		end,
+		"next diagnostic",
+	},
+	["gql"] = {
+		function()
+			vim.lsp.buf.format({ async = true })
+		end,
+		"format",
+	},
+}, { mode = "n" })
 
 --- null-ls.nvim sometimes conflicts with other LSPs
 local disable_formatting_sometimes = function(client)
@@ -59,12 +54,16 @@ end
 
 return {
 	"neovim/nvim-lspconfig",
-	event = {
+	-- keys = {
+	-- 	"gql",
+		-- TODO (David): add more.
+	-- },
+	-- event = {
 		-- from the auto-session plugin
-		"SessionLoadPost",
-		"BufEnter",
-		"VeryLazy",
-	},
+		-- "SessionLoadPost",
+		-- "BufEnter",
+		-- "VeryLazy",
+	-- },
 	-- ft = require("consts").lsp_enabled_filetypes,
 	config = function()
 		vim.lsp.set_log_level(vim.lsp.log_levels.INFO)

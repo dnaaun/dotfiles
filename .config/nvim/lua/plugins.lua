@@ -26,8 +26,8 @@ return {
 
 	require("pconfig.lsp_config"),
 	require("pconfig.lsp_extensions"),
-	require("pconfig.rust_tools"),
-	require("pconfig.lsp_inlayhints"),
+	-- require("pconfig.rust_tools"),
+	-- require("pconfig.lsp_inlayhints"),
 
 	-- cmp-related, might be useful when using neovim in pager mode.
 	require("pconfig.cmp"),
@@ -122,11 +122,12 @@ return {
 	require("pconfig.trouble"),
 
 	-- highlight brackets and things like that in differnet colors
-	{
-		"p00f/nvim-ts-rainbow",
-		dependencies = "nvim-treesitter/nvim-treesitter",
-		event = { "InsertEnter" },
-	},
+  -- I don't think I've ever paid aattention to the colors of brackets ever.
+	-- {
+	-- 	"p00f/nvim-ts-rainbow",
+	-- 	dependencies = "nvim-treesitter/nvim-treesitter",
+	-- 	event = { "InsertEnter" },
+	-- },
 
 	-- Spin up a repl in a neovim terminal and send text to it
 	require("pconfig.iron"),

@@ -245,7 +245,12 @@ end
 -- spec, so it is not needed to add require calls in your main plugin file to
 -- the other files.
 vim.opt.rtp:prepend(lazypath)
-require("lazy").setup("plugins")
+require("lazy").setup({
+  {
+  import = "plugins",
+  concurrency = 4
+},
+})
 
 local wk = require("which-key")
 
@@ -288,4 +293,3 @@ wk.register({
 		"clear both vim search and LSP reference highlights",
 	},
 })
-
