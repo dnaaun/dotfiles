@@ -4,6 +4,7 @@ return {
 	-- (Fuzzy) search everything!
 	require("pconfig.telescope"),
 	require("pconfig.telescope_file_browser"),
+	require("pconfig.dirbuf"),
 
 	require("pconfig.which_key"), -- show candidate mappings after pressing a key
 
@@ -146,8 +147,8 @@ return {
 	--		-- Better diff view
 	require("pconfig.diffview"),
 
-	--		-- Who needs web interfaces when you have neovim interfaces (for Github)?
-	-- --		require("pconfig.octo") -- Not using it
+	-- Who needs web interfaces when you have neovim interfaces (for Github)?
+	require("pconfig.octo"),
 
 	--		-- A quick-and-dirty solution to typing Amharic in vim,
 	--		-- without having to rely on changing the system-wide keyboard layout

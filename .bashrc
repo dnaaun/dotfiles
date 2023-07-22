@@ -431,3 +431,17 @@ function __insert_git_fzf_commit_hash() {
 bind -m emacs-standard -x '"\C-gc": __insert_git_fzf_commit_hash'
 bind -m vi-command -x '"\C-gc": __insert_git_fzf_commit_hash'
 bind -m vi-insert -x '"\C-gc": __insert_git_fzf_commit_hash'
+
+PATH=$PATH:$HOME/git/rsq/target/debug/
+
+# Some credit to GPT-4-32K
+# 
+search_dirs() {
+    READLINE_LINE="${READLINE_LINE}my_command"
+    READLINE_POINT=${#READLINE_LINE}
+}
+# Make this function available for the readline
+bind -x '"\C-x\C-m": append_my_command'
+
+# Set vi mode
+set -o vi

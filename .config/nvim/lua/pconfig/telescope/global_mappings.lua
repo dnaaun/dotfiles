@@ -96,23 +96,23 @@ local map_telescope_bindings = function()
 	-- which-key mappings
 	local wk = require("which-key")
 	wk.register({
-		["-"] = {
-			function()
-				require("telescope").extensions.file_browser.file_browser({
-					path = vim.fn.expand("%:p:h"),
-					respect_gitignore = false,
-				})
-			end,
-			"file_browser cur dir",
-		},
-		["<leader>-"] = {
-			function()
-				require("telescope").extensions.file_browser.file_browser({
-					respect_gitignore = false,
-				})
-			end,
-			"file_browser",
-		},
+		-- ["-"] = {
+		-- 	function()
+		-- 		require("telescope").extensions.file_browser.file_browser({
+		-- 			path = vim.fn.expand("%:p:h"),
+		-- 			respect_gitignore = false,
+		-- 		})
+		-- 	end,
+		-- 	"file_browser cur dir",
+		-- },
+		-- ["<leader>-"] = {
+		-- 	function()
+		-- 		require("telescope").extensions.file_browser.file_browser({
+		-- 			respect_gitignore = false,
+		-- 		})
+		-- 	end,
+		-- 	"file_browser",
+		-- },
 
 		["<leader>"] = {
 			a = {

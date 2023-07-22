@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import sys
 import subprocess
 import string
 import argparse
@@ -7,9 +6,9 @@ from dataclasses import dataclass
 
 @dataclass
 class Args:
-    do_push: bool = False
-    base_commit: str = "origin/master"
-    create_prs: bool = False
+    do_push: bool
+    base_commit: str
+    create_prs: bool
 
 def parse_args() -> Args:
     parser = argparse.ArgumentParser()

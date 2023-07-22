@@ -58,6 +58,11 @@ return {
 			-- return bracketed_paste(new_lines)
 		}
 
+    local pry = {
+      command = { "pry" },
+      format = bracketed_paste
+    }
+
 		-- local irb = {
 		-- 	command = { "irb" },
 		-- 	format = bracketed_paste,
