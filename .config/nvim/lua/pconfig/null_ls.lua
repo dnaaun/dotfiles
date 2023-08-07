@@ -49,6 +49,7 @@ return {
 			}),
 		}
 
-		null_ls.register({ name = "ruby-syntax", sources = { ruby_syntax_check }, debounce = 4000 })
+    -- I think Solargraph (through Rubocop) reports syntax errors now?
+		-- null_ls.register({ name = "ruby-syntax", sources = { ruby_syntax_check }, debounce = 4000 })
 	end,
 }
