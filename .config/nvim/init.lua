@@ -109,7 +109,7 @@ g.tokyonight_style = "day"
 
 -- vim.cmd("colorscheme tokyonight-day")
 -- vim.cmd("colorscheme github_dark")
-vim.cmd("colorscheme dayfox")
+vim.cmd("colorscheme nightfox")
 
 ---- Add plugins ----
 -- require("plugins")

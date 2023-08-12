@@ -159,9 +159,10 @@ return {
 			"texlab",
 			"tsserver",
 			"html",
-			-- "sorbet",
+			"sorbet",
 			"cssls",
 			"marksman",
+      "yamlls"
 		}) do
 			local config = lsp_specific_configs[lspname]
 			if config ~= nil then

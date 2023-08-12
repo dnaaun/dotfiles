@@ -197,6 +197,9 @@ return {
 			-- termcolors = {} -- table of colour name strings
 		}
 
+    -- Required for nvim-devdocs
+    local ensure_installed =  { "html" }
+
 		require("nvim-treesitter.configs").setup({
 			context_commentstring = context_commentstring,
 			ensure_installed = ensure_installed,
@@ -210,6 +213,7 @@ return {
 			matchup = matchup,
 			playground = playground,
 			rainbow = rainbow,
+      ensure_installed = ensure_installed
 		})
 
 		vim.opt.foldexpr = "nvim_treesitter#foldexpr()"

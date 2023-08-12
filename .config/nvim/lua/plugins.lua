@@ -198,4 +198,10 @@ return {
 	-- Treesitter offiical plugin to show treesitter parses
 	-- Ya boy is going to start writing plugins at this rate!
 	require("pconfig.playground"),
+
+  -- Something I've personally wanted for a long time, hope they managed to make it work really well.
+  require("pconfig.devdocs"),
+
+  -- Supposed to be a "stirpped down VimWiki". Let's see if it is indeed.
+  require("pconfig.kiwi"),
 }

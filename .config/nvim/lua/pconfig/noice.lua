@@ -35,6 +35,14 @@ return {
 					},
 					opts = { skip = true },
 				},
+
+        -- Sorbet warns about this. I don't know/care what it means.
+        {
+          filter = {
+            find = "Watchman support currently only works when Sorbet is run with a single input directory."
+          },
+					opts = { skip = true },
+        }
 			},
 		})
 	end,
