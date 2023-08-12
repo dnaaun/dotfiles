@@ -1,6 +1,5 @@
 return {
 	"aserowy/tmux.nvim",
-	lazy = true,
 	keys = {
 		"<C-l>",
 		"<C-h>",
