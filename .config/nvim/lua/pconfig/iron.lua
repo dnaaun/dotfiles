@@ -3,12 +3,12 @@ vim.g.iron_map_defaults = false
 
 return {
 	"hkupty/iron.nvim",
-  keys = {
-    "<leader>rh",
-    "<leader>rsq",
-    "<leader>rf",
-    "<leader>ro",
-  },
+	keys = {
+		"<leader>rh",
+		"<leader>rsq",
+		"<leader>rf",
+		"<leader>ro",
+	},
 	config = function()
 		local bracketed_paste = require("iron.fts.common").bracketed_paste
 		local iron = require("iron.core")
@@ -51,11 +51,6 @@ return {
 		local rails_console = {
 			command = { "bundle", "exec", "rails", "console" },
 			format = bracketed_paste,
-			-- function(lines)
-			-- Add semi colons to the end to suppress "print what was returned" output
-			-- local new_lines = vim.list_extend({}, lines)
-			-- new_lines[#new_lines] = new_lines[#new_lines] .. ";"
-			-- return bracketed_paste(new_lines)
 		}
 
     local pry = {

@@ -151,7 +151,9 @@ return {
 			"eslint",
 			"kotlin_language_server",
 			"pyright",
-			"solargraph",
+      -- Until I figure out how to route specific requests to specific servers,
+      -- I'll use only sorbet for ruby.
+			-- "solargraph",
 			"sqlls",
 			"rust_analyzer",
 			-- "sumneko_lua",

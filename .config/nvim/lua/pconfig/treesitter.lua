@@ -30,7 +30,7 @@ return {
 		-- Various Treesitter modules config
 		local highlight = {
 			enable = true,
-			disable = { "markdown", "org" }, -- Markdown is slow (I think), and org is experimental.
+			disable = { "markdown" },
 			-- additional_vim_regex_highlighting = { "org" }, -- Required since TS highlighter doesn't support all syntax features (conceal)
 		}
 		local indent = {

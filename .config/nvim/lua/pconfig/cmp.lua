@@ -1,6 +1,6 @@
 return {
 	"hrsh7th/nvim-cmp",
-  event = "InsertEnter",
+	event = "InsertEnter",
 	config = function()
 		-- Setup nvim-cmp.
 		local has_words_before = function()
@@ -72,20 +72,22 @@ return {
 			},
 			enabled = function()
 				-- nvim-cmp by defaults disables autocomplete for prompt buffers
-        -- check if the cmp_dap module is loaded in lua
-        local cmp_dap_loaded = pcall(require, "cmp_dap")
-        -- if cmp_dap is loaded, check if the current buffer is a dap buffer
-        local is_dap_buffer = cmp_dap_loaded and require("cmp_dap").is_dap_buffer()
+				-- check if the cmp_dap module is loaded in lua
+				local cmp_dap_loaded = pcall(require, "cmp_dap")
+				-- if cmp_dap is loaded, check if the current buffer is a dap buffer
+				local is_dap_buffer = cmp_dap_loaded and require("cmp_dap").is_dap_buffer()
 				return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt" or is_dap_buffer
 			end,
 			sources = cmp.config.sources({
 				{ name = "copilot", keyword_length = 0 },
+        { name = "git" },
 			}, {
 				{ name = "luasnip", priority = 100 },
 			}, {
 				{ name = "dap" },
 				{ name = "nvim_lsp" },
 				{ name = "path" },
+				{ name = "orgmode" },
 				{
 					name = "spell",
 					option = {
@@ -101,8 +103,8 @@ return {
 			}),
 
 			comparators = {
-        -- Disabling these for now because, while migraitng to lazzy.nvim, I noticed the lines
-        -- below imply a dependency cycle between cmp-copilot (or copilot-cmp, idk) and nvim-cmp.
+				-- Disabling these for now because, while migraitng to lazzy.nvim, I noticed the lines
+				-- below imply a dependency cycle between cmp-copilot (or copilot-cmp, idk) and nvim-cmp.
 				-- require("copilot_cmp.comparators").prioritize,
 				-- require("copilot_cmp.comparators").score,
 

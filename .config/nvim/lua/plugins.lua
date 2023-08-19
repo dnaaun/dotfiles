@@ -47,6 +47,7 @@ return {
 	{ "hrsh7th/cmp-nvim-lsp", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	{ "rcarriga/cmp-dap", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	{ "saadparwaiz1/cmp_luasnip", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
+  require("pconfig.cmp_git"),
 	-- Colors and other niceties
 	require("pconfig.zen_mode"),
 
@@ -63,7 +64,8 @@ return {
 
 	-- I use it for: jump to a locaiton in the jumplist that is in a different
 	-- buffer than the one I have now.
-	require("pconfig.portal"),
+	-- require("pconfig.portal"),
+  require("pconfig.bufjump"),
 
 	-- should help with file navigation a lot
 	require("pconfig.harpoon"),
@@ -204,4 +206,9 @@ return {
 
   -- Supposed to be a "stirpped down VimWiki". Let's see if it is indeed.
   require("pconfig.kiwi"),
+  -- Here we go again. I really do want to give orgmode another try, since I keep on re-inventing it in my head again and again.
+  require("pconfig.orgmode"),
+
+  -- Sourcegraph stuff from TJ
+  require("pconfig.sg")
 }
