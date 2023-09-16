@@ -108,7 +108,7 @@ return {
 			-- I hoped it was because prettier and typescript-language-server were both formatting, and so
 			-- I disabled the typescript-language-server formatting, but that didn't seem to help.
 			-- I'll just keep this here though. It can't make it worse.
-			disable_formatting_sometimes(client)
+			-- disable_formatting_sometimes(client)
 
 			if client.name == "texlab" then
 				setup_texlab_forward_search()

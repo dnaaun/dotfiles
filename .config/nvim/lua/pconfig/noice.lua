@@ -1,6 +1,6 @@
 return {
 	"folke/noice.nvim",
-  event = "VeryLazy",
+	event = "VeryLazy",
 	config = function()
 		require("noice").setup({
 			messages = {
@@ -36,13 +36,38 @@ return {
 					opts = { skip = true },
 				},
 
-        -- Sorbet warns about this. I don't know/care what it means.
-        {
-          filter = {
-            find = "Watchman support currently only works when Sorbet is run with a single input directory."
-          },
+				-- Sorbet warns about this. I don't know/care what it means.
+				{
+					filter = {
+						find = "Watchman support currently only works when Sorbet is run with a single input directory.",
+					},
 					opts = { skip = true },
-        }
+				},
+				{
+					filter = {
+						find = "invalid node type at position",
+					},
+					opts = { skip = true },
+				},
+
+				-- I upgraded Noevim, and something is not jiving with nvim-matchup and the new
+				-- treesitter, or something.
+				{
+					filter = {
+						any = {
+							{
+								find = "in function '_ts_parse_query'",
+							},
+							{
+								find = "matchup#ts_engine#get_delim",
+							},
+							{
+								find = "invalid node type at position",
+							},
+						},
+					},
+					opts = { skip = true },
+				},
 			},
 		})
 	end,

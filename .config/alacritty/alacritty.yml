@@ -801,7 +801,7 @@ selection:
 #working_directory: None
 
 # Send ESC (\x1b) before characters when alt is pressed.
-alt_send_esc: false
+# alt_send_esc: false # Alacritty warned me that this is now "always set to 'true'"
 
 #mouse:
   # Click settings

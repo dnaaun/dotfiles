@@ -50,6 +50,7 @@ return {
 
 		local rails_console = {
 			command = { "bundle", "exec", "rails", "console" },
+			-- command = {"heroku_with_empty_node_options", "run", "rails", "console", "-a", "gondor"},
 			format = bracketed_paste,
 		}
 

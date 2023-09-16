@@ -29,8 +29,8 @@ return {
 
 		-- Various Treesitter modules config
 		local highlight = {
-			enable = true,
-			disable = { "markdown" },
+			enable = false, -- just too many errors rn.
+			disable = { "markdown", "typescript", "tsx" },
 			-- additional_vim_regex_highlighting = { "org" }, -- Required since TS highlighter doesn't support all syntax features (conceal)
 		}
 		local indent = {

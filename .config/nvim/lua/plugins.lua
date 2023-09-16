@@ -210,5 +210,11 @@ return {
   require("pconfig.orgmode"),
 
   -- Sourcegraph stuff from TJ
-  require("pconfig.sg")
+  require("pconfig.sg"),
+
+  -- Make it easier to runc arog commands from neovim. Maybe git too, who knows.
+  require("pconfig.overseer"),
+
+  -- Highlight occurences of current word
+  require("pconfig.mini_cursorword")
 }

@@ -79,6 +79,15 @@ local function lsp_gotos_with_jump_type(jump_type, descriptor_prefix)
 					end,
 					descriptor_prefix .. "warn diagnostics",
 				},
+				h = {
+					function()
+						require("telescope.builtin").diagnostics({
+							jump_type = jump_type,
+							severity = vim.diagnostic.severity.HINT,
+						})
+					end,
+					descriptor_prefix .. "hint diagnostics",
+				},
 			},
 		},
 		i = {
@@ -184,7 +193,19 @@ local map_telescope_bindings = function()
 					name = "git",
 					c = {
 						name = "commit related",
-						c = { require("telescope.builtin").git_commits, "commits in current branch" },
+						c = {
+							function()
+								require("telescope.builtin").git_commits({
+									"git",
+									"log",
+									"--pretty=oneline",
+									"--abbrev-commit",
+									"--",
+									".",
+								})
+							end,
+							"commits in current branch",
+						},
 						b = { require("telescope.builtin").git_bcommits, "commits that affect current buffer" },
 					},
 					b = { require("telescope.builtin").git_branches, "git branches" },
@@ -194,6 +215,10 @@ local map_telescope_bindings = function()
 						end,
 						"browse diffs and go to file",
 					},
+				},
+				h = {
+					"<cmd>Telescope harpoon marks<CR>",
+					"harpoon marks",
 				},
 			},
 		},
@@ -224,5 +249,5 @@ local map_telescope_bindings = function()
 end
 
 return {
-  map_telescope_bindings = map_telescope_bindings,
+	map_telescope_bindings = map_telescope_bindings,
 }
