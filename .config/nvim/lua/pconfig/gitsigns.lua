@@ -1,3 +1,9 @@
+return {
+	"lewis6991/gitsigns.nvim",
+	requires = { "nvim-lua/plenary.nvim" },
+	event = "VeryLazy",
+  module = "gitsigns",
+	config = function()
 require("which-key").register({
 	["]h"] = { function() require("gitsigns").next_hunk() end, "next hunk" },
 	["[h"] = { function() require("gitsigns").prev_hunk() end, "previous hunk" },
@@ -38,13 +44,6 @@ require("which-key").register({
 		},
 	},
 }, { mode = "v" })
-
-return {
-	"lewis6991/gitsigns.nvim",
-	requires = { "nvim-lua/plenary.nvim" },
-	event = "VeryLazy",
-  module = "gitsigns",
-	config = function()
 		require("gitsigns").setup({})
 	end,
 }

@@ -1,47 +1,3 @@
-local wk = require("which-key")
-wk.register({
-	K = { vim.lsp.buf.hover, "hover" },
-	g = {
-		R = { vim.lsp.buf.rename, "rename" },
-		h = {
-			function()
-				vim.diagnostic.open_float({ source = true })
-			end,
-			"diagnostic float",
-		},
-	},
-	["[e"] = {
-		function()
-			vim.diagnostic.goto_prev({ severity = "Error" })
-		end,
-		"previous diagnostic",
-	},
-	["]e"] = {
-		function()
-			vim.diagnostic.goto_next({ severity = "Error" })
-		end,
-		"next diagnostic",
-	},
-	["[gh"] = {
-		function()
-			vim.diagnostic.goto_prev({ severity = "Warn" })
-		end,
-		"previous diagnostic",
-	},
-	["]gh"] = {
-		function()
-			vim.diagnostic.goto_next({ severity = "Warn" })
-		end,
-		"next diagnostic",
-	},
-	["gql"] = {
-		function()
-			vim.lsp.buf.format({ async = true })
-		end,
-		"format",
-	},
-}, { mode = "n" })
-
 --- null-ls.nvim sometimes conflicts with other LSPs
 local disable_formatting_sometimes = function(client)
 	if not (client.name == "rust_analyzer" or client.name == "texlab" or client.name == "null-ls") then
@@ -56,16 +12,59 @@ return {
 	"neovim/nvim-lspconfig",
 	-- keys = {
 	-- 	"gql",
-		-- TODO (David): add more.
+	-- TODO (David): add more.
 	-- },
 	-- event = {
-		-- from the auto-session plugin
-		-- "SessionLoadPost",
-		-- "BufEnter",
-		-- "VeryLazy",
+	-- from the auto-session plugin
+	-- "SessionLoadPost",
+	-- "BufEnter",
+	-- "VeryLazy",
 	-- },
 	-- ft = require("consts").lsp_enabled_filetypes,
 	config = function()
+		local wk = require("which-key")
+		wk.register({
+			K = { vim.lsp.buf.hover, "hover" },
+			g = {
+				R = { vim.lsp.buf.rename, "rename" },
+				h = {
+					function()
+						vim.diagnostic.open_float({ source = true })
+					end,
+					"diagnostic float",
+				},
+			},
+			["[e"] = {
+				function()
+					vim.diagnostic.goto_prev({ severity = "Error" })
+				end,
+				"previous diagnostic",
+			},
+			["]e"] = {
+				function()
+					vim.diagnostic.goto_next({ severity = "Error" })
+				end,
+				"next diagnostic",
+			},
+			["[gh"] = {
+				function()
+					vim.diagnostic.goto_prev({ severity = "Warn" })
+				end,
+				"previous diagnostic",
+			},
+			["]gh"] = {
+				function()
+					vim.diagnostic.goto_next({ severity = "Warn" })
+				end,
+				"next diagnostic",
+			},
+			["gql"] = {
+				function()
+					vim.lsp.buf.format({ async = true })
+				end,
+				"format",
+			},
+		}, { mode = "n" })
 		vim.lsp.set_log_level(vim.lsp.log_levels.INFO)
 
 		-- Use LSP formatting. Note this doesn't get invoked if LSP
@@ -151,8 +150,8 @@ return {
 			"eslint",
 			"kotlin_language_server",
 			"pyright",
-      -- Until I figure out how to route specific requests to specific servers,
-      -- I'll use only sorbet for ruby.
+			-- Until I figure out how to route specific requests to specific servers,
+			-- I'll use only sorbet for ruby.
 			-- "solargraph",
 			"sqlls",
 			"rust_analyzer",
@@ -164,7 +163,7 @@ return {
 			"sorbet",
 			"cssls",
 			"marksman",
-      "yamlls"
+			"yamlls",
 		}) do
 			local config = lsp_specific_configs[lspname]
 			if config ~= nil then

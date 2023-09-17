@@ -1,4 +1,3 @@
-require("pconfig.telescope.global_mappings").map_telescope_bindings()
 
 -- I don't know why, but if I don't do the below, the mappings simply
 -- dissapear a few seconds after starting vim.
@@ -21,6 +20,7 @@ return {
 		"<leader>-",
 	},
 	config = function()
+    require("pconfig.telescope.global_mappings").map_telescope_bindings()
 		local telescope = require("telescope")
 
     -- I don't know why I need to do this, despite setting .keys, .event, and .module for telescope-fzf-native.nvim's lazy.nvim config identically to telescope.nvim's config.
