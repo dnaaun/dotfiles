@@ -22,6 +22,16 @@ return {
 	-- },
 	-- ft = require("consts").lsp_enabled_filetypes,
 	config = function()
+    -- https://ast-grep.github.io/guide/editor-integration.html#nvim-lspconfig
+		local configs = require("lspconfig.configs")
+		configs.ast_grep = {
+			default_config = {
+				cmd = { "sg", "lsp" },
+				filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+				single_file_support = true,
+				root_dir = require("lspconfig").util.root_pattern(".git", "sgconfig.yml"),
+			},
+		}
 		local wk = require("which-key")
 		wk.register({
 			K = { vim.lsp.buf.hover, "hover" },
@@ -164,6 +174,7 @@ return {
 			"cssls",
 			"marksman",
 			"yamlls",
+			"ast_grep",
 		}) do
 			local config = lsp_specific_configs[lspname]
 			if config ~= nil then

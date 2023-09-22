@@ -196,13 +196,16 @@ local map_telescope_bindings = function()
 						c = {
 							function()
 								require("telescope.builtin").git_commits({
-									"git",
-									"log",
-									"--pretty=oneline",
-									"--abbrev-commit",
-									"--",
-									".",
-								})
+                  previewer = {
+                    get_buffer_by_name = function(_, entry)
+                      local bufnr = require("telescope.actions.state").get_selected_entry_bufnr()
+                      local content = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+                      local lines = vim.tbl_map(function(line)
+                        return line:gsub("^%s+", "")
+                      end, content)
+                      return lines
+                    end}
+                })
 							end,
 							"commits in current branch",
 						},

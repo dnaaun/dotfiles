@@ -4,6 +4,7 @@ return {
 	-- (Fuzzy) search everything!
 	require("pconfig.telescope"),
 	require("pconfig.telescope_file_browser"),
+  { "Marskey/telescope-sg" },
 	require("pconfig.dirbuf"),
 
 	require("pconfig.which_key"), -- show candidate mappings after pressing a key
@@ -205,7 +206,8 @@ return {
   require("pconfig.devdocs"),
 
   -- Supposed to be a "stirpped down VimWiki". Let's see if it is indeed.
-  require("pconfig.kiwi"),
+  -- UPDATE: Haven't used kiwi ever, so abandoning. I'm settling into orgmode anways.
+  -- require("pconfig.kiwi"),
   -- Here we go again. I really do want to give orgmode another try, since I keep on re-inventing it in my head again and again.
   require("pconfig.orgmode"),
 
