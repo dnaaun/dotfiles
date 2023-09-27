@@ -21,12 +21,14 @@ return {
 				w = {
 					function()
 						require("gitsigns").stage_hunk()
+						require("diffview").emit("refresh_files")
 					end,
 					"stage hunk",
 				},
 				u = {
 					function()
 						require("gitsigns").undo_stage_hunk()
+						require("diffview").emit("refresh_files")
 					end,
 					"undo stage hunk",
 				},
