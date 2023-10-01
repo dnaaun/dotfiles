@@ -35,5 +35,15 @@ return {
 				-- rust = true,
 			},
 		})
+
+    require("which-key").register({
+      ["<leader>t"] = {
+        name = "treesitter related (and table-mode also?)",
+        c = {
+          name = "Tresitter Context",
+          c = { "<cmd>TSContextToggle<cr>", "Toggle" },
+        },
+      },
+    })
 	end,
 }
