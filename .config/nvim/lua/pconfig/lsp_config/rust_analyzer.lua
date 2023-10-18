@@ -2,20 +2,20 @@
 return {
 	settings = {
 		["rust-analyzer"] = {
-			check = {
-				command = "check",
-				allTargets = true,
-				extraArgs = {
-					"--profile",
-					"rust-analyzer",
-				},
-			},
-      rustfmt = {
-				extraArgs = {
-					"--profile",
-					"rust-analyzer",
-				},
-			}
+			-- check = {
+			-- 	command = "check",
+			-- 	allTargets = true,
+			-- 	extraArgs = {
+			-- 		"--profile",
+			-- 		"rust-analyzer",
+			-- 	},
+			-- },
+      -- rustfmt = {
+				-- extraArgs = {
+					-- "--profile",
+					-- "rust-analyzer",
+				-- },
+			-- }
 		},
 	},
 }

@@ -83,7 +83,7 @@ search_path_filter = False
 # --style=0 means 'black and white', which I think means no theming
 # --rr=2 means rows reserved for special purposes is two.
 # pager = TERM=xterm-256color pspg --rr=2 --quit-if-one-screen --ignore-case --style=0 --force-uniborder --freezecols=0
-# pager = nvim -u ~/.config/nvim/pager.init.vim
+pager = nvim -u ~/.config/nvim/pager.init.vim
 
 # Timing of sql statments and table rendering.
 timing = True

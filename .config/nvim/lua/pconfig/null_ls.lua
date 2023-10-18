@@ -1,5 +1,5 @@
 return {
-	"jose-elias-alvarez/null-ls.nvim",
+	"nvimtools/none-ls.nvim",
 	event = { "InsertLeave", "CursorHold" },
 	dependencies = { "plenary.nvim" },
 	config = function()

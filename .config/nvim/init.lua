@@ -72,6 +72,7 @@ opt.grepprg = "rg -nH" -- Use ripgrep as a grep program
 -- Less verbose notifications (especailly now that I'm using nvim-notify/noice).
 opt.shortmess:append("s") -- don't give "search hit BOTTOM, continuing at TOP", etc, messages.
 opt.shortmess:append("W") -- don't give "written" or "[w]" when writing a file
+opt.shortmess:append("F") -- don't tell me about newly opened files
 
 g.mapleader = ","
 g.maplocalleader = ","

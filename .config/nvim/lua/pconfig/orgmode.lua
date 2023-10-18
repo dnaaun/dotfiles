@@ -10,7 +10,9 @@ return {
       },
 			org_default_notes_file = "~/Dropbox/notes/org/refile.org",
       mappings = {
-        prefix = "<leader>x" -- Cuz I want to use <leader>o for portal.nvim, to do something like, but not quite like, what `o` does.last 
+        prefix = "<leader>x", -- Cuz I want to use <leader>o for portal.nvim, to do something like, but not quite like, what `o` does.last 
+        -- ORG_EDIT_SPECIAL                                        *orgmode-org_edit_special*
+        org_edit_special = "<leader>xo"
       }
 		})
 	end,
