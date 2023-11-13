@@ -1,6 +1,7 @@
 return {
 	"folke/noice.nvim",
 	event = "VeryLazy",
+	enabled = not vim.g.started_by_firenvim,
 	config = function()
 		require("noice").setup({
 			messages = {

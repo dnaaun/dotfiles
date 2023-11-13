@@ -1,11 +1,9 @@
 return {
 	"akinsho/bufferline.nvim",
-  event = { "CursorHold" },
+	event = { "CursorHold" },
 	dependencies = { "nvim-tree/nvim-web-devicons" },
+	enabled = not vim.g.started_by_firenvim,
 	config = function()
-		if vim.g.started_by_firenvim then
-			return
-		end
 		require("bufferline").setup({})
 	end,
 }

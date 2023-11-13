@@ -1,3 +1,5 @@
+-- vim.g.firenvim_config.localSettings[".*"] = { takeover = "never" }
+
 -- I don't know why I disabled you, but I must have a pretty good reason.
 -- require('impatient') -- Speed up loading things. TOFIXLATER: This will probably (definitely?) break when impatient.nvim is not installed.
 
@@ -107,7 +109,6 @@ end
 g.tokyonight_style = "day"
 -- g.snazzybuddy_icons = true
 -- g.vscode_style = "light"
-
 
 ---- Add plugins ----
 -- require("plugins")
@@ -244,10 +245,10 @@ end
 -- the other files.
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
-  {
-  import = "plugins",
-  concurrency = 4
-},
+	{
+		import = "plugins",
+		concurrency = 4,
+	},
 })
 
 local wk = require("which-key")
@@ -284,9 +285,9 @@ wk.register({
 		function()
 			vim.cmd("nohlsearch")
 			vim.lsp.util.buf_clear_references(0)
-      if pcall(require, "noice") then
-        require("noice").cmd("dismiss")
-      end
+			if pcall(require, "noice") then
+				require("noice").cmd("dismiss")
+			end
 		end,
 		"clear both vim search and LSP reference highlights",
 	},

@@ -1,10 +1,15 @@
 return {
+  -- ChatGPT/GPT-4 plugin.
+  require("pconfig.gp"),
+
+  require("pconfig.fire"),
+	
 	require("pconfig.tmux"),
 
 	-- (Fuzzy) search everything!
 	require("pconfig.telescope"),
 	require("pconfig.telescope_file_browser"),
-  { "Marskey/telescope-sg" },
+	{ "Marskey/telescope-sg" },
 	require("pconfig.dirbuf"),
 
 	require("pconfig.which_key"), -- show candidate mappings after pressing a key
@@ -48,14 +53,14 @@ return {
 	{ "hrsh7th/cmp-nvim-lsp", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	{ "rcarriga/cmp-dap", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	{ "saadparwaiz1/cmp_luasnip", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
-  require("pconfig.cmp_git"),
+	require("pconfig.cmp_git"),
 	-- Colors and other niceties
 	require("pconfig.zen_mode"),
 
 	require("pconfig.luasnip"),
 
 	-- I'm using this mostly to filter out error messages
-	require("pconfig.noice"),
+	-- require("pconfig.noice"),
 
 	-- Get a url to the git host, for a range or a line in the current file.
 	require("pconfig.gitlinker"),
@@ -66,7 +71,7 @@ return {
 	-- I use it for: jump to a locaiton in the jumplist that is in a different
 	-- buffer than the one I have now.
 	-- require("pconfig.portal"),
-  require("pconfig.bufjump"),
+	require("pconfig.bufjump"),
 
 	-- should help with file navigation a lot
 	require("pconfig.harpoon"),
@@ -109,8 +114,11 @@ return {
 
 	-- The package, the pyth, the pegend.
 	require("pconfig.treesitter"),
+
 	-- Text objects based on syntax trees!!
-	{ "nvim-treesitter/nvim-treesitter-textobjects", event = require("pconfig.treesitter").event },
+  -- DISABLED: cuz it's causing when editing Rust files, and files have to be "force saved"
+	-- { "nvim-treesitter/nvim-treesitter-textobjects", event = require("pconfig.treesitter").event },
+ 
 	-- I use it for treesitter-based,"virtual-text hinting", jumping/movement.
 	require("pconfig.syntax_tree_surfer"),
 	--		-- Treesitter-based, "virtual-text hinting", text objects. Mind blown emoji. Seriously. Just makes too much sense.
@@ -126,7 +134,7 @@ return {
 	require("pconfig.trouble"),
 
 	-- highlight brackets and things like that in differnet colors
-  -- I don't think I've ever paid aattention to the colors of brackets ever.
+	-- I don't think I've ever paid aattention to the colors of brackets ever.
 	-- {
 	-- 	"p00f/nvim-ts-rainbow",
 	-- 	dependencies = "nvim-treesitter/nvim-treesitter",
@@ -202,21 +210,21 @@ return {
 	-- Ya boy is going to start writing plugins at this rate!
 	require("pconfig.playground"),
 
-  -- Something I've personally wanted for a long time, hope they managed to make it work really well.
-  require("pconfig.devdocs"),
+	-- Something I've personally wanted for a long time, hope they managed to make it work really well.
+	require("pconfig.devdocs"),
 
-  -- Supposed to be a "stirpped down VimWiki". Let's see if it is indeed.
-  -- UPDATE: Haven't used kiwi ever, so abandoning. I'm settling into orgmode anways.
-  -- require("pconfig.kiwi"),
-  -- Here we go again. I really do want to give orgmode another try, since I keep on re-inventing it in my head again and again.
-  require("pconfig.orgmode"),
+	-- Supposed to be a "stirpped down VimWiki". Let's see if it is indeed.
+	-- UPDATE: Haven't used kiwi ever, so abandoning. I'm settling into orgmode anways.
+	-- require("pconfig.kiwi"),
+	-- Here we go again. I really do want to give orgmode another try, since I keep on re-inventing it in my head again and again.
+	require("pconfig.orgmode"),
 
-  -- Sourcegraph stuff from TJ
-  require("pconfig.sg"),
+	-- Sourcegraph stuff from TJ
+	require("pconfig.sg"),
 
-  -- Make it easier to runc arog commands from neovim. Maybe git too, who knows.
-  require("pconfig.overseer"),
+	-- Make it easier to runc arog commands from neovim. Maybe git too, who knows.
+	require("pconfig.overseer"),
 
-  -- Highlight occurences of current word
-  require("pconfig.mini_cursorword")
+	-- Highlight occurences of current word
+	require("pconfig.mini_cursorword"),
 }
