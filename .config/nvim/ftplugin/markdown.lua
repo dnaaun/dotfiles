@@ -32,3 +32,5 @@ vim.keymap.set("i", "<C-a>", function()
 		vim.o.timeoutlen = original_timeoutlen
 	end
 end, { buffer = true })
+
+vim.keymap.set("n", "<CR>", ":<C-u>GpChatRespond<CR>", { buffer = true, desc = "send to GPT (gp.nvim)" })

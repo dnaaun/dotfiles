@@ -154,6 +154,12 @@ return {
 		local incremental_selection = {
 			enable = true,
 			disable = function(_, buf)
+        -- Disable for markdown files because I want to use <CR> in my GPT plugin for
+        -- "send", and incremental selection interferes with that.
+        if vim.bo[buf].filetype == "markdown" then
+          return true
+        end
+ 
 				-- Otherwise, it interferes with "command-line window"
 				if vim.fn.getbufvar(buf, "&buftype") == "nofile" then
 					return true
