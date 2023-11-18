@@ -37,11 +37,13 @@ return {
 \usepackage{geometry}
 \usepackage{paracol}
 \geometry{a4paper,left=0.2in,top=0.2in,right=0.2in,bottom=0.3in}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=0.2em, labelsep=0.2em, nolistsep}
 \begin{document}
-\columnratio{0.6}
+\columnratio{0.25}
 \begin{sloppypar}
-  \begin{paracol}{2}
-    \begin{rightcolumn}
+	\begin{paracol}{2}
+		\begin{rightcolumn}
       ]]) .. "{}" .. escape_curly_braces([[
 
     \end{rightcolumn}
@@ -49,6 +51,42 @@ return {
 \end{sloppypar}
 \end{document}
       ]]), {
+			i(1, ""),
+		})
+	),
+
+	s(
+		{ trig = "tn", descr = "take notes (on the left side)" },
+		fmt(escape_curly_braces([[
+\end{rightcolumn}
+\begin{leftcolumn*}
+	\footnotesize
+	\begin{itemize}
+    \item ]]) .. [[{}
+]] .. escape_curly_braces([[
+  \end{itemize}
+\end{leftcolumn*}
+\begin{rightcolumn}
+  ]]), {
+			i(1, ""),
+		})
+	),
+
+	s(
+		{ trig = "bl", descr = "begin list" },
+		fmt(escape_curly_braces([[
+	\begin{itemize}
+    \item ]]) .. [[{}
+]] .. escape_curly_braces([[
+  \end{itemize}
+]]), {
+			i(1, ""),
+		})
+	),
+
+	s(
+		{ trig = "l", descr = "list item" },
+		fmt("\\item {}", {
 			i(1, ""),
 		})
 	),
