@@ -33,7 +33,7 @@ return {
 
 	require("pconfig.lsp_config"),
 	require("pconfig.lsp_extensions"),
-	-- require("pconfig.rust_tools"),
+	require("pconfig.rust_tools"),
 	-- require("pconfig.lsp_inlayhints"),
 
 	-- cmp-related, might be useful when using neovim in pager mode.
