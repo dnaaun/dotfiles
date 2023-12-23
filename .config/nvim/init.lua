@@ -79,6 +79,11 @@ opt.shortmess:append("F") -- don't tell me about newly opened files
 g.mapleader = ","
 g.maplocalleader = ","
 
+-- Move line up / down
+nvim_set_keymap("n", "<up>", ":m .-2<CR>", { noremap = true, silent = true })
+nvim_set_keymap("n", "<down>", ":m .+1<CR>", { noremap = true, silent = true })
+
+
 -- WHen in visual/select/operator mode, I want searching with / to be an inclusive
 -- motion. This is acheived by doing /pattern/e, but I don't wanna have to type
 -- that /e everytime so:

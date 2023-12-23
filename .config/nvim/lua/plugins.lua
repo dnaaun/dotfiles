@@ -218,6 +218,9 @@ return {
 	-- require("pconfig.kiwi"),
 	-- Here we go again. I really do want to give orgmode another try, since I keep on re-inventing it in my head again and again.
 	require("pconfig.orgmode"),
+  -- Run snippets of code in markdown/orgmode
+  require("pconfig.sniprun"),
+  require("pconfig.telescope_orgmode"),
 
 	-- Sourcegraph stuff from TJ
 	require("pconfig.sg"),

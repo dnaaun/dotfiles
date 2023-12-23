@@ -181,6 +181,29 @@ local map_telescope_bindings = function()
 
 					name = "look through dot files",
 				},
+				x = {
+					a = {
+						function()
+							local search_dirs = { vim.fn.expand("~/") .. "Dropbox/notes/org" }
+							require("telescope.builtin").live_grep({
+								search_dirs = search_dirs,
+								additional_args = function()
+									return { "--hidden" }
+								end,
+							})
+						end,
+						"grep through org files",
+					},
+					s = {
+						function()
+							local search_dirs = { vim.fn.expand("~/") .. "Dropbox/notes/org" }
+							require("telescope.builtin").fd({ hidden = true, search_dirs = search_dirs })
+						end,
+						"find dotfiles",
+					},
+
+					name = "look through org files",
+				},
 
 				s = {
 					function()

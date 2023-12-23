@@ -5,6 +5,7 @@ return {
 		require("orgmode").setup_ts_grammar()
 		require("orgmode").setup({
 			org_agenda_files = { "~/Dropbox/notes/org/**/*" },
+      org_start_folded = "showeverything",
       org_todo_keywords = { 
         "TODO", "|", "DONE", "NOT_DONE"
       },

@@ -34,7 +34,7 @@ return {
 			-- additional_vim_regex_highlighting = { "org" }, -- Required since TS highlighter doesn't support all syntax features (conceal)
 		}
 		local indent = {
-			enable = true,
+			enable = false,
 		}
 		-- requires https://github.com/nvim-treesitter/nvim-treesitter-refactor
 		local refactor = {
