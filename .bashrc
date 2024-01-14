@@ -145,48 +145,6 @@ export PYTHONBREAKPOINT=ipdb.set_trace
 #     fi
 # }
 
-alias python=python3
-alias python2=python
-
-auto_change_venv() {
-  # Check all parents from $PWD until /
-  parent="$PWD"
-  found_venv=0
-  while  ((${#parent} > 1 )); do
-    if [ -d "$parent/.venv" ]; then
-      found_venv=1
-      break
-    fi
-    parent=${parent%/*} # (shortest match) parameter subsiution ${param%word}
-  done
-
-  if [[  ! -z "$VIRTUAL_ENV" && ("$(which python)" != "$parent/.venv/bin/python") ]];  then
-    # TODO: If checking whether 'deactivate' is actually 
-    # valid right now would be better (possibly), we should do it.
-    deactivate  > /dev/null 2>&1
-  fi
-
-  if [ $found_venv = 0 ]; then
-    return
-  fi
-  
-  # shellcheck disable=SC1090
-  source "$parent/.venv/bin/activate";
-}
-
-function cd() {
-  builtin cd "$@";
-  auto_change_venv
-}
-
-# Call it on shell load
-auto_change_venv
-
-# TODO: Not needed/called since we're on a starship now.
-# __prompt_command() {
-#   set_ps1 # This needs to be first to change color based on return value
-#   auto_change_venv
-# }
 
 export EDITOR=nvim
 
@@ -348,8 +306,9 @@ alias be='bundle exec'
 #   fi
 # fi
 
-eval "$(starship init bash)"
-
+# The below is too slow.
+# eval "$(starship init bash)"
+PS1='\W\$ '
 
 # To get autocomplete to work for `exa`, `_filedir` had to be defined, which  necessitated one/both of
 # `mbrew uninstall bash-completion && mbrew install bash-completion@2` and
@@ -445,3 +404,39 @@ bind -x '"\C-x\C-m": append_my_command'
 
 # Set vi mode
 set -o vi
+
+alias python=python3
+alias python2=python
+
+auto_change_venv() {
+  # Check all parents from $PWD until /
+  parent="$PWD"
+  found_venv=0
+  while  ((${#parent} > 1 )); do
+    if [ -d "$parent/.venv" ]; then
+      found_venv=1
+      break
+    fi
+    parent=${parent%/*} # (shortest match) parameter subsiution ${param%word}
+  done
+
+  if [[  ! -z "$VIRTUAL_ENV" && ("$(which python)" != "$parent/.venv/bin/python") ]];  then
+    # TODO: If checking whether 'deactivate' is actually 
+    # valid right now would be better (possibly), we should do it.
+    deactivate  > /dev/null 2>&1
+  fi
+
+  if [ $found_venv = 0 ]; then
+    return
+  fi
+  
+  # shellcheck disable=SC1090
+  source "$parent/.venv/bin/activate";
+}
+
+function cd() {
+  builtin cd "$@";
+  auto_change_venv
+}
+
+auto_change_venv
