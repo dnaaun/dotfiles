@@ -125,7 +125,7 @@ return {
 
 			require("lsp_occurence").on_attach(client, bufnr)
 
-			for _, plugin_custom_attach in pairs(_G.lsp_config_on_attach_callbacks) do
+			for _, plugin_custom_attach in pairs(_G.lsp_config_on_attach_callbacks or {}) do
 				plugin_custom_attach(client)
 			end
 
