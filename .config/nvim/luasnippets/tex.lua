@@ -58,15 +58,15 @@ return {
 	s(
 		{ trig = "tn", descr = "take notes (on the left side)" },
 		fmt(escape_curly_braces([[
-\end{rightcolumn}
-\begin{leftcolumn*}
+\end{nthcolumn}
+\begin{nthcolumn*}{1}
 	\footnotesize
 	\begin{itemize}
     \item ]]) .. [[{}
 ]] .. escape_curly_braces([[
   \end{itemize}
-\end{leftcolumn*}
-\begin{rightcolumn}
+\end{nthcolumn*}
+\begin{nthcolumn}{2}
   ]]), {
 			i(1, ""),
 		})
