@@ -121,31 +121,6 @@ export PYTHONBREAKPOINT=ipdb.set_trace
 # disable the default virtualenv prompt change
 # export VIRTUAL_ENV_DISABLE_PROMPT=1 
 
-# # Color prompt according to exit code: https://stackoverflow.com/a/16715681
-# PROMPT_COMMAND=__prompt_command # Func to gen PS1 after CMDs
-
-# set_ps1() {
-#     local EXIT="$?"             # This needs to be first
-     
-#     # Green color code
-#     local Gre='\[\e[0;32m\]'
-
-#     VENV="\$(virtualenv_info)"; 
-#     PS1="${Gre}$VENV\u@\h:"
-
-#     local RCol='\[\e[0m\]'
-
-#     local Red='\[\e[0;31m\]'
-#     local BBlu='\[\e[1;34m\]'
-
-#     if [ $EXIT != 0 ]; then
-#         PS1+="${Red}\w\$ ${RCol}"      # Add red if exit code non 0
-#     else
-#         PS1+="${BBlu}\w\$ ${RCol}"
-#     fi
-# }
-
-
 export EDITOR=nvim
 
 # Define a shortcut to copy to clipboard
@@ -306,9 +281,18 @@ alias be='bundle exec'
 #   fi
 # fi
 
-# The below is too slow.
-# eval "$(starship init bash)"
-PS1='\W\$ '
+set_prompt() {
+    # Change the color of $ based on the exit status of the last command
+    if [[ $? == 0 ]]; then
+      end_of_prompt='\[\e[32m\]$\[\e[0m\]' # Green
+    else
+      end_of_prompt='\[\e[31m\]$\[\e[0m\]' # Red
+    fi
+    PS1="\W${end_of_prompt} "
+}
+
+PROMPT_COMMAND=set_prompt
+
 
 # To get autocomplete to work for `exa`, `_filedir` had to be defined, which  necessitated one/both of
 # `mbrew uninstall bash-completion && mbrew install bash-completion@2` and
