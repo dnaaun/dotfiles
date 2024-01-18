@@ -424,3 +424,10 @@ function cd() {
 }
 
 auto_change_venv
+
+
+# ==== BEGIN: Nice little things ====
+cur_commit_hash() {
+  git rev-parse HEAD
+}
+# ==== END: Nice little things ====
