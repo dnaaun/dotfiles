@@ -8,12 +8,11 @@ return {
 	},
 	ft = { "ruby", "typescript", "tsx", "ruby", "rust" },
 	keys = {
-		"<leader>t",
-		"<leader>tt",
-		"<leader>tf",
-		"<leader>ta",
-		"<leader>to",
-		"<leader>tl",
+		"tt",
+		"tf",
+		"ta",
+		"to",
+		"tl",
 	},
 	config = function()
 		require("neotest").setup({

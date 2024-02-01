@@ -1,6 +1,8 @@
 local o = vim.opt
 local g = vim.g
 
+o.textwidth = 0
+
 -- Text iwidth
 o.tw = 88
 

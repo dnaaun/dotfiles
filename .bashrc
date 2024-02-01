@@ -281,6 +281,7 @@ alias be='bundle exec'
 #   fi
 # fi
 
+# ======== BEGIN: PROMPT ===========
 set_prompt() {
     # Change the color of $ based on the exit status of the last command
     if [[ $? == 0 ]]; then
@@ -288,11 +289,16 @@ set_prompt() {
     else
       end_of_prompt='\[\e[31m\]$\[\e[0m\]' # Red
     fi
-    PS1="\W${end_of_prompt} "
+
+    # Get the last few chars of the current git branch, if we're in a git repo
+    # https://stackoverflow.com/a/32626660
+    git_branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null | tail -c 10)
+
+    PS1="${git_branch} \W${end_of_prompt} "
 }
 
 PROMPT_COMMAND=set_prompt
-
+# ======== END: PROMPT ===========
 
 # To get autocomplete to work for `exa`, `_filedir` had to be defined, which  necessitated one/both of
 # `mbrew uninstall bash-completion && mbrew install bash-completion@2` and
