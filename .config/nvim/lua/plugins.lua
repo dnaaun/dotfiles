@@ -230,4 +230,7 @@ return {
 
 	-- Highlight occurences of current word
 	require("pconfig.mini_cursorword"),
+
+  -- Code outline
+  require("pconfig.aerial"),
 }

@@ -1,26 +1,44 @@
 return {
 	"ziontee113/syntax-tree-surfer",
-	keys = { "<leader>gj" },
 	config = function()
-		opts = { desc = "syntax tree surfer" }
-		local sts = require("syntax-tree-surfer")
-		--vim.keymap.set("n", "gfu", function() -- only jump to functions
-		--	sts.targeted_jump({ "function", "function_definition" })
-		--	--> In this example, the Lua language schema uses "function",
-		--	--  when the Python language uses "function_definition"
-		--	--  we include both, so this keymap will work on both languages
-		--end, opts)
+		require("syntax-tree-surfer")
 
-		vim.keymap.set("n", "<leader>gj", function() -- jump to all that you specify
-			sts.targeted_jump({
-				"if_statement",
-				"else_clause",
-				"else_statement",
-				"elseif_statement",
-				"for_statement",
-				"while_statement",
-				"switch_statement",
-			})
-		end, opts)
+		-- Syntax Tree Surfer
+		local opts = { noremap = true, silent = true }
+
+		-- Normal Mode Swapping:
+		-- Swap The Master Node relative to the cursor with it's siblings, Dot Repeatable
+		vim.keymap.set("n", "vK", function()
+			vim.opt.opfunc = "v:lua.STSSwapUpNormal_Dot"
+			return "g@l"
+		end, { silent = true, expr = true, desc = "STS Swap Master Up" })
+		vim.keymap.set("n", "vJ", function()
+			vim.opt.opfunc = "v:lua.STSSwapDownNormal_Dot"
+			return "g@l"
+		end, { silent = true, expr = true, desc = "STS Swap Master Down" })
+
+		-- Swap Current Node at the Cursor with it's siblings, Dot Repeatable
+		vim.keymap.set("n", "vj", function()
+			vim.opt.opfunc = "v:lua.STSSwapCurrentNodeNextNormal_Dot"
+			return "g@l"
+		end, { silent = true, expr = true, desc = "STS Swap Current Next" })
+		vim.keymap.set("n", "vk", function()
+			vim.opt.opfunc = "v:lua.STSSwapCurrentNodePrevNormal_Dot"
+			return "g@l"
+		end, { silent = true, expr = true, desc = "STS Swap Current Prev" })
+
+		-- Visual Selection from Normal Mode
+		vim.keymap.set("n", "vx", "<cmd>STSSelectMasterNode<cr>", opts)
+		vim.keymap.set("n", "vn", "<cmd>STSSelectCurrentNode<cr>", opts)
+
+		-- Select Nodes in Visual Mode
+		vim.keymap.set("x", "J", "<cmd>STSSelectNextSiblingNode<cr>", opts)
+		vim.keymap.set("x", "K", "<cmd>STSSelectPrevSiblingNode<cr>", opts)
+		vim.keymap.set("x", "H", "<cmd>STSSelectParentNode<cr>", opts)
+		vim.keymap.set("x", "L", "<cmd>STSSelectChildNode<cr>", opts)
+
+		-- Swapping Nodes in Visual Mode
+		vim.keymap.set("x", "vj", "<cmd>STSSwapNextVisual<cr>", opts)
+		vim.keymap.set("x", "vk", "<cmd>STSSwapPrevVisual<cr>", opts)
 	end,
 }
