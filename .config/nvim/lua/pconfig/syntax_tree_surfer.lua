@@ -8,21 +8,21 @@ return {
 
 		-- Normal Mode Swapping:
 		-- Swap The Master Node relative to the cursor with it's siblings, Dot Repeatable
-		vim.keymap.set("n", "vK", function()
+		vim.keymap.set("n", "vD", function()
 			vim.opt.opfunc = "v:lua.STSSwapUpNormal_Dot"
 			return "g@l"
 		end, { silent = true, expr = true, desc = "STS Swap Master Up" })
-		vim.keymap.set("n", "vJ", function()
+		vim.keymap.set("n", "vU", function()
 			vim.opt.opfunc = "v:lua.STSSwapDownNormal_Dot"
 			return "g@l"
 		end, { silent = true, expr = true, desc = "STS Swap Master Down" })
 
 		-- Swap Current Node at the Cursor with it's siblings, Dot Repeatable
-		vim.keymap.set("n", "vj", function()
+		vim.keymap.set("n", "vd", function()
 			vim.opt.opfunc = "v:lua.STSSwapCurrentNodeNextNormal_Dot"
 			return "g@l"
 		end, { silent = true, expr = true, desc = "STS Swap Current Next" })
-		vim.keymap.set("n", "vk", function()
+		vim.keymap.set("n", "vu", function()
 			vim.opt.opfunc = "v:lua.STSSwapCurrentNodePrevNormal_Dot"
 			return "g@l"
 		end, { silent = true, expr = true, desc = "STS Swap Current Prev" })
