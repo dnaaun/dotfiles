@@ -19,7 +19,7 @@ return {
 			adapters = {
 				require("neotest-rust"),
 				require("neotest-rspec")({}),
-        require('neotest-jest')({}),
+				require("neotest-jest")({}),
 			},
 			icons = {
 				child_indent = "│",
@@ -50,6 +50,7 @@ return {
 
 		local neotest = require("neotest")
 		local run = neotest.run
+		local jump = neotest.jump
 		local wk = require("which-key")
 		wk.register({
 			["t"] = {
@@ -59,6 +60,10 @@ return {
 				a = { run.attach, "attach to nearest test" },
 				o = { neotest.output.open, "open test output" },
 				l = { run.run_last, "run last test" },
+
+				-- idea is to go similar to up and down
+				j = { jump.next({ status = "failed" }), "jump to next failed" },
+				k = { jump.prev({ status = "failed" }), "jump to prev failed" },
 			},
 		})
 	end,
