@@ -1,4 +1,11 @@
 return {
+	require("pconfig.which_key"), -- show candidate mappings after pressing a key
+
+	-- use("Mofiqul/vscode.nvim")
+	-- use("folke/tokyonight.nvim")
+	{ "EdenEast/nightfox.nvim", event = "VeryLazy" },
+	require("pconfig.surround"),
+
   -- ChatGPT/GPT-4 plugin.
   require("pconfig.gp"),
 
@@ -10,9 +17,15 @@ return {
 	require("pconfig.telescope"),
 	require("pconfig.telescope_file_browser"),
 	{ "Marskey/telescope-sg" },
-	require("pconfig.dirbuf"),
+	-- -- Uses a C extension with fzf's algorithim for telescope,
+	-- -- but it causes issues with architecutres not matching up when
+	-- -- I switch from arm64 nvim to x86_64 nvim (which happens when
+	-- -- I switch from, say homebrew neovim to compiled-from-source-neovim,
+	-- -- which happens say, when there's a bug with the nightly version)
+	-- -- So for now, we're disabling.
+	require("pconfig.telescope_fzf_native"),
 
-	require("pconfig.which_key"), -- show candidate mappings after pressing a key
+	require("pconfig.dirbuf"),
 
 	-- Git and Github
 	-- Look at lines added/modified/taken away, all at a glance.
@@ -101,16 +114,10 @@ return {
 	-- Turn good ol' linters and formatters to an LSP.
 	require("pconfig.null_ls"),
 
-	-- use("Mofiqul/vscode.nvim")
-	-- use("folke/tokyonight.nvim")
-	{ "EdenEast/nightfox.nvim", event = "VeryLazy" },
-
 	-- vim-matchup
 	require("pconfig.matchup"),
 	-- vim-matchup slows me down, and I *think* this might help solve the issue.
 	"antoinemadec/FixCursorHold.nvim",
-
-	require("pconfig.surround"),
 
 	-- The package, the pyth, the pegend.
 	require("pconfig.treesitter"),
@@ -190,14 +197,6 @@ return {
 
 	--		-- Indicate LSP progress
 	require("pconfig.fidget"),
-
-	-- Uses a C extension with fzf's algorithim for telescope,
-	-- but it causes issues with architecutres not matching up when
-	-- I switch from arm64 nvim to x86_64 nvim (which happens when
-	-- I switch from, say homebrew neovim to compiled-from-source-neovim,
-	-- which happens say, when there's a bug with the nightly version)
-	-- So for now, we're disabling.
-	require("pconfig.telescope_fzf_native"),
 
 	-- Hopefully this one solves some point points with nvim-orgmode (like bullets not
 	-- working properly)
