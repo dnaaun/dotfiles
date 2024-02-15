@@ -25,7 +25,8 @@ return {
 		-- I don't know why I need to do this, despite setting .keys, .event, and .module for telescope-fzf-native.nvim's lazy.nvim config identically to telescope.nvim's config.
 		telescope.load_extension("fzf")
 
-    telescope.load_extension('orgmode')
+    -- I think this is out of date with ormgmode.nvim
+    -- telescope.load_extension('orgmode')
 
 
 		telescope.setup({

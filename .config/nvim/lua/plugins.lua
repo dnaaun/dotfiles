@@ -25,6 +25,9 @@ return {
 	-- -- So for now, we're disabling.
 	require("pconfig.telescope_fzf_native"),
 
+  -- I think this is out of date with ormgmode.nvim
+  -- require("pconfig.telescope_orgmode"),
+
 	require("pconfig.dirbuf"),
 
 	-- Git and Github
@@ -219,7 +222,6 @@ return {
 	require("pconfig.orgmode"),
   -- Run snippets of code in markdown/orgmode
   require("pconfig.sniprun"),
-  require("pconfig.telescope_orgmode"),
 
 	-- Sourcegraph stuff from TJ
 	require("pconfig.sg"),

@@ -6,7 +6,6 @@ return {
 		"antoinemadec/FixCursorHold.nvim",
 		"olimorris/neotest-rspec",
 	},
-	ft = { "ruby", "typescript", "tsx", "ruby", "rust" },
 	keys = {
 		"tt",
 		"tf",
