@@ -186,7 +186,7 @@ return {
 	{ "tpope/vim-dispatch", opt = true, cmd = { "Dispatch", "Make", "Focus", "Start" } },
 
 	--		-- An amazing testing plugin. Really showcases the possiblities of treesitter.
-	require("pconfig.neotest"),
+	-- require("pconfig.neotest"), -- freezes vim on startup
 	{ "haydenmeade/neotest-jest", event = "VeryLazy", ft = require("consts").javascripty_filetypes },
 	{ "olimorris/neotest-rspec", ft = "ruby" },
 	{ "rouge8/neotest-rust", ft = "rust" },
