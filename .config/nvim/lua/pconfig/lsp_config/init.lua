@@ -172,7 +172,7 @@ return {
 			"html",
 			"sorbet",
 			"cssls",
-			"marksman",
+			-- "marksman",
 			"yamlls",
 			"ast_grep",
 		}) do

@@ -19,7 +19,7 @@ set $alt Mod1
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-font pango:DejaVu Sans Mono Bold 8
+font pango:Ubuntu Mono Bold 7
 
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -32,15 +32,15 @@ font pango:DejaVu Sans Mono Bold 8
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec alacritty
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start rofi (a launcher) with ssh and app options
 # bindsym $mod+d exec --no-startup-id rofi -modi combi -show combi -combi-modi "drun#ssh" -run-shell-command '{cmd}'
-bindsym $mod+d exec --no-startup-id dmenu_run
-bindsym $mod+Shift+d exec --no-startup-id rofi -show drun -run-shell-command '{cmd}'
+# bindsym $mod+d exec --no-startup-id dmenu_run
+bindsym $mod+d exec --no-startup-id rofi -show drun -run-shell-command '{cmd}'
 bindsym $mod+p exec rofi-rbw
 
 # Start custom script in dotfiles/bin/ to find files
@@ -154,16 +154,18 @@ bindsym $mod+r mode "resize"
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-   status_command SCRIPT_DIR=$HOME/git/dotfiles/submodules/i3blocks-contrib/ i3blocks
-   colors {
-     separator #888886
-     background #333331
-     statusline #FFFFFF
-     focused_workspace #2E9C00 #4E9C00 #FFFFFF #fdf6e3
-     active_workspace #333331 #333333 #FFFFFF #fdf6e3
-     inactive_workspace #333331 #333333 #888888 #002b36
-     urgent_workspace #C19998 #C20000 #FFFFFF #fdf6e3
-   }
+    font pango:Ubuntu Mono 7
+    position bottom
+    status_command ~/.cargo/bin/i3status-rs ~/.config/i3status-rust/config.toml
+    colors {
+        separator #666666
+        background #222222
+        statusline #dddddd
+        focused_workspace #0088CC #0088CC #ffffff
+        active_workspace #333333 #333333 #ffffff
+        inactive_workspace #333333 #333333 #888888
+        urgent_workspace #2f343a #900000 #ffffff
+    }
 }
 
 # Keyboard control
