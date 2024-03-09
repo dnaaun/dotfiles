@@ -234,4 +234,6 @@ return {
 
   -- Code outline
   require("pconfig.aerial"),
+
+  { "catppuccin/nvim", name = "catppuccin", priority = 1000 }
 }

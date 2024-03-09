@@ -1,0 +1,26 @@
+import = [
+  # uncomment the flavour you want below:
+  "~/.config/alacritty/catppuccin-latte.toml"
+  # "~/.config/alacritty/catppuccin-frappe.toml"
+  # "~/.config/alacritty/catppuccin-macchiato.toml"
+  # "~/.config/alacritty/catppuccin-mocha.toml"
+]
+
+[env]
+TERM = "xterm-256color"
+
+[font]
+size = 5
+
+[font.normal]
+family = "Ubuntu Mono"
+
+[font.offset]
+x = 0
+y = 2
+
+[selection]
+save_to_clipboard = true
+
+[window]
+decorations = "none"

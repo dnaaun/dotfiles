@@ -32,7 +32,7 @@ settings:
         wi: devtools bottom
         yf: hint all yank
   colors.webpage.darkmode.enabled:
-    global: true
+    global: false
   completion.open_categories:
     global:
     - searchengines

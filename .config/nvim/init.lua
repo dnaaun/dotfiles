@@ -300,4 +300,5 @@ wk.register({
 
 -- vim.cmd("colorscheme tokyonight-day")
 -- vim.cmd("colorscheme github_dark")
-vim.cmd("colorscheme nightfox")
+-- vim.cmd("colorscheme nightfox")
+vim.cmd("colorscheme catppuccin-latte")
