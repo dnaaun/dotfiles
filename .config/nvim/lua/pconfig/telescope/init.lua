@@ -32,12 +32,17 @@ return {
 		telescope.setup({
 			defaults = {
 				layout_strategy = "vertical",
+        mappings = { i = { ["<esc>"] = false }, }
 			},
 			pickers = {
+				find_files = { mappings = { i = { ["<esc>"] = false }, }, },
+				grep_string = { mappings = { i = { ["<esc>"] = false }, }, },
+				live_grep = { mappings = { i = { ["<esc>"] = false }, }, },
 				buffers = {
 					mappings = {
 						i = {
 							["<c-d>"] = "delete_buffer",
+              ["<esc>"] = false
 						},
 						n = {
 							["<c-d>"] = "delete_buffer",
