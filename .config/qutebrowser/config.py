@@ -23,4 +23,4 @@ if not os.path.exists(config.configdir / "theme.py"):
 
 if os.path.exists(config.configdir / "theme.py"):
     import theme
-    theme.setup(c, 'latte', True)
+    theme.setup(c, 'mocha', True)
