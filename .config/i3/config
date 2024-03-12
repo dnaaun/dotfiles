@@ -237,7 +237,7 @@ exec --no-startup-id python -m setupdotfiles -b -d
 # Start xscreensaver
 exec --no-startup-id xscreensaver
 # Start Window compositor that allows dimming innactive windows by 5%
-exec --no-startup-id picom  --inactive-dim 0.1 &
+exec --no-startup-id picom --config ~/.config/picom/picom.conf
 # Map caps lock to both ctrl and escape
 exec setxkbmap -option ctrl:nocaps
 exec xcape -e 'Control_L=Escape'
