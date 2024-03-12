@@ -59,8 +59,9 @@ shopt -s lithist
 # fi
 
 
-source /opt/homebrew/etc/bash_completion.d/git-prompt.sh
-source /opt/homebrew/etc/bash_completion.d/git-completion.bash
+# Doens't look like I'll need this on linux.
+# source /opt/homebrew/etc/bash_completion.d/git-prompt.sh
+# source /opt/homebrew/etc/bash_completion.d/git-completion.bash
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -202,15 +203,7 @@ fi
 #   tm
 # fi
 
-# Doing --path instead of - will break some commmands (pyenv shell).  https://github.com/pyenv/pyenv/issues/1906#issuecomment-835027647
-# But aint nobody got time to fix something they don't use.
-
-# This section must come below the sourcing of /etc/bash/completion
-# above
-export FZF_DEFAULT_COMMAND="$FDCMD --type f --hidden"
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-# Fzf completion when typing in ** doesn't use $FZF_DEFAULT_COMMAND. The below
-# is necessary.
+# The below is necessary, because I want to include hidden files by default.
 _fzf_compgen_path() {
   command $FDCMD . --hidden "$1" 2>/dev/null
 }
@@ -437,3 +430,17 @@ cur_commit_hash() {
   git rev-parse HEAD
 }
 # ==== END: Nice little things ====
+
+"$HOME/.cargo/env"
+
+
+
+# fnm
+export PATH="/home/davidat/.local/share/fnm:/home/davidat/.yarn/bin:$PATH"
+eval "`fnm env`"
+eval "$(fnm env --use-on-cd)"
+
+most_recent_mp3_as_tex() {
+  fdfind  '.*(mp3|MP3)$' ~/Downloads/ | xargs -d\\n ls -ct | head -1 | sed 's/\.[^.]*$/.tex/'  |sed -E 's/^.*\/(.*)$/\1/' | sed 's/\s/_/g'
+}
+alias be="bundle exec"
