@@ -203,6 +203,8 @@ fi
 #   tm
 # fi
 
+FZF_CTRL_T_COMMAND='$FDCMD . --hidden 2>/dev/null'
+
 # The below is necessary, because I want to include hidden files by default.
 _fzf_compgen_path() {
   command $FDCMD . --hidden "$1" 2>/dev/null
@@ -437,8 +439,11 @@ cur_commit_hash() {
 
 # fnm
 export PATH="/home/davidat/.local/share/fnm:/home/davidat/.yarn/bin:$PATH"
-eval "`fnm env`"
-eval "$(fnm env --use-on-cd)"
+ eval `fnm env`
+
+#  This causes errors right now when cd-ing into a directory with a .nvmrc
+#  file.
+# eval "$(fnm env --use-on-cd)"
 
 most_recent_mp3_as_tex() {
   fdfind  '.*(mp3|MP3)$' ~/Downloads/ | xargs -d\\n ls -ct | head -1 | sed 's/\.[^.]*$/.tex/'  |sed -E 's/^.*\/(.*)$/\1/' | sed 's/\s/_/g'
