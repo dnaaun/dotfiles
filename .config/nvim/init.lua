@@ -105,7 +105,7 @@ opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 if vim.loop.os_uname().sysname == "Darwin" then
 	g.python3_host_prog = "/usr/local/bin/python3"
 else
-	print("Umm, not sure what platform(MacOS/linux) I'm on, so won't guess the location of the python binary.")
+	-- print("Umm, not sure what platform(MacOS/linux) I'm on, so won't guess the location of the python binary.")
 end
 
 -- This section must come before loading nvim-dap for it not to mess up
@@ -229,6 +229,7 @@ au("TextYankPost", {
 vim.keymap.set("n", "<leader>w", function()
 	vim.fn.execute("silent write")
 end, { noremap = true, desc = "<CR>silent write" })
+
 
 --- Bootsrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
