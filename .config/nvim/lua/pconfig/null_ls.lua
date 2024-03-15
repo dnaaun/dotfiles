@@ -16,8 +16,12 @@ return {
 				null_ls.builtins.formatting.prettier.with({
 					filetypes = vim.list_extend({ "css" }, require("consts").javascripty_filetypes),
 				}),
-				null_ls.builtins.diagnostics.rubocop,
-				null_ls.builtins.formatting.rubocop,
+				null_ls.builtins.diagnostics.rubocop.with({
+					command = { "bundle", "exec", "rubocop" },
+				}),
+				null_ls.builtins.formatting.rubocop.with({
+					command = { "bundle", "exec", "rubocop" },
+        }),
 				null_ls.builtins.diagnostics.haml_lint,
 				null_ls.builtins.diagnostics.sqlfluff.with({
 					extra_args = { "--dialect", "sqlite" }, -- change to your dialect
@@ -49,7 +53,7 @@ return {
 			}),
 		}
 
-    -- I think Solargraph (through Rubocop) reports syntax errors now?
+		-- I think Solargraph (through Rubocop) reports syntax errors now?
 		-- null_ls.register({ name = "ruby-syntax", sources = { ruby_syntax_check }, debounce = 4000 })
 	end,
 }
