@@ -23,9 +23,9 @@ return {
 					command = { "bundle", "exec", "rubocop" },
         }),
 				null_ls.builtins.diagnostics.haml_lint,
-				null_ls.builtins.diagnostics.sqlfluff.with({
-					extra_args = { "--dialect", "sqlite" }, -- change to your dialect
-				}),
+				-- null_ls.builtins.diagnostics.sqlfluff.with({
+				-- 	extra_args = { "--dialect", "sqlite" }, -- change to your dialect
+				-- }),
 				null_ls.builtins.formatting.djlint,
 			},
 		})
