@@ -6,11 +6,11 @@ return {
 	{ "EdenEast/nightfox.nvim", event = "VeryLazy" },
 	require("pconfig.surround"),
 
-  -- ChatGPT/GPT-4 plugin.
-  require("pconfig.gp"),
+	-- ChatGPT/GPT-4 plugin.
+	require("pconfig.gp"),
 
-  require("pconfig.fire"),
-	
+	require("pconfig.fire"),
+
 	require("pconfig.tmux"),
 
 	-- (Fuzzy) search everything!
@@ -25,8 +25,8 @@ return {
 	-- -- So for now, we're disabling.
 	require("pconfig.telescope_fzf_native"),
 
-  -- I think this is out of date with ormgmode.nvim
-  -- require("pconfig.telescope_orgmode"),
+	-- I think this is out of date with ormgmode.nvim
+	-- require("pconfig.telescope_orgmode"),
 
 	require("pconfig.dirbuf"),
 
@@ -126,9 +126,9 @@ return {
 	require("pconfig.treesitter"),
 
 	-- Text objects based on syntax trees!!
-  -- DISABLED: cuz it's causing when editing Rust files, and files have to be "force saved"
+	-- DISABLED: cuz it's causing when editing Rust files, and files have to be "force saved"
 	-- { "nvim-treesitter/nvim-treesitter-textobjects", event = require("pconfig.treesitter").event },
- 
+
 	-- I use it for treesitter-based,"virtual-text hinting", jumping/movement.
 	require("pconfig.syntax_tree_surfer"),
 	--		-- Treesitter-based, "virtual-text hinting", text objects. Mind blown emoji. Seriously. Just makes too much sense.
@@ -178,8 +178,10 @@ return {
 	require("pconfig.colorizer"),
 
 	--		-- Markdown
-	{ "plasticboy/vim-markdown", ft = { "markdown" }, event = "VeryLazy" },
-	{ "davidgranstrom/nvim-markdown-preview", ft = "markdown", cmd = "MarkdownPreview" },
+	-- { "plasticboy/vim-markdown", ft = { "markdown" }, event = "VeryLazy" },
+	-- { "davidgranstrom/nvim-markdown-preview", ft = "markdown", cmd = "MarkdownPreview" }, -- not working on linux beacaues live-server is not working on linux.
+	{ "ellisonleao/glow.nvim", config = true, cmd = "Glow" },
+
 	{ "dhruvasagar/vim-table-mode", ft = { "markdown" }, event = "InsertLeave" },
 
 	-- Testing things
@@ -220,8 +222,8 @@ return {
 	-- require("pconfig.kiwi"),
 	-- Here we go again. I really do want to give orgmode another try, since I keep on re-inventing it in my head again and again.
 	require("pconfig.orgmode"),
-  -- Run snippets of code in markdown/orgmode
-  require("pconfig.sniprun"),
+	-- Run snippets of code in markdown/orgmode
+	require("pconfig.sniprun"),
 
 	-- Sourcegraph stuff from TJ
 	require("pconfig.sg"),
@@ -232,8 +234,8 @@ return {
 	-- Highlight occurences of current word
 	require("pconfig.mini_cursorword"),
 
-  -- Code outline
-  require("pconfig.aerial"),
+	-- Code outline
+	require("pconfig.aerial"),
 
-  { "catppuccin/nvim", name = "catppuccin", priority = 1000 }
+	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 }
