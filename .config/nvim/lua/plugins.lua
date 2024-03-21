@@ -242,6 +242,10 @@ return {
 
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 
+  -- Markdown/notebook related
   require("pconfig.femaco"),
   require("pconfig.otter"),
+
+  -- show statuslines for splits
+  require("pconfig.incline")
 }
