@@ -438,7 +438,7 @@ cur_commit_hash() {
 
 
 # fnm
-export PATH="/home/davidat/.local/share/fnm:/home/davidat/.yarn/bin:$PATH"
+export PATH="/home/davidat/go/bin:/home/davidat/.local/share/fnm:/home/davidat/.yarn/bin:$PATH"
  eval `fnm env`
 
 #  This causes errors right now when cd-ing into a directory with a .nvmrc

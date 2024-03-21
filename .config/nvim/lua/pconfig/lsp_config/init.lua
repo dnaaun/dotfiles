@@ -147,7 +147,8 @@ return {
 			texlab = require("pconfig.lsp_config.texlab"),
 			tsserver = require("pconfig.lsp_config.tsserver"),
 			tailwindcss = require("pconfig.lsp_config.tailwindcss"),
-			sqlls = require("pconfig.lsp_config.sqlls"),
+			sqls = require("pconfig.lsp_config.sqls"),
+      efm = require("pconfig.lsp_config.efm"),
 			sumneko_lua = require("pconfig.lsp_config.sumneko_lua"),
 			sorbet = require("pconfig.lsp_config.sorbet"),
 			ruby_ls = require("pconfig.lsp_config.ruby_ls"),
@@ -163,7 +164,8 @@ return {
 			-- Until I figure out how to route specific requests to specific servers,
 			-- I'll use only sorbet for ruby.
 			-- "solargraph",
-			"sqlls",
+      "efm",
+      "sqls",
 			"rust_analyzer",
 			-- "sumneko_lua",
 			"tailwindcss",
@@ -182,6 +184,7 @@ return {
 			else
 				config = common_config
 			end
+
 
 			lspconfig[lspname].setup(config)
 		end

@@ -1,4 +1,6 @@
 return {
+  require("pconfig.mason"),
+  require("pconfig.mason_lspconfig"),
 	require("pconfig.which_key"), -- show candidate mappings after pressing a key
 
 	-- use("Mofiqul/vscode.nvim")
@@ -51,6 +53,7 @@ return {
 	require("pconfig.lsp_extensions"),
 	require("pconfig.rust_tools"),
 	-- require("pconfig.lsp_inlayhints"),
+  { "nanotee/sqls.nvim" },
 
 	-- cmp-related, might be useful when using neovim in pager mode.
 	require("pconfig.cmp"),
@@ -238,4 +241,7 @@ return {
 	require("pconfig.aerial"),
 
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+
+  require("pconfig.femaco"),
+  require("pconfig.otter"),
 }

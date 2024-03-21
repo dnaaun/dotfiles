@@ -10,14 +10,14 @@ import = [
 TERM = "xterm-256color"
 
 [font]
-size = 5
+size = 8
 
 [font.normal]
 family = "Ubuntu Mono"
 
 [font.offset]
 x = 0
-y = 2
+y = 0
 
 [selection]
 save_to_clipboard = true
