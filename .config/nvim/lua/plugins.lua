@@ -1,6 +1,6 @@
 return {
-  require("pconfig.mason"),
-  require("pconfig.mason_lspconfig"),
+	require("pconfig.mason"),
+	require("pconfig.mason_lspconfig"),
 	require("pconfig.which_key"), -- show candidate mappings after pressing a key
 
 	-- use("Mofiqul/vscode.nvim")
@@ -37,8 +37,12 @@ return {
 	require("pconfig.gitsigns"),
 
 	-- Misc
-	"tpope/vim-commentary", -- (Un)comment stuff with gc
-	-- "JoosepAlviste/nvim-ts-context-commentstring",
+	{
+		"JoosepAlviste/nvim-ts-context-commentstring",
+		config = function()
+			require("ts_context_commentstring").setup({})
+		end,
+	},
 
 	-- Sessions, I really need'em
 	require("pconfig.auto_session"),
@@ -53,7 +57,7 @@ return {
 	require("pconfig.lsp_extensions"),
 	require("pconfig.rust_tools"),
 	-- require("pconfig.lsp_inlayhints"),
-  { "nanotee/sqls.nvim" },
+	{ "nanotee/sqls.nvim" },
 
 	-- cmp-related, might be useful when using neovim in pager mode.
 	require("pconfig.cmp"),
@@ -242,10 +246,10 @@ return {
 
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 
-  -- Markdown/notebook related
-  require("pconfig.femaco"),
-  require("pconfig.otter"),
+	-- Markdown/notebook related
+	require("pconfig.femaco"),
+	require("pconfig.otter"),
 
-  -- show statuslines for splits
-  require("pconfig.incline")
+	-- show statuslines for splits
+	require("pconfig.incline"),
 }

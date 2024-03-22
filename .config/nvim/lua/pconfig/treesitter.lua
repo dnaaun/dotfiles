@@ -189,11 +189,6 @@ return {
 			enable = true,
 		}
 
-		-- requires the nvim-ts-context-commentstring plugin
-		local context_commentstring = {
-			enable = true,
-		}
-
 		local rainbow = {
 			enable = true,
 			-- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
@@ -207,7 +202,6 @@ return {
     local ensure_installed =  { "html" }
 
 		require("nvim-treesitter.configs").setup({
-			context_commentstring = context_commentstring,
 			ensure_installed = ensure_installed,
 			highlight = highlight,
 			indent = indent,

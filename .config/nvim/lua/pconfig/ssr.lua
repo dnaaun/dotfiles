@@ -22,8 +22,7 @@ return {
 				},
 			},
 		}, { mode = { "n", "x" } })
-	end,
-	config = function()
+
 		require("ssr").setup({
 			min_width = 50,
 			min_height = 5,

@@ -3,8 +3,9 @@ icons_format = "{icon}"
 [theme]
 theme = "solarized-dark"
 [theme.overrides]
-idle_bg = "#123456"
-idle_fg = "#abcdef"
+idle_bg = "#EFF1F5"
+idle_fg = "#4C4F69"
+
 
 [icons]
 icons = "awesome4"
@@ -16,17 +17,11 @@ warning_cpu = 50
 critical_cpu = 90
 
 [[block]]
-block = "battery"
+block = "net"
+format = " $icon ^icon_net_down $speed_down.eng(prefix:K) ^icon_net_up $speed_up.eng(prefix:K) "
 
 [[block]]
-block = "disk_space"
-path = "/"
-info_type = "available"
-alert_unit = "GB"
-interval = 20
-warning = 20.0
-alert = 10.0
-format = " $icon root: $available.eng(w:2) "
+block = "battery"
 
 [[block]]
 block = "memory"

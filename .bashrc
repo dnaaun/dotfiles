@@ -449,3 +449,21 @@ most_recent_mp3_as_tex() {
   fdfind  '.*(mp3|MP3)$' ~/Downloads/ | xargs -d\\n ls -ct | head -1 | sed 's/\.[^.]*$/.tex/'  |sed -E 's/^.*\/(.*)$/\1/' | sed 's/\s/_/g'
 }
 alias be="bundle exec"
+
+# GPT-4 wrote this.
+# Watch files specified by a regex passed to fd, and then run commands.
+# The first arg is that regex, the remaining args is the command.
+watcher() {
+  local regex="$1"
+  shift
+
+  # Run the arguments first
+  "$@"
+
+  trap 'break' INT
+  while true; do
+    fd "$regex" | xargs inotifywait -e modify
+    echo "Watch interrupted, will run now ...."
+    "$@"
+  done
+}
