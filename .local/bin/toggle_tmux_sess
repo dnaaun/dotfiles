@@ -1,20 +1,31 @@
 #!/bin/bash
 
-if [[ -z "$1" ]] || [[ ! -z "$3" ]]; then
-  echo "USAGE: $0 <session_name> <dir_name>"
+if [[ -z "$1" ]] || [[ ! -z "$2" ]]; then
+  echo "USAGE: $0 <dir_name>"
+  echo "We'll assume there's a .airmux.yml directory in the <dir_name> directory."
+  echo "Not patient enough to figure out what I actually want, btw, which is why"
+  echo "I'm going to leave the <dir_name> usage, instead of having <airmux_filename>"
   exit 1
 fi
 
 
-sess_name="$1"
-dir_name="$2"
+dir_name="$1"
+airmux_yml="$dir_name/.airmux.yml"
+
+if [[ ! -f $airmux_yml ]]; then
+  echo No file found at $airmux_yml
+  exit 1
+fi
+
+sess_name=$(cat $airmux_yml | yq -r 'first(.session_name // "NO SESSSION NAME FOUND")')
+
+if [[ $sess_name == "NO SESSION NAME FOUND" ]]; then
+  echo No session name found at $airmux_yml
+  exit 1
+fi
 
 if [[ "$(tmux display-message -p '#S')" != "$sess_name" ]]; then
-  if ! tmux list-sessions -F '#S' | grep "^$sess_name$"  > /dev/null
-  then
-    tmux new-session -d -s "$sess_name" -c "$dir_name" 
-  fi
-  tmux switch-client -t "$sess_name"
+  airmux start "$dir_name/.airmux.yml" 
 else
   tmux switch-client -l
 fi
