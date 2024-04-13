@@ -249,7 +249,4 @@ return {
 	-- Markdown/notebook related
 	require("pconfig.femaco"),
 	require("pconfig.otter"),
-
-	-- show statuslines for splits
-	require("pconfig.incline"),
 }
