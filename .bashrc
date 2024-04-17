@@ -203,7 +203,7 @@ fi
 #   tm
 # fi
 
-FZF_CTRL_T_COMMAND='$FDCMD . --hidden 2>/dev/null'
+FZF_CTRL_T_COMMAND=$FDCMD' . --hidden 2>/dev/null'
 
 # The below is necessary, because I want to include hidden files by default.
 _fzf_compgen_path() {
@@ -214,8 +214,9 @@ _fzf_compgen_dir() {
 }
 
 # If we're on macos
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
-
+# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# I just installed it using homebrew, so
+eval "$(fzf --bash)"
 
 # On ubuntu
 RVM_INIT=/etc/profile.d/rvm.sh

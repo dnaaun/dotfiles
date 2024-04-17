@@ -164,7 +164,7 @@ return {
 			-- Until I figure out how to route specific requests to specific servers,
 			-- I'll use only sorbet for ruby.
 			-- "solargraph",
-      "efm",
+      -- "efm", -- seems to cause issuse on MacOS
       "sqls",
 			"rust_analyzer",
 			-- "sumneko_lua",
