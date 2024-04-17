@@ -1,38 +1,10 @@
+
 return {
 	"robitx/gp.nvim",
-
 	dependencies = { "folke/which-key.nvim" },
+  keys = { "<leader>z" },
 	config = function()
-		require("gp").setup({
-			agents = {
-				{
-					name = "ChatGPT4",
-					chat = true,
-					command = false,
-					-- string with model name or table with model name and parameters
-					model = { model = "gpt-4-1106-preview", temperature = 1.1, top_p = 1 },
-          -- system_prompt = "You are a general AI assistant. Be as curt as possible.",
-					-- system prompt (use this to specify the persona/role of the AI)
-					system_prompt = "You are a general AI assistant.\n\n"
-						-- .. "The user provided the additional info about how they would like you to respond:\n\n"
-						-- .. "- If you're unsure don't guess and say you don't know instead.\n"
-						-- .. "- Ask question if you need clarification to provide better answer.\n"
-						-- .. "- Think deeply and carefully from first principles step by step.\n"
-						-- .. "- Zoom out first to see the big picture and then zoom in to details.\n"
-						-- .. "- Use Socratic method to improve your thinking and coding skills.\n"
-						-- .. "- Don't elide any code from your output if the answer requires coding.\n"
-						-- .. "- Take a deep breath; You've got this!\n",
-				},
-			},
-		})
-
-		-- I don't know of an official way to set the default agent on startup, so I use
-		-- an undocumented/internal API:
-		require("gp")._state.chat_agent = "ChatGPT4"
-
-		-- VISUAL mode mappings
-		-- s, x, v modes are handled the same way by which_key
-		require("which-key").register({
+require("which-key").register({
 			-- ...
 			["<leader>z"] = {
 				n = { ":<C-u>'<,'>GpChatNew<cr>", "Visual Chat New" },
@@ -129,5 +101,35 @@ return {
 			noremap = true,
 			nowait = true,
 		})
+		require("gp").setup({
+			agents = {
+				{
+					name = "ChatGPT4",
+					chat = true,
+					command = false,
+					-- string with model name or table with model name and parameters
+					model = { model = "gpt-4-1106-preview", temperature = 1.1, top_p = 1 },
+          -- system_prompt = "You are a general AI assistant. Be as curt as possible.",
+					-- system prompt (use this to specify the persona/role of the AI)
+					system_prompt = "You are a general AI assistant.\n\n"
+						-- .. "The user provided the additional info about how they would like you to respond:\n\n"
+						-- .. "- If you're unsure don't guess and say you don't know instead.\n"
+						-- .. "- Ask question if you need clarification to provide better answer.\n"
+						-- .. "- Think deeply and carefully from first principles step by step.\n"
+						-- .. "- Zoom out first to see the big picture and then zoom in to details.\n"
+						-- .. "- Use Socratic method to improve your thinking and coding skills.\n"
+						-- .. "- Don't elide any code from your output if the answer requires coding.\n"
+						-- .. "- Take a deep breath; You've got this!\n",
+				},
+			},
+		})
+
+		-- I don't know of an official way to set the default agent on startup, so I use
+		-- an undocumented/internal API:
+		require("gp")._state.chat_agent = "ChatGPT4"
+
+		-- VISUAL mode mappings
+		-- s, x, v modes are handled the same way by which_key
+		
 	end,
 }

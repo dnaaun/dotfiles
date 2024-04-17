@@ -10,16 +10,17 @@ end
 
 return {
 	"neovim/nvim-lspconfig",
+  lazy = true,
 	-- keys = {
 	-- 	"gql",
 	-- TODO (David): add more.
 	-- },
-	-- event = {
-	-- from the auto-session plugin
-	-- "SessionLoadPost",
-	-- "BufEnter",
-	-- "VeryLazy",
-	-- },
+	 event = {
+	 -- from the auto-session plugin
+	 "SessionLoadPost",
+	 "BufEnter",
+	 "VeryLazy",
+	 },
 	-- ft = require("consts").lsp_enabled_filetypes,
 	config = function()
     -- https://ast-grep.github.io/guide/editor-integration.html#nvim-lspconfig

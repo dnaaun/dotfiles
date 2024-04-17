@@ -182,7 +182,7 @@ return {
 			include_match_words = false,
 		}
 
-		local ensure_installed = { "tsx" }
+		local ensure_installed = { "tsx", "html", "lua", "ruby", "python", "rust", "markdown" }
 
 		-- treesitter playground taht shows you the nodes
 		local playground = {
@@ -198,8 +198,6 @@ return {
 			-- termcolors = {} -- table of colour name strings
 		}
 
-    -- Required for nvim-devdocs
-    local ensure_installed =  { "html" }
 
 		require("nvim-treesitter.configs").setup({
 			ensure_installed = ensure_installed,

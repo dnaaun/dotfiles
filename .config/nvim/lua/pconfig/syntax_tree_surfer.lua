@@ -1,5 +1,6 @@
 return {
 	"ziontee113/syntax-tree-surfer",
+  event = "VeryLazy",
 	config = function()
 		require("syntax-tree-surfer")
 

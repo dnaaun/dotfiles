@@ -1,6 +1,6 @@
 return {
-	require("pconfig.mason"),
-	require("pconfig.mason_lspconfig"),
+	-- require("pconfig.mason"),
+	-- require("pconfig.mason_lspconfig"),
 	require("pconfig.which_key"), -- show candidate mappings after pressing a key
 
 	-- use("Mofiqul/vscode.nvim")
@@ -39,6 +39,7 @@ return {
 	-- Misc
 	{
 		"JoosepAlviste/nvim-ts-context-commentstring",
+    event = "VeryLazy",
 		config = function()
 			require("ts_context_commentstring").setup({})
 		end,
@@ -51,7 +52,7 @@ return {
 	require("pconfig.dap"),
 	require("pconfig.dap_ui"),
 
-	require("pconfig.copilot"),
+	-- require("pconfig.copilot"),
 
 	require("pconfig.lsp_config"),
 	require("pconfig.lsp_extensions"),
@@ -176,7 +177,7 @@ return {
 	require("pconfig.diffview"),
 
 	-- Who needs web interfaces when you have neovim interfaces (for Github)?
-	require("pconfig.octo"),
+	-- require("pconfig.octo"),
 
 	--		-- A quick-and-dirty solution to typing Amharic in vim,
 	--		-- without having to rely on changing the system-wide keyboard layout
