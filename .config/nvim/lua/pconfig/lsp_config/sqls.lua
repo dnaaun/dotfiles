@@ -7,7 +7,7 @@ return {
 			connections = {
 				{
 					driver = "postgresql",
-					dataSourceName = "host=127.0.0.1 port=5432 user=hybrid password=hybrid dbname=hybrid_development",
+					dataSourceName = "host=127.0.0.1 port=5432 dbname=hybrid_development",
 				},
 			},
 		},

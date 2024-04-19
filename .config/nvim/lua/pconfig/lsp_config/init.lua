@@ -28,7 +28,9 @@ return {
 		configs.ast_grep = {
 			default_config = {
 				cmd = { "sg", "lsp" },
-				filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+				filetypes = { 
+          -- "typescript", "typescriptreact", "javascript", "javascriptreact"
+        },
 				single_file_support = true,
 				root_dir = require("lspconfig").util.root_pattern(".git", "sgconfig.yml"),
 			},
@@ -177,7 +179,7 @@ return {
 			"cssls",
 			-- "marksman",
 			"yamlls",
-			"ast_grep",
+			-- "ast_grep",
 		}) do
 			local config = lsp_specific_configs[lspname]
 			if config ~= nil then

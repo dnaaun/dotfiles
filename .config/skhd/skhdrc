@@ -10,7 +10,8 @@ ctrl + cmd - h : cmus-remote --seek -1m
 ctrl + cmd - l : cmus-remote --seek +1m
 
 # Including the absolute path to avoid alacritty opening in float mode: https://github.com/koekeishiya/yabai/issues/1250#issuecomment-1157252933
-alt - return : /Applications/Alacritty.app/Contents/MacOS/alacritty
+# And it happens taht I'm using a cargo installed version.
+alt - return : /Users/davidat/.cargo/bin/alacritty
 
 # Close window
 shift + alt - q : yabai -m window --close

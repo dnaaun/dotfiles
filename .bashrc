@@ -1,3 +1,16 @@
+################ A way to debug slow bashrc ####################
+# https://mdjnewman.me/2017/10/debugging-slow-bash-startup-files/
+# open file descriptor 5 such that anything written to /dev/fd/5
+# is piped through ts and then to /tmp/timestamps
+# exec 5> >(ts -i "%.s" >> /tmp/timestamps)
+
+# https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
+# export BASH_XTRACEFD="5"
+
+# Enable tracing
+# set -x xtrace
+################                            ####################
+
 # Fig pre block. Keep at the top of this file.
 # # If not running interactively, don't do anything
 case $- in
@@ -60,8 +73,8 @@ shopt -s lithist
 
 
 # Doens't look like I'll need this on linux.
-# source /opt/homebrew/etc/bash_completion.d/git-prompt.sh
-# source /opt/homebrew/etc/bash_completion.d/git-completion.bash
+source /opt/homebrew/etc/bash_completion.d/git-prompt.sh
+source /opt/homebrew/etc/bash_completion.d/git-completion.bash
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -82,12 +95,6 @@ alias l='ls -CF'
 
 # Some systems still have old vi by default
 alias vi=vim
-
-# Base16 Shell
-BASE16_SHELL="$HOME/.config/base16-shell/"
-[ -n "$PS1" ] && \
-	[ -s "$BASE16_SHELL/profile_helper.sh" ] && \
-	eval "$("$BASE16_SHELL/profile_helper.sh")"
 
 # UTF8 issues
 export LC_ALL=en_US.UTF-8
@@ -190,14 +197,6 @@ tm () {
   fi
 }
 
-if command -v nvim > /dev/null; then
-  # Use neovim as a pager, if it's available
-  # vless is a script in .local/bin/
-  #export PAGER=vless
-  #export MANPAGER="vless -c 'set filetype=man'"
-  :
-fi
-
 # Auto start tmux
 # if [ -z "$TMUX" ]; then
 #   tm
@@ -218,9 +217,6 @@ _fzf_compgen_dir() {
 # I just installed it using homebrew, so
 eval "$(fzf --bash)"
 
-# On ubuntu
-RVM_INIT=/etc/profile.d/rvm.sh
-[ -f $RVM_INIT ] && source $RVM_INIT;
 
 # We need to set this here (despite having an .inputrc saying the same thing)
 # because fzf bindings get messed up if we set -o vi after we souurce the fzf bindings scripts.
@@ -288,9 +284,10 @@ set_prompt() {
 
     # Get the last few chars of the current git branch, if we're in a git repo
     # https://stackoverflow.com/a/32626660
-    git_branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null | tail -c 10)
+    # git_branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null | tail -c 10)
+    git_branch=""
 
-    PS1="${git_branch} \W${end_of_prompt} "
+    PS1="${git_branch}\W${end_of_prompt} "
 }
 
 PROMPT_COMMAND=set_prompt
@@ -309,6 +306,8 @@ export DOCKER_BUILDKIT=0
 export COMPOSE_DOCKER_CLI_BUILD=0
 
 PATH=\
+$HOME/.yarn/bin:\
+$HOME/go/bin:\
 /opt/homebrew/opt/libpq/bin:\
 /opt/homebrew/Cellar/ruby@2.7/2.7.6/bin:\
 /Users/davidat/Library/Python/3.9/bin:\
@@ -434,11 +433,12 @@ cur_commit_hash() {
 }
 # ==== END: Nice little things ====
 
-"$HOME/.cargo/env"
+# "$HOME/.cargo/env"
 
-# fnm
-export PATH="/home/davidat/go/bin:/home/davidat/.local/share/fnm:/home/davidat/.yarn/bin:$PATH"
-eval `fnm env`
+# eval `fnm env`
+
+# source <(frum init)
+eval "$(rbenv init - bash)"
 
 #  This causes errors right now when cd-ing into a directory with a .nvmrc
 #  file.
