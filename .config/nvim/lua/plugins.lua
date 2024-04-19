@@ -138,6 +138,7 @@ return {
 	-- require("pconfig.matchup"),
 	require("pconfig.tree_pairs"),
 
+
 	-- vim-matchup slows me down, and I *think* this might help solve the issue.
 	"antoinemadec/FixCursorHold.nvim",
 
