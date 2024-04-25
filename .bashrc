@@ -306,6 +306,7 @@ export DOCKER_BUILDKIT=0
 export COMPOSE_DOCKER_CLI_BUILD=0
 
 PATH=\
+/opt/homebrew/opt/findutils/libexec/gnubin:\
 $HOME/.yarn/bin:\
 $HOME/go/bin:\
 /opt/homebrew/opt/libpq/bin:\
@@ -445,7 +446,7 @@ eval "$(rbenv init - bash)"
 # eval "$(fnm env --use-on-cd)"
 
 most_recent_mp3_as_tex() {
-  fdfind  '.*(mp3|MP3)$' ~/Downloads/ | xargs -d\\n ls -ct | head -1 | sed 's/\.[^.]*$/.tex/'  |sed -E 's/^.*\/(.*)$/\1/' | sed 's/\s/_/g'
+  $FDCMD  '.*(mp3|MP3)$' ~/Downloads/ | xargs -d\\n ls -ct | head -1 | sed 's/\.[^.]*$/.tex/'  |sed -E 's/^.*\/(.*)$/\1/' | sed 's/[^a-zA-Z0-9.-]/_/g'
 }
 alias be="bundle exec"
 

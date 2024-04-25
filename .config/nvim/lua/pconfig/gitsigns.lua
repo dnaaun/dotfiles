@@ -81,6 +81,10 @@ return {
 				},
 			},
 		}, { mode = "v" })
-		require("gitsigns").setup({})
+		require("gitsigns").setup({
+			diff_opts = {
+				-- ignore_whitespace = true,
+			},
+		})
 	end,
 }

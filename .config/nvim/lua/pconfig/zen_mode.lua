@@ -4,6 +4,9 @@ return {
 	keys = { "<leader>vz" },
 	config = function()
 		require("zen-mode").setup({
+			plugins = {
+				tmux = { enabled = true }, -- disables the tmux statusline
+			},
 			window = {
 				width = 0.85,
 			},

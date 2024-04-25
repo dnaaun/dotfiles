@@ -38,8 +38,17 @@ return {
 
 	-- Misc
 	{
+		"echasnovski/mini.nvim",
+		version = "*",
+		event = "VeryLazy",
+		config = function()
+			require("mini.comment").setup()
+		end,
+	},
+
+	{
 		"JoosepAlviste/nvim-ts-context-commentstring",
-    event = "VeryLazy",
+		event = "VeryLazy",
 		config = function()
 			require("ts_context_commentstring").setup({})
 		end,
@@ -127,7 +136,7 @@ return {
 
 	-- vim-matchup
 	-- require("pconfig.matchup"),
-  require("pconfig.tree_pairs"),
+	require("pconfig.tree_pairs"),
 
 	-- vim-matchup slows me down, and I *think* this might help solve the issue.
 	"antoinemadec/FixCursorHold.nvim",
@@ -198,7 +207,7 @@ return {
 	{ "tpope/vim-dispatch", opt = true, cmd = { "Dispatch", "Make", "Focus", "Start" } },
 
 	--		-- An amazing testing plugin. Really showcases the possiblities of treesitter.
-	-- require("pconfig.neotest"), -- freezes vim on startup
+	require("pconfig.neotest"), -- freezes vim on startup
 	{ "haydenmeade/neotest-jest", event = "VeryLazy", ft = require("consts").javascripty_filetypes },
 	{ "olimorris/neotest-rspec", ft = "ruby" },
 	{ "rouge8/neotest-rust", ft = "rust" },
