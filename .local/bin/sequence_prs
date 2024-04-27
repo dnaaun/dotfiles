@@ -1,0 +1,28 @@
+#!/bin/bash
+
+temp=$(mktemp) # more standard to use $() for command substitution instead of backticks
+
+
+git log origin/master^...HEAD --pretty="%H" \
+  | tac \
+  | xargs -d'\n' -I{} bash -c 'git branch --points-at {} | grep -v "dt/playground" | sed "s/^\s*//" | sed "s/\s*$//"' \
+  > "$temp"
+
+pr_num=1
+denom=${1:-n}
+
+# Process each line in the temp file to extract the pull request number
+tail -n +2 "$temp" | while read -r branch; do
+  # Use curly brackets to isolate branch variable 
+  # Make sure to avoid bracket overlapping with --json's brackets  
+  title=$(gh pr view "$branch" --json title --jq '.title')
+  stripped_title=$(echo $title | sd '^\s*\[[^]]*\]\s*' '')
+  new_title="[$pr_num/$denom] $stripped_title"
+  if [[ "$new_title" != "$title" ]]; then
+    gh pr edit "$branch" --title "$new_title"
+  fi
+  ((pr_num++))
+done
+
+# Deletion of the tempfile
+rm "$temp"

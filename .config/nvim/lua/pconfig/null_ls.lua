@@ -25,6 +25,7 @@ return {
 				null_ls.builtins.formatting.rubocop.with({
 					command = { "bundle", "exec", "rubocop" },
 				}),
+				-- null_ls.builtins.formatting.rubyfmt,
 				null_ls.builtins.diagnostics.haml_lint,
 				null_ls.builtins.formatting.djlint,
 			},

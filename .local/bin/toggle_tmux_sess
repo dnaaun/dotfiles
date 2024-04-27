@@ -17,14 +17,17 @@ if [[ ! -f $airmux_yml ]]; then
   exit 1
 fi
 
-sess_name=$(cat $airmux_yml | yq -r 'first(.session_name // "NO SESSSION NAME FOUND")')
+
+sess_name=$(cat $airmux_yml | yq  '.session_name')
 
 if [[ $sess_name == "NO SESSION NAME FOUND" ]]; then
   echo No session name found at $airmux_yml
   exit 1
 fi
 
-if [[ "$(tmux display-message -p '#S')" != "$sess_name" ]]; then
+cur_sess_name="$(tmux display-message -p '#S')" 
+
+if [[ "$cur_sess_name" != "$sess_name" ]]; then
   airmux start "$dir_name/.airmux.yml" 
 else
   tmux switch-client -l
