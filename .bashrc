@@ -446,7 +446,7 @@ eval "$(rbenv init - bash)"
 # eval "$(fnm env --use-on-cd)"
 
 most_recent_mp3_as_tex() {
-  $FDCMD  '.*(mp3|MP3)$' ~/Downloads/ | xargs -d\\n ls -ct | head -1 | sed 's/\.[^.]*$/.tex/'  |sed -E 's/^.*\/(.*)$/\1/' | sed 's/[^a-zA-Z0-9.-]/_/g'
+  $FDCMD  '.*(mp3|MP3)$' ~/Downloads/ | fzf | sed 's/\.[^.]*$/.tex/'  |sed -E 's/^.*\/(.*)$/\1/' | sed 's/[^a-zA-Z0-9.-]/_/g'
 }
 alias be="bundle exec"
 
