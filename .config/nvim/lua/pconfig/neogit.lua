@@ -8,7 +8,7 @@ return {
 		local wk = require("which-key")
 		wk.register({
 			["<leader>g"] = {
-				n = { require("neogit").open, "Neogit" },
+				n = { require("neogit").open, "Neogits" },
 			},
 		})
 	end,

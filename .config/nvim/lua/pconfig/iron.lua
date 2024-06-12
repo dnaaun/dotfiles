@@ -50,14 +50,14 @@ return {
 
 		local rails_console = {
 			command = { "bundle", "exec", "rails", "console" },
-			-- command = {"heroku_with_empty_node_options", "run", "rails", "console", "-a", "gondor"},
+			-- command = {"heroku", "run", "rails", "console", "-a", "gondor"},
 			format = bracketed_paste,
 		}
 
-    local pry = {
-      command = { "pry" },
-      format = bracketed_paste
-    }
+		local pry = {
+			command = { "pry" },
+			format = bracketed_paste,
+		}
 
 		-- local irb = {
 		-- 	command = { "irb" },
@@ -148,8 +148,8 @@ return {
 					ruby = rails_console,
 					sql = {
 						-- command = { "pgcli", "-d", "crushedgarlic", "-u", "crushedgarlic" },
-						-- command = { "pgcli", "-d", "hybrid_development", "-u", "hybrid" },
-						command = { "pgcli", vim.env.PRODUCTION_POSTGRES },
+						command = { "pgcli", "-d", "hybrid_development" },
+						-- command = { "pgcli", vim.env.PRODUCTION_POSTGRES },
 						format = bracketed_paste,
 					},
 				},

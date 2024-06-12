@@ -5,7 +5,7 @@ temp=$(mktemp) # more standard to use $() for command substitution instead of ba
 
 git log origin/master^...HEAD --pretty="%H" \
   | tac \
-  | xargs -d'\n' -I{} bash -c 'git branch --points-at {} | grep -v "dt/playground" | sed "s/^\s*//" | sed "s/\s*$//"' \
+  | xargs -d'\n' -I{} bash -c 'git branch --points-at {} | grep -v "dt/playground" | sd "^\s*" "" | sd "\s*\n" "\n"' \
   > "$temp"
 
 pr_num=1

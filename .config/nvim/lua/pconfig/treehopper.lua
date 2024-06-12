@@ -1,5 +1,5 @@
 return {
-	"davidatsurge/nvim-treehopper",
+	"mfussenegger/nvim-treehopper",
 	branch = "add-config-to-specify-parser-for-filetypes",
 	keys = { { "m", mode = "v" }, { "m", mode = "o" } },
 	config = function()
@@ -17,10 +17,10 @@ return {
 		wk.register({
 			m = { require("tsht").nodes, "Treehopper Nodes" },
 		}, {
-			mode = "v",
+			mode = "x",
 			silent = true,
 		})
 
-		require("tsht").config.ft_to_parser.typescriptreact = "tsx"
+		-- require("tsht").config.ft_to_parser.typescriptreact = "tsx"
 	end,
 }

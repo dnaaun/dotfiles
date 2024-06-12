@@ -10,27 +10,28 @@ end
 
 return {
 	"neovim/nvim-lspconfig",
-  lazy = true,
+	lazy = true,
 	-- keys = {
 	-- 	"gql",
 	-- TODO (David): add more.
 	-- },
-	 event = {
-	 -- from the auto-session plugin
-	 "SessionLoadPost",
-	 "BufEnter",
-	 "VeryLazy",
-	 },
+	event = {
+		-- from the auto-session plugin
+		"SessionLoadPost",
+		"BufEnter",
+		"VeryLazy",
+	},
+	dependencies = { "folke/which-key.nvim" }, -- for a mpping in on-attach below.
 	-- ft = require("consts").lsp_enabled_filetypes,
 	config = function()
-    -- https://ast-grep.github.io/guide/editor-integration.html#nvim-lspconfig
+		-- https://ast-grep.github.io/guide/editor-integration.html#nvim-lspconfig
 		local configs = require("lspconfig.configs")
 		configs.ast_grep = {
 			default_config = {
 				cmd = { "sg", "lsp" },
-				filetypes = { 
-          -- "typescript", "typescriptreact", "javascript", "javascriptreact"
-        },
+				filetypes = {
+					-- "typescript", "typescriptreact", "javascript", "javascriptreact"
+				},
 				single_file_support = true,
 				root_dir = require("lspconfig").util.root_pattern(".git", "sgconfig.yml"),
 			},
@@ -73,7 +74,14 @@ return {
 			},
 			["gql"] = {
 				function()
-					vim.lsp.buf.format({ async = true })
+					vim.lsp.buf.format({
+						async = true,
+						filter = function(client)
+              -- I suaully have prettier setup, and tsserver conflicts with it.
+              -- I also prefer pg_format to sqls.
+							return client.name ~= "tsserver" and client.name ~= "sqls"
+						end,
+					})
 				end,
 				"format",
 			},
@@ -126,6 +134,22 @@ return {
 				setup_texlab_forward_search()
 			end
 
+			if client.name == "tsserver" then
+				local wk = require("which-key")
+				wk.register({
+					["<leader>li"] = {
+
+						function()
+							vim.lsp.buf.execute_command({
+								command = "_typescript.organizeImports",
+								arguments = { vim.fn.expand("%:p") },
+							})
+						end,
+						"TS Organize Imports",
+					},
+				}, { mode = "n" })
+			end
+
 			require("lsp_occurence").on_attach(client, bufnr)
 
 			for _, plugin_custom_attach in pairs(_G.lsp_config_on_attach_callbacks or {}) do
@@ -151,7 +175,7 @@ return {
 			tsserver = require("pconfig.lsp_config.tsserver"),
 			tailwindcss = require("pconfig.lsp_config.tailwindcss"),
 			sqls = require("pconfig.lsp_config.sqls"),
-      efm = require("pconfig.lsp_config.efm"),
+			efm = require("pconfig.lsp_config.efm"),
 			sumneko_lua = require("pconfig.lsp_config.sumneko_lua"),
 			sorbet = require("pconfig.lsp_config.sorbet"),
 			ruby_ls = require("pconfig.lsp_config.ruby_ls"),
@@ -167,8 +191,8 @@ return {
 			-- Until I figure out how to route specific requests to specific servers,
 			-- I'll use only sorbet for ruby.
 			-- "solargraph",
-      -- "efm", -- seems to cause issuse on MacOS
-      "sqls",
+			-- "efm", -- seems to cause issuse on MacOS
+			"sqls",
 			"rust_analyzer",
 			-- "sumneko_lua",
 			"tailwindcss",
@@ -187,7 +211,6 @@ return {
 			else
 				config = common_config
 			end
-
 
 			lspconfig[lspname].setup(config)
 		end

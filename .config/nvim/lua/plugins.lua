@@ -30,6 +30,9 @@ return {
 	-- I think this is out of date with ormgmode.nvim
 	-- require("pconfig.telescope_orgmode"),
 
+	-- Integgrate with ast-grep
+	require("pconfig.telescope_ast_grep"),
+
 	require("pconfig.dirbuf"),
 
 	-- Git and Github
@@ -98,9 +101,6 @@ return {
 	-- Get a url to the git host, for a range or a line in the current file.
 	require("pconfig.gitlinker"),
 
-	-- Does one thing: map `dd` inside the quickfix list to "remove item from quicklist"
-	{ "TamaMcGlinn/quickfixdd", event = "VeryLazy" },
-
 	-- I use it for: jump to a locaiton in the jumplist that is in a different
 	-- buffer than the one I have now.
 	-- require("pconfig.portal"),
@@ -113,7 +113,10 @@ return {
 	require("pconfig.autopairs"),
 
 	-- match autotag
-	require("pconfig.ts_autotag"),
+  -- Disabling for now because I have to do a lot of "specify generic type for JSX
+  -- invocation", and this autotagging mistinerrepts the open angle bracket for the type
+  -- spec as a closing tag.
+	-- require("pconfig.ts_autotag"),
 
 	-- Put bullets on next line if the current one has bullets
 	require("pconfig.bullets"),
@@ -126,6 +129,10 @@ return {
 	-- structural search and replce.
 	require("pconfig.ssr"),
 
+	-- edit the quickfix like it's a real buffer (and changes ot file names, as well as
+	-- file contents are persisted)
+	{ "itchyny/vim-qfedit" },
+
 	-- Convert between all the cases, with LSP and preview integration
 	require("pconfig.text_case"),
 
@@ -135,12 +142,7 @@ return {
 	require("pconfig.null_ls"),
 
 	-- vim-matchup
-	-- require("pconfig.matchup"),
-	require("pconfig.tree_pairs"),
-
-
-	-- vim-matchup slows me down, and I *think* this might help solve the issue.
-	"antoinemadec/FixCursorHold.nvim",
+	require("pconfig.matchup"),
 
 	-- The package, the pyth, the pegend.
 	require("pconfig.treesitter"),
@@ -153,6 +155,9 @@ return {
 	require("pconfig.syntax_tree_surfer"),
 	--		-- Treesitter-based, "virtual-text hinting", text objects. Mind blown emoji. Seriously. Just makes too much sense.
 	require("pconfig.treehopper"),
+
+	-- Treesitter-based extraction of react JSX/TSX into a separate file
+	require("pconfig.react_extract"),
 
 	-- I use it for slightly nicer UI for lsp code actions
 	require("pconfig.dressing"),

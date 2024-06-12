@@ -20,3 +20,11 @@
 
 [diff]
     external = difft
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[user]
+	name = davidatsurge
+	email = 93471693+davidatsurge@users.noreply.github.com

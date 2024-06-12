@@ -1,0 +1,21 @@
+#!/bin/bash
+
+REPO="surge-ai/gondor"
+REVIEWERS="eng"
+
+# Step 1: List all open PRs created by you and that have passed CI
+# Replace `my-repo-owner/my-repo` with your actual repository owner/name
+prs=$(gh pr list --search "author:@me is:open status:success" --json number,url --repo $REPO)
+
+# Step 2: Loop through each PR
+echo "$prs" | jq -c '.[]' | while read -r pr; do
+    # Extract PR number and URL (for convenience and feedback)
+    pr_number=$(echo "$pr" | jq '.number')
+    pr_url=$(echo "$pr" | jq -r '.url')
+
+    # Step 3: Request reviews from specific reviewers for this PR if CI has passed
+    gh pr edit "$pr_number" --add-reviewer "$REVIEWERS" --repo $REPO
+
+    echo "Requested reviews for PR: $pr_url from reviewers: $REVIEWERS"
+done
+

@@ -34,7 +34,7 @@ return {
 			-- additional_vim_regex_highlighting = { "org" }, -- Required since TS highlighter doesn't support all syntax features (conceal)
 		}
 		local indent = {
-			enable = false,
+			enable = true,
 		}
 		-- requires https://github.com/nvim-treesitter/nvim-treesitter-refactor
 		local refactor = {
@@ -129,27 +129,6 @@ return {
 			},
 		}
 
-		local autotag = {
-			enable = true,
-			filetypes = {
-				"html",
-				"javascript",
-				"typescript",
-				"javascriptreact",
-				"typescriptreact",
-				"svelte",
-				"vue",
-				"tsx",
-				"jsx",
-				"rescript",
-				"xml",
-				"php",
-				"markdown",
-				"glimmer",
-				"handlebars",
-				"hbs",
-			},
-		}
 
 		local incremental_selection = {
 			enable = true,
@@ -206,7 +185,6 @@ return {
 			refactor = refactor,
 			textobjects = textobjects,
 			-- textsubjects = textsubjects,
-			autotag = autotag,
 			incremental_selection = incremental_selection,
 			matchup = matchup,
 			playground = playground,

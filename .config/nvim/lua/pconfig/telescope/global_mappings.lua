@@ -142,7 +142,12 @@ local map_telescope_bindings = function()
 				end,
 				"fd files in cur dir",
 			},
-			b = { require("telescope.builtin").buffers, "buffers" },
+			b = {
+				function()
+					require("telescope.builtin").buffers({ sort_mru = false })
+				end,
+				"buffers",
+			},
 			h = { require("telescope.builtin").oldfiles, "oldfiles" },
 
 			f = {
@@ -158,6 +163,31 @@ local map_telescope_bindings = function()
 				[":"] = { require("telescope.builtin").command_history, "command_history" },
 				["/"] = { require("telescope.builtin").current_buffer_fuzzy_find, "current_buffer_fuzzy_find" },
 				["."] = { require("telescope.builtin").resume, "last telscope invocation" },
+
+				-- o for restrict to _O_pen files
+				o = {
+					a = {
+						function()
+							require("telescope.builtin").live_grep({
+								grep_open_files = true,
+								additional_args = function()
+									return { "--hidden" }
+								end,
+							})
+						end,
+						"grep through dot files",
+					},
+
+          -- Repeat the functionality for <leader>b here, cuz the mapping makes sense, I guess.
+					s = {
+						function()
+							require("telescope.builtin").buffers({ sort_mru = false })
+						end,
+						"find dotfiles",
+					},
+
+					name = "look through dot files",
+				},
 				d = {
 					a = {
 						function()

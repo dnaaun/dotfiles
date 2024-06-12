@@ -305,7 +305,12 @@ PROMPT_COMMAND=set_prompt
 export DOCKER_BUILDKIT=0
 export COMPOSE_DOCKER_CLI_BUILD=0
 
+export PNPM_HOME="/Users/davidat/Library/pnpm"
+
+
 PATH=\
+$PNPM_HOME:\
+/opt/homebrew/opt/pnpm@8/bin:\
 /opt/homebrew/opt/findutils/libexec/gnubin:\
 $HOME/.yarn/bin:\
 $HOME/go/bin:\
@@ -467,3 +472,11 @@ watcher() {
     "$@"
   done
 }
+
+# pnpm
+export PNPM_HOME="/Users/davidat/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
