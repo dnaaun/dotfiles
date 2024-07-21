@@ -142,7 +142,8 @@ return {
 	-- { "lervag/vimtex", ft = { "tex" } },
 
 	-- Turn good ol' linters and formatters to an LSP.
-	require("pconfig.null_ls"),
+  require("pconfig.lint"),
+  require("pconfig.conform"),
 
 	-- vim-matchup
 	require("pconfig.matchup"),

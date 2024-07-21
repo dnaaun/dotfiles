@@ -11,10 +11,6 @@ end
 return {
 	"neovim/nvim-lspconfig",
 	lazy = true,
-	-- keys = {
-	-- 	"gql",
-	-- TODO (David): add more.
-	-- },
 	event = {
 		-- from the auto-session plugin
 		"SessionLoadPost",
@@ -74,20 +70,6 @@ return {
 					vim.diagnostic.goto_next({ severity = "Warn" })
 				end,
 				desc = "next diagnostic",
-			},
-			{
-				"gql",
-				function()
-					vim.lsp.buf.format({
-						async = true,
-						filter = function(client)
-							-- I suaully have prettier setup, and tsserver conflicts with it.
-							-- I also prefer pg_format to sqls.
-							return client.name ~= "tsserver" and client.name ~= "sqls"
-						end,
-					})
-				end,
-				desc = "format",
 			},
 		})
 		vim.lsp.set_log_level(vim.lsp.log_levels.INFO)

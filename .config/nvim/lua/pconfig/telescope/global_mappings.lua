@@ -228,7 +228,7 @@ local map_telescope_bindings = function()
 		},
 		{ "<leader>fgb", require("telescope.builtin").git_branches, desc = "git branches" },
 		{
-			"leader>fgd",
+			"<leader>fgd",
 			function()
 				require("telescope.builtin").git_status()
 			end,

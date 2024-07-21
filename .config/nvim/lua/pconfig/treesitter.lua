@@ -31,8 +31,6 @@ return {
 		local highlight = {
 			enable = false, -- seems to error out
 			disable = {
-				"latex", -- Errors out a lot.
-				-- "vimdoc", -- Errors out a lot.
 			},
 		}
 		local indent = {

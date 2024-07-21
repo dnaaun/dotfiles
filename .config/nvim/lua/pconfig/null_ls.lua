@@ -14,20 +14,9 @@ return {
 			fallback_severity = vim.diagnostic.severity.WARN,
 			sources = {
 				null_ls.builtins.formatting.pg_format,
-				null_ls.builtins.formatting.stylua,
-				null_ls.builtins.formatting.black,
 				null_ls.builtins.formatting.prettier.with({
 					filetypes = vim.list_extend({ "css" }, require("consts").javascripty_filetypes),
 				}),
-				null_ls.builtins.diagnostics.rubocop.with({
-					command = { "bundle", "exec", "rubocop" },
-				}),
-				null_ls.builtins.formatting.rubocop.with({
-					command = { "bundle", "exec", "rubocop" },
-				}),
-				-- null_ls.builtins.formatting.rubyfmt,
-				null_ls.builtins.diagnostics.haml_lint,
-				null_ls.builtins.formatting.djlint,
 			},
 		})
 	end,
