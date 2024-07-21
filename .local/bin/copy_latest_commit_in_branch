@@ -1,0 +1,2 @@
+#!/bin/bash
+git log $(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format='%(refname:short)' | fzf) | head -1 | cut -f2 -d' ' | sd '\n' '' | pbcopy

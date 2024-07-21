@@ -309,6 +309,8 @@ export PNPM_HOME="/Users/davidat/Library/pnpm"
 
 
 PATH=\
+$HOME/.local/bin:\
+/opt/homebrew/opt/postgresql@13/bin:\
 $PNPM_HOME:\
 /opt/homebrew/opt/pnpm@8/bin:\
 /opt/homebrew/opt/findutils/libexec/gnubin:\
@@ -321,7 +323,6 @@ $HOME/go/bin:\
 /usr/local/bin:\
 $HOME/git/dotfiles/bin_dir:\
 $HOME/.gem/bin:\
-$HOME/.local/bin:\
 $PATH
 
 # Source customizations that differ across machines
