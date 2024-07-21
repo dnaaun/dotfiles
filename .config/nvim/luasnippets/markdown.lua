@@ -31,7 +31,7 @@ end
 
 return {
 	s(
-		{ trig = "cb", descr = "code block (```)" },
+		{ trig = "codeblock", descr = "code block (```)" },
 		fmt(
 			[[
       ```{}

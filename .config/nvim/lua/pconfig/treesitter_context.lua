@@ -1,7 +1,7 @@
 return {
 	"romgrk/nvim-treesitter-context",
-  requires = { "nvim-treesitter/nvim-treesitter" },
-  event = require("pconfig.treesitter").event,
+	requires = { "nvim-treesitter/nvim-treesitter" },
+	event = require("pconfig.treesitter").event,
 	config = function()
 		require("treesitter-context").setup({
 			enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
@@ -36,14 +36,8 @@ return {
 			},
 		})
 
-    require("which-key").register({
-      ["<leader>t"] = {
-        name = "treesitter related (and table-mode also?)",
-        c = {
-          name = "Tresitter Context",
-          c = { "<cmd>TSContextToggle<cr>", "Toggle" },
-        },
-      },
-    })
+		require("which-key").add({
+			{ "<leader>tcc", "<cmd>TSContextToggle<cr>", desc = "Toggle" },
+		})
 	end,
 }

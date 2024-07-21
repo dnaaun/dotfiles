@@ -1,107 +1,77 @@
-
+local CODING_SYSTEM_PROMPT =
+	"You are a coding AI assistant. Unless the user explicitly asks a question that, in no way shape or form, can be answered by a code snippet performing what the user asks for, PLEASE PROVIDE YOUR ANSWER  ONLY (I REPEAT, ONLY) IN A MARKDOWN CODE BLOCK, WITH NO OTHER SURROUNDING TEXT. PLEASE ASSUME THIS IS THE CASE UNLESS IT'S CLEAR, BEYOND A SHADOW OF  DOUBT, THAT THE USER WANTS EXPOSITORY/NON-CODE interaction.\n\n"
 return {
 	"robitx/gp.nvim",
 	dependencies = { "folke/which-key.nvim" },
-  keys = { "<leader>z" },
+	keys = { "<leader>z" },
 	config = function()
-require("which-key").register({
-			-- ...
-			["<leader>z"] = {
-				n = { ":<C-u>'<,'>GpChatNew<cr>", "Visual Chat New" },
-				z = { ":<C-u>'<,'>GpChatToggle<cr>", "Visual Popup Chat" },
-				r = { ":<C-u>'<,'>GpChatPaste<cr>", "Visual Chat Paste" },
-
-				x = { ":'<,'>GpChatNew split<CR>", "Visual Chat New split" },
-				v = { ":'<,'>GpChatNew vsplit<CR>", "Visual Chat New vsplit" },
-
-				w = { ":<C-u>'<,'>GpRewrite<cr>", "Visual Rewrite" },
-				a = { ":<C-u>'<,'>GpAppend<cr>", "Visual Append" },
-				b = { ":<C-u>'<,'>GpPrepend<cr>", "Visual Prepend" },
-				e = { ":<C-u>'<,'>GpEnew<cr>", "Visual Enew" },
-				p = { ":<C-u>'<,'>GpPopup<cr>", "Visual Popup" },
-				s = { "<cmd>GpStop<cr>", "Stop" },
-
-				-- optional Whisper commands
-				-- w = { ":<C-u>'<,'>GpWhisper<cr>", "Whisper" },
-				-- R = { ":<C-u>'<,'>GpWhisperRewrite<cr>", "Whisper Visual Rewrite" },
-				-- A = { ":<C-u>'<,'>GpWhisperAppend<cr>", "Whisper Visual Append" },
-				-- B = { ":<C-u>'<,'>GpWhisperPrepend<cr>", "Whisper Visual Prepend" },
-				-- E = { ":<C-u>'<,'>GpWhisperEnew<cr>", "Whisper Visual Enew" },
-				-- P = { ":<C-u>'<,'>GpWhisperPopup<cr>", "Whisper Visual Popup" },
-			},
-			-- ...
-		}, {
-			mode = "v", -- VISUAL mode
-			prefix = "",
-			buffer = nil,
-			silent = true,
-			noremap = true,
-			nowait = true,
+		require("which-key").add({
+			{ "<leader>zn", ":<C-u>'<,'>GpChatNew<cr>", desc = "Visual Chat New", mode = "v" },
+			{ "<leader>zz", ":<C-u>'<,'>GpChatToggle<cr>", desc = "Visual Popup Chat", mode = "v" },
+			{ "<leader>zr", ":<C-u>'<,'>GpChatPaste<cr>", desc = "Visual Chat Paste", mode = "v" },
+			{ "<leader>zx", ":'<,'>GpChatNew split<CR>", desc = "Visual Chat New split", mode = "v" },
+			{ "<leader>zv", ":'<,'>GpChatNew vsplit<CR>", desc = "Visual Chat New vsplit", mode = "v" },
+			{ "<leader>zw", ":<C-u>'<,'>GpRewrite<cr>", desc = "Visual Rewrite", mode = "v" },
+			{ "<leader>za", ":<C-u>'<,'>GpAppend<cr>", desc = "Visual Append", mode = "v" },
+			{ "<leader>zb", ":<C-u>'<,'>GpPrepend<cr>", desc = "Visual Prepend", mode = "v" },
+			{ "<leader>ze", ":<C-u>'<,'>GpEnew<cr>", desc = "Visual Enew", mode = "v" },
+			{ "<leader>zp", ":<C-u>'<,'>GpPopup<cr>", desc = "Visual Popup", mode = "v" },
+			{ "<leader>zs", "<cmd>GpStop<cr>", desc = "Stop", mode = "v" },
 		})
 
 		-- NORMAL mode mappings
-		require("which-key").register({
-			-- ...
-			["<leader>z"] = {
-				n = { "<cmd>GpChatNew<cr>", "New Chat" },
-				z = { "<cmd>GpChatToggle<cr>", "Toggle Popup Chat" },
-				f = { "<cmd>GpChatFinder<cr>", "Chat Finder" },
-
-				x = { "<cmd>GpChatNew split<cr>", "New Chat split" },
-				v = { "<cmd>GpChatNew vsplit<cr>", "New Chat vsplit" },
-
-				w = { "<cmd>GpRewrite<cr>", "Inline Rewrite" },
-				a = { "<cmd>GpAppend<cr>", "Append" },
-				b = { "<cmd>GpPrepend<cr>", "Prepend" },
-				e = { "<cmd>GpEnew<cr>", "Enew" },
-				p = { "<cmd>GpPopup<cr>", "Popup" },
-				s = { "<cmd>GpStop<cr>", "Stop" },
-			},
-		}, {
-			mode = "n", -- NORMAL mode
-			prefix = "",
-			buffer = nil,
-			silent = true,
-			noremap = true,
-			nowait = true,
+		require("which-key").add({
+			{ "<leader>zn", "<cmd>GpChatNew<cr>", desc = "New Chat", mode = "n" },
+			{ "<leader>zz", "<cmd>GpChatToggle<cr>", desc = "Toggle Popup Chat", mode = "n" },
+			{ "<leader>zf", "<cmd>GpChatFinder<cr>", desc = "Chat Finder", mode = "n" },
+			{ "<leader>zx", "<cmd>GpChatNew split<cr>", desc = "New Chat split", mode = "n" },
+			{ "<leader>zv", "<cmd>GpChatNew vsplit<cr>", desc = "New Chat vsplit", mode = "n" },
+			{ "<leader>zw", "<cmd>GpRewrite<cr>", desc = "Inline Rewrite", mode = "n" },
+			{ "<leader>za", "<cmd>GpAppend<cr>", desc = "Append", mode = "n" },
+			{ "<leader>zb", "<cmd>GpPrepend<cr>", desc = "Prepend", mode = "n" },
+			{ "<leader>ze", "<cmd>GpEnew<cr>", desc = "Enew", mode = "n" },
+			{ "<leader>zp", "<cmd>GpPopup<cr>", desc = "Popup", mode = "n" },
+			{ "<leader>zs", "<cmd>GpStop<cr>", desc = "Stop", mode = "n" },
 		})
 
-		-- INSERT mode mappings
-		require("which-key").register({
-			-- ...
-			["<C-g>"] = {
-				c = { "<cmd>GpChatNew<cr>", "New Chat" },
-				z = { "<cmd>GpChatToggle<cr>", "Toggle Popup Chat" },
-				f = { "<cmd>GpChatFinder<cr>", "Chat Finder" },
-
-				x = { "<cmd>GpChatNew split<cr>", "New Chat split" },
-				v = { "<cmd>GpChatNew vsplit<cr>", "New Chat vsplit" },
-
-				w = { "<cmd>GpRewrite<cr>", "Inline Rewrite" },
-				a = { "<cmd>GpAppend<cr>", "Append" },
-				b = { "<cmd>GpPrepend<cr>", "Prepend" },
-				e = { "<cmd>GpEnew<cr>", "Enew" },
-				p = { "<cmd>GpPopup<cr>", "Popup" },
-				s = { "<cmd>GpStop<cr>", "Stop" },
-
-				-- optional Whisper commands
-				-- w = { "<cmd>GpWhisper<cr>", "Whisper" },
-				-- R = { "<cmd>GpWhisperRewrite<cr>", "Whisper Inline Rewrite" },
-				-- A = { "<cmd>GpWhisperAppend<cr>", "Whisper Append" },
-				-- B = { "<cmd>GpWhisperPrepend<cr>", "Whisper Prepend" },
-				-- E = { "<cmd>GpWhisperEnew<cr>", "Whisper Enew" },
-				-- P = { "<cmd>GpWhisperPopup<cr>", "Whisper Popup" },
-			},
-			-- ...
-		}, {
-			mode = "i", -- INSERT mode
-			prefix = "",
-			buffer = nil,
-			silent = true,
-			noremap = true,
-			nowait = true,
-		})
+	
 		require("gp").setup({
+			providers = {
+				openai = {
+					endpoint = "https://api.openai.com/v1/chat/completions",
+					secret = os.getenv("OPENAI_API_KEY"),
+				},
+
+				-- azure = {...},
+
+				copilot = {
+					endpoint = "https://api.githubcopilot.com/chat/completions",
+					secret = {
+						"bash",
+						"-c",
+						"cat ~/.config/github-copilot/hosts.json | sed -e 's/.*oauth_token...//;s/\".*//'",
+					},
+				},
+
+				pplx = {
+					endpoint = "https://api.perplexity.ai/chat/completions",
+					secret = os.getenv("PPLX_API_KEY"),
+				},
+
+				ollama = {
+					endpoint = "http://localhost:11434/v1/chat/completions",
+				},
+
+				googleai = {
+					endpoint = "https://generativelanguage.googleapis.com/v1beta/models/{{model}}:streamGenerateContent?key={{secret}}",
+					secret = os.getenv("GOOGLEAI_API_KEY"),
+				},
+
+				anthropic = {
+					endpoint = "https://api.anthropic.com/v1/messages",
+					secret = os.getenv("ANTHROPIC_API_KEY"),
+				},
+			},
 			agents = {
 				{
 					name = "ChatGPT4",
@@ -109,27 +79,38 @@ require("which-key").register({
 					command = false,
 					-- string with model name or table with model name and parameters
 					model = { model = "gpt-4-1106-preview", temperature = 1.1, top_p = 1 },
-          -- system_prompt = "You are a general AI assistant. Be as curt as possible.",
+					-- system_prompt = "You are a general AI assistant. Be as curt as possible.",
 					-- system prompt (use this to specify the persona/role of the AI)
-					system_prompt = "You are a general AI assistant.\n\n"
-						-- .. "The user provided the additional info about how they would like you to respond:\n\n"
-						-- .. "- If you're unsure don't guess and say you don't know instead.\n"
-						-- .. "- Ask question if you need clarification to provide better answer.\n"
-						-- .. "- Think deeply and carefully from first principles step by step.\n"
-						-- .. "- Zoom out first to see the big picture and then zoom in to details.\n"
-						-- .. "- Use Socratic method to improve your thinking and coding skills.\n"
-						-- .. "- Don't elide any code from your output if the answer requires coding.\n"
-						-- .. "- Take a deep breath; You've got this!\n",
+					system_prompt = CODING_SYSTEM_PROMPT,
+				},
+
+				{
+					name = "ChatGPT4o",
+					chat = true,
+					command = false,
+					-- string with model name or table with model name and parameters
+					model = { model = "gpt-4o", temperature = 1.1, top_p = 1 },
+					system_prompt = CODING_SYSTEM_PROMPT,
+				},
+				{
+					name = "Sonnet3-5",
+					provider = "anthropic",
+					chat = true,
+					command = false,
+					-- string with model name or table with model name and parameters
+					model = { model = "claude-3-5-sonnet-20240620" },
+					-- system_prompt = "You are a general AI assistant. Be as curt as possible.",
+					-- system prompt (use this to specify the persona/role of the AI)
+					system_prompt = CODING_SYSTEM_PROMPT,
 				},
 			},
 		})
 
 		-- I don't know of an official way to set the default agent on startup, so I use
 		-- an undocumented/internal API:
-		require("gp")._state.chat_agent = "ChatGPT4"
+		require("gp")._state.chat_agent = "ChatGPT4o"
 
 		-- VISUAL mode mappings
 		-- s, x, v modes are handled the same way by which_key
-		
 	end,
 }

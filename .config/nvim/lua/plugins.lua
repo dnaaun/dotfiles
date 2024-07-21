@@ -71,6 +71,14 @@ return {
 	require("pconfig.rust_tools"),
 	-- require("pconfig.lsp_inlayhints"),
 	{ "nanotee/sqls.nvim" },
+	{
+		"ray-x/lsp_signature.nvim",
+		-- event = "VeryLazy",
+		opts = {},
+		config = function(_, opts)
+			require("lsp_signature").setup(opts)
+		end,
+	},
 
 	-- cmp-related, might be useful when using neovim in pager mode.
 	require("pconfig.cmp"),
@@ -113,9 +121,6 @@ return {
 	require("pconfig.autopairs"),
 
 	-- match autotag
-  -- Disabling for now because I have to do a lot of "specify generic type for JSX
-  -- invocation", and this autotagging mistinerrepts the open angle bracket for the type
-  -- spec as a closing tag.
 	-- require("pconfig.ts_autotag"),
 
 	-- Put bullets on next line if the current one has bullets
@@ -123,8 +128,6 @@ return {
 
 	-- Show the open buffers in a tab line at the top
 	require("pconfig.bufferline"),
-
-	require("pconfig.codewindow"),
 
 	-- structural search and replce.
 	require("pconfig.ssr"),
@@ -155,6 +158,9 @@ return {
 	require("pconfig.syntax_tree_surfer"),
 	--		-- Treesitter-based, "virtual-text hinting", text objects. Mind blown emoji. Seriously. Just makes too much sense.
 	require("pconfig.treehopper"),
+
+  -- "remote" text objects
+  -- require("pconfig.spooky"),
 
 	-- Treesitter-based extraction of react JSX/TSX into a separate file
 	require("pconfig.react_extract"),
@@ -213,7 +219,7 @@ return {
 	{ "tpope/vim-dispatch", opt = true, cmd = { "Dispatch", "Make", "Focus", "Start" } },
 
 	--		-- An amazing testing plugin. Really showcases the possiblities of treesitter.
-	require("pconfig.neotest"), -- freezes vim on startup
+	-- require("pconfig.neotest"), -- freezes vim on startup
 	{ "haydenmeade/neotest-jest", event = "VeryLazy", ft = require("consts").javascripty_filetypes },
 	{ "olimorris/neotest-rspec", ft = "ruby" },
 	{ "rouge8/neotest-rust", ft = "rust" },
@@ -233,7 +239,7 @@ return {
 	-- require("pconfig.neorg"),
 
 	-- Show me where I'm at in the status bar (like, what funciton/ conditional/thingy)
-	require("pconfig.treesitter_context"),
+	-- require("pconfig.treesitter_context"),
 
 	-- Treesitter offiical plugin to show treesitter parses
 	-- Ya boy is going to start writing plugins at this rate!

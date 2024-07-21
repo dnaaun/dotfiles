@@ -84,10 +84,10 @@ return {
 				{ name = "copilot", keyword_length = 0 },
 				{ name = "git" },
 			}, {
-				{ name = "luasnip", priority = 100 },
+				{ name = "luasnip", priority = 100, keyword_length = 0 },
 			}, {
 				{ name = "dap" },
-				{ name = "nvim_lsp" },
+				{ name = "nvim_lsp", priority = 100, keyword_length = 2 },
 				{ name = "path" },
 				{ name = "orgmode" },
 				{
@@ -132,6 +132,25 @@ return {
 			formatting = {
 				format = cmp_item_formatting,
 			},
+
+			-- Attempt to get nvim-cmp to trigger on InsertEnter.
+			-- This is currently not working.
+			completion = {
+				completeopt = "menu,menuone,noinsert,noselect",
+				autocomplete = {
+					cmp.TriggerEvent.TextChanged,
+					cmp.TriggerEvent.InsertEnter,
+				},
+
+				keyword_length = 0,
+			},
 		})
+		-- Another attempt to get nvim-cmp to trigger on InsertEnter.
+		-- This is currently not working.
+		require("cmp.utils.autocmd").subscribe({ "InsertEnter" }, function()
+			if require("cmp.config").enabled() then
+				cmp.core:on_change("TextChanged")
+			end
+		end)
 	end,
 }

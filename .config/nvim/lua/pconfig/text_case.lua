@@ -6,21 +6,19 @@ return {
 			prefix = "<leader>c",
 		})
 		local wk = require("which-key")
-		wk.register({
-			["<leader>c"] = {
-				s = {
+		wk.add({
+        {"<leader>cs" ,
 					function()
 						require("textcase").current_word("to_snake_case")
 					end,
-					"convert_to_snake_case (manual mapping)",
+				desc = 	"convert_to_snake_case (manual mapping)",
 				},
-				S = {
+				{"<leader>cS",
 					function()
 						require("textcase").lsp_rename("to_snake_case")
 					end,
-					"LSP convert_to_snake_case (manual mapping)",
+				desc =	"LSP convert_to_snake_case (manual mapping)",
 				},
-			},
-		})
+			})
 	end,
 }

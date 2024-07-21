@@ -5,23 +5,18 @@ return {
 	dependencies = "nvim-treesitter/nvim-treesitter",
 
 	keys = { "<leader>ls" },
-  lazy = true,
+	lazy = true,
 
 	-- Calling setup is optional.
 	config = function()
-		require("which-key").register({
-			["<leader>"] = {
-				l = {
-					s = {
-						-- Additional funciton wrapping to avoid requiring ssr on vim load
-						function()
-							require("ssr").open()
-						end,
-						"Structural Search and Replace with Treeesitter",
-					},
-				},
+		require("which-key").add({
+			{
+				"<leader>ls",
+				function() require("ssr").open() end,
+				desc = "Structural Search and Replace with Treeesitter",
+				mode = { "n", "x" },
 			},
-		}, { mode = { "n", "x" } })
+		})
 
 		require("ssr").setup({
 			min_width = 50,

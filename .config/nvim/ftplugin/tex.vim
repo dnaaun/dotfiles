@@ -1,8 +1,3 @@
-" tex-conceal.vim
-set conceallevel=2
-let g:tex_conceal='abdmg'
-hi Conceal ctermbg=none
-
 " Needs to be strictly less than the "columns" option
 " provided to latexindent.pl because latexindent.pl acts as if
 " "overflow" is set sometimes.

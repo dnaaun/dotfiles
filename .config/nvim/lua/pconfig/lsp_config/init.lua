@@ -37,55 +37,59 @@ return {
 			},
 		}
 		local wk = require("which-key")
-		wk.register({
-			K = { vim.lsp.buf.hover, "hover" },
-			g = {
-				R = { vim.lsp.buf.rename, "rename" },
-				h = {
-					function()
-						vim.diagnostic.open_float({ source = true })
-					end,
-					"diagnostic float",
-				},
+		wk.add({
+			{ "K", vim.lsp.buf.hover, desc = "hover" },
+			{ "gR", vim.lsp.buf.rename, desc = "rename" },
+			{
+				"gh",
+				function()
+					vim.diagnostic.open_float({ source = true })
+				end,
+				desc = "diagnostic float",
 			},
-			["[e"] = {
+			{
+				"[e",
 				function()
 					vim.diagnostic.goto_prev({ severity = "Error" })
 				end,
-				"previous diagnostic",
+				desc = "previous diagnostic",
 			},
-			["]e"] = {
+			{
+				"]e",
 				function()
 					vim.diagnostic.goto_next({ severity = "Error" })
 				end,
-				"next diagnostic",
+				desc = "next diagnostic",
 			},
-			["[gh"] = {
+			{
+				"[gh",
 				function()
 					vim.diagnostic.goto_prev({ severity = "Warn" })
 				end,
-				"previous diagnostic",
+				desc = "previous diagnostic",
 			},
-			["]gh"] = {
+			{
+				"]gh",
 				function()
 					vim.diagnostic.goto_next({ severity = "Warn" })
 				end,
-				"next diagnostic",
+				desc = "next diagnostic",
 			},
-			["gql"] = {
+			{
+				"gql",
 				function()
 					vim.lsp.buf.format({
 						async = true,
 						filter = function(client)
-              -- I suaully have prettier setup, and tsserver conflicts with it.
-              -- I also prefer pg_format to sqls.
+							-- I suaully have prettier setup, and tsserver conflicts with it.
+							-- I also prefer pg_format to sqls.
 							return client.name ~= "tsserver" and client.name ~= "sqls"
 						end,
 					})
 				end,
-				"format",
+				desc = "format",
 			},
-		}, { mode = "n" })
+		})
 		vim.lsp.set_log_level(vim.lsp.log_levels.INFO)
 
 		-- Use LSP formatting. Note this doesn't get invoked if LSP
@@ -118,7 +122,7 @@ return {
 		-- A function to setup a mapping for :TexlabForward
 		local setup_texlab_forward_search = function()
 			local opts = { noremap = true, silent = true }
-			wk.register({ ["<leader>t"] = { ":TexlabForward<CR>", "Texlab forward" } }, opts)
+			wk.add({ { "<leader>t", ":TexlabForward<CR>", desc = "Texlab forward" } }, opts)
 		end
 
 		-- Allow other files to define callbacks that get called `on_attach`
@@ -136,18 +140,18 @@ return {
 
 			if client.name == "tsserver" then
 				local wk = require("which-key")
-				wk.register({
-					["<leader>li"] = {
-
+				wk.add({
+					{
+						"<leader>li",
 						function()
 							vim.lsp.buf.execute_command({
 								command = "_typescript.organizeImports",
 								arguments = { vim.fn.expand("%:p") },
 							})
 						end,
-						"TS Organize Imports",
+						desc = "TS Organize Imports",
 					},
-				}, { mode = "n" })
+				})
 			end
 
 			require("lsp_occurence").on_attach(client, bufnr)

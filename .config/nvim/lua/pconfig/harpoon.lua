@@ -23,29 +23,30 @@ vim.api.nvim_create_autocmd({ "BufLeave" }, {
 
 return {
 	"ThePrimeagen/harpoon",
-	dependencies = { "nvim-lua/plenary.nvim",
-  -- We want to use telescope's harpoon extension.
-	"nvim-telescope/telescope.nvim",
-},
-  keys = { 
-    "m1",
-    "m2",
-    "m3",
-    "m4",
-    "m5",
-    "m6",
-    "m7",
-    "m8",
-    "m9",
-    "m0",
-    "ma",
-    "ms",
-    "md",
-    "mx",
-    "mm",
-  },
+	dependencies = {
+		"nvim-lua/plenary.nvim",
+		-- We want to use telescope's harpoon extension.
+		"nvim-telescope/telescope.nvim",
+	},
+	-- keys = {
+	--   "m1",
+	--   "m2",
+	--   "m3",
+	--   "m4",
+	--   "m5",
+	--   "m6",
+	--   "m7",
+	--   "m8",
+	--   "m9",
+	--   "m0",
+	--   "ma",
+	--   "ms",
+	--   "md",
+	--   "mx",
+	--   "mm",
+	-- },
 
-   config = function()
+	config = function()
 		local wk = require("which-key")
 		local mark = require("harpoon.mark")
 		local ui = require("harpoon.ui")
@@ -53,17 +54,16 @@ return {
 		require("telescope").load_extension("harpoon")
 
 		-- direction will be added to the numeric mappings' labels.
-		local make_wk_mappings = function(direction)
+		local make_wk_mappings = function(direction, prefix)
 			if direction ~= "horizontal" and direction ~= "vertical" then
 				direction = ""
 			end
 
-			local wk_mappings = {
-				name = "harpoon " .. direction,
-			}
+			local wk_mappings = {}
 
 			for i = 1, 9 do
-				wk_mappings[tostring(i)] = {
+				wk_mappings[i] = {
+					prefix .. tostring(i),
 					function()
 						if direction == "vertical" then
 							vim.cmd("vsplit")
@@ -72,26 +72,24 @@ return {
 						end
 						ui.nav_file(i)
 					end,
-					direction .. " nav to file" .. i,
+					desc = direction .. " nav to file" .. i,
+
+					group = "harpoon " .. direction,
 				}
 			end
 
 			return wk_mappings
 		end
-
-		wk.register({
-			-- I've never used vim marks (which `m` is supposed to operate),
-			-- Si I think this is ok.
-			m = vim.tbl_extend("force", {
-				a = { mark.add_file, "add file" },
-				d = { mark.rm_file, "remove file" },
-				-- I chose m because <leader>m is my harpoon prefix
-				-- and this is probably going to be a frequent operation.
-				m = { ui.toggle_quick_menu, "harpoon" },
-			}, make_wk_mappings()),
-			mx = make_wk_mappings("horizontal"),
-			ms = make_wk_mappings("vertical"),
+		wk.add(make_wk_mappings("", "m"))
+		wk.add({
+			{ "ma", mark.add_file, desc = "add file" },
+			{ "md", mark.rm_file, desc = "remove file" },
+			-- I chose m because <leader>m is my harpoon prefix
+			-- and this is probably going to be a frequent operation.
+			{ "mm", ui.toggle_quick_menu, desc = "harpoon" },
 		})
+    wk.add(make_wk_mappings("horizontal", "mx"))
+    wk.add(make_wk_mappings("vertical", "ms"))
 
 		require("harpoon").setup({
 			menu = {

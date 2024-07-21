@@ -1,7 +1,7 @@
 return {
 	"nvim-treesitter/nvim-treesitter",
 	run = ":TSUpdate",
-  event = "VeryLazy",
+	event = "VeryLazy",
 	config = function()
 		vim.treesitter.language.register("tsx", {
 			"javascript",
@@ -29,9 +29,11 @@ return {
 
 		-- Various Treesitter modules config
 		local highlight = {
-			enable = true, -- just too many errors rn.
-			disable = { "typescript", "tsx" },
-			-- additional_vim_regex_highlighting = { "org" }, -- Required since TS highlighter doesn't support all syntax features (conceal)
+			enable = false, -- seems to error out
+			disable = {
+				"latex", -- Errors out a lot.
+				-- "vimdoc", -- Errors out a lot.
+			},
 		}
 		local indent = {
 			enable = true,
@@ -129,16 +131,15 @@ return {
 			},
 		}
 
-
 		local incremental_selection = {
 			enable = true,
 			disable = function(_, buf)
-        -- Disable for markdown files because I want to use <CR> in my GPT plugin for
-        -- "send", and incremental selection interferes with that.
-        if vim.bo[buf].filetype == "markdown" then
-          return true
-        end
- 
+				-- Disable for markdown files because I want to use <CR> in my GPT plugin for
+				-- "send", and incremental selection interferes with that.
+				if vim.bo[buf].filetype == "markdown" then
+					return true
+				end
+
 				-- Otherwise, it interferes with "command-line window"
 				if vim.fn.getbufvar(buf, "&buftype") == "nofile" then
 					return true
@@ -177,7 +178,6 @@ return {
 			-- termcolors = {} -- table of colour name strings
 		}
 
-
 		require("nvim-treesitter.configs").setup({
 			ensure_installed = ensure_installed,
 			highlight = highlight,
@@ -189,7 +189,7 @@ return {
 			matchup = matchup,
 			playground = playground,
 			rainbow = rainbow,
-      ensure_installed = ensure_installed
+			ensure_installed = ensure_installed,
 		})
 
 		vim.opt.foldexpr = "nvim_treesitter#foldexpr()"

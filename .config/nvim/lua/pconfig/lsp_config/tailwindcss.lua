@@ -8,23 +8,23 @@ return {
 		-- },
 	},
 	settings = {
-		tailwindCSS = {
-			includeLanguages = {
-				-- rust = "html",
-				-- ["*.rs"] = "html",
-			},
-			experimental = {
-				classRegex = {
-					-- Start autocompletion when `class("...")`
-					-- This is useful for Leptos/sycamore.
-					-- { [[\.class\(([^\)]*)\)]], '"([^"]*)"' },
-					-- { [[\.classes\(([^\)]*)\)]], '"([^"]*)"' },
-				},
-			},
-			emmetCompletions = true,
-			classAttributes = { "class", "className", "classList", "ngClass" },
-			lint = {},
-			validate = true,
-		},
+		-- tailwindCSS = {
+		-- 	includeLanguages = {
+		-- 		-- rust = "html",
+		-- 		-- ["*.rs"] = "html",
+		-- 	},
+		-- 	experimental = {
+		-- 		classRegex = {
+		-- 			-- Start autocompletion when `class("...")`
+		-- 			-- This is useful for Leptos/sycamore.
+		-- 			-- { [[\.class\(([^\)]*)\)]], '"([^"]*)"' },
+		-- 			-- { [[\.classes\(([^\)]*)\)]], '"([^"]*)"' },
+		-- 		},
+		-- 	},
+		-- 	emmetCompletions = true,
+		-- 	classAttributes = { "class", "className", "classList", "ngClass" },
+		-- 	lint = {},
+		-- 	validate = true,
+		-- },
 	},
 }

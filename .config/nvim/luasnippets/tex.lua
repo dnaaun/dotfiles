@@ -40,13 +40,15 @@ return {
 \usepackage{enumitem}
 \setlist[itemize]{leftmargin=0.2em, labelsep=0.2em, nolistsep}
 \begin{document}
-\columnratio{0.25}
+\columnratio{0.1,0.25}
+\setlength{\columnsep}{2em}
+\setlength{\columnseprule}{0.4pt}
 \begin{sloppypar}
-	\begin{paracol}{2}
-		\begin{rightcolumn}
+	\begin{paracol}{4}
+    \begin{nthcolumn}{2}
       ]]) .. "{}" .. escape_curly_braces([[
 
-    \end{rightcolumn}
+    \end{nthcolumn}
   \end{paracol}
 \end{sloppypar}
 \end{document}

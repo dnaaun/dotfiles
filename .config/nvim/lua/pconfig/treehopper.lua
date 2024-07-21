@@ -5,22 +5,9 @@ return {
 	config = function()
 		local wk = require("which-key")
 
-		-- Operator-pending mode mapping
-		wk.register({
-			m = { require("tsht").nodes, "Treehopper Nodes" },
-		}, {
-			mode = "o",
-			silent = true,
+		wk.add({
+			{ "m", require("tsht").nodes, desc = "Treehopper Nodes", mode = "o" },
+			{ "m", require("tsht").nodes, desc = "Treehopper Nodes", mode = "x" },
 		})
-
-		-- Visual mode mapping
-		wk.register({
-			m = { require("tsht").nodes, "Treehopper Nodes" },
-		}, {
-			mode = "x",
-			silent = true,
-		})
-
-		-- require("tsht").config.ft_to_parser.typescriptreact = "tsx"
 	end,
 }

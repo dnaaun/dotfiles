@@ -6,10 +6,8 @@ return {
 		require("neogit").setup()
 
 		local wk = require("which-key")
-		wk.register({
-			["<leader>g"] = {
-				n = { require("neogit").open, "Neogits" },
-			},
+		wk.add({
+			{ "<leader>gn", require("neogit").open, desc = "Neogits" },
 		})
 	end,
 }

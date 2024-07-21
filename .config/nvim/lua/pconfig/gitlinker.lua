@@ -1,7 +1,22 @@
 return {
 	"ruifm/gitlinker.nvim",
 	dependencies = "nvim-lua/plenary.nvim",
-	keys = { "<leader>gy" },
+	keys = {
+		{
+			"<leader>gy",
+			function()
+				require("gitlinker").get_buf_range_url("n")
+			end,
+			mode = "n",
+		},
+		{
+			"<leader>gy",
+			function()
+				require("gitlinker").get_buf_range_url("v")
+			end,
+			mode = "v",
+		},
+	},
 	config = function()
 		require("gitlinker").setup({
 

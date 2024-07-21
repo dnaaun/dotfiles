@@ -19,8 +19,8 @@ return {
 	branch = "anticonceal",
 	config = function()
 		local wk = require("which-key")
-		wk.register({
-			["<leader>lh"] = { "<cmd>lua require('lsp-inlayhints').toggle()<CR>", "Toggle inlay hints" },
+		wk.add({
+			{ "<leader>lh", "<cmd>lua require('lsp-inlayhints').toggle()<CR>", desc = "Toggle inlay hints" },
 		})
 		require("lsp-inlayhints").setup()
 	end,

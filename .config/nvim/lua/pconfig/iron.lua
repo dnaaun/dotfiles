@@ -15,41 +15,41 @@ return {
 
 		local wk = require("which-key")
 
-		wk.register({
-			["<leader>r"] = {
-				name = "(iron) repl",
-				h = {
-					function()
-						iron.close_repl(vim.opt.filetype:get())
-					end,
-					"close repl",
-				},
-				s = {
-					name = "send specific keys",
-					q = {
-						function()
-							iron.send(vim.opt.filetype:get(), { "q" })
-						end,
-						"q",
-					},
-				},
-				f = {
-					function()
-						iron.focus_on(vim.opt.filetype:get())
-					end,
-					"focus on repl",
-				},
-				o = {
-					function()
-						iron.repl_for(vim.opt.filetype:get())
-					end,
-					"open repl",
-				},
+		wk.add({
+			{
+				"<leader>rh",
+				function()
+					iron.close_repl(vim.opt.filetype:get())
+				end,
+				desc = "close repl",
+				group = "(iron) repl",
+			},
+			{
+				"<leader>rsq",
+				function()
+					iron.send(vim.opt.filetype:get(), { "q" })
+				end,
+				desc = "q",
+				group = "send specific keys",
+			},
+			{
+				"<leader>rf",
+				function()
+					iron.focus_on(vim.opt.filetype:get())
+				end,
+				desc = "focus on repl",
+			},
+			{
+				"<leader>ro",
+				function()
+					iron.repl_for(vim.opt.filetype:get())
+				end,
+				desc = "open repl",
 			},
 		})
 
 		local rails_console = {
-			command = { "bundle", "exec", "rails", "console" },
+			command = { "bin/rails", "console" },
 			-- command = {"heroku", "run", "rails", "console", "-a", "gondor"},
 			format = bracketed_paste,
 		}
@@ -148,8 +148,8 @@ return {
 					ruby = rails_console,
 					sql = {
 						-- command = { "pgcli", "-d", "crushedgarlic", "-u", "crushedgarlic" },
-						command = { "pgcli", "-d", "hybrid_development" },
-						-- command = { "pgcli", vim.env.PRODUCTION_POSTGRES },
+						-- command = { "pgcli", "-d", "hybrid_development" },
+						command = { "pgcli", vim.env.PRODUCTION_POSTGRES },
 						format = bracketed_paste,
 					},
 				},

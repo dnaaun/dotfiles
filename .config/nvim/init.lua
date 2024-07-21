@@ -1,7 +1,9 @@
--- vim.g.firenvim_config.localSettings[".*"] = { takeover = "never" }
-
--- I don't know why I disabled you, but I must have a pretty good reason.
--- require('impatient') -- Speed up loading things. TOFIXLATER: This will probably (definitely?) break when impatient.nvim is not installed.
+-- Vim has new default mappings that conflict with my mappings
+for _, mapping in ipairs({ "grr", "grn", "gra" }) do
+	if vim.fn.maparg(mapping, "n") ~= "" then
+		vim.keymap.del({ "n" }, mapping)
+	end
+end
 
 local detect_if_in_simple_mode_group = vim.api.nvim_create_augroup("DetectIfWeAreInSimpleMode", {
 	clear = true,
@@ -64,7 +66,7 @@ opt.splitbelow = true
 opt.splitright = true
 opt.hlsearch = true
 opt.incsearch = true -- Incremental search highlight
-opt.completeopt = { "longest", "preview", "noinsert" }
+opt.completeopt = { "menu", "menuone", "noinsert", "noselect" }
 -- Enable backspace on everything
 opt.backspace = { "indent", "eol", "start" }
 opt.mouse = "a" -- Resize vim splists with a mouse when inside tmux
@@ -82,7 +84,6 @@ g.maplocalleader = ","
 -- Move line up / down
 nvim_set_keymap("n", "<up>", ":m .-2<CR>", { noremap = true, silent = true })
 nvim_set_keymap("n", "<down>", ":m .+1<CR>", { noremap = true, silent = true })
-
 
 -- WHen in visual/select/operator mode, I want searching with / to be an inclusive
 -- motion. This is acheived by doing /pattern/e, but I don't wanna have to type
@@ -230,7 +231,6 @@ vim.keymap.set("n", "<leader>w", function()
 	vim.fn.execute("silent write")
 end, { noremap = true, desc = "<CR>silent write" })
 
-
 --- Bootsrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -254,20 +254,32 @@ require("lazy").setup({
 	{
 		import = "plugins",
 		concurrency = 4,
+		git = {
+			-- defaults for the `Lazy log` command
+			-- log = { "--since=3 days ago" }, -- show commits from the last 3 days
+			log = { "-8" }, -- show the last 8 commits
+			timeout = 600, -- kill processes that take more than 10 minutes
+			url_format = "https://github.com/%s.git",
+			-- lazy.nvim requires git >=2.19.0. If you really want to use lazy with an older version,
+			-- then set the below to false. This should work, but is NOT supported and will
+			-- increase downloads a lot.
+			filter = true,
+		},
 	},
 })
 
 local wk = require("which-key")
 
-wk.register({
-	["<leader><C-g>"] = {
+wk.add({
+	{
+		"<leader><C-g>",
 		function()
 			-- Get absolute file of current file
 			local file = vim.fn.expand("%:p")
 			-- Copy the above to the system clipboard register
 			vim.fn.setreg("+", file)
 		end,
-		"copy current file path to clipboard register",
+		desc = "copy current file path to clipboard register",
 	},
 })
 -- Neovim win!
@@ -276,18 +288,21 @@ wk.register({
 -- vim.o.cmdheight = 0
 
 -- exercute neovim
-wk.register({
-	["<leader>lr"] = {
+wk.add({
+	{
+		"<leader>lr",
 		function()
 			local text = vim.fn.join(require("std2").get_visual_selection_text(0), "\n")
 			vim.fn.luaeval(text)
 		end,
-		"source the visual (hopefully lua code) selection into neovim",
+		desc = "source the visual (hopefully lua code) selection into neovim",
+		mode = "v",
 	},
-}, { mode = "v" })
+})
 
-wk.register({
-	["<leader>lc"] = {
+wk.add({
+	{
+		"<leader>lc",
 		function()
 			vim.cmd("nohlsearch")
 			vim.lsp.util.buf_clear_references(0)
@@ -295,7 +310,7 @@ wk.register({
 				require("noice").cmd("dismiss")
 			end
 		end,
-		"clear both vim search and LSP reference highlights",
+		desc = "clear both vim search and LSP reference highlights",
 	},
 })
 
@@ -303,3 +318,11 @@ wk.register({
 -- vim.cmd("colorscheme github_dark")
 -- vim.cmd("colorscheme nightfox")
 vim.cmd("colorscheme catppuccin-latte")
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "org",
+	callback = function()
+		vim.opt.conceallevel = 2
+		vim.opt.concealcursor = ""
+	end,
+})

@@ -51,19 +51,14 @@ return {
 		local run = neotest.run
 		local jump = neotest.jump
 		local wk = require("which-key")
-		wk.register({
-			["t"] = {
-				name = "neotest",
-				t = { run.run, "nearest test" },
-				f = { run.file, "test file" },
-				a = { run.attach, "attach to nearest test" },
-				o = { neotest.output.open, "open test output" },
-				l = { run.run_last, "run last test" },
-
-				-- idea is to go similar to up and down
-				j = { jump.next({ status = "failed" }), "jump to next failed" },
-				k = { jump.prev({ status = "failed" }), "jump to prev failed" },
-			},
+		wk.add({
+			{ "tt", run.run, desc = "nearest test", group = "neotest" },
+			{ "tf", run.file, desc = "test file", group = "neotest" },
+			{ "ta", run.attach, desc = "attach to nearest test", group = "neotest" },
+			{ "to", neotest.output.open, desc = "open test output", group = "neotest" },
+			{ "tl", run.run_last, desc = "run last test", group = "neotest" },
+			{ "tj", jump.next({ status = "failed" }), desc = "jump to next failed", group = "neotest" },
+			{ "tk", jump.prev({ status = "failed" }), desc = "jump to prev failed", group = "neotest" },
 		})
 	end,
 }
