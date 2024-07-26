@@ -26,7 +26,7 @@ vim.keymap.set("i", "<C-a>", function()
 end, { buffer = true })
 
 -- Setup otter.nvim
-require("otter").activate(nil, true, true, nil)
+-- require("otter").activate(nil, true, true, nil)
 
 vim.api.nvim_create_autocmd("BufEnter", {
 	pattern = "*.md",
