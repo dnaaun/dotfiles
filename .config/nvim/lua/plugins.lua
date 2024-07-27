@@ -1,7 +1,6 @@
 return {
 	-- require("pconfig.mason"),
 	-- require("pconfig.mason_lspconfig"),
-	require("pconfig.which_key"), -- show candidate mappings after pressing a key
 
 	-- use("Mofiqul/vscode.nvim")
 	-- use("folke/tokyonight.nvim")
@@ -76,8 +75,6 @@ return {
 	-- Code outline
 	-- require("pconfig.aerial"),
 
-	-- { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
-
 	-- Markdown/notebook related
 	-- require("pconfig.femaco"),
 	-- require("pconfig.otter"),
@@ -110,12 +107,25 @@ return {
 	-- Put bullets on next line if the current one has bullets
 	-- require("pconfig.bullets"),
 
+	-- Provides type annotations for neovim's Lua interface. Needs Sumenkos' Lua LSP. TODO: Not actually set up yet: https://github.com/folke/lua-dev.nvim#%EF%B8%8F--configuration
+	-- require("pconfig.lua_dev"),
 
+
+	-- highlight brackets and things like that in differnet colors
+	-- I don't think I've ever paid aattention to the colors of brackets ever.
+	-- {
+	-- 	"p00f/nvim-ts-rainbow",
+	-- 	dependencies = "nvim-treesitter/nvim-treesitter",
+	-- 	event = { "InsertEnter" },
+	-- },
+
+	-- Spin up a repl in a neovim terminal and send text to it
+	-- require("pconfig.iron"),
+
+
+	-- require("pconfig.neogit"),
 	-- Testing things
 	-- { "tpope/vim-dispatch", opt = true, cmd = { "Dispatch", "Make", "Focus", "Start" } },
-	-- (Fuzzy) search everything!
-	require("pconfig.telescope"),
-	require("pconfig.telescope_file_browser"),
 	-- { "Marskey/telescope-sg" },
 
 	-- I think this is out of date with ormgmode.nvim
@@ -124,6 +134,11 @@ return {
 	-- Git and Github
 	-- Look at lines added/modified/taken away, all at a glance.
 	-- require("pconfig.gitsigns"),
+	require("pconfig.which_key"), -- show candidate mappings after pressing a key
+
+	-- (Fuzzy) search everything!
+	require("pconfig.telescope"),
+	require("pconfig.telescope_file_browser"),
 
 	-- Sessions, I really need'em
 	require("pconfig.auto_session"),
@@ -162,8 +177,6 @@ return {
 	-- Convert between all the cases, with LSP and preview integration
 	require("pconfig.text_case"),
 
-	-- { "lervag/vimtex", ft = { "tex" } },
-
 	-- Turn good ol' linters and formatters to an LSP.
 	require("pconfig.lint"),
 	require("pconfig.conform"),
@@ -174,45 +187,17 @@ return {
 	-- The package, the pyth, the pegend.
 	require("pconfig.treesitter"),
 
-	-- Text objects based on syntax trees!!
-	-- DISABLED: cuz it's causing when editing Rust files, and files have to be "force saved"
-	-- { "nvim-treesitter/nvim-treesitter-textobjects", event = require("pconfig.treesitter").event },
-
-	-- I use it for treesitter-based,"virtual-text hinting", jumping/movement.
-	require("pconfig.syntax_tree_surfer"),
 	--		-- Treesitter-based, "virtual-text hinting", text objects. Mind blown emoji. Seriously. Just makes too much sense.
 	require("pconfig.treehopper"),
 
-	-- "remote" text objects
-	-- require("pconfig.spooky"),
-
-	-- Treesitter-based extraction of react JSX/TSX into a separate file
-	require("pconfig.react_extract"),
-
 	-- I use it for slightly nicer UI for lsp code actions
-	require("pconfig.dressing"),
-
-	-- Provides type annotations for neovim's Lua interface. Needs Sumenkos' Lua LSP. TODO: Not actually set up yet: https://github.com/folke/lua-dev.nvim#%EF%B8%8F--configuration
-	require("pconfig.lua_dev"),
-
-
-	-- highlight brackets and things like that in differnet colors
-	-- I don't think I've ever paid aattention to the colors of brackets ever.
-	-- {
-	-- 	"p00f/nvim-ts-rainbow",
-	-- 	dependencies = "nvim-treesitter/nvim-treesitter",
-	-- 	event = { "InsertEnter" },
-	-- },
-
-	-- Spin up a repl in a neovim terminal and send text to it
-	require("pconfig.iron"),
-
-
-	require("pconfig.neogit"),
+	rrequire("pconfig.dressing"),
 
 	-- Here we go again. I really do want to give orgmode another try, since I keep on re-inventing it in my head again and again.
 	require("pconfig.orgmode"),
 
 	require("pconfig.tmux"),
+  
+	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 
 }
