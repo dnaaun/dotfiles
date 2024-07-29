@@ -10,4 +10,4 @@ vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "BufCreate" }, {
 })
 
 vim.g.bullets_enabled_file_types = { "org", "markdown", "text", "gitcommit", "norg" }
-return { "dkarter/bullets.vim", ft = vim.g.bullets_enabled_file_types, event = "VeryLazy" }
+return { "dkarter/bullets.vim", ft = vim.g.bullets_enabled_file_types }

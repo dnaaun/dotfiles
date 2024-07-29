@@ -44,7 +44,7 @@ return {
 \setlength{\columnsep}{2em}
 \setlength{\columnseprule}{0.4pt}
 \begin{sloppypar}
-	\begin{paracol}{4}
+	\begin{paracol}{3}
     \begin{nthcolumn}{2}
       ]]) .. "{}" .. escape_curly_braces([[
 

@@ -326,3 +326,10 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.opt.concealcursor = ""
 	end,
 })
+
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+	pattern = "*.bashrc_specific",
+	callback = function()
+		vim.bo.filetype = "sh"
+	end,
+})
