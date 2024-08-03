@@ -333,3 +333,45 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 		vim.bo.filetype = "sh"
 	end,
 })
+
+local function contains(array, str)
+	for _, value in ipairs(array) do
+		if value == str then
+			return true
+		end
+	end
+	return false
+end
+
+-- Function to jump to the outermost node that matches one of the given types
+-- `node_types` should be an array of strings.
+local function jump_to_outermost_node_of_type(node_types)
+	local ts_utils = require("nvim-treesitter.ts_utils")
+	local parser = vim.treesitter.get_parser(0)
+	local tstree = parser:parse()[1]
+	local root = tstree:root()
+
+	local cur_node = ts_utils.get_node_at_cursor()
+
+	local outer_most_matching_node = nil
+	while cur_node and cur_node:parent() and cur_node:parent() ~= root do
+		P(cur_node:type())
+		if contains(node_types, cur_node:type()) then
+			outer_most_matching_node = cur_node
+		end
+		cur_node = cur_node:parent()
+	end
+
+	if outer_most_matching_node then
+		local start_row, start_col = outer_most_matching_node:start()
+		vim.api.nvim_win_set_cursor(0, { start_row + 1, start_col })
+	else
+		print("Outermost function not found")
+	end
+end
+vim.keymap.set(
+	"n",
+	"<leader>cf",
+  function() jump_to_outermost_node_of_type({"function", "method"}) end,
+	{ noremap = true, silent = true, desc = "jump to outermost function/method" }
+)
