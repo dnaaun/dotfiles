@@ -3,7 +3,7 @@ import = [
   # "~/.config/alacritty/catppuccin-latte.toml"
   # "~/.config/alacritty/catppuccin-frappe.toml"
   # "~/.config/alacritty/catppuccin-macchiato.toml"
-  "/Users/davidat/.config/alacritty/catppuccin-mocha.toml"
+  "/Users/davidat/.config/alacritty/catppuccin-latte.toml"
 ]
 
 [env]

@@ -29,12 +29,15 @@ return {
 
 		-- Various Treesitter modules config
 		local highlight = {
-			enable = false, -- seems to error out
+			enable = false,
 			disable = {
 			},
 		}
 		local indent = {
 			enable = true,
+      disable = { 
+        "ruby"
+      }
 		}
 		-- requires https://github.com/nvim-treesitter/nvim-treesitter-refactor
 		local refactor = {
@@ -130,13 +133,18 @@ return {
 		}
 
 		local incremental_selection = {
-			enable = true,
+			enable = false,
 			disable = function(_, buf)
 				-- Disable for markdown files because I want to use <CR> in my GPT plugin for
 				-- "send", and incremental selection interferes with that.
 				if vim.bo[buf].filetype == "markdown" then
 					return true
 				end
+
+				if vim.bo[buf].filetype == "tex" then
+					return true -- Doesn't work for tex
+				end
+
 
 				-- Otherwise, it interferes with "command-line window"
 				if vim.fn.getbufvar(buf, "&buftype") == "nofile" then

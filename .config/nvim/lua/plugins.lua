@@ -9,16 +9,6 @@ return {
 	-- { "haydenmeade/neotest-jest", event = "VeryLazy", ft = require("consts").javascripty_filetypes },
 	-- { "olimorris/neotest-rspec", ft = "ruby" },
 	-- { "rouge8/neotest-rust", ft = "rust" },
-
-	-- I think these two cause TS errors.
-	-- {
-	-- 		"JoosepAlviste/nvim-ts-context-commentstring",
-	-- 		event = "VeryLazy",
-	-- 		config = function()
-	-- 			require("ts_context_commentstring").setup({})
-	-- 		end,
-	-- 	},
-	-- require("pconfig.telescope_ast_grep"),
 	-- require("pconfig.copilot"),
 	-- 	{
 	-- 		"ray-x/lsp_signature.nvim",
@@ -33,31 +23,18 @@ return {
 	require("pconfig.telescope"),
 	require("pconfig.telescope_file_browser"),
 	require("pconfig.lsp_config"),
-
 	require("pconfig.cmp"),
 	{ "hrsh7th/cmp-buffer", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	{ "hrsh7th/cmp-nvim-lsp", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
-	-- { "itchyny/vim-qfedit" },
-
-	-- vim-matchup
+	{ "itchyny/vim-qfedit" },
 	require("pconfig.matchup"),
-
-	-- The package, the pyth, the pegend.
 	require("pconfig.treesitter"),
-
 	require("pconfig.treehopper"),
-
-	-- Here we go again. I really do want to give orgmode another try, since I keep on re-inventing it in my head again and again.
 	require("pconfig.orgmode"),
-
 	require("pconfig.tmux"),
-
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
-
-	-- require("pconfig.dressing"),
+	require("pconfig.dressing"),
 	require("pconfig.treesitter_unit"),
-
-	----------------------- These errors don't cause the neovim freeze. ------------------
 	require("pconfig.dirbuf"),
 	require("pconfig.surround"),
 	{ "nanotee/sqls.nvim" },

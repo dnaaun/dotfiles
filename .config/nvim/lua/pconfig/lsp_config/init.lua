@@ -187,6 +187,7 @@ return {
 			"html",
 			"sorbet",
 			"cssls",
+      "jsonls",
 			-- "marksman",
 			"yamlls",
 			-- "ast_grep",

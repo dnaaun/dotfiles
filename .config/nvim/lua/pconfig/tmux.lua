@@ -32,10 +32,10 @@ return {
 		local wk = require("which-key")
 
 		wk.add({
-			{ "<C-l>", tmux.move_right, "move right", mode = "i" },
-			{ "<C-h>", tmux.move_left, "move left", mode = "i" },
-			{ "<C-j>", tmux.move_down, "move down", mode = "i" },
-			{ "<C-k>", tmux.move_up, "move up", mode = "i" },
+			{ "<C-l>", tmux.move_right, desc = "move right", mode = "i" },
+			{ "<C-h>", tmux.move_left, desc = "move left", mode = "i" },
+			{ "<C-j>", tmux.move_down, desc = "move down", mode = "i" },
+			{ "<C-k>", tmux.move_up, desc= "move up", mode = "i" },
 		})
 	end,
 }

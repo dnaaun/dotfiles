@@ -317,7 +317,7 @@ wk.add({
 -- vim.cmd("colorscheme tokyonight-day")
 -- vim.cmd("colorscheme github_dark")
 -- vim.cmd("colorscheme nightfox")
-vim.cmd("colorscheme catppuccin-mocha")
+vim.cmd("colorscheme catppuccin-latte")
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "org",
@@ -369,9 +369,21 @@ local function jump_to_outermost_node_of_type(node_types)
 		print("Outermost function not found")
 	end
 end
-vim.keymap.set(
-	"n",
-	"<leader>cf",
-  function() jump_to_outermost_node_of_type({"function", "method"}) end,
-	{ noremap = true, silent = true, desc = "jump to outermost function/method" }
-)
+vim.keymap.set("n", "<leader>cf", function()
+	jump_to_outermost_node_of_type({ "function", "method", "singleton_method" })
+end, { noremap = true, silent = true, desc = "jump to outermost function/method" })
+
+-- Function to delete all Lua packages with a specific prefix from package.loaded
+-- I should probably expand this out, and also refactor my plugin structure, such that I
+-- can reload plugins without having to restart (the steps are probbly like: 1. unload the
+-- package, 2. unload the package config.)
+_G.R = function(prefix)
+	for package_name in pairs(package.loaded) do
+		if package_name:sub(1, #prefix) == prefix then
+			package.loaded[package_name] = nil
+		end
+	end
+end
+
+vim.keymap.set("x", "/", "<Esc>/\\%V", { desc = "search forward within last visual selection" })
+vim.keymap.set("x", "?", "<Esc>/\\%V", { desc = "search backwards within last visual selection" })
