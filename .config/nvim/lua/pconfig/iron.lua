@@ -30,7 +30,22 @@ return {
 					iron.send(vim.opt.filetype:get(), { "q" })
 				end,
 				desc = "q",
-				group = "send specific keys",
+			},
+			{
+				"<leader>rs<CR>",
+				function()
+					iron.send(vim.opt.filetype:get(), { "\n" })
+				end,
+				desc = "newline",
+			},
+			{
+				"<leader>rm",
+				function()
+					require("invoke_with_text_from_motion").invoke(function(text)
+						iron.send(vim.opt.filetype:get(), require("std2").split_string(text, "\n"))
+					end)
+				end,
+				desc = "send text object",
 			},
 			{
 				"<leader>rf",
