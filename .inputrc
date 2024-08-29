@@ -5,3 +5,4 @@ set show-mode-in-prompt on
 # When completing mid-word, don't repeat whatever is currently present
 # after the cursor.
 set skip-completed-text on 
+bind "\C-w": "\\C-a watchexec -n --restart --clear --no-process-group --exts rb "

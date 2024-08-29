@@ -52,6 +52,7 @@ return {
 	require("pconfig.iron"),
 	require("pconfig.neogit"),
 	require("pconfig.gitsigns"),
+	require("pconfig.gitlinker"),
 	require("pconfig.auto_session"),
 	require("pconfig.zen_mode"),
 	require("pconfig.text_case"),
@@ -66,5 +67,6 @@ return {
 	require("pconfig.treesitter_context"),
 	require("pconfig.luasnip"),
 	{ "saadparwaiz1/cmp_luasnip", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
-  require("pconfig.harpoon")
+  require("pconfig.harpoon"),
+  require("pconfig.devdocs")
 }

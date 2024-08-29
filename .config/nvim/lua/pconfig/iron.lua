@@ -3,12 +3,7 @@ vim.g.iron_map_defaults = false
 
 return {
 	"hkupty/iron.nvim",
-	keys = {
-		"<leader>rh",
-		"<leader>rsq",
-		"<leader>rf",
-		"<leader>ro",
-	},
+	keys = { "<leader>r" },
 	config = function()
 		local bracketed_paste = require("iron.fts.common").bracketed_paste
 		local iron = require("iron.core")
@@ -22,6 +17,18 @@ return {
 					iron.close_repl(vim.opt.filetype:get())
 				end,
 				desc = "close repl",
+				group = "(iron) repl",
+			},
+			--
+			{
+				"<leader>rg",
+				function()
+					-- iron.repl_restart() just closes
+					local ft = vim.opt.filetype:get()
+					iron.close_repl(ft)
+					iron.repl_for(ft)
+				end,
+				desc = "restart repl",
 				group = "(iron) repl",
 			},
 			{
@@ -64,7 +71,7 @@ return {
 		})
 
 		local rails_console = {
-			command = { "bin/rails", "console" },
+			command = { "bundle", "exec", "rails", "console" },
 			-- command = {"heroku", "run", "rails", "console", "-a", "gondor"},
 			format = bracketed_paste,
 		}
@@ -163,8 +170,8 @@ return {
 					ruby = rails_console,
 					sql = {
 						-- command = { "pgcli", "-d", "crushedgarlic", "-u", "crushedgarlic" },
-						command = { "pgcli", "-d", "hybrid_development" },
-						-- command = { "pgcli", vim.env.PRODUCTION_POSTGRES },
+						-- command = { "pgcli", "-d", "hybrid_development" },
+						command = { "pgcli", vim.env.PRODUCTION_POSTGRES },
 						format = bracketed_paste,
 					},
 				},
@@ -172,7 +179,6 @@ return {
 
 			keymaps = {
 				visual_send = "<leader>r",
-				send_motion = "<leader>rm",
 				send_file = "<leader>ra",
 				send_line = "<leader>rr",
 				cr = "<leader>r<cr>",

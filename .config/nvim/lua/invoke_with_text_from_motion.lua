@@ -21,7 +21,7 @@ local function_to_invoke = nil
 --- @motion_mode - "line" | "char" | "block"
 function _G.opfunc(motion_mode)
 	content = capture_text_object()
-	P(content)
+	function_to_invoke(content)
 end
 
 M.invoke = function(func)

@@ -317,7 +317,7 @@ wk.add({
 -- vim.cmd("colorscheme tokyonight-day")
 -- vim.cmd("colorscheme github_dark")
 -- vim.cmd("colorscheme nightfox")
-vim.cmd("colorscheme catppuccin-latte")
+vim.cmd("colorscheme catppuccin-mocha")
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "org",
@@ -385,5 +385,5 @@ _G.R = function(prefix)
 	end
 end
 
-vim.keymap.set("x", "/", "<Esc>/\\%V", { desc = "search forward within last visual selection" })
-vim.keymap.set("x", "?", "<Esc>/\\%V", { desc = "search backwards within last visual selection" })
+vim.keymap.set("x", "g/", "<Esc>/\\%V", { desc = "search forward within last visual selection" })
+vim.keymap.set("x", "g?", "<Esc>/\\%V", { desc = "search backwards within last visual selection" })
