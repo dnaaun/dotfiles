@@ -273,25 +273,7 @@ alias be='bundle exec'
 #   fi
 # fi
 
-# ======== BEGIN: PROMPT ===========
-set_prompt() {
-    # Change the color of $ based on the exit status of the last command
-    if [[ $? == 0 ]]; then
-      end_of_prompt='\[\e[32m\]$\[\e[0m\]' # Green
-    else
-      end_of_prompt='\[\e[31m\]$\[\e[0m\]' # Red
-    fi
-
-    # Get the last few chars of the current git branch, if we're in a git repo
-    # https://stackoverflow.com/a/32626660
-    # git_branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null | tail -c 10)
-    git_branch=""
-
-    PS1="${git_branch}\W${end_of_prompt} "
-}
-
-PROMPT_COMMAND=set_prompt
-# ======== END: PROMPT ===========
+PS1='$(/Users/davidat/git/bash_prompt/target/release/bash_prompt)'
 
 # To get autocomplete to work for `exa`, `_filedir` had to be defined, which  necessitated one/both of
 # `mbrew uninstall bash-completion && mbrew install bash-completion@2` and
@@ -385,53 +367,11 @@ bind -m vi-insert -x '"\C-gc": __insert_git_fzf_commit_hash'
 
 PATH=$PATH:$HOME/git/rsq/target/debug/
 
-# Some credit to GPT-4-32K
-# 
-search_dirs() {
-    READLINE_LINE="${READLINE_LINE}my_command"
-    READLINE_POINT=${#READLINE_LINE}
-}
-# Make this function available for the readline
-bind -x '"\C-x\C-m": append_my_command'
-
 # Set vi mode
 set -o vi
 
 alias python=python3
 alias python2=python
-
-auto_change_venv() {
-  # Check all parents from $PWD until /
-  parent="$PWD"
-  found_venv=0
-  while  ((${#parent} > 1 )); do
-    if [ -d "$parent/.venv" ]; then
-      found_venv=1
-      break
-    fi
-    parent=${parent%/*} # (shortest match) parameter subsiution ${param%word}
-  done
-
-  if [[  ! -z "$VIRTUAL_ENV" && ("$(which python)" != "$parent/.venv/bin/python") ]];  then
-    # TODO: If checking whether 'deactivate' is actually 
-    # valid right now would be better (possibly), we should do it.
-    deactivate  > /dev/null 2>&1
-  fi
-
-  if [ $found_venv = 0 ]; then
-    return
-  fi
-  
-  # shellcheck disable=SC1090
-  source "$parent/.venv/bin/activate";
-}
-
-function cd() {
-  builtin cd "$@";
-  auto_change_venv
-}
-
-auto_change_venv
 
 
 # ==== BEGIN: Nice little things ====
@@ -452,7 +392,7 @@ eval "$(rbenv init - bash)"
 # eval "$(fnm env --use-on-cd)"
 
 most_recent_mp3_as_tex() {
-  $FDCMD  '.*(mp3|MP3)$' ~/Downloads/ | fzf | sed 's/\.[^.]*$/.tex/'  |sed -E 's/^.*\/(.*)$/\1/' | sed 's/[^a-zA-Z0-9.-]/_/g'
+  $FDCMD  '.*(mp3|MP3)$' ~/Downloads/ | fzf | sed 's/\.[^.]*$/.tex/'  | sed -E 's/^.*\/(.*)$/\1/' | sed 's/[^a-zA-Z0-9.-]/_/g'
 }
 alias be="bundle exec"
 

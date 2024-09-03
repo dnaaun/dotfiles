@@ -1,6 +1,6 @@
 set editing-mode vi
 set keymap vi
-set show-mode-in-prompt on
+set show-mode-in-prompt off
 
 # When completing mid-word, don't repeat whatever is currently present
 # after the cursor.
