@@ -34,7 +34,6 @@ return {
 			{ "<leader>zs", "<cmd>GpStop<cr>", desc = "Stop", mode = "n" },
 		})
 
-	
 		require("gp").setup({
 			providers = {
 				openai = {
@@ -72,43 +71,11 @@ return {
 					secret = os.getenv("ANTHROPIC_API_KEY"),
 				},
 			},
-			agents = {
-				{
-					name = "ChatGPT4",
-					chat = true,
-					command = false,
-					-- string with model name or table with model name and parameters
-					model = { model = "gpt-4-1106-preview", temperature = 1.1, top_p = 1 },
-					-- system_prompt = "You are a general AI assistant. Be as curt as possible.",
-					-- system prompt (use this to specify the persona/role of the AI)
-					system_prompt = CODING_SYSTEM_PROMPT,
-				},
-
-				{
-					name = "ChatGPT4o",
-					chat = true,
-					command = false,
-					-- string with model name or table with model name and parameters
-					model = { model = "gpt-4o", temperature = 1.1, top_p = 1 },
-					system_prompt = CODING_SYSTEM_PROMPT,
-				},
-				{
-					name = "Sonnet3-5",
-					provider = "anthropic",
-					chat = true,
-					command = false,
-					-- string with model name or table with model name and parameters
-					model = { model = "claude-3-5-sonnet-20240620" },
-					-- system_prompt = "You are a general AI assistant. Be as curt as possible.",
-					-- system prompt (use this to specify the persona/role of the AI)
-					system_prompt = CODING_SYSTEM_PROMPT,
-				},
-			},
 		})
 
 		-- I don't know of an official way to set the default agent on startup, so I use
 		-- an undocumented/internal API:
-		require("gp")._state.chat_agent = "ChatGPT4o"
+		-- require("gp")._state.chat_agent = "ChatGPT4o"
 
 		-- VISUAL mode mappings
 		-- s, x, v modes are handled the same way by which_key
