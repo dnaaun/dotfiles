@@ -23,38 +23,18 @@ vim.api.nvim_create_autocmd({ "BufLeave" }, {
 
 return {
 	"ThePrimeagen/harpoon",
+	branch = "harpoon2",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		-- We want to use telescope's harpoon extension.
 		"nvim-telescope/telescope.nvim",
 	},
-	-- keys = {
-	--   "m1",
-	--   "m2",
-	--   "m3",
-	--   "m4",
-	--   "m5",
-	--   "m6",
-	--   "m7",
-	--   "m8",
-	--   "m9",
-	--   "m0",
-	--   "ma",
-	--   "ms",
-	--   "md",
-	--   "mx",
-	--   "mm",
-	-- },
-
 	config = function()
-		local wk = require("which-key")
-		local mark = require("harpoon.mark")
-		local ui = require("harpoon.ui")
-
-		require("telescope").load_extension("harpoon")
+		local harpoon = require("harpoon")
+		harpoon:setup()
 
 		-- direction will be added to the numeric mappings' labels.
-		local make_wk_mappings = function(direction, prefix)
+		local make_mappings = function(direction, prefix)
 			if direction ~= "horizontal" and direction ~= "vertical" then
 				direction = ""
 			end
@@ -62,39 +42,49 @@ return {
 			local wk_mappings = {}
 
 			for i = 1, 9 do
-				wk_mappings[i] = {
-					prefix .. tostring(i),
-					function()
-						if direction == "vertical" then
-							vim.cmd("vsplit")
-						elseif direction == "horizontal" then
-							vim.cmd("split")
-						end
-						ui.nav_file(i)
-					end,
-					desc = direction .. " nav to file" .. i,
-
-					group = "harpoon " .. direction,
-				}
+				local lhs = prefix .. tostring(i)
+				vim.keymap.set("n", lhs, function()
+					if direction == "vertical" then
+						vim.cmd("vsplit")
+					elseif direction == "horizontal" then
+						vim.cmd("split")
+					end
+					local harpoon = require("harpoon")
+					harpoon:list():select(i)
+				end, { desc = direction .. " nav to file" .. i })
 			end
-
-			return wk_mappings
 		end
-		wk.add(make_wk_mappings("", "m"))
-		wk.add({
-			{ "ma", mark.add_file, desc = "add file" },
-			{ "md", mark.rm_file, desc = "remove file" },
-			-- I chose m because <leader>m is my harpoon prefix
-			-- and this is probably going to be a frequent operation.
-			{ "mm", ui.toggle_quick_menu, desc = "harpoon" },
-		})
-    wk.add(make_wk_mappings("horizontal", "mx"))
-    wk.add(make_wk_mappings("vertical", "ms"))
 
-		require("harpoon").setup({
-			menu = {
-				width = vim.api.nvim_win_get_width(0) - 4,
-			},
+		harpoon:extend({
+			UI_CREATE = function(cx)
+				vim.keymap.set("n", "<C-v>", function()
+					harpoon.ui:select_menu_item({ vsplit = true })
+				end, { buffer = cx.bufnr })
+
+				vim.keymap.set("n", "<C-x>", function()
+					harpoon.ui:select_menu_item({ split = true })
+				end, { buffer = cx.bufnr })
+
+				vim.keymap.set("n", "<C-t>", function()
+					harpoon.ui:select_menu_item({ tabedit = true })
+				end, { buffer = cx.bufnr })
+
+				for i = 1, 9 do
+					vim.keymap.set("n", tostring(i), function()
+						local harpoon = require("harpoon")
+						harpoon:list():select(i)
+					end, { buffer = cx.bufnr })
+				end
+			end,
 		})
+
+		vim.keymap.set("n", "m", function()
+			harpoon.ui:toggle_quick_menu(harpoon:list())
+		end, { desc = "harpoon quickmenu" })
+
+		vim.keymap.set("n", "<leader>m", function()
+			local harpoon = require("harpoon")
+			harpoon:list():add()
+		end, { desc = "add cur file to harpoon" })
 	end,
 }

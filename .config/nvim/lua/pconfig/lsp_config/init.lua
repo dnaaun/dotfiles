@@ -120,7 +120,7 @@ return {
 				setup_texlab_forward_search()
 			end
 
-			if client.name == "tsserver" then
+			if client.name == "ts_ls" then
 				local wk = require("which-key")
 				wk.add({
 					{
@@ -158,7 +158,7 @@ return {
 			cssls = require("pconfig.lsp_config.cssls"),
 			kotlin_language_server = require("pconfig.lsp_config.kotlin_language_server"),
 			texlab = require("pconfig.lsp_config.texlab"),
-			tsserver = require("pconfig.lsp_config.tsserver"),
+			ts_ls = require("pconfig.lsp_config.ts_ls"),
 			tailwindcss = require("pconfig.lsp_config.tailwindcss"),
 			sqls = require("pconfig.lsp_config.sqls"),
 			efm = require("pconfig.lsp_config.efm"),
@@ -183,7 +183,7 @@ return {
 			-- "sumneko_lua",
 			"tailwindcss",
 			"texlab",
-			"tsserver",
+			"ts_ls",
 			"html",
 			"sorbet",
 			"cssls",

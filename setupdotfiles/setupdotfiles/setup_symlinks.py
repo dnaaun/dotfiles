@@ -88,4 +88,4 @@ def setup_symlink(
     return resolved_to
 
 if __name__ == "__main__":
-    walk_with_exclude(Path('.'), [])
+    walk_with_exclude(Path('.'), [re.compile('.*venv.*')])

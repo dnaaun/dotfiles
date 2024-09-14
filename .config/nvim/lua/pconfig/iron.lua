@@ -76,6 +76,13 @@ return {
 			format = bracketed_paste,
 		}
 
+		local ts_node = {
+			command = { "pnpm", "exec", "ts-node" },
+			-- command = {"heroku", "run", "rails", "console", "-a", "gondor"},
+			format = bracketed_paste,
+		}
+
+
 		local pry = {
 			command = { "pry" },
 			format = bracketed_paste,
@@ -162,16 +169,16 @@ return {
 
 				repl_definition = {
 					python = require("iron.fts.python").ipython,
-					typescript = require("iron.fts.javascript").node,
-					typescriptreact = require("iron.fts.javascript").node,
-					ts = require("iron.fts.javascript").node,
-					tsx = require("iron.fts.javascript").node,
+					typescript = ts_node,
+					typescriptreact = ts_node,
+					ts = ts_node,
+					tsx = ts_node,
 					lua = require("iron.fts.lua").lua,
 					ruby = rails_console,
 					sql = {
 						-- command = { "pgcli", "-d", "crushedgarlic", "-u", "crushedgarlic" },
-						-- command = { "pgcli", "-d", "hybrid_development" },
-						command = { "pgcli", vim.env.PRODUCTION_POSTGRES },
+						command = { "pgcli", "-d", "hybrid_development" },
+						-- command = { "pgcli", vim.env.PRODUCTION_POSTGRES },
 						format = bracketed_paste,
 					},
 				},

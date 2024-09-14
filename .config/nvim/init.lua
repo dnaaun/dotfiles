@@ -285,7 +285,7 @@ wk.add({
 -- Neovim win!
 -- I disabled that because (I belive) the which-key key plugin messes up my "gg" movement
 -- because it tries to show a message, but cmdheight=0 prevents it, or something like that.
--- vim.o.cmdheight = 0
+vim.o.cmdheight = 0
 
 -- exercute neovim
 wk.add({
@@ -317,7 +317,7 @@ wk.add({
 -- vim.cmd("colorscheme tokyonight-day")
 -- vim.cmd("colorscheme github_dark")
 -- vim.cmd("colorscheme nightfox")
-vim.cmd("colorscheme catppuccin-mocha")
+vim.cmd("colorscheme catppuccin-latte")
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "org",

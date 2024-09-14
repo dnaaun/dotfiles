@@ -114,6 +114,7 @@ local map_telescope_bindings = function()
 					additional_args = function()
 						return { "--hidden" }
 					end,
+          debounce = 300
 				})
 			end,
 			desc = "live_grep",
@@ -130,9 +131,9 @@ local map_telescope_bindings = function()
 		{
 			"<leader>fw",
 			function()
-				require("telescope.builtin").grep_string()
+				require("telescope.builtin").grep_string({ debounce = 300 })
 			end,
-			desc = "fd files in cur dir",
+			desc = "grep files in cur dir",
 		},
 		{
 			"<leader>b",
@@ -145,7 +146,7 @@ local map_telescope_bindings = function()
 		{
 			"<leader>w",
 			function()
-				require("telescope.builtin").grep_string({ word_match = "-w" })
+				require("telescope.builtin").grep_string({ word_match = "-w", debounce = 300 })
 			end,
 			desc = "grep buffer for string",
 		},
@@ -184,6 +185,7 @@ local map_telescope_bindings = function()
 			function()
 				local search_dirs = { vim.fn.expand("~/") .. "git/dotfiles/" }
 				require("telescope.builtin").live_grep({
+					debounce = 300,
 					search_dirs = search_dirs,
 					additional_args = function()
 						return { "--hidden" }
@@ -196,7 +198,7 @@ local map_telescope_bindings = function()
 			"<leader>fds",
 			function()
 				local search_dirs = { vim.fn.expand("~/") .. "git/dotfiles/" }
-				require("telescope.builtin").fd({ hidden = true, search_dirs = search_dirs })
+				require("telescope.builtin").fd({ hidden = true, search_dirs = search_dirs, debounce = 300 })
 			end,
 			desc = "find dotfiles",
 		},
@@ -217,7 +219,7 @@ local map_telescope_bindings = function()
 			"<leader>fxs",
 			function()
 				local search_dirs = { vim.fn.expand("~/") .. "Library/CloudStorage/Dropbox/notes/org" }
-				require("telescope.builtin").fd({ hidden = true, search_dirs = search_dirs })
+				require("telescope.builtin").fd({ hidden = true, search_dirs = search_dirs, debounce = 300 })
 			end,
 			desc = "find dotfiles",
 		},

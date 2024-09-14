@@ -1,0 +1,14 @@
+[[prompt_parts]]
+type = "Tmux"
+format = " {session_name}{windows_status} "
+
+[[prompt_parts]]
+type = "GitBranch"
+truncate = { max_len = 30, ellipsis_str = ".." }
+format = "{branch_name} "
+
+[[prompt_parts]]
+type = "CurrentDir"
+# truncate = { max_len = 30, ellipsis_str = "..", elide_from_start = true } # This is problematic because the truncation should be from the start
+format = " {current_dir} "
+dont_show_in_git_root = true

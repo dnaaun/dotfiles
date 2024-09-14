@@ -1,5 +1,6 @@
 [diff]
-        tool = difftastic
+    tool = difftastic
+    external = difft
 
 [difftool]
         prompt = false
@@ -18,8 +19,6 @@
 [alias]
         dlog = "!f() { GIT_EXTERNAL_DIFF=difft git log -p --ext-diff $@; }; f"
 
-[diff]
-    external = difft
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
@@ -28,3 +27,5 @@
 [user]
 	name = davidatsurge
 	email = 93471693+davidatsurge@users.noreply.github.com
+[init]
+	defaultBranch = main

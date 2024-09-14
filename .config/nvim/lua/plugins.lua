@@ -22,6 +22,8 @@ return {
 	require("pconfig.which_key"), -- show candidate mappings after pressing a key
 	require("pconfig.telescope"),
 	require("pconfig.telescope_file_browser"),
+	require("pconfig.telescope_fzf_native"),
+	require("pconfig.telescope_ast_grep"),
 	require("pconfig.lsp_config"),
 	require("pconfig.cmp"),
 	{ "hrsh7th/cmp-buffer", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
@@ -41,7 +43,6 @@ return {
 	require("pconfig.web_devicons"),
 	require("pconfig.lualine"),
 	require("pconfig.fidget"),
-	require("pconfig.telescope_fzf_native"),
 	require("pconfig.mini_cursorword"),
 	require("pconfig.aerial"),
 	require("pconfig.femaco"),
@@ -53,6 +54,7 @@ return {
 	require("pconfig.neogit"),
 	require("pconfig.gitsigns"),
 	require("pconfig.gitlinker"),
+	-- require("pconfig.git_blame"), -- disabled until I add a mapping to toggle it on or off, because it's currently to slwo (I supsect it's causing slowness, at least)
 	require("pconfig.auto_session"),
 	require("pconfig.zen_mode"),
 	require("pconfig.text_case"),
@@ -67,6 +69,7 @@ return {
 	require("pconfig.treesitter_context"),
 	require("pconfig.luasnip"),
 	{ "saadparwaiz1/cmp_luasnip", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
-  require("pconfig.harpoon"),
-  require("pconfig.devdocs")
+	require("pconfig.harpoon"),
+	require("pconfig.harpoon_lualine"),
+	require("pconfig.devdocs"),
 }
