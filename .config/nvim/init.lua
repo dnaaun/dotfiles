@@ -97,11 +97,23 @@ nvim_set_keymap("o", "/", "//e<Left><Left>", {})
 -- Insert mode, correct last error.
 nvim_set_keymap("i", "<C-v>", "<Esc>[s1z=``a", {})
 
-opt.foldcolumn = "1"
-opt.foldlevel = 99
-opt.foldlevelstart = 99
+-- https://www.jackfranklin.co.uk/blog/code-folding-in-vim-neovim/, mostly.
+opt.foldmethod = "expr"
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldtext = ""
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 1
+vim.opt.foldnestmax = 6
 opt.foldenable = true
 opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+
+-- Save space
+opt.foldcolumn = "0"
+opt.number = false
+
+-- Let's try this out
+opt.wrap = false
+
 
 if vim.loop.os_uname().sysname == "Darwin" then
 	g.python3_host_prog = "/usr/local/bin/python3"
@@ -285,7 +297,7 @@ wk.add({
 -- Neovim win!
 -- I disabled that because (I belive) the which-key key plugin messes up my "gg" movement
 -- because it tries to show a message, but cmdheight=0 prevents it, or something like that.
-vim.o.cmdheight = 0
+vim.o.cmdheight = 1
 
 -- exercute neovim
 wk.add({
@@ -317,7 +329,8 @@ wk.add({
 -- vim.cmd("colorscheme tokyonight-day")
 -- vim.cmd("colorscheme github_dark")
 -- vim.cmd("colorscheme nightfox")
-vim.cmd("colorscheme catppuccin-latte")
+-- vim.cmd("colorscheme catppuccin-latte")
+vim.cmd("colorscheme catppuccin-mocha")
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "org",
@@ -387,3 +400,8 @@ end
 
 vim.keymap.set("x", "g/", "<Esc>/\\%V", { desc = "search forward within last visual selection" })
 vim.keymap.set("x", "g?", "<Esc>/\\%V", { desc = "search backwards within last visual selection" })
+
+
+vim.keymap.set("n", "zV", "zMzv", { desc = "open just enough folds to view current line, and close all the others" })
+vim.keymap.set("n", "]z", "zj", { desc = "move to next fold" })
+vim.keymap.set("n", "[z", "zk", { desc = "move to prev fold" })

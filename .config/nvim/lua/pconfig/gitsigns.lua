@@ -87,7 +87,7 @@ return {
 				function()
 					require("gitsigns").undo_stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
 				end,
-				desc = "stage hunk",
+				desc = "undo stage hunk",
 				mode = "v",
 			},
 			{

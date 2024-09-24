@@ -249,6 +249,7 @@ alias httpie='python3 -m httpie'
 
 # Ruby
 alias be='bundle exec'
+alias wbe='watchexec  -n --restart --no-process-group --exts  rb -- bundle exec'
 
 # LETSSEE: If this helps speed.
 # if [[ -d $HOME/go/bin/ ]]; then

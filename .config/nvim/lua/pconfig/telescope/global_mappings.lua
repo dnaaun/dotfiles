@@ -114,10 +114,17 @@ local map_telescope_bindings = function()
 					additional_args = function()
 						return { "--hidden" }
 					end,
-          debounce = 300
+					debounce = 300,
 				})
 			end,
 			desc = "live_grep",
+		},
+		{
+			"<leader>fa", -- a for Aerial
+			function()
+				require("telescope").extensions.aerial.aerial()
+			end,
+			desc = "aerial symbols",
 		},
 		{
 			"<leader>s",

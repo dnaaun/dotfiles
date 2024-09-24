@@ -24,24 +24,26 @@ return {
 
 		telescope.load_extension("fzf")
 
-    -- I think this is out of date with ormgmode.nvim
-    -- telescope.load_extension('orgmode')
+		-- I think this is out of date with ormgmode.nvim
+		-- telescope.load_extension('orgmode')
 
+    -- R-e-enable when re-enabling erial
+		-- require("telescope").load_extension("aerial")
 
 		telescope.setup({
 			defaults = {
 				layout_strategy = "vertical",
-        mappings = { i = { ["<esc>"] = false }, }
+				mappings = { i = { ["<esc>"] = false } },
 			},
 			pickers = {
-				find_files = { mappings = { i = { ["<esc>"] = false }, }, },
-				grep_string = { mappings = { i = { ["<esc>"] = false }, }, },
-				live_grep = { mappings = { i = { ["<esc>"] = false }, }, },
+				find_files = { mappings = { i = { ["<esc>"] = false } } },
+				grep_string = { mappings = { i = { ["<esc>"] = false } } },
+				live_grep = { mappings = { i = { ["<esc>"] = false } } },
 				buffers = {
 					mappings = {
 						i = {
 							["<c-d>"] = "delete_buffer",
-              ["<esc>"] = false
+							["<esc>"] = false,
 						},
 						n = {
 							["<c-d>"] = "delete_buffer",

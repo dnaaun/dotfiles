@@ -166,6 +166,7 @@ return {
 			sorbet = require("pconfig.lsp_config.sorbet"),
 			ruby_ls = require("pconfig.lsp_config.ruby_ls"),
 			eslint = require("pconfig.lsp_config.eslint"), -- requires npm i -g vscode-langservers-extracted
+			tinymist = require("pconfig.lsp_config.tinymist"),
 		}
 
 		for _, lspname in ipairs({
@@ -187,7 +188,8 @@ return {
 			"html",
 			"sorbet",
 			"cssls",
-      "jsonls",
+			"tinymist",
+			"jsonls",
 			-- "marksman",
 			"yamlls",
 			-- "ast_grep",

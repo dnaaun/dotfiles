@@ -30,18 +30,18 @@ return {
 		-- Various Treesitter modules config
 		local highlight = {
 			enable = false,
-			disable = {
-			},
+			-- disable = {
+			-- },
 		}
 		local indent = {
-			enable = true,
-      disable = { 
-        "ruby"
-      }
+			enable = false,
+			disable = {
+				"ruby",
+			},
 		}
 		-- requires https://github.com/nvim-treesitter/nvim-treesitter-refactor
 		local refactor = {
-			highlight_definitions = { enable = true },
+			highlight_definitions = { enable = false },
 			--highlight_current_scope = { enable = true },
 		}
 		-- requires https://github.com/nvim-treesitter/nvim-treesitter-textobjects ( or some
@@ -145,7 +145,6 @@ return {
 					return true -- Doesn't work for tex
 				end
 
-
 				-- Otherwise, it interferes with "command-line window"
 				if vim.fn.getbufvar(buf, "&buftype") == "nofile" then
 					return true
@@ -198,6 +197,7 @@ return {
 			ensure_installed = ensure_installed,
 		})
 
-		vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+		vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+		vim.opt.foldtext = ""
 	end,
 }

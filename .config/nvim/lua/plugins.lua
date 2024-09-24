@@ -32,7 +32,13 @@ return {
 	require("pconfig.matchup"),
 	require("pconfig.treesitter"),
 	require("pconfig.treehopper"),
+  -- require("pconfig.headlines"), -- errors out on InsertLeave.
+
+  -- Orgmode related
 	require("pconfig.orgmode"),
+	require("pconfig.bullets"),
+  require("pconfig.org_bullets"),
+
 	require("pconfig.tmux"),
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 	require("pconfig.dressing"),
@@ -44,12 +50,11 @@ return {
 	require("pconfig.lualine"),
 	require("pconfig.fidget"),
 	require("pconfig.mini_cursorword"),
-	require("pconfig.aerial"),
+	-- require("pconfig.aerial"), -- I _think_ it's CursorMoved handler is too slow.
 	require("pconfig.femaco"),
 	require("pconfig.otter"),
 	require("pconfig.diffview"),
 	require("pconfig.amharic"),
-	require("pconfig.bullets"),
 	require("pconfig.iron"),
 	require("pconfig.neogit"),
 	require("pconfig.gitsigns"),
@@ -70,6 +75,10 @@ return {
 	require("pconfig.luasnip"),
 	{ "saadparwaiz1/cmp_luasnip", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	require("pconfig.harpoon"),
-	require("pconfig.harpoon_lualine"),
+	-- require("pconfig.harpoon_lualine"),
 	require("pconfig.devdocs"),
+	require("pconfig.markdown_preview"),
+	-- require("pconfig.tint"), -- maybe makes everything slow?
+	-- require("pconfig.origami"),
+	-- require("pconfig.profile"),
 }
