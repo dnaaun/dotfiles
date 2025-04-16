@@ -26,16 +26,22 @@ return {
 			sections = {
 				lualine_a = {},
 				lualine_b = {
+					-- {
+					-- 	function()
+					-- 		local handle = io.popen("/Users/davidat/git/bash_prompt/target/release/bash_prompt")
+					-- 		local result = handle:read("*a")
+					-- 		handle:close()
+					-- 		return result
+					-- 	end,
+					-- },
+				},
+				lualine_c = {
+					"filename",
 					{
-						function()
-							local handle = io.popen("/Users/davidat/git/bash_prompt/target/release/bash_prompt")
-							local result = handle:read("*a")
-							handle:close()
-							return result
-						end,
+						"diagnostics",
+						sources = { "nvim_workspace_diagnostic" },
 					},
 				},
-				lualine_c = { "filename" },
 				lualine_x = { "harpoon2", "filetype" },
 				lualine_y = { "progress" },
 				lualine_z = { "location" },

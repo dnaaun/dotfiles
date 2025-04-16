@@ -29,9 +29,10 @@ return {
 
 		-- Various Treesitter modules config
 		local highlight = {
-			enable = false,
-			-- disable = {
-			-- },
+			enable = true,
+			disable = {
+        -- "org"
+			},
 		}
 		local indent = {
 			enable = false,

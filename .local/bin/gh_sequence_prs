@@ -1,9 +1,9 @@
 #!/bin/bash
 
-temp=$(mktemp) # more standard to use $() for command substitution instead of backticks
+temp=$(mktemp)
+base_commit=${2:-origin/main}
 
-
-git log origin/master^...HEAD --pretty="%H" \
+git log ${base_commit}^...HEAD --pretty="%H" \
   | tac \
   | xargs -d'\n' -I{} bash -c 'git branch --points-at {} | grep -v "dt/playground" | sd "^\s*" "" | sd "\s*\n" "\n"' \
   > "$temp"
@@ -26,3 +26,4 @@ done
 
 # Deletion of the tempfile
 rm "$temp"
+

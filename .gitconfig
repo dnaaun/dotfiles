@@ -29,3 +29,6 @@
 	email = 93471693+davidatsurge@users.noreply.github.com
 [init]
 	defaultBranch = main
+[core]
+	compression = 0
+	excludesFile = /Users/davidat/.gitignore_global

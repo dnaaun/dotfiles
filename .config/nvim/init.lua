@@ -102,18 +102,15 @@ opt.foldmethod = "expr"
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldtext = ""
 vim.opt.foldlevel = 99
-vim.opt.foldlevelstart = 1
+vim.opt.foldlevelstart = 99
 vim.opt.foldnestmax = 6
 opt.foldenable = true
 opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 
 -- Save space
-opt.foldcolumn = "0"
-opt.number = false
+opt.foldcolumn = "1"
 
--- Let's try this out
-opt.wrap = false
-
+opt.signcolumn="yes:2"
 
 if vim.loop.os_uname().sysname == "Darwin" then
 	g.python3_host_prog = "/usr/local/bin/python3"
@@ -401,7 +398,12 @@ end
 vim.keymap.set("x", "g/", "<Esc>/\\%V", { desc = "search forward within last visual selection" })
 vim.keymap.set("x", "g?", "<Esc>/\\%V", { desc = "search backwards within last visual selection" })
 
-
 vim.keymap.set("n", "zV", "zMzv", { desc = "open just enough folds to view current line, and close all the others" })
 vim.keymap.set("n", "]z", "zj", { desc = "move to next fold" })
 vim.keymap.set("n", "[z", "zk", { desc = "move to prev fold" })
+
+local enabled = true
+vim.keymap.set("n", "<leader>th", function()
+	vim.lsp.inlay_hint.enable(not enabled)
+  enabled = not enabled
+end, { desc = "toggle inlay hints" })

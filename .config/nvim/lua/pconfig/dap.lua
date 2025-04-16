@@ -2,21 +2,22 @@ return {
 	"mfussenegger/nvim-dap",
 	lazy = true,
 	keys = {
-		"<leader>dc",
-		"<leader>db",
-		"<leader>dl",
-		"<leader>do",
-		"<leader>di",
-		"<leader>ds",
-		"<leader>dt",
-		"<leader>dv",
-		"<leader>de",
-		"<leader>dn",
-		"<leader>da",
-		"<leader>dr",
-		"<leader>dja",
-		"<leader>djt",
-		"<leader>dh",
+		"<leader>d",
+		-- "<leader>dc",
+		-- "<leader>db",
+		-- "<leader>dl",
+		-- "<leader>do",
+		-- "<leader>di",
+		-- "<leader>ds",
+		-- "<leader>dt",
+		-- "<leader>dv",
+		-- "<leader>de",
+		-- "<leader>dn",
+		-- "<leader>da",
+		-- "<leader>dr",
+		-- "<leader>dja",
+		-- "<leader>djt",
+		-- "<leader>dh",
 	},
 	dependencies = { "folke/which-key.nvim" },
 	ft = require("consts").dap_enabled_filetypes,
@@ -175,6 +176,24 @@ return {
 				end,
 			},
 		}
+		dap.adapters.dart = {
+			type = "executable",
+			command = "flutter",
+			args = { "debug_adapter" },
+		}
+
+		dap.configurations.dart = {
+			{
+				type = "dart",
+				request = "launch",
+				name = "launch flutter",
+				dartsdkpath = "/Users/davidat/src/flutter/bin/cache/dart-sdk",
+				fluttersdkpath = "/Users/davidat/src/flutter/",
+				program = "lib/main.dart",
+				-- device = "emulator-5554",
+				-- toolArgs = { "-d", "emulator-5554" },
+			},
+		}
 
 		_G.djangoDapConfig = {
 			type = "python",
@@ -212,6 +231,14 @@ return {
 
 		-- method 3
 		wk.add({
+			{
+				"<leader>dr",
+				function()
+					require("dap").restart()
+				end,
+				desc = "restart",
+				group = "+dap (debugging)",
+			},
 			{
 				"<leader>dc",
 				function()
@@ -264,12 +291,6 @@ return {
 			require("dap.repl").evaluate(require("std2").get_visual_selection_text(0))
 		end, { silent = true }, "run visual text in debugger repl")
 
-		mapfunc("n", "<leader>dja", function()
-			require("dap").run(_G.djangoDapConfig)
-		end, {}, "Debug django application")
-		mapfunc("n", "<leader>djt", function()
-			require("dap").run(_G.djangoTestDapConfig)
-		end, {}, "Debug django tests")
 		mapfunc("v", "<leader>dh", function()
 			require("dap.ui.widgets").hover()
 		end, { silent = true }, "hover info from DAP")

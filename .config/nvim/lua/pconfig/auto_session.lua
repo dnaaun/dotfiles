@@ -38,10 +38,9 @@ return {
 			log_level = "error",
 			auto_save_enabled = false,
 			auto_restore_enabled = false,
-      pre_save_cmds = { 
-        -- Aerial reopens automatically anyways when nvim is reopened. Also, otherwise, the window occupied by aerial shows up as blank when nvim is reopened.
-        "tabdo AerialClose"
-      }
+			pre_save_cmds = {
+				'lua require("dapui").close()',
+			},
 		})
 	end,
 }

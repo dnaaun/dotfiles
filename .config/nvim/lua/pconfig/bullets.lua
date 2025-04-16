@@ -11,6 +11,6 @@
 -- })
 
 vim.g.bullets_enabled_file_types = { "org", "markdown", "text", "gitcommit", "norg" }
-vim.g.bullets_set_mappings = 0
+vim.g.bullets_set_mappings = 1
 
 return { "dkarter/bullets.vim", ft = vim.g.bullets_enabled_file_types }

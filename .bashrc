@@ -274,6 +274,7 @@ alias wbe='watchexec  -n --restart --no-process-group --exts  rb -- bundle exec'
 #   fi
 # fi
 
+export RUST_BACKTRACE=1
 PS1='$(/Users/davidat/git/bash_prompt/target/release/bash_prompt)'
 
 # To get autocomplete to work for `exa`, `_filedir` had to be defined, which  necessitated one/both of
@@ -312,9 +313,6 @@ $PATH
 source ~/.bashrc_specific
 
 alias latest_branches="git for-each-ref --sort=-committerdate refs/heads/ | choose 2"
-
-alias most_recent_mp3_in_downloads_as_tex="ls -ct ~/Downloads/*.{mp3,MP3} | head -1 | sd '.*/' '' | sd --flags i '.mp3$' '.tex' | sd ' ' '_'"
-
 
 
 # Switch easily to a tmux session using fzf from bash
@@ -393,7 +391,7 @@ eval "$(rbenv init - bash)"
 # eval "$(fnm env --use-on-cd)"
 
 most_recent_mp3_as_tex() {
-  $FDCMD  '.*(mp3|MP3)$' ~/Downloads/ | fzf | sed 's/\.[^.]*$/.tex/'  | sed -E 's/^.*\/(.*)$/\1/' | sed 's/[^a-zA-Z0-9.-]/_/g'
+  $FDCMD  '.*(mp3|MP3)$' ~/Downloads/  | xargs -n1 -d\\n stat -f "%m %N" | sort -rn | sd '^[0-9]*' '' | fzf | sed 's/\.[^.]*$/.tex/'  | sed -E 's/^.*\/(.*)$/\1/' | sed 's/[^a-zA-Z0-9.-]/_/g'
 }
 alias be="bundle exec"
 

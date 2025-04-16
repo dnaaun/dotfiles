@@ -46,6 +46,13 @@ return {
 				desc = "newline",
 			},
 			{
+				"<leader>rs;",
+				function()
+					iron.send(vim.opt.filetype:get(), { ";" })
+				end,
+				desc = ";",
+			},
+			{
 				"<leader>rm",
 				function()
 					require("invoke_with_text_from_motion").invoke(function(text)
@@ -81,7 +88,6 @@ return {
 			-- command = {"heroku", "run", "rails", "console", "-a", "gondor"},
 			format = bracketed_paste,
 		}
-
 
 		local pry = {
 			command = { "pry" },
@@ -168,7 +174,11 @@ return {
 				end,
 
 				repl_definition = {
-					python = require("iron.fts.python").ipython,
+					-- python = require("iron.fts.python").ipython,
+					python = {
+						command = { "uv", "run", "ipython" },
+						format = bracketed_paste,
+					},
 					typescript = ts_node,
 					typescriptreact = ts_node,
 					ts = ts_node,

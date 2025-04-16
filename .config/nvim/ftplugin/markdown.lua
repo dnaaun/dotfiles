@@ -3,9 +3,6 @@ local g = vim.g
 
 o.textwidth = 0
 
--- Text iwidth
-o.tw = 88
-
 o.expandtab = true
 -- show existing tab with 2 spaces width
 o.tabstop = 2

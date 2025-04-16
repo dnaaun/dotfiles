@@ -1,20 +1,8 @@
-return {
-	"stevearc/conform.nvim",
-	config = function()
-		require("conform").setup({
-			formatters_by_ft = {
-				sql = { "pg_format" },
-				lua = { "stylua" },
-				python = { "black" },
-				ruby = { "rubocop" },
-				javascript = { "prettierd", "prettier", stop_after_first = true },
-				javascriptreact = { "prettierd", "prettier", stop_after_first = true },
-				typescript = { "prettierd", "prettier", stop_after_first = true },
-				typescriptreact = { "prettierd", "prettier", stop_after_first = true },
-				rust = { "rustfmt", lsp_format = "fallback" },
-			},
-		})
+-- Define a function to set your key mappings
 
+vim.api.nvim_create_autocmd("BufEnter", {
+	group = vim.api.nvim_create_augroup("MyMappings", { clear = true }),
+	callback = function()
 		local format_with_conform = function(args)
 			local range = nil
 			if args ~= nil and args.count ~= -1 then
@@ -34,7 +22,29 @@ return {
 			})
 		end
 
-		vim.keymap.set("n", "gql", format_with_conform, { desc = "format with conform" })
-		vim.keymap.set("v", "gql", format_with_conform, { desc = "format with conform" })
+    -- orgmode.nvim provides it's own formatexpr that I don't wanna mess with.
+		if vim.bo.filetype ~= "org" then
+			vim.keymap.set("n", "gql", format_with_conform, { desc = "format with conform" })
+			vim.keymap.set("v", "gql", format_with_conform, { desc = "format with conform" })
+		end
+	end,
+})
+
+return {
+	"stevearc/conform.nvim",
+	config = function()
+		require("conform").setup({
+			formatters_by_ft = {
+				sql = { "pg_format" },
+				lua = { "stylua" },
+				python = { "ruff_fix", "ruff_format" },
+				ruby = { "rubocop" },
+				javascript = { "prettierd", "prettier", stop_after_first = true },
+				javascriptreact = { "prettierd", "prettier", stop_after_first = true },
+				typescript = { "prettierd", "prettier", stop_after_first = true },
+				typescriptreact = { "prettierd", "prettier", stop_after_first = true },
+				rust = { "rustfmt", lsp_format = "fallback" },
+			},
+		})
 	end,
 }

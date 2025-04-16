@@ -19,7 +19,7 @@ def parse_args() -> Args:
     parser.add_argument("--draft", "-d", dest="draft", action="store_true")
     parser.add_argument("--no-push", dest="do_push", action="store_false")
     parser.add_argument("--no-fill", "-F",  dest="fill", action="store_false")
-    parser.add_argument("--base-commit", dest="base_commit", default="master")
+    parser.add_argument("--base-commit", dest="base_commit", default="main")
     parser.add_argument("--create-prs", dest="create_prs", action="store_true")
     args_parsed = parser.parse_args()
 

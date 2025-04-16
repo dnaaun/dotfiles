@@ -1,0 +1,14 @@
+---
+session_name: "dotfiles"
+working_dir: ~/git/dotfiles/
+windows:
+  - name: dotfiles
+    panes:
+      - commands:
+        - nvim
+  - name: org
+    working_dir: ~/Library/CloudStorage/Dropbox/notes/org/
+    panes:
+      - commands:
+        - nvim
+

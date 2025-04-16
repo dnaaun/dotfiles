@@ -89,7 +89,7 @@ return {
 				{ name = "dap" },
 				{ name = "nvim_lsp", priority = 100, keyword_length = 2 },
 				{ name = "path" },
-				{ name = "orgmode" },
+				-- { name = "orgmode" },
 				{
 					name = "spell",
 					option = {

@@ -10,15 +10,16 @@ end
 
 return {
 	"neovim/nvim-lspconfig",
-	lazy = true,
-	event = {
-		-- from the auto-session plugin
-		"SessionLoadPost",
-		"BufEnter",
-		"VeryLazy",
-	},
+	-- lazy = true,
+	-- event = {
+	-- 	-- from the auto-session plugin
+	-- 	"SessionLoadPost",
+	-- 	"BufEnter",
+	-- 	"VeryLazy",
+	-- },
 	dependencies = { "folke/which-key.nvim" }, -- for a mpping in on-attach below.
 	-- ft = require("consts").lsp_enabled_filetypes,
+	opts = { inlay_hints = { enabled = true } },
 	config = function()
 		-- https://ast-grep.github.io/guide/editor-integration.html#nvim-lspconfig
 		local configs = require("lspconfig.configs")
@@ -101,7 +102,7 @@ return {
 			vim.bo.formatexpr = "v:lua._G.lsp_formatexpr()"
 		end
 
-		-- A function to setup a mapping for :TexlabForward
+		-- A func to setup a mapping for :TexlabForward
 		local setup_texlab_forward_search = function()
 			local opts = { noremap = true, silent = true }
 			wk.add({ { "<leader>t", ":TexlabForward<CR>", desc = "Texlab forward" } }, opts)
@@ -155,7 +156,7 @@ return {
 		local lsp_specific_configs = {
 			rust_analyzer = require("pconfig.lsp_config.rust_analyzer"),
 			html = require("pconfig.lsp_config.html"),
-			cssls = require("pconfig.lsp_config.cssls"),
+			-- cssls = require("pconfig.lsp_config.cssls"),
 			kotlin_language_server = require("pconfig.lsp_config.kotlin_language_server"),
 			texlab = require("pconfig.lsp_config.texlab"),
 			ts_ls = require("pconfig.lsp_config.ts_ls"),
@@ -174,7 +175,7 @@ return {
 			"dockerls",
 			"eslint",
 			"kotlin_language_server",
-			"pyright",
+			"basedpyright",
 			-- Until I figure out how to route specific requests to specific servers,
 			-- I'll use only sorbet for ruby.
 			-- "solargraph",
@@ -182,17 +183,18 @@ return {
 			"sqls",
 			"rust_analyzer",
 			-- "sumneko_lua",
-			"tailwindcss",
+			-- "tailwindcss",
 			"texlab",
 			"ts_ls",
 			"html",
 			"sorbet",
-			"cssls",
+			-- "cssls",
 			"tinymist",
-			"jsonls",
+			-- "jsonls",
 			-- "marksman",
 			"yamlls",
 			-- "ast_grep",
+      "sourcekit"
 		}) do
 			local config = lsp_specific_configs[lspname]
 			if config ~= nil then
@@ -202,6 +204,17 @@ return {
 			end
 
 			lspconfig[lspname].setup(config)
+		end
+
+		-- https://github.com/neovim/neovim/issues/30985#issuecomment-2447329525
+		for _, method in ipairs({ "textDocument/diagnostic", "workspace/diagnostic" }) do
+			local default_diagnostic_handler = vim.lsp.handlers[method]
+			vim.lsp.handlers[method] = function(err, result, context, config)
+				if err ~= nil and err.code == -32802 then
+					return
+				end
+				return default_diagnostic_handler(err, result, context, config)
+			end
 		end
 	end,
 }
