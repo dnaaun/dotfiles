@@ -100,4 +100,5 @@ return {
   require("pconfig.highlight_colors"),
   require("pconfig.gh"),
   require("pconfig.octo"),
+  require("pconfig.windsurf")
 }

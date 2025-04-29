@@ -79,6 +79,8 @@ return {
 				return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt" or is_dap_buffer
 			end,
 			sources = cmp.config.sources({
+				{ name = "codeium", keyword_length = 0 },
+			}, {
 				{ name = "otter" },
 			}, {
 				{ name = "copilot", keyword_length = 0 },

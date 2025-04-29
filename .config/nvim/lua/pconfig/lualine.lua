@@ -42,7 +42,13 @@ return {
 						sources = { "nvim_workspace_diagnostic" },
 					},
 				},
-				lualine_x = { "harpoon2", "filetype" },
+				lualine_x = {
+					function()
+						return require("codeium.virtual_text").status_string()
+					end,
+					"harpoon2",
+					"filetype",
+				},
 				lualine_y = { "progress" },
 				lualine_z = { "location" },
 			},

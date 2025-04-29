@@ -56,9 +56,23 @@ return {
 			i(1, ""),
 		})
 	),
+	s(
+		{ trig = "tn", descr = "take notes (on the first column)" },
+		fmt(escape_curly_braces([[
+\end{nthcolumn}
+\begin{nthcolumn}{0}
+	\tiny
+    \item ]]) .. [[{}
+]] .. escape_curly_braces([[
+\end{nthcolumn*}
+\begin{nthcolumn}{2}
+  ]]), {
+			i(1, ""),
+		})
+	),
 
 	s(
-		{ trig = "tn", descr = "take notes (on the left side)" },
+		{ trig = "tn", descr = "take notes (on the second column)" },
 		fmt(escape_curly_braces([[
 \end{nthcolumn}
 \begin{nthcolumn*}{1}
