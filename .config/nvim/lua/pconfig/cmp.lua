@@ -20,6 +20,45 @@ return {
 			return vim_item
 		end
 
+    -- This was an attempt to remove the codium source for specific file types. Didn't work.
+		codium_source = {
+			{ name = "codeium", keyword_length = 0 },
+		}
+		all_sources_except_codium = {
+			{
+				{ name = "otter" },
+			},
+			{
+				{ name = "copilot", keyword_length = 0 },
+				{ name = "git" },
+			},
+			{
+				{ name = "luasnip", priority = 100, keyword_length = 0 },
+			},
+			{
+				{ name = "dap" },
+				{ name = "nvim_lsp", priority = 100, keyword_length = 2 },
+				{ name = "path" },
+				-- { name = "orgmode" },
+				{
+					name = "spell",
+					option = {
+						keep_all_entries = false,
+						-- https://github.com/f3fora/cmp-spell#enable_in_context
+						enable_in_context = function()
+							return true
+							-- return require("cmp.config.context").in_treesitter_capture("spell")
+						end,
+					},
+				},
+				{ name = "buffer", keyword_length = 5 },
+			},
+		}
+
+		all_sources = {}
+    vim.list_extend(all_sources, codium_source)
+    vim.list_extend(all_sources, all_sources_except_codium)
+
 		cmp.setup({
 			experimental = {
 				ghost_text = true,
@@ -55,7 +94,7 @@ return {
 				["<C-j>"] = cmp.mapping.complete({
 					config = {
 						sources = {
-							{ name = "copilot", keyword_length = 0 },
+							{ name = "codium", keyword_length = 0 },
 						},
 					},
 				}),
@@ -78,33 +117,8 @@ return {
 				local is_dap_buffer = cmp_dap_loaded and require("cmp_dap").is_dap_buffer()
 				return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt" or is_dap_buffer
 			end,
-			sources = cmp.config.sources({
-				{ name = "codeium", keyword_length = 0 },
-			}, {
-				{ name = "otter" },
-			}, {
-				{ name = "copilot", keyword_length = 0 },
-				{ name = "git" },
-			}, {
-				{ name = "luasnip", priority = 100, keyword_length = 0 },
-			}, {
-				{ name = "dap" },
-				{ name = "nvim_lsp", priority = 100, keyword_length = 2 },
-				{ name = "path" },
-				-- { name = "orgmode" },
-				{
-					name = "spell",
-					option = {
-						keep_all_entries = false,
-						-- https://github.com/f3fora/cmp-spell#enable_in_context
-						enable_in_context = function()
-							return true
-							-- return require("cmp.config.context").in_treesitter_capture("spell")
-						end,
-					},
-				},
-				{ name = "buffer", keyword_length = 5 },
-			}),
+
+			sources = cmp.config.sources(unpack(all_sources)),
 
 			comparators = {
 				-- Disabling these for now because, while migraitng to lazzy.nvim, I noticed the lines
@@ -147,6 +161,14 @@ return {
 				keyword_length = 0,
 			},
 		})
+
+
+		for _, ft in ipairs({ "tex", "latex" }) do
+			cmp.setup.filetype(filetype, {
+				sources = cmp.config.sources(unpack(all_sources_except_codium)),
+			})
+		end
+
 		-- Another attempt to get nvim-cmp to trigger on InsertEnter.
 		-- This is currently not working.
 		require("cmp.utils.autocmd").subscribe({ "InsertEnter" }, function()

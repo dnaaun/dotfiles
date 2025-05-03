@@ -12,15 +12,17 @@ class Args:
     fill: bool
     base_commit: str
     create_prs: bool
+    dry_run: bool
 
 
 def parse_args() -> Args:
     parser = argparse.ArgumentParser()
     parser.add_argument("--draft", "-d", dest="draft", action="store_true")
     parser.add_argument("--no-push", dest="do_push", action="store_false")
-    parser.add_argument("--no-fill", "-F",  dest="fill", action="store_false")
+    parser.add_argument("--no-fill", "-F", dest="fill", action="store_false")
     parser.add_argument("--base-commit", dest="base_commit", default="main")
     parser.add_argument("--create-prs", dest="create_prs", action="store_true")
+    parser.add_argument("--no-dry-run", dest="dry_run", action="store_false")
     args_parsed = parser.parse_args()
 
     return Args(
@@ -29,6 +31,7 @@ def parse_args() -> Args:
         do_push=args_parsed.do_push,
         base_commit=args_parsed.base_commit,
         create_prs=args_parsed.create_prs,
+        dry_run=args_parsed.dry_run,
     )
 
 
@@ -51,39 +54,100 @@ commits.reverse()
 print(repr(args))
 
 
-def run(*args):
-    proc = subprocess.run(args)
+@dataclass(frozen=True, eq=True, repr=True)
+class Commit:
+    id: str
+    msg: str
+    branch_name: str
+
+    @classmethod
+    def from_line(cls, line: str) -> "Commit":
+        commit_id, commit_msg = line.split(" ", 1)
+        simpler_msg = "".join(
+            [i if i in string.ascii_letters else "_" for i in commit_msg]
+        )
+        branch_name = f"dt/{simpler_msg}"
+        return cls(commit_id, commit_msg, branch_name)
+
+
+@dataclass(frozen=True, eq=True, repr=True)
+class Branch:
+    name: str
+    commit: Commit
+
+
+def run(*args: str | Commit, dry_run=False):
+    str_args = []
+    for arg in args:
+        if isinstance(arg, str):
+            str_args.append(arg)
+        else:
+            if dry_run:
+                str_args.append(f"({arg.id}: {arg.msg})")
+            else:
+                str_args.append(arg.id)
+
+    if dry_run:
+        print(" ".join(str_args))
+        return
+
+    proc = subprocess.run(str_args)
     if proc.stdout:
         print(proc.stdout)
     if proc.stderr:
         print(proc.stderr)
 
 
-@dataclass
-class Branch:
-    name: str
-    commit_id: str
-
-
 branches = []
 
+# Consider commits starting with "PR feedback" to be part of the same work as the last non-PR feedback commit.
+commit: Commit | None = None
+prev_non_pr_feedback_commit: Commit | None = None
+prev_pr_feedback_commit: Commit | None = None
+for line, next_line in zip(commits, commits[1:] + [None]):
+    commit = Commit.from_line(line)
+    next_commit = Commit.from_line(next_line) if next_line else None
 
-for line in commits:
-    commit_id, commit_msg = line.split(" ", 1)
-    simpler_msg = "".join([i if i in string.ascii_letters else "_" for i in commit_msg])
-    branch_name = f"dt/{simpler_msg}"
+    if "pr feedback" in commit.msg.lower():
+        prev_pr_feedback_commit = commit
+    else:
+        if prev_non_pr_feedback_commit:
+            branches.append(
+                Branch(
+                    prev_non_pr_feedback_commit.branch_name,
+                    prev_pr_feedback_commit
+                    if prev_pr_feedback_commit
+                    else prev_non_pr_feedback_commit,
+                )
+            )
+        prev_non_pr_feedback_commit = commit
+        prev_pr_feedback_commit = None
 
-    branches.append(Branch(branch_name, commit_id))
+if prev_non_pr_feedback_commit and commit:
+    branches.append(Branch(prev_non_pr_feedback_commit.branch_name, commit))
+
 
 for prev_branch, branch in zip([None] + branches[:-1], branches):
-    run("git", "branch", "-qD", branch.name)
-    run("git", "branch", branch.name, branch.commit_id)
+    run("git", "branch", "-qD", branch.name, dry_run=args.dry_run)
+    run("git", "branch", branch.name, branch.commit, dry_run=args.dry_run)
 
     if args.do_push:
-        run("git", "push", "origin", "-f", branch.name)
+        run("git", "push", "origin", "-f", branch.name, dry_run=args.dry_run)
 
     if args.create_prs:
         draft_arg = ["--draft"] if args.draft else []
         base_arg = ["--base", prev_branch.name if prev_branch else args.base_commit]
         fill_arg = ["--fill"] if args.fill else []
-        run("gh", "pr", "create", "--head", branch.name, *draft_arg, *base_arg, *fill_arg)
+        run(
+            "gh",
+            "pr",
+            "create",
+            "--head",
+            branch.name,
+            *draft_arg,
+            *base_arg,
+            *fill_arg,
+            dry_run=args.dry_run,
+        )
+
+    print("------------------------------------")

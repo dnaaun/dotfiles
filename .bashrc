@@ -104,7 +104,7 @@ alias tmux='tmux -u'
 
 # I don't know where this is getting set, but I need to unset it
 export PYTHONPATH=
-export PYTHONBREAKPOINT=ipdb.set_trace
+export PYTHONBREAKPOINT=pdb.set_trace
 
 
 
