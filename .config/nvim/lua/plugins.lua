@@ -101,4 +101,6 @@ return {
   require("pconfig.gh"),
   require("pconfig.octo"),
   require("pconfig.windsurf")
+  require("pconfig.crates")
+  require("pconfig.crates"),
 }
