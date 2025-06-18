@@ -6,7 +6,7 @@
 	prompt = false
 
 [difftool "difftastic"]
-        cmd = difft "$LOCAL" "$REMOTE"
+        cmd = difft "$LOCAL" "$REMOTE" --color always
 
 [pager]
         difftool = true

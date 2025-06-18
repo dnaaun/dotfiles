@@ -420,3 +420,11 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+#
+
+
+# Thanks ahkohd for the tip!
+PAGER=moar
+
+eval "$(zoxide init bash)"
+

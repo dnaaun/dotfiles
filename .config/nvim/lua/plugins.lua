@@ -27,8 +27,6 @@ return {
 	require("pconfig.lsp_config"),
 	require("pconfig.trouble"),
 
-
-
   require("pconfig.goto_preview"),
 	require("pconfig.cmp"),
 	{ "hrsh7th/cmp-buffer", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
@@ -61,7 +59,7 @@ return {
 	require("pconfig.lualine"),
 	require("pconfig.fidget"),
 	require("pconfig.mini_cursorword"),
-	-- require("pconfig.aerial"), -- I _think_ it's CursorMoved handler is too slow.
+	require("pconfig.aerial"),
 	require("pconfig.femaco"),
 	require("pconfig.otter"),
 	require("pconfig.diffview"),
@@ -100,7 +98,8 @@ return {
   require("pconfig.highlight_colors"),
   require("pconfig.gh"),
   require("pconfig.octo"),
-  require("pconfig.windsurf")
-  require("pconfig.crates")
+  require("pconfig.windsurf"),
+  require("pconfig.workspace_diagnostics"),
+
   require("pconfig.crates"),
 }

@@ -3,36 +3,33 @@ local CODING_SYSTEM_PROMPT =
 return {
 	"robitx/gp.nvim",
 	dependencies = { "folke/which-key.nvim" },
-	keys = { "<leader>z" },
+	-- keys = { "<leader>z" },
 	config = function()
-		require("which-key").add({
-			{ "<leader>zn", ":<C-u>'<,'>GpChatNew<cr>", desc = "Visual Chat New", mode = "v" },
-			{ "<leader>zz", ":<C-u>'<,'>GpChatToggle<cr>", desc = "Visual Popup Chat", mode = "v" },
-			{ "<leader>zr", ":<C-u>'<,'>GpChatPaste<cr>", desc = "Visual Chat Paste", mode = "v" },
-			{ "<leader>zx", ":'<,'>GpChatNew split<CR>", desc = "Visual Chat New split", mode = "v" },
-			{ "<leader>zv", ":'<,'>GpChatNew vsplit<CR>", desc = "Visual Chat New vsplit", mode = "v" },
-			{ "<leader>zw", ":<C-u>'<,'>GpRewrite<cr>", desc = "Visual Rewrite", mode = "v" },
-			{ "<leader>za", ":<C-u>'<,'>GpAppend<cr>", desc = "Visual Append", mode = "v" },
-			{ "<leader>zb", ":<C-u>'<,'>GpPrepend<cr>", desc = "Visual Prepend", mode = "v" },
-			{ "<leader>ze", ":<C-u>'<,'>GpEnew<cr>", desc = "Visual Enew", mode = "v" },
-			{ "<leader>zp", ":<C-u>'<,'>GpPopup<cr>", desc = "Visual Popup", mode = "v" },
-			{ "<leader>zs", "<cmd>GpStop<cr>", desc = "Stop", mode = "v" },
-		})
+		-- VISUAL mode mappings
+		vim.keymap.set("v", "<leader>zn", ":<C-u>'<,'>GpChatNew<cr>", { desc = "Visual Chat New" })
+		vim.keymap.set("v", "<leader>zz", ":<C-u>'<,'>GpChatToggle<cr>", { desc = "Visual Popup Chat" })
+		vim.keymap.set("v", "<leader>zr", ":<C-u>'<,'>GpChatPaste<cr>", { desc = "Visual Chat Paste" })
+		vim.keymap.set("v", "<leader>zx", ":'<,'>GpChatNew split<CR>", { desc = "Visual Chat New split" })
+		vim.keymap.set("v", "<leader>zv", ":'<,'>GpChatNew vsplit<CR>", { desc = "Visual Chat New vsplit" })
+		vim.keymap.set("v", "<leader>zw", ":<C-u>'<,'>GpRewrite<cr>", { desc = "Visual Rewrite" })
+		vim.keymap.set("v", "<leader>za", ":<C-u>'<,'>GpAppend<cr>", { desc = "Visual Append" })
+		vim.keymap.set("v", "<leader>zb", ":<C-u>'<,'>GpPrepend<cr>", { desc = "Visual Prepend" })
+		vim.keymap.set("v", "<leader>ze", ":<C-u>'<,'>GpEnew<cr>", { desc = "Visual Enew" })
+		vim.keymap.set("v", "<leader>zp", ":<C-u>'<,'>GpPopup<cr>", { desc = "Visual Popup" })
+		vim.keymap.set("v", "<leader>zs", "<cmd>GpStop<cr>", { desc = "Stop" })
 
 		-- NORMAL mode mappings
-		require("which-key").add({
-			{ "<leader>zn", "<cmd>GpChatNew<cr>", desc = "New Chat", mode = "n" },
-			{ "<leader>zz", "<cmd>GpChatToggle<cr>", desc = "Toggle Popup Chat", mode = "n" },
-			{ "<leader>zf", "<cmd>GpChatFinder<cr>", desc = "Chat Finder", mode = "n" },
-			{ "<leader>zx", "<cmd>GpChatNew split<cr>", desc = "New Chat split", mode = "n" },
-			{ "<leader>zv", "<cmd>GpChatNew vsplit<cr>", desc = "New Chat vsplit", mode = "n" },
-			{ "<leader>zw", "<cmd>GpRewrite<cr>", desc = "Inline Rewrite", mode = "n" },
-			{ "<leader>za", "<cmd>GpAppend<cr>", desc = "Append", mode = "n" },
-			{ "<leader>zb", "<cmd>GpPrepend<cr>", desc = "Prepend", mode = "n" },
-			{ "<leader>ze", "<cmd>GpEnew<cr>", desc = "Enew", mode = "n" },
-			{ "<leader>zp", "<cmd>GpPopup<cr>", desc = "Popup", mode = "n" },
-			{ "<leader>zs", "<cmd>GpStop<cr>", desc = "Stop", mode = "n" },
-		})
+		vim.keymap.set("n", "<leader>zn", "<cmd>GpChatNew<cr>", { desc = "New Chat" })
+		vim.keymap.set("n", "<leader>zz", "<cmd>GpChatToggle<cr>", { desc = "Toggle Popup Chat" })
+		vim.keymap.set("n", "<leader>zf", "<cmd>GpChatFinder<cr>", { desc = "Chat Finder" })
+		vim.keymap.set("n", "<leader>zx", "<cmd>GpChatNew split<cr>", { desc = "New Chat split" })
+		vim.keymap.set("n", "<leader>zv", "<cmd>GpChatNew vsplit<cr>", { desc = "New Chat vsplit" })
+		vim.keymap.set("n", "<leader>zw", "<cmd>GpRewrite<cr>", { desc = "Inline Rewrite" })
+		vim.keymap.set("n", "<leader>za", "<cmd>GpAppend<cr>", { desc = "Append" })
+		vim.keymap.set("n", "<leader>zb", "<cmd>GpPrepend<cr>", { desc = "Prepend" })
+		vim.keymap.set("n", "<leader>ze", "<cmd>GpEnew<cr>", { desc = "Enew" })
+		vim.keymap.set("n", "<leader>zp", "<cmd>GpPopup<cr>", { desc = "Popup" })
+		vim.keymap.set("n", "<leader>zs", "<cmd>GpStop<cr>", { desc = "Stop" })
 
 		require("gp").setup({
 			providers = {
@@ -112,7 +109,7 @@ return {
 
 		-- I don't know of an official way to set the default agent on startup, so I use
 		-- an undocumented/internal API:
-		require("gp")._state.chat_agent = "Sonnet37"
+		require("gp")._state.chat_agent = "GPT4O"
 
 		-- VISUAL mode mappings
 		-- s, x, v modes are handled the same way by which_key

@@ -100,15 +100,16 @@ def run(*args: str | Commit, dry_run=False):
 
 branches = []
 
-# Consider commits starting with "PR feedback" to be part of the same work as the last non-PR feedback commit.
 commit: Commit | None = None
 prev_non_pr_feedback_commit: Commit | None = None
 prev_pr_feedback_commit: Commit | None = None
+lower_commit_msg: str | None = None
 for line, next_line in zip(commits, commits[1:] + [None]):
     commit = Commit.from_line(line)
     next_commit = Commit.from_line(next_line) if next_line else None
 
-    if "pr feedback" in commit.msg.lower():
+    lower_commit_msg = commit.msg.lower()
+    if "pr feedback" in lower_commit_msg or "addendum" in lower_commit_msg:
         prev_pr_feedback_commit = commit
     else:
         if prev_non_pr_feedback_commit:

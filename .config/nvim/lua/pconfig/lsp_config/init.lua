@@ -73,7 +73,7 @@ return {
 				desc = "next diagnostic",
 			},
 		})
-		vim.lsp.set_log_level(vim.lsp.log_levels.INFO)
+		-- vim.lsp.set_log_level(vim.lsp.log_levels.INFO) -- Apparently this is bad for performance.
 
 		-- Use LSP formatting. Note this doesn't get invoked if LSP
 		-- isn't attached since we call it in on_attach
@@ -162,12 +162,14 @@ return {
 			ts_ls = require("pconfig.lsp_config.ts_ls"),
 			tailwindcss = require("pconfig.lsp_config.tailwindcss"),
 			sqls = require("pconfig.lsp_config.sqls"),
+			postgres_lsp = require("pconfig.lsp_config.postgres_lsp"),
 			efm = require("pconfig.lsp_config.efm"),
 			sumneko_lua = require("pconfig.lsp_config.sumneko_lua"),
 			sorbet = require("pconfig.lsp_config.sorbet"),
 			ruby_ls = require("pconfig.lsp_config.ruby_ls"),
 			eslint = require("pconfig.lsp_config.eslint"), -- requires npm i -g vscode-langservers-extracted
 			tinymist = require("pconfig.lsp_config.tinymist"),
+			basedpyright = require("pconfig.lsp_config.basedpyright"),
 		}
 
 		for _, lspname in ipairs({
@@ -180,7 +182,8 @@ return {
 			-- I'll use only sorbet for ruby.
 			-- "solargraph",
 			-- "efm", -- seems to cause issuse on MacOS
-			"sqls",
+			-- "sqls", Let's try Supabse's pg LSP
+      "postgres_lsp",
 			"rust_analyzer",
 			-- "sumneko_lua",
 			-- "tailwindcss",
@@ -194,7 +197,7 @@ return {
 			-- "marksman",
 			"yamlls",
 			-- "ast_grep",
-      "sourcekit"
+			"sourcekit",
 		}) do
 			local config = lsp_specific_configs[lspname]
 			if config ~= nil then

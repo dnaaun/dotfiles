@@ -40,7 +40,7 @@ return {
 \usepackage{enumitem}
 \setlist[itemize]{leftmargin=0.2em, labelsep=0.2em, nolistsep}
 \begin{document}
-\columnratio{0.1,0.25}
+\columnratio{0.15,0.25}
 \setlength{\columnsep}{2em}
 \setlength{\columnseprule}{0.4pt}
 \begin{sloppypar}
@@ -57,12 +57,27 @@ return {
 		})
 	),
 	s(
-		{ trig = "tn", descr = "take notes (on the first column)" },
+		{ trig = "tt", descr = "take notes (on the first column)" },
 		fmt(escape_curly_braces([[
 \end{nthcolumn}
 \begin{nthcolumn}{0}
-	\tiny
-    \item ]]) .. [[{}
+	\raggedright \small
+    ]]) .. [[{}
+]] .. escape_curly_braces([[
+\end{nthcolumn}
+\begin{nthcolumn}{2}
+  ]]), {
+			i(1, ""),
+		})
+	),
+
+	s(
+		{ trig = "tt*", descr = "take notes (on the first column, but align horizontally)" },
+		fmt(escape_curly_braces([[
+\end{nthcolumn}
+\begin{nthcolumn*}{0}
+	\raggedright \small
+    ]]) .. [[{}
 ]] .. escape_curly_braces([[
 \end{nthcolumn*}
 \begin{nthcolumn}{2}
@@ -133,5 +148,19 @@ return {
 
 			return to_return
 		end, {})
+	),
+
+	s(
+		{ trig = "b", descr = "bold text" },
+		fmt("\\textbf{{{}}}", {
+			i(1, ""),
+		})
+	),
+
+	s(
+		{ trig = "i", descr = "italic text" },
+		fmt("\\textit{{{}}}", {
+			i(1, ""),
+		})
 	),
 }

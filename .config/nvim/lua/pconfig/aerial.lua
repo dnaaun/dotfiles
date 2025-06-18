@@ -18,7 +18,7 @@ return {
 			link_tree_to_folds = false,
 
 			attach_mode = "global",
-			open_automatic = true,
+			open_automatic = false,
 
 
 			layout = {
