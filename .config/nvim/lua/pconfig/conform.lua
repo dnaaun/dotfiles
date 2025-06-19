@@ -22,7 +22,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 			})
 		end
 
-    -- orgmode.nvim provides it's own formatexpr that I don't wanna mess with.
+		-- orgmode.nvim provides it's own formatexpr that I don't wanna mess with.
 		if vim.bo.filetype ~= "org" then
 			vim.keymap.set("n", "gql", format_with_conform, { desc = "format with conform" })
 			vim.keymap.set("v", "gql", format_with_conform, { desc = "format with conform" })
@@ -37,7 +37,7 @@ return {
 			formatters_by_ft = {
 				sql = { "pg_format" },
 				lua = { "stylua" },
-				python = { "ruff_fix", "ruff_format" },
+				python = { "ruff_fix", "ruff_organize_imports", "ruff_format" },
 				ruby = { "rubocop" },
 				javascript = { "prettierd", "prettier", stop_after_first = true },
 				javascriptreact = { "prettierd", "prettier", stop_after_first = true },
