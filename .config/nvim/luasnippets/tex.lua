@@ -57,22 +57,7 @@ return {
 		})
 	),
 	s(
-		{ trig = "tt", descr = "take notes (on the first column)" },
-		fmt(escape_curly_braces([[
-\end{nthcolumn}
-\begin{nthcolumn}{0}
-	\raggedright \small
-    ]]) .. [[{}
-]] .. escape_curly_braces([[
-\end{nthcolumn}
-\begin{nthcolumn}{2}
-  ]]), {
-			i(1, ""),
-		})
-	),
-
-	s(
-		{ trig = "tt*", descr = "take notes (on the first column, but align horizontally)" },
+		{ trig = "tt", descr = "take notes (on the first column, but align horizontally)" },
 		fmt(escape_curly_braces([[
 \end{nthcolumn}
 \begin{nthcolumn*}{0}

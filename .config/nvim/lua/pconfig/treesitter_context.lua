@@ -37,7 +37,7 @@ return {
 		})
 
 		require("which-key").add({
-			{ "<leader>tcc", "<cmd>TSContextToggle<cr>", desc = "Toggle" },
+			{ "<leader>tcc", "<cmd>TSContext toggle<cr>", desc = "TSContext toggle" },
 		})
 	end,
 }

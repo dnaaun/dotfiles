@@ -189,6 +189,7 @@ return {
 						-- command = { "pgcli", "-d", "crushedgarlic", "-u", "crushedgarlic" },
 						-- command = { "pgcli", "-d", "hybrid_development" },
 						-- command = { "pgcli", vim.env.PRODUCTION_POSTGRES },
+						command = { "pgcli", vim.env.PROD_READONLY_CONNSTR },
 						command = {
 							"uv",
 							"tool",

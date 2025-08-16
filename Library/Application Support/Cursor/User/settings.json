@@ -1,0 +1,83 @@
+{
+    "[dart]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "editor.rulers": [
+            80
+        ],
+        "editor.selectionHighlight": false,
+        "editor.tabCompletion": "onlySnippets",
+        "editor.wordBasedSuggestions": "off"
+    },
+    "git.confirmSync": false,
+    "editor.inlayHints.enabled": "off",
+    "git.enableSmartCommit": true,
+    "zenMode.fullScreen": false,
+    "zenMode.hideLineNumbers": false,
+    "explorer.confirmDelete": false,
+    "git.autofetch": true,
+    "rust-analyzer.inlayHints.closureCaptureHints.enable": true,
+    "rust-analyzer.inlayHints.closureReturnTypeHints.enable": "with_block",
+    "rust-analyzer.inlayHints.discriminantHints.enable": "fieldless",
+    "rust-analyzer.inlayHints.genericParameterHints.lifetime.enable": true,
+    "rust-analyzer.inlayHints.genericParameterHints.type.enable": true,
+    "rust-analyzer.inlayHints.implicitDrops.enable": true,
+    "rust-analyzer.inlayHints.implicitSizedBoundHints.enable": true,
+    "rust-analyzer.inlayHints.lifetimeElisionHints.enable": "skip_trivial",
+    "rust-analyzer.inlayHints.maxLength": null,
+    "rust-analyzer.inlayHints.expressionAdjustmentHints.enable": "always",
+    "editor.inlayHints.maximumLength": 0,
+    "extensions.ignoreRecommendations": true,
+    "mypy-type-checker.reportingScope": "workspace",
+    "window.autoDetectColorScheme": true,
+    "workbench.preferredLightColorTheme": "Catppuccin Latte",
+    "editor.wordWrap": "on",
+    "workbench.preferredDarkColorTheme": "Catppuccin Mocha",
+    "python.pythonPath": "",
+    "python.defaultInterpreterPath": "",
+    "python.experiments.enabled": false,
+    "python.experiments.optInto": [],
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.useLibraryCodeForTypes": false,
+    "workbench.colorTheme": "Catppuccin Mocha",
+    "editor.fontFamily": "JetBrainsMono Nerd Font, Menlo, Monaco, 'Courier New', monospace",
+    "customizeUI.titleBar": "frameless",
+    "python.languageServer": "Default",
+    "editor.formatOnSave": true,
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    "notebook.output.scrolling": true,
+    "notebook.output.wordWrap": true,
+    "basedpyright.analysis.useTypingExtensions": true,
+    "editor.accessibilitySupport": "off",
+    "basedpyright.analysis.inlayHints.genericTypes": true,
+    "basedpyright.analysis.logLevel": "Warning",
+    "basedpyright.analysis.useLibraryCodeForTypes": false,
+    "basedpyright.analysis.diagnosticSeverityOverrides": {},
+    "notebook.defaultFormatter": "detachhead.basedpyright",
+    "basedpyright.analysis.diagnosticMode": "workspace",
+    "githubPullRequests.fileListLayout": "tree",
+    "lldb.suppressUpdateNotifications": true,
+    "rust-analyzer.inlayHints.closingBraceHints.enable": false,
+    "rust-analyzer.inlayHints.typeHints.hideClosureParameter": true,
+    "editor.fontSize": 11,
+    "debug.console.fontSize": 11,
+    "terminal.integrated.fontSize": 11,
+    "scm.inputFontSize": 11,
+    "markdown.preview.fontSize": 11,
+    "chat.editor.fontSize": 11,
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "cursor.composer.shouldQueueWhenGenerating": false,
+    "cursor.composer.shouldAllowCustomModes": true,
+    "cursor.diffs.useCharacterLevelDiffs": true
+}

@@ -27,7 +27,7 @@ return {
 	require("pconfig.lsp_config"),
 	require("pconfig.trouble"),
 
-  require("pconfig.goto_preview"),
+	require("pconfig.goto_preview"),
 	require("pconfig.cmp"),
 	{ "hrsh7th/cmp-buffer", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	{ "hrsh7th/cmp-nvim-lsp", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
@@ -40,18 +40,17 @@ return {
 	-- Orgmode related
 	require("pconfig.orgmode"),
 	require("pconfig.bullets"),
-  -- require("pconfig.autolist"),
+	-- require("pconfig.autolist"),
 	-- require("pconfig.org_bullets"),
-
 
 	require("pconfig.tmux"),
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 	require("pconfig.dressing"),
 	require("pconfig.treesitter_unit"),
-  --
+	--
 	-- require("pconfig.dirbuf"),
-  require("pconfig.oil"),
-  require("pconfig.neo_tree"),
+	require("pconfig.oil"),
+	require("pconfig.neo_tree"),
 
 	require("pconfig.surround"),
 	{ "nanotee/sqls.nvim" },
@@ -94,12 +93,14 @@ return {
 	-- require("pconfig.tint"), -- maybe makes everything slow?
 	-- require("pconfig.origami"),
 	-- require("pconfig.profile"),
-  require("pconfig.flutter_tools"),
-  require("pconfig.highlight_colors"),
-  require("pconfig.gh"),
-  require("pconfig.octo"),
-  require("pconfig.windsurf"),
-  require("pconfig.workspace_diagnostics"),
+	require("pconfig.flutter_tools"),
+	require("pconfig.highlight_colors"),
+	require("pconfig.gh"),
+	require("pconfig.octo"),
+	require("pconfig.windsurf"),
+	-- require("pconfig.workspace_diagnostics"), -- Slows down pyright a lot
 
-  require("pconfig.crates"),
+	require("pconfig.crates"),
+
+	require("pconfig.auto_dark_mode"),
 }

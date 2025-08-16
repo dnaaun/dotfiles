@@ -49,6 +49,6 @@ font-style-italic = Medium Italic
 font-style-bold-italic = Bold Italic
 font-size = 12
 
-theme = catppuccin-mocha
+theme = catppuccin-latte
 
 command = /opt/homebrew/bin/bash

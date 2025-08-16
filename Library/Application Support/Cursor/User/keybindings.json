@@ -1,0 +1,277 @@
+// Place your key bindings in this file to override the defaults
+[
+    {
+        "key": "alt+f8",
+        "command": "-editor.action.marker.next",
+        "when": "editorFocus"
+    },
+    {
+        "key": "[ e",
+        "command": "editor.action.marker.prev",
+        "when": "editorFocus && !terminalFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "shift+f8",
+        "command": "-editor.action.marker.prevInFiles",
+        "when": "editorFocus"
+    },
+    {
+        "key": "] e",
+        "command": "editor.action.marker.next",
+        "when": "editorFocus && !terminalFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "f8",
+        "command": "-editor.action.marker.nextInFiles",
+        "when": "editorFocus"
+    },
+    {
+        "key": ", s",
+        "command": "workbench.action.quickOpen",
+        "when": "vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": "cmd+p",
+        "command": "-workbench.action.quickOpen"
+    },
+    {
+        "key": ", f",
+        "command": "workbench.action.findInFiles",
+        "when": "vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": "shift+cmd+f",
+        "command": "-workbench.action.findInFiles"
+    },
+    {
+        "key": "cmd+r cmd+i",
+        "command": "-editor.debug.action.showDebugHover",
+        "when": "editorTextFocus && inDebugMode"
+    },
+    {
+        "key": "ctrl+h",
+        "command": "workbench.action.focusLeftGroup",
+        "when": "!terminalFocus"
+    },
+    {
+        "key": "ctrl+l",
+        "command": "workbench.action.focusRightGroup",
+        "when": "!terminalFocus"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "workbench.action.focusBelowGroup",
+        "when": "!terminalFocus"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "workbench.action.focusAboveGroup",
+        "when": "!terminalFocus"
+    },
+    {
+        "key": "cmd+r cmd+right",
+        "command": "-workbench.action.focusRightGroup"
+    },
+    {
+        "key": ", a",
+        "command": "workbench.action.findInFiles",
+        "when": "vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": "g a",
+        "command": "editor.action.quickFix",
+        "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": "cmd+.",
+        "command": "-editor.action.quickFix",
+        "when": "editorHasCodeActionsProvider && textInputFocus && !editorReadonly"
+    },
+    {
+        "key": "g g",
+        "command": "cursorTop",
+        "when": "editorTextFocus && !renameInputVisible && vim.mode == 'Normal' && !terminalFocus"
+    },
+    {
+        "key": "cmd+up",
+        "command": "-cursorTop",
+        "when": "textInputFocus"
+    },
+    {
+        "key": "g h",
+        "command": "editor.action.showHover",
+        "when": "editorTextFocus && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": "shift+k",
+        "command": "list.showHover",
+        "when": "listFocus && !inputFocus && !treestickyScrollFocused && !terminalFocus && vim.mode == 'Normal'"
+    },
+    {
+        "key": "cmd+r cmd+i",
+        "command": "-list.showHover",
+        "when": "listFocus && !inputFocus && !treestickyScrollFocused"
+    },
+    {
+        "key": "shift+k",
+        "command": "editor.action.showDefinitionPreviewHover",
+        "when": "editorTextFocus && !terminalFocus && !renameInputVisible && vim.mode == 'Normal'"
+    },
+    {
+        "key": "g d",
+        "command": "editor.action.revealDefinition",
+        "when": "editorHasDefinitionProvider && editorTextFocus && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": "g r",
+        "command": "editor.action.goToReferences",
+        "when": "editorHasReferenceProvider && editorTextFocus && !inReferenceSearchEditor && !isInEmbeddedEditor && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": "shift+f12",
+        "command": "-editor.action.goToReferences",
+        "when": "editorHasReferenceProvider && editorTextFocus && !inReferenceSearchEditor && !isInEmbeddedEditor"
+    },
+    {
+        "key": "g w",
+        "command": "workbench.action.showAllSymbols",
+        "when": "editorTextFocus && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": "cmd+t",
+        "command": "-workbench.action.showAllSymbols"
+    },
+    {
+        "key": ", g r",
+        "command": "git.revertSelectedRanges",
+        "when": "editorTextFocus && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": "g t",
+        "command": "editor.action.goToTypeDefinition",
+        "when": "editorTextFocus && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": "f2",
+        "command": "-editor.action.rename",
+        "when": "editorHasRenameProvider && editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "g shift+r",
+        "command": "editor.action.rename",
+        "when": "editorHasRenameProvider && editorTextFocus && !editorReadonly && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": ", v t",
+        "command": "workbench.action.terminal.focus",
+        "when": "vim.mode == 'Normal' && !renameInputVisible"
+    },
+    {
+        "key": ", v m",
+        "command": "workbench.action.focusActiveEditorGroup",
+        "when": "vim.mode == 'Normal' && !renameInputVisible"
+    },
+    {
+        "key": ", v p",
+        "command": "workbench.actions.view.problems",
+        "when": "vim.mode == 'Normal' && !renameInputVisible"
+    },
+    {
+        "key": ", v g",
+        "command": "workbench.view.scm",
+        "when": "vim.mode == 'Normal' && !renameInputVisible"
+    },
+    {
+        "key": "g q l",
+        "command": "editor.action.formatDocument",
+        "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": ", g w",
+        "command": "git.stageAll",
+        "when": "vim.mode == 'Normal'  && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": ", g shift+w",
+        "command": "git.stageFile",
+        "when": "vim.mode == 'Normal' && !inputFocus && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": ",, g shift+w",
+        "command": "git.stageFile",
+        "when": "vim.mode == 'Normal' && !inputFocus && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": ", G W",
+        "command": "git.stageFile",
+        "when": "vim.mode == 'Normal' && !inputFocus && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": ",, G W",
+        "command": "git.stageFile",
+        "when": "vim.mode == 'Normal' && !inputFocus && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": ", v z",
+        "command": "workbench.action.toggleZenMode",
+        "when": "vim.mode == 'Normal' && !renameInputVisible"
+    },
+    {
+        "key": "] h",
+        "command": "workbench.action.editor.nextChange",
+        "when": "editorTextFocus && !terminalFocus && vim.mode == 'Normal' && !renameInputVisible"
+    },
+    {
+        "key": "[ h",
+        "command": "workbench.action.editor.previousChange",
+        "when": "editorTextFocus && !terminalFocus && vim.mode == 'Normal' && !renameInputVisible"
+    },
+    {
+        "key": "ctrl+o",
+        "command": "-lineBreakInsert",
+        "when": "textInputFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+o",
+        "command": "-extension.vim_ctrl+o",
+        "when": "editorTextFocus && vim.active && vim.use<C-o> && !inDebugRepl"
+    },
+    {
+        "key": "ctrl+o",
+        "command": "workbench.action.navigateBack",
+        "when": "editorTextFocus && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": "ctrl+i",
+        "command": "workbench.action.navigateForward",
+        "when": "editorTextFocus && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": "cmd+i",
+        "command": "composerMode.agent"
+    },
+    {
+        "key": "cmd+l",
+        "command": "composerMode.chat"
+    },
+    {
+        "key": ", g p",
+        "command": "editor.action.dirtydiff.next",
+        "when": "editorTextFocus && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": "alt+f3",
+        "command": "-editor.action.dirtydiff.next",
+        "when": "editorTextFocus && !textCompareEditorActive"
+    },
+    {
+        "key": "-",
+        "command": "voil.openPanelCurrentDir",
+        "when": "editorTextFocus && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus"
+    },
+    {
+        "key": "-",
+        "command": "voil.gotoParentDir",
+        "when": "editorTextFocus && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus && voilDoc"
+    }
+]
