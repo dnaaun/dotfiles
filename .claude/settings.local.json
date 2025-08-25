@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:nvim-orgmode.github.io)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

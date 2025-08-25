@@ -1,0 +1,6 @@
+[user]
+name = "David Assefa Tofu"
+email = "davidtofu2018@gmail.com"
+
+[ui]
+diff-formatter = ["difft", "--color=always", "$left", "$right"]

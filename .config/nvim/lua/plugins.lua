@@ -39,6 +39,7 @@ return {
 
 	-- Orgmode related
 	require("pconfig.orgmode"),
+	require("pconfig.telescope_orgmode"),
 	require("pconfig.bullets"),
 	-- require("pconfig.autolist"),
 	-- require("pconfig.org_bullets"),
@@ -103,4 +104,5 @@ return {
 	require("pconfig.crates"),
 
 	require("pconfig.auto_dark_mode"),
+  require("pconfig.terminal")
 }

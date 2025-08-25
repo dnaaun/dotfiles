@@ -15,6 +15,27 @@ return {
 				"NOT_DONE",
 			},
 			org_default_notes_file = "~/Library/CloudStorage/Dropbox/notes/org/refile.org",
+			org_agenda_custom_commands = {
+				h = {
+					description = "High priority todos",
+					types = {
+						{
+							type = "tags_todo",
+							match = '+PRIORITY="A"',
+							org_agenda_overriding_header = "High Priority TODOs"
+						}
+					}
+				},
+				d = {
+					description = "Done todos",
+					types = {
+						{
+							type = "todo",
+							org_agenda_overriding_header = "Completed TODOs"
+						}
+					}
+				}
+			},
 			mappings = {
 				prefix = "<leader>x", -- Cuz I want to use <leader>o for portal.nvim, to do something like, but not quite like, what `o` does.last
 				-- ORG_EDIT_SPECIAL                                        *orgmode-org_edit_special*

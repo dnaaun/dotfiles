@@ -23,3 +23,5 @@ Caches/
 .nvim_dap_rust_args
 
 .airmux.yml
+
+**/.claude/settings.local.json
