@@ -38,9 +38,10 @@ vim.api.nvim_create_autocmd("StdinReadPost", {
 			function()
 				vim.cmd("source ~/.config/nvim/init.lua")
 			end,
-			-- 50 ms is the sweetspot where neovim decides it's worth loading
-			-- the text before running this function, apparently.
-			50
+
+			-- 200 ms is lowest I can go while having neovim decide 
+      -- it's worth loading the text before running this function, apparently.
+      200
 		)
 	end,
 })
