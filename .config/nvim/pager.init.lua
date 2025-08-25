@@ -1,11 +1,11 @@
 -- Found somewhere. Is originally by folke I think.
 _G.ansi_colorize = function()
 	vim.bo.modifiable = true
-	vim.wo.number = false
-	vim.wo.relativenumber = false
-	vim.wo.statuscolumn = ""
-	vim.wo.signcolumn = "no"
-	vim.opt.listchars = { space = " " }
+	-- vim.wo.number = false
+	-- vim.wo.relativenumber = false
+	-- vim.wo.statuscolumn = ""
+	-- vim.wo.signcolumn = "no"
+	-- vim.opt.listchars = { space = " " }
 
 	local buf = vim.api.nvim_get_current_buf()
 
@@ -28,13 +28,19 @@ local ansi_once = vim.api.nvim_create_augroup("AnsiOnce", { clear = true })
 vim.api.nvim_create_autocmd("StdinReadPost", {
 	group = ansi_once,
 	callback = function()
+		require("options")
 		_G.ansi_colorize()
 
 		-- We don't need to load init.lua anymore, or colorize any more buffers.
 		vim.api.nvim_del_augroup_by_id(ansi_once)
 
-		vim.defer_fn(function()
-			vim.cmd("source ~/.config/nvim/init.lua")
-		end, 50)
+		vim.defer_fn(
+			function()
+				vim.cmd("source ~/.config/nvim/init.lua")
+			end,
+			-- 50 ms is the sweetspot where neovim decides it's worth loading
+			-- the text before running this function, apparently.
+			50
+		)
 	end,
 })
