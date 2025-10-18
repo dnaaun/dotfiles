@@ -25,3 +25,5 @@ Caches/
 .airmux.yml
 
 **/.claude/settings.local.json
+
+**/.claude/settings.local.json

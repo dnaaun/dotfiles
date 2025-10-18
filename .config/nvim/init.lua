@@ -206,6 +206,9 @@ require("lazy").setup({
 	},
 })
 
+-- Setup LSP configuration using vim.lsp.config()
+require("pconfig.lsp_config").setup()
+
 local wk = require("which-key")
 
 wk.add({

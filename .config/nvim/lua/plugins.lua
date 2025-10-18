@@ -24,7 +24,7 @@ return {
 	require("pconfig.telescope_file_browser"),
 	require("pconfig.telescope_fzf_native"),
 	require("pconfig.telescope_ast_grep"),
-	require("pconfig.lsp_config"),
+	-- LSP config moved to init.lua since it's not a plugin anymore
 	require("pconfig.trouble"),
 
 	require("pconfig.goto_preview"),

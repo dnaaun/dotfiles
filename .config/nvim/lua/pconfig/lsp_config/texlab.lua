@@ -12,8 +12,8 @@ return {
 			forwardSearch = {
 				executable = "/Applications/Skim.app/Contents/SharedSupport/displayline",
 				args = {
-					"-g", -- don't bring skim into foreground
-					"-b", -- indicate line using reading bar
+					"-g",
+					"-b",
 					"%l",
 					"%p",
 					"%f",
@@ -23,7 +23,6 @@ return {
 			latexindent = {
 				modifyLineBreaks = true,
 			},
-
 			build = {
 				args = { "--synctex", "%f" },
 				executable = "tectonic",
