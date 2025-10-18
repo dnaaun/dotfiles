@@ -10,14 +10,19 @@ _G.ansi_colorize = function()
 	local buf = vim.api.nvim_get_current_buf()
 
 	local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-	-- while #lines > 0 and vim.trim(lines[#lines]) == "" do
-	-- 	lines[#lines] = nil
-	-- end
+
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, {})
 
 	vim.api.nvim_chan_send(vim.api.nvim_open_term(buf, {}), table.concat(lines, "\r\n"))
 	vim.keymap.set("n", "q", "<cmd>qa!<cr>", { silent = true, buffer = buf })
 	vim.api.nvim_create_autocmd("TermEnter", { buffer = buf, command = "stopinsert" })
+
+	-- I am doing this because in non-pager mode, we use Lazy
+	-- to load catppuccin, but we delay loading Lazy for perf reasons in pager mode.
+	vim.opt_global.runtimepath:append("~/.local/share/nvim/lazy/catppuccin")
+	vim.opt_global.runtimepath:append("~/.local/share/nvim/lazy/catppuccin/after")
+	-- Set the colorscheme to catppuccin-mocha
+	vim.cmd("colorscheme " .. require("selected_colorscheme").selected)
 end
 
 _G.PAGER_MODE = true
@@ -36,7 +41,8 @@ vim.api.nvim_create_autocmd("StdinReadPost", {
 			function()
 				vim.cmd("source ~/.config/nvim/init.lua")
 				vim.wo.signcolumn = "no"
-        vim.wo.number = false
+				vim.wo.number = false
+				vim.wo.foldcolumn = "0"
 			end,
 
 			200 -- ms is lowest I can go while having neovim decide

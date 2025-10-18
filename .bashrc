@@ -428,7 +428,7 @@ esac
 
 
 # export PAGER=moar Thanks ahkohd for the tip!
-# export PAGER=nvim_pager
+export PAGER=nvim_pager
 
 eval "$(zoxide init bash)"
 
