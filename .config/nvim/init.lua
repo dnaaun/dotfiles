@@ -335,5 +335,3 @@ vim.keymap.set("n", "<leader>th", function()
 	vim.lsp.inlay_hint.enable(not enabled)
 	enabled = not enabled
 end, { desc = "toggle inlay hints" })
-
-vim.cmd("map <Esc><CR>")
