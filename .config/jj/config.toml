@@ -1,0 +1,15 @@
+[user]
+name = "David Assefa Tofu"
+email = "davidtofu2018@gmail.com"
+
+[ui]
+diff-formatter = "difft"
+default-command = "log"
+
+[aliases]
+# https://danverbraganza.com/writings/most-frequent-jj-commands
+tug- = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@-"]
+tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@"]
+
+drop = ["abandon"]
+d = ["diff"]

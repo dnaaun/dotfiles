@@ -37,10 +37,10 @@ return {
 				},
 				lualine_c = {
 					"filename",
-					{
-						"diagnostics",
-						sources = { "nvim_workspace_diagnostic" },
-					},
+					-- {
+					-- 	"diagnostics",
+					-- 	sources = { "nvim_workspace_diagnostic" },
+					-- },
 				},
 				lualine_x = {
 					function()

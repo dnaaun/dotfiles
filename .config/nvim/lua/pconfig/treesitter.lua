@@ -160,7 +160,7 @@ return {
 		}
 
 		local matchup = { -- vim-matchup experimental support for treesitter
-			enable = false,
+			enable = true,
 
 			-- Matchcup is indispensible, but it's slow, so I'll disable as
 			-- much as I can the features apart from "jump to matching tag".

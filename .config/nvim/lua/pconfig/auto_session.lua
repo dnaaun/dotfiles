@@ -19,7 +19,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 			end
 		end
 		if #filtered_arglist == 1 then
-			vim.cmd("SessionRestore")
+			vim.cmd("AutoSession restore")
 
 			-- I've setup nvim-lspconfig to load onlyi on BufRead, and that event
 			-- doesn't seem to be triggered when restoring a session.
@@ -31,7 +31,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
 return {
 	"rmagatti/auto-session",
-	cmd = { "SessionSave", "SessionRestore" },
+	cmd = { "AutoSession" },
 	module = "auto-session",
 	config = function()
 		require("auto-session").setup({

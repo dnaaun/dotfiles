@@ -104,5 +104,8 @@ return {
 	require("pconfig.crates"),
 
 	require("pconfig.auto_dark_mode"),
-  require("pconfig.terminal")
+	require("pconfig.terminal"),
+	require("pconfig.buffer_sticks"),
+
+  require("pconfig.difft")
 }

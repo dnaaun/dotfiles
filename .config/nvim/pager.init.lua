@@ -20,28 +20,26 @@ _G.ansi_colorize = function()
 	vim.api.nvim_create_autocmd("TermEnter", { buffer = buf, command = "stopinsert" })
 end
 
-_G.ansi_colorize()
-
 _G.PAGER_MODE = true
 
 local ansi_once = vim.api.nvim_create_augroup("AnsiOnce", { clear = true })
 vim.api.nvim_create_autocmd("StdinReadPost", {
 	group = ansi_once,
 	callback = function()
-		require("options")
 		_G.ansi_colorize()
 
+		-- require("options")
 		-- We don't need to load init.lua anymore, or colorize any more buffers.
-		vim.api.nvim_del_augroup_by_id(ansi_once)
+		-- vim.api.nvim_del_augroup_by_id(ansi_once)
 
 		vim.defer_fn(
 			function()
 				vim.cmd("source ~/.config/nvim/init.lua")
+				vim.wo.signcolumn = "no"
+        vim.wo.number = false
 			end,
 
-			-- 200 ms is lowest I can go while having neovim decide 
-      -- it's worth loading the text before running this function, apparently.
-      200
+			200 -- ms is lowest I can go while having neovim decide
 		)
 	end,
 })

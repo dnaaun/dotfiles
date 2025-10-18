@@ -4,8 +4,9 @@
 opt = vim.opt
 --- not filetype-specific, or plugin-specific
 opt.number = true
--- Prevent wierd de-endentation when writing python
+-- Prevent weird (de-)endentation when writing python/orgmode.
 opt.indentkeys:remove({ ":" })
+opt.indentkeys:remove({ "<:>" })
 
 opt.matchpairs:append({ "<:>" })
 opt.scrollback = 100000 -- Lines to keep in neovim's terminal emulator
@@ -40,7 +41,7 @@ opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 -- Save space
 opt.foldcolumn = "1"
 
-opt.signcolumn = "yes:2"
+opt.signcolumn = "yes:1"
 
 -- Have one global status line
 opt.laststatus = 3

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <change>"
+    exit 1
+fi
+
+change="$1"
+
+jj bookmark create "dt/$(jj log -r $change --no-graph -T description | head -1 | sed 's/[^a-zA-Z]/_/g')" -r "$change"

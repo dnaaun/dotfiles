@@ -93,6 +93,10 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+## jj/jujutsu aliases
+alias jd='jj diff'
+alias js='jj status'
+
 # Some systems still have old vi by default
 alias vi=vim
 
@@ -424,7 +428,7 @@ esac
 
 
 # export PAGER=moar Thanks ahkohd for the tip!
-export PAGER=nvim_pager
+# export PAGER=nvim_pager
 
 eval "$(zoxide init bash)"
 
