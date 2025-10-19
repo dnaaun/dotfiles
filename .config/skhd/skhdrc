@@ -11,7 +11,7 @@ ctrl + cmd - l : cmus-remote --seek +1m
 
 # Including the absolute path to avoid alacritty opening in float mode: https://github.com/koekeishiya/yabai/issues/1250#issuecomment-1157252933
 # And it happens taht I'm using a cargo installed version.
-alt - return : /Users/davidat/.cargo/bin/alacritty
+alt - return : /Users/david/.cargo/bin/alacritty
 
 # Close window
 shift + alt - q : yabai -m window --close

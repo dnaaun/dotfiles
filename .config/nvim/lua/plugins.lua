@@ -67,7 +67,7 @@ plugins_for_non_pager_mode = {
 	require("pconfig.femaco"),
 	require("pconfig.otter"),
 	require("pconfig.diffview"),
-	require("pconfig.amharic"),
+	-- require("pconfig.amharic"),
 	require("pconfig.iron"),
 	require("pconfig.neogit"),
 	require("pconfig.gitsigns"),
@@ -92,7 +92,7 @@ plugins_for_non_pager_mode = {
 	--
 	-- require("pconfig.dirbuf"),
 	require("pconfig.oil"),
-	require("pconfig.neo_tree"),
+	-- require("pconfig.neo_tree"),
 
 	-- require("pconfig.workspace_diagnostics"), -- Slows down pyright a lot
 

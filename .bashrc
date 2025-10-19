@@ -279,7 +279,7 @@ alias wbe='watchexec  -n --restart --no-process-group --exts  rb -- bundle exec'
 # fi
 
 export RUST_BACKTRACE=1
-PS1='$(/Users/davidat/git/dotfiles/bash_prompt/target/release/bash_prompt)'
+PS1='$(~/git/dotfiles/bash_prompt/target/release/bash_prompt)'
 
 # To get autocomplete to work for `exa`, `_filedir` had to be defined, which  necessitated one/both of
 # `mbrew uninstall bash-completion && mbrew install bash-completion@2` and
@@ -434,3 +434,6 @@ eval "$(zoxide init bash)"
 
 
 source <(jj util completion bash)
+
+eval "$(direnv hook bash)" # for bash
+

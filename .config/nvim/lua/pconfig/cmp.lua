@@ -20,16 +20,11 @@ return {
 			return vim_item
 		end
 
-    -- This was an attempt to remove the codium source for specific file types. Didn't work.
-		codium_source = {
-			{ name = "codeium", keyword_length = 0 },
-		}
-		all_sources_except_codium = {
+		all_sources = {
 			{
 				{ name = "otter" },
 			},
 			{
-				{ name = "copilot", keyword_length = 0 },
 				{ name = "git" },
 			},
 			{
@@ -54,10 +49,6 @@ return {
 				{ name = "buffer", keyword_length = 5 },
 			},
 		}
-
-		all_sources = {}
-    vim.list_extend(all_sources, codium_source)
-    vim.list_extend(all_sources, all_sources_except_codium)
 
 		cmp.setup({
 			experimental = {
@@ -90,14 +81,6 @@ return {
 						fallback()
 					end
 				end, { "i", "s" }),
-
-				["<C-j>"] = cmp.mapping.complete({
-					config = {
-						sources = {
-							{ name = "codium", keyword_length = 0 },
-						},
-					},
-				}),
 
 				["<C-Space>"] = cmp.mapping.complete({}),
 
@@ -161,13 +144,6 @@ return {
 				keyword_length = 0,
 			},
 		})
-
-
-		for _, ft in ipairs({ "tex", "latex" }) do
-			cmp.setup.filetype(filetype, {
-				sources = cmp.config.sources(unpack(all_sources_except_codium)),
-			})
-		end
 
 		-- Another attempt to get nvim-cmp to trigger on InsertEnter.
 		-- This is currently not working.

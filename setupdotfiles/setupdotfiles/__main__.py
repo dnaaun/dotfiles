@@ -22,6 +22,7 @@ def main() -> int:
         nargs="*",
         default=[
             r".*\.gitmodules",
+            r".*bash_prompt.*",
             r".*\.git/.*",
             r".*README\.md",
             r".*index.lock",

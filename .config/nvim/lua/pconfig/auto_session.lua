@@ -1,7 +1,7 @@
 vim.api.nvim_exec(
 	[[
 augroup VimLeaveSaveSession
-  autocmd VimLeave * SessionSave
+  autocmd VimLeave * AutoSession save
 augroup END
 ]],
 	false
@@ -31,7 +31,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
 return {
 	"rmagatti/auto-session",
-	cmd = { "AutoSession" },
 	module = "auto-session",
 	config = function()
 		require("auto-session").setup({
