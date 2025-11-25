@@ -7,4 +7,4 @@ fi
 
 change="$1"
 
-jj bookmark list -r "::$change ~ ::main" -T 'json(self)' | jq 'select(has("remote") | not) | .name' -r| xargs -d\\n -n1 -P4 jj git push --allow-new -b 
+jj bookmark list -r "::$change ~ ::main" -T 'json(self)' | jq 'select(has("remote") | not) | .name' -r| xargs -d\\n -n1 -P4 jj git push --allow-new --ignore-immutable -b 

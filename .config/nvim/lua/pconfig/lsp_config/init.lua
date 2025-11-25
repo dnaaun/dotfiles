@@ -111,9 +111,9 @@ return {
 		})
 
 		-- Global configuration for all LSP clients
-		vim.lsp.config('*', {
+		vim.lsp.config("*", {
 			on_attach = on_attach,
-			root_markers = { '.git' },
+			root_markers = { ".git" },
 		})
 
 		-- Load individual server configurations and apply them
@@ -129,6 +129,7 @@ return {
 			ruby_ls = require("pconfig.lsp_config.ruby_ls"),
 			tinymist = require("pconfig.lsp_config.tinymist"),
 			basedpyright = require("pconfig.lsp_config.basedpyright"),
+			sourcekit = require("pconfig.lsp_config.sourcekit"),
 		}
 
 		-- Configure servers with their specific configs
@@ -145,50 +146,37 @@ return {
 			vim.lsp.config(server_name, config)
 		end
 
-		-- Configure simple servers (no special config needed)
-		local simple_servers = {
-			'clangd',
-			'dockerls',
-			'yamlls',
-			'sourcekit',
-		}
-
-		for _, server in ipairs(simple_servers) do
-			vim.lsp.config(server, {})
-		end
-
 		-- Custom AST-grep LSP
-		vim.lsp.config('ast_grep', {
-			cmd = { 'sg', 'lsp' },
+		vim.lsp.config("ast_grep", {
+			cmd = { "sg", "lsp" },
 			filetypes = {},
 			single_file_support = true,
 			root_dir = function(fname)
-				return vim.fs.find({ '.git', 'sgconfig.yml' }, {
+				return vim.fs.find({ ".git", "sgconfig.yml" }, {
 					path = fname,
-					upward = true
-				})[1] and vim.fs.dirname(vim.fs.find({ '.git', 'sgconfig.yml' }, {
+					upward = true,
+				})[1] and vim.fs.dirname(vim.fs.find({ ".git", "sgconfig.yml" }, {
 					path = fname,
-					upward = true
+					upward = true,
 				})[1])
 			end,
 		})
 
 		-- Enable all configured servers
 		local servers_to_enable = {
-			'clangd',
-			'dockerls',
-			'eslint',
-			'kotlin_language_server',
-			'basedpyright',
-			'postgres_lsp',
-			'rust_analyzer',
-			'texlab',
-			'ts_ls',
-			'html',
-			'sorbet',
-			'tinymist',
-			'yamlls',
-			'sourcekit',
+			"clangd",
+			"dockerls",
+			"eslint",
+			"kotlin_language_server",
+			"basedpyright",
+			"postgres_lsp",
+			"rust_analyzer",
+			"texlab",
+			"html",
+			"sorbet",
+			"tinymist",
+			"yamlls",
+			"sourcekit",
 		}
 
 		for _, server in ipairs(servers_to_enable) do

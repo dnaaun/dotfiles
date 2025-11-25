@@ -1,4 +1,5 @@
 return {
+	cmd = { "texlab" },
 	settings = {
 		texlab = {
 			rootDirectory = ".",
@@ -32,3 +33,4 @@ return {
 		},
 	},
 }
+

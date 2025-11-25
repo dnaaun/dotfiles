@@ -44,3 +44,7 @@
 	cmd = git-nbmergetool merge \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
 [mergetool]
 	prompt = false
+[http]
+	postBuffer = 524288000
+	lowSpeedLimit = 0
+	lowSpeedTime = 999999

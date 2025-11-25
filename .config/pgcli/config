@@ -27,7 +27,7 @@ multi_line_mode = "psql"
 destructive_warning = True
 
 # Enables expand mode, which is similar to `\x` in psql.
-expand = False
+expand = True
 
 # Enables auto expand mode, which is similar to `\x auto` in psql.
 auto_expand = False
@@ -83,7 +83,7 @@ search_path_filter = False
 # --style=0 means 'black and white', which I think means no theming
 # --rr=2 means rows reserved for special purposes is two.
 # pager = TERM=xterm-256color pspg --rr=2 --quit-if-one-screen --ignore-case --style=0 --force-uniborder --freezecols=0
-# pager = /Users/david/.local/bin/nvim_pager
+pager = /Users/david/.local/bin/nvim_pager
 
 # Timing of sql statments and table rendering.
 timing = True

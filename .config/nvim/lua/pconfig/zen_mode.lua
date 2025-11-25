@@ -8,7 +8,17 @@ return {
 				tmux = { enabled = true }, -- disables the tmux statusline
 			},
 			window = {
-				width = 0.85,
+				width = 0.6,
+        height = 0.8,
+				backdrop = 1,
+				options = {
+					signcolumn = "no",
+					number = false,
+					cursorline = false,
+					cursorcolumn = false,
+					foldcolumn = "0",
+					list = false,
+				},
 			},
 		})
 		vim.keymap.set("n", "<leader>vz", require("zen-mode").toggle, {})

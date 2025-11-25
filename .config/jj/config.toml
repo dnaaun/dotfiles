@@ -5,6 +5,8 @@ email = "davidtofu2018@gmail.com"
 [ui]
 diff-formatter = "difft"
 default-command = "log"
+# diff-editor = ["nvim", "-c", "DiffEditor $left $right $output"]
+diff-editor = "hunks_nvim"
 
 [aliases]
 # https://danverbraganza.com/writings/most-frequent-jj-commands
@@ -13,3 +15,17 @@ tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@"]
 
 drop = ["abandon"]
 d = ["diff"]
+
+
+[merge-tools.hunks_nvim]
+program = "nvim"      # Defaults to the name of the tool if not specified
+edit-args = [ "-c", "DiffEditor $left $right $output"]
+
+[merge-tools.diffconflicts]
+program = "nvim"
+merge-args = [
+	"-c", "let g:jj_diffconflicts_marker_length=$marker_length",
+	"-c", "JJDiffConflicts!", "$output", "$base", "$left", "$right",
+]
+merge-tool-edits-conflict-markers = true
+

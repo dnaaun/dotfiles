@@ -1,12 +1,3 @@
-vim.api.nvim_exec(
-	[[
-augroup VimLeaveSaveSession
-  autocmd VimLeave * AutoSession save
-augroup END
-]],
-	false
-)
-
 vim.api.nvim_create_augroup("RestoreSessionOnEnter", { clear = true })
 vim.api.nvim_create_autocmd("VimEnter", {
 	group = "RestoreSessionOnEnter",
@@ -33,6 +24,14 @@ return {
 	"rmagatti/auto-session",
 	module = "auto-session",
 	config = function()
+		vim.api.nvim_exec(
+			[[
+augroup VimLeaveSaveSession
+  autocmd VimLeave * AutoSession save
+augroup END
+]],
+			false
+		)
 		require("auto-session").setup({
 			log_level = "error",
 			auto_save_enabled = false,

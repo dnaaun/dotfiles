@@ -255,7 +255,7 @@ wk.add({
 	},
 })
 
- vim.cmd("colorscheme " .. require("selected_colorscheme").selected)
+vim.cmd("colorscheme " .. require("selected_colorscheme").selected)
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "org",
@@ -335,3 +335,8 @@ vim.keymap.set("n", "<leader>th", function()
 	vim.lsp.inlay_hint.enable(not enabled)
 	enabled = not enabled
 end, { desc = "toggle inlay hints" })
+
+_G.restart_lsp = function()
+	vim.lsp.enable("basedpyright", false)
+	vim.lsp.enable("basedpyright", true)
+end

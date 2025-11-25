@@ -112,7 +112,7 @@ return {
 		"cq",
 		f(function()
 			local to_return = vim.list_extend(
-				vim.list_extend({ "\\begin{quote}" }, vim.fn.getreg("0", 1, true)),
+				vim.list_extend({ "\\begin{quote}" }, vim.fn.getreg("+", 1, true)),
 				{ "\\end{quote}", "", "" }
 			)
 

@@ -1,5 +1,5 @@
 return {
-  dir = "/Users/davidat/git/amharic.nvim",
+  dir = "/Users/david/git/amharic.nvim",
   ft = { "markdown" },
   lazy = true,
   cmd = "AmharicToggle",

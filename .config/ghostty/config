@@ -3,7 +3,7 @@
 # This template file has been automatically created at the following
 # path since Ghostty couldn't find any existing config files on your system:
 #
-#   /Users/david/Library/Application Support/com.mitchellh.ghostty/config
+#   /Users/davidat/Library/Application Support/com.mitchellh.ghostty/config
 #
 # The template does not set any default options, since Ghostty ships
 # with sensible defaults for all options. Users should only need to set
@@ -14,12 +14,6 @@
 #
 # Additionally, each config option is also explained in detail
 # on Ghostty's website, at https://ghostty.org/docs/config.
-#
-# Ghostty can reload the configuration while running by using the menu
-# options or the bound key (default: Command + Shift + comma on macOS and
-# Control + Shift + comma on other platforms). Not all config options can be
-# reloaded while running; some only apply to new windows and others may require
-# a full restart to take effect.
 
 # Config syntax crash course
 # ==========================
@@ -47,3 +41,21 @@
 # # which is explained in the docs for that config option.
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
+mouse-hide-while-typing = true
+font-family = FiraMono Nerd Font
+font-style = Light
+font-style-bold = Bold
+font-style-italic = Medium Italic
+font-style-bold-italic = Bold Italic
+font-size = 14
+
+adjust-cell-width = -3.33%
+
+theme = catppuccin-mocha.conf
+# theme = catppuccin-latte.conf
+
+command = /opt/homebrew/bin/bash
+
+window-decoration = none
+
+confirm-close-surface = false

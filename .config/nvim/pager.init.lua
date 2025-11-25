@@ -1,6 +1,8 @@
 -- Found somewhere. Is originally by folke I think.
 _G.ansi_colorize = function()
 	vim.bo.modifiable = true
+  vim.wo.wrap = false
+  vim.go.wrap = false
 	-- vim.wo.number = false
 	-- vim.wo.relativenumber = false
 	-- vim.wo.statuscolumn = ""

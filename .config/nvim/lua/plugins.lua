@@ -67,7 +67,7 @@ plugins_for_non_pager_mode = {
 	require("pconfig.femaco"),
 	require("pconfig.otter"),
 	require("pconfig.diffview"),
-	-- require("pconfig.amharic"),
+	require("pconfig.amharic"),
 	require("pconfig.iron"),
 	require("pconfig.neogit"),
 	require("pconfig.gitsigns"),
@@ -85,7 +85,7 @@ plugins_for_non_pager_mode = {
 	require("pconfig.telescope_orgmode"),
 	require("pconfig.bullets"),
 	-- require("pconfig.autolist"),
-	-- require("pconfig.org_bullets"),
+	require("pconfig.org_bullets"),
 
 	require("pconfig.dressing"),
 	require("pconfig.treesitter_unit"),
@@ -97,7 +97,9 @@ plugins_for_non_pager_mode = {
 	-- require("pconfig.workspace_diagnostics"), -- Slows down pyright a lot
 
 	require("pconfig.difft"),
-
+	require("pconfig.hunks"),
+	require("pconfig.jj_diffconflicts"),
+	require("pconfig.typescript_tools"),
 }
 
 -- Append to plugins if not in pager mode

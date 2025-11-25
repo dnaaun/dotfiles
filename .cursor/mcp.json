@@ -1,3 +1,15 @@
 {
-  "mcpServers": {}
+  "mcpServers": {
+    "language-server": {
+      "command": "mcp-language-server",
+      "args": [
+        "--workspace",
+        "/Users/david/dev/little_bird/backend/",
+        "--lsp",
+        "basedpyright-langserver",
+        "--",
+        "--stdio"
+      ]
+    }
+  }
 }

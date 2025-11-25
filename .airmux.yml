@@ -1,14 +1,9 @@
 ---
-session_name: "dotfiles"
-working_dir: ~/git/dotfiles/
+session_name: dotfiles
+working_dir: ~/Library/CloudStorage/Dropbox/notes/org
 windows:
   - name: dotfiles
-    panes:
-      - commands:
-        - nvim
-  - name: org
-    working_dir: ~/Library/CloudStorage/Dropbox/notes/org/
-    panes:
-      - commands:
-        - nvim
-
+    working_dir: ~/git/dotfiles
+    layout: "e9a0,256x68,0,0,21"
+  - name: notes
+    layout: "e9a1,256x68,0,0,22"

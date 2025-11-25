@@ -23,13 +23,15 @@ return {
 	on_attach = function(client, bufnr)
 		vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 	end,
+	cmd = { "rust-analyzer" },
+	filetypes = { "rust" },
 	commands = {
 		ExpandMacro = { expand_macro },
 	},
 	settings = {
 		["rust-analyzer"] = {
 			cargo = {
-				features = "httpcache,wasm,hydrate",
+				features = { "ssr", "hydrate" },
 				noDefaultFeatures = false,
 				allFeatures = false,
 			},

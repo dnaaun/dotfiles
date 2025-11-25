@@ -311,6 +311,7 @@ $HOME/go/bin:\
 /usr/local/bin:\
 $HOME/git/dotfiles/bin_dir:\
 $HOME/.gem/bin:\
+$HOME/.swiftly/bin:\
 $PATH
 
 # Source customizations that differ across machines

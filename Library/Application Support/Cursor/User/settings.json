@@ -2,7 +2,9 @@
   "[dart]": {
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
-    "editor.rulers": [80],
+    "editor.rulers": [
+      80
+    ],
     "editor.selectionHighlight": false,
     "editor.tabCompletion": "onlySnippets",
     "editor.wordBasedSuggestions": "off"
@@ -41,7 +43,7 @@
   "workbench.colorTheme": "Catppuccin Mocha",
   "editor.fontFamily": "JetBrainsMono Nerd Font, Menlo, Monaco, 'Courier New', monospace",
   "customizeUI.titleBar": "frameless",
-  "python.languageServer": "Default",
+  "python.languageServer": "None",
   "editor.formatOnSave": true,
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff"
@@ -78,10 +80,15 @@
   "cursor.composer.shouldQueueWhenGenerating": false,
   "cursor.composer.shouldAllowCustomModes": true,
   "cursor.diffs.useCharacterLevelDiffs": true,
-  "rust-analyzer.check.features": ["hydrate"],
-  "rust-analyzer.cargo.features": ["hydrate"],
+  "rust-analyzer.check.features": [
+    "hydrate"
+  ],
+  "rust-analyzer.cargo.features": [
+    "hydrate"
+  ],
   "cursorpyright.analysis.autoImportCompletions": true,
   "cursorpyright.analysis.diagnosticMode": "workspace",
   "cursorpyright.analysis.useLibraryCodeForTypes": false,
-  "cursor.cpp.enablePartialAccepts": true
+  "cursor.cpp.enablePartialAccepts": true,
+  "workbench.iconTheme": "catppuccin-mocha"
 }
