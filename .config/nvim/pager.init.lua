@@ -1,8 +1,8 @@
 -- Found somewhere. Is originally by folke I think.
 _G.ansi_colorize = function()
 	vim.bo.modifiable = true
-  vim.wo.wrap = false
-  vim.go.wrap = false
+	vim.wo.wrap = false
+	vim.go.wrap = false
 	-- vim.wo.number = false
 	-- vim.wo.relativenumber = false
 	-- vim.wo.statuscolumn = ""
@@ -23,7 +23,6 @@ _G.ansi_colorize = function()
 	-- to load catppuccin, but we delay loading Lazy for perf reasons in pager mode.
 	vim.opt_global.runtimepath:append("~/.local/share/nvim/lazy/catppuccin")
 	vim.opt_global.runtimepath:append("~/.local/share/nvim/lazy/catppuccin/after")
-	-- Set the colorscheme to catppuccin-mocha
 	vim.cmd("colorscheme " .. require("selected_colorscheme").selected)
 end
 

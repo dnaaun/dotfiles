@@ -1,5 +1,6 @@
 return {
 	cmd = { "texlab" },
+	filetypes = { "latex", "tex" },
 	settings = {
 		texlab = {
 			rootDirectory = ".",
@@ -33,4 +34,3 @@ return {
 		},
 	},
 }
-

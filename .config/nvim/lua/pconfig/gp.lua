@@ -72,36 +72,21 @@ return {
 			agents = {
 				{
 					provider = "anthropic",
-					name = "Sonnet35",
+					name = "Sonnet45",
 					chat = true,
 					command = false,
 					-- string with model name or table with model name and parameters
-					model = { model = "claude-3-5-sonnet-20240620" },
+					model = { model = "claude-sonnet-4-5-20250929" },
 					-- system prompt (use this to specify the persona/role of the AI)
 					system_prompt = require("gp.defaults").chat_system_prompt,
 				},
+				
 				{
-					name = "Sonnet37",
-					provider = "anthropic",
-					chat = true,
-					command = true,
-					model = { model = "claude-3-7-sonnet-20250219" },
-					system_prompt = "You're a coding assistant. Lean towards being brief (e.g., providing a code snippet answer only) if the question can at all be answered in a brief way. Don't be afraid to be not brief if the question clearly beckons a wider exploration.",
-				},
-				{
-					name = "GPT4O",
+					name = "gpt52",
 					provider = "openai",
 					chat = true,
 					command = true,
-					model = { model = "gpt-4o" },
-					system_prompt = "You're a coding assistant. Lean towards being brief (e.g., providing a code snippet answer only) if the question can at all be answered in a brief way. Don't be afraid to be not brief if the question clearly beckons a wider exploration.",
-				},
-				{
-					name = "GPT4OMini",
-					provider = "openai",
-					chat = true,
-					command = true,
-					model = { model = "gpt-4o-mini-2024-07-18" },
+					model = { model = "gpt-5.2-2025-12-11" },
 					system_prompt = "You're a coding assistant. Lean towards being brief (e.g., providing a code snippet answer only) if the question can at all be answered in a brief way. Don't be afraid to be not brief if the question clearly beckons a wider exploration.",
 				},
 			},
@@ -109,7 +94,7 @@ return {
 
 		-- I don't know of an official way to set the default agent on startup, so I use
 		-- an undocumented/internal API:
-		require("gp")._state.chat_agent = "GPT4O"
+		require("gp")._state.chat_agent = "gpt52"
 
 		-- VISUAL mode mappings
 		-- s, x, v modes are handled the same way by which_key

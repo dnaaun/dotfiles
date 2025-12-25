@@ -148,4 +148,17 @@ return {
 			i(1, ""),
 		})
 	),
+
+	s(
+		{ trig = "q", descr = "simple quote" },
+		fmt(
+			[[\begin{{quote}}
+{}
+\end{{quote}}
+]],
+			{
+				i(1, ""),
+			}
+		)
+	),
 }

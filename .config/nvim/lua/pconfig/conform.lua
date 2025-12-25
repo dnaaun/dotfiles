@@ -35,6 +35,7 @@ return {
 	config = function()
 		require("conform").setup({
 			formatters_by_ft = {
+				swift = { "swiftformat", lsp_format = "never" },
 				sql = { "pg_format" },
 				lua = { "stylua" },
 				python = { "ruff_fix", "ruff_organize_imports", "ruff_format" },
@@ -43,7 +44,7 @@ return {
 				javascriptreact = { "prettierd", "prettier", stop_after_first = true },
 				typescript = { "prettierd", "prettier", stop_after_first = true },
 				typescriptreact = { "prettierd", "prettier", stop_after_first = true },
-				rust = { "rustfmt", lsp_format = "fallback" },
+				rust = { lsp_format = "prefer" },
 			},
 		})
 	end,

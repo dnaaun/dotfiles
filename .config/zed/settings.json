@@ -9,6 +9,21 @@
 {
   "icon_theme": "Zed (Default)",
   "agent": {
+    "profiles": {
+      "asdf": {
+        "name": "asdf",
+        "tools": {
+          "move_path": true,
+          "list_directory": false
+        },
+        "enable_all_context_servers": false,
+        "context_servers": {}
+      }
+    },
+    "default_model": {
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4-5"
+    },
     "model_parameters": [],
     "always_allow_tool_actions": true,
   },

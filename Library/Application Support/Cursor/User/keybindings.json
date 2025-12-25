@@ -273,5 +273,19 @@
         "key": "-",
         "command": "voil.gotoParentDir",
         "when": "editorTextFocus && vim.mode == 'Normal' && !renameInputVisible && !terminalFocus && voilDoc"
+    },
+    {
+        "key": "cmd+p",
+        "command": "-workbench.action.quickOpenNavigateNextInFilePicker",
+        "when": "inFilesPicker && inQuickOpen"
+    },
+    {
+        "key": "cmd+p",
+        "command": "-expandLineSelection",
+        "when": "textInputFocus"
+    },
+    {
+        "key": "cmd+p",
+        "command": "composerMode.plan"
     }
 ]

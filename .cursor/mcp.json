@@ -4,7 +4,7 @@
       "command": "mcp-language-server",
       "args": [
         "--workspace",
-        "/Users/david/dev/little_bird/backend/",
+        "/Users/david/git/little_bird/backend/",
         "--lsp",
         "basedpyright-langserver",
         "--",

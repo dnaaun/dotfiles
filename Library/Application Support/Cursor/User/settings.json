@@ -44,7 +44,6 @@
   "editor.fontFamily": "JetBrainsMono Nerd Font, Menlo, Monaco, 'Courier New', monospace",
   "customizeUI.titleBar": "frameless",
   "python.languageServer": "None",
-  "editor.formatOnSave": true,
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
@@ -75,7 +74,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "cursor.composer.shouldQueueWhenGenerating": false,
   "cursor.composer.shouldAllowCustomModes": true,
@@ -90,5 +89,9 @@
   "cursorpyright.analysis.diagnosticMode": "workspace",
   "cursorpyright.analysis.useLibraryCodeForTypes": false,
   "cursor.cpp.enablePartialAccepts": true,
-  "workbench.iconTheme": "catppuccin-mocha"
+  "workbench.iconTheme": "catppuccin-mocha",
+  "[swift]": {
+    "editor.defaultFormatter": "sswg.swift-lang"
+  },
+  "cursorpyright.analysis.typeCheckingMode": "recommended"
 }

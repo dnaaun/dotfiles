@@ -22,7 +22,7 @@ program = "nvim"      # Defaults to the name of the tool if not specified
 edit-args = [ "-c", "DiffEditor $left $right $output"]
 
 [merge-tools.diffconflicts]
-program = "nvim"
+program = "nvim_pager"
 merge-args = [
 	"-c", "let g:jj_diffconflicts_marker_length=$marker_length",
 	"-c", "JJDiffConflicts!", "$output", "$base", "$left", "$right",

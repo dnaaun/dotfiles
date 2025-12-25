@@ -21,5 +21,23 @@
       // Search through all files in the workspace
       ", a": "workspace::NewSearch"
     }
+  },
+  {
+    "context": "(VimControl && !menu)",
+    "bindings": {
+      "g w": "project_symbols::Toggle"
+    }
+  },
+  {
+    "context": "((vim_mode == helix_normal || vim_mode == helix_select) && !menu)",
+    "bindings": {
+      "space shift-s": null
+    }
+  },
+  {
+    "context": "(VimControl && !menu)",
+    "bindings": {
+      "g shift-s": null
+    }
   }
 ]
