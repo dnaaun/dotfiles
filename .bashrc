@@ -436,3 +436,4 @@ source <(jj util completion bash)
 
 eval "$(direnv hook bash)" # for bash
 
+export RIPGREP_CONFIG_PATH=~/.config/ripgrep/config

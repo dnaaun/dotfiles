@@ -131,6 +131,8 @@ local map_telescope_bindings = function()
 			function()
 				require("telescope.builtin").fd({
 					hidden = true,
+          no_ignore = false,
+          no_ignore_parent = false,
 				})
 			end,
 			desc = "fd files in cur dir",

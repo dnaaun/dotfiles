@@ -3,7 +3,6 @@ local plugins = {
 
 	require("pconfig.matchup"),
 
-
 	require("pconfig.tmux"),
 
 	require("pconfig.surround"),
@@ -13,8 +12,8 @@ local plugins = {
 	require("pconfig.telescope"),
 	require("pconfig.telescope_fzf_native"),
 
-
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+	require("pconfig.auto_dark_mode"),
 }
 
 -- Append to plugins if not in pager mode
@@ -32,10 +31,9 @@ plugins_for_non_pager_mode = {
 	require("pconfig.dap_ui"),
 	{ "hrsh7th/cmp-buffer", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	require("pconfig.luasnip"),
-	require("pconfig.auto_dark_mode"),
 	require("pconfig.terminal"),
 	require("pconfig.buffer_sticks"),
-	require("pconfig.harpoon"),
+	-- require("pconfig.harpoon"),
 	-- require("pconfig.harpoon_lualine"),
 	require("pconfig.markdown_preview"),
 	-- require("pconfig.tint"), -- maybe makes everything slow?

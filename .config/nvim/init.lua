@@ -7,26 +7,6 @@ for _, mapping in ipairs({ "grr", "grn", "gra" }) do
 	end
 end
 
-local detect_if_in_simple_mode_group = vim.api.nvim_create_augroup("DetectIfWeAreInSimpleMode", {
-	clear = true,
-})
-
--- When neovim is opened, detect if the file type is `gitrebase`
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
-	group = detect_if_in_simple_mode_group,
-	callback = function(args)
-		local in_simple_mode = false
-
-		local bufnr = args.buf
-		local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
-		if filetype == "gitrebase" then
-			in_simple_mode = true
-		end
-
-		_G.IN_SIMPLE_MODE = in_simple_mode
-	end,
-})
-
 --- Easy debugging
 function _G.P(table)
 	vim.notify(vim.inspect(table))
