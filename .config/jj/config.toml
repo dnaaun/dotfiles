@@ -3,6 +3,7 @@ name = "David Assefa Tofu"
 email = "davidtofu2018@gmail.com"
 
 [ui]
+pager = "nvim_pager"
 diff-formatter = "difft"
 default-command = "log"
 # diff-editor = ["nvim", "-c", "DiffEditor $left $right $output"]
