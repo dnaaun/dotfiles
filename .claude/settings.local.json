@@ -4,31 +4,11 @@
       "WebFetch(domain:nvim-orgmode.github.io)",
       "WebFetch(domain:neovim.io)",
       "Bash(file:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(time bash -i -c exit 2>&1)"
     ],
     "deny": [],
     "ask": []
   },
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.local/bin/claude-tmux-flash start"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.local/bin/claude-tmux-flash stop"
-          }
-        ]
-      }
-    ]
-  }
+  "hooks": {}
 }

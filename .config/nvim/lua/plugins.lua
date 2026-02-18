@@ -1,7 +1,7 @@
 local plugins = {
 	require("pconfig.which_key"), -- show candidate mappings after pressing a key
 
-	require("pconfig.matchup"),
+	-- require("pconfig.matchup"), -- disabled: major perf bottleneck (see profile.log)
 
 	require("pconfig.tmux"),
 
@@ -13,7 +13,7 @@ local plugins = {
 	require("pconfig.telescope_fzf_native"),
 
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
-	require("pconfig.auto_dark_mode"),
+	-- require("pconfig.auto_dark_mode"), -- suspicion that this is slowing me down. Not sure tho.
 }
 
 -- Append to plugins if not in pager mode
@@ -53,7 +53,6 @@ plugins_for_non_pager_mode = {
 	require("pconfig.conform"),
 	require("pconfig.copilot_cmp"),
 	-- { "rcarriga/cmp-dap", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
-	require("pconfig.gp"),
 	require("pconfig.treesitter_context"),
 	{ "saadparwaiz1/cmp_luasnip", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	{ "nanotee/sqls.nvim" },
@@ -98,6 +97,10 @@ plugins_for_non_pager_mode = {
 	require("pconfig.hunks"),
 	require("pconfig.jj_diffconflicts"),
 	require("pconfig.typescript_tools"),
+
+  -- AI coding asistant thingys
+	require("pconfig.codecompanion"),
+	require("pconfig.gp"),
 }
 
 -- Append to plugins if not in pager mode

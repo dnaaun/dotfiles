@@ -277,7 +277,20 @@ alias wbe='watchexec  -n --restart --no-process-group --exts  rb -- bundle exec'
 # fi
 
 export RUST_BACKTRACE=1
-PS1='$(~/git/dotfiles/bash_prompt/target/release/bash_prompt)'
+# PS1='$(~/git/dotfiles/bash_prompt/target/release/bash_prompt)' # too slow these days.
+__ps1() {
+  local ec=$?
+  local green='\[\e[32m\]'
+  local red='\[\e[31m\]'
+  local reset='\[\e[0m\]'
+
+  if (( ec == 0 )); then
+    PS1="\w${green}\$${reset} "
+  else
+    PS1="\w${red}\$${reset} "
+  fi
+}
+PROMPT_COMMAND=__ps1
 
 # To get autocomplete to work for `exa`, `_filedir` had to be defined, which  necessitated one/both of
 # `mbrew uninstall bash-completion && mbrew install bash-completion@2` and
@@ -387,7 +400,17 @@ cur_commit_hash() {
 # eval `fnm env`
 
 # source <(frum init)
-eval "$(rbenv init - bash)"
+# Lazy-load rbenv: `rbenv init` takes ~275ms, so defer it until first use.
+_init_rbenv() {
+  unset -f rbenv ruby gem irb bundle rake
+  eval "$(command rbenv init - bash)"
+}
+rbenv() { _init_rbenv; rbenv "$@"; }
+ruby()  { _init_rbenv; ruby "$@"; }
+gem()   { _init_rbenv; gem "$@"; }
+irb()   { _init_rbenv; irb "$@"; }
+bundle(){ _init_rbenv; bundle "$@"; }
+rake()  { _init_rbenv; rake "$@"; }
 
 #  This causes errors right now when cd-ing into a directory with a .nvmrc
 #  file.
@@ -437,3 +460,8 @@ source <(jj util completion bash)
 eval "$(direnv hook bash)" # for bash
 
 export RIPGREP_CONFIG_PATH=~/.config/ripgrep/config
+
+# jj and watchexec
+watchjj() {
+  jj workspace update-stale && watchexec --on-busy-update=restart --debounce 500ms --shell=none --ignore-nothing --watch ~/git/littlebird/.jj/repo/op_heads -- jj "$@"
+}
