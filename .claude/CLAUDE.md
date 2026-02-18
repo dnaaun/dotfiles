@@ -1,0 +1,3 @@
+ - You should first try to use jj before git, and only if jj reports it's not in a jj dir, go to use git.
+ - I often use jj workspaces (in which git commands don't work without setting GIT_DIR). So do something like `GIT_DIR="$(jj git root)" gh ...` if you want to run gh commands.
+ - You have a jujutsu_or_jj skill. Use it.
