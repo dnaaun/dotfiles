@@ -216,14 +216,20 @@ _fzf_compgen_dir() {
   command $FDCMD . --type d --hidden "$1" 2>/dev/null
 }
 
-# If we're on macos
-# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-# I just installed it using homebrew, so
-eval "$(fzf --bash)"
-
+# Cached tool init: these files are the output of commands that would otherwise
+# spawn a subprocess on every shell start (~30-50ms each). Source from cache
+# instead (~1ms each). Regenerate all with: ~/.bashrc_cache/regenerate.sh
+#   fzf.bash      <- fzf --bash
+#   jj.bash       <- jj util completion bash
+#   direnv.bash   <- direnv hook bash
+#   zoxide.bash   <- zoxide init bash
+source ~/.bashrc_cache/fzf.bash
+source ~/.bashrc_cache/jj.bash
+source ~/.bashrc_cache/direnv.bash
+source ~/.bashrc_cache/zoxide.bash
 
 # We need to set this here (despite having an .inputrc saying the same thing)
-# because fzf bindings get messed up if we set -o vi after we souurce the fzf bindings scripts.
+# because fzf bindings get messed up if we set -o vi after we source the fzf bindings scripts.
 set -o vi
 # If we're on ubuntu
 FZF_BASH_BINDINGS=/usr/share/doc/fzf/examples/key-bindings.bash 
@@ -451,13 +457,6 @@ esac
 
 # export PAGER=moar Thanks ahkohd for the tip!
 export PAGER=nvim_pager
-
-eval "$(zoxide init bash)"
-
-
-source <(jj util completion bash)
-
-eval "$(direnv hook bash)" # for bash
 
 export RIPGREP_CONFIG_PATH=~/.config/ripgrep/config
 
