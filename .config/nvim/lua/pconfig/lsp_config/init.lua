@@ -30,8 +30,7 @@ local setup_formatexpr = function(client)
 end
 
 local setup_texlab_forward_search = function()
-	local wk = require("which-key")
-	wk.add({ { "<leader>t", ":TexlabForward<CR>", desc = "Texlab forward" } })
+	vim.keymap.set("n", "<leader>t", ":TexlabForward<CR>", { desc = "Texlab forward" })
 end
 
 -- Global on_attach function
@@ -41,19 +40,12 @@ local on_attach = function(client, bufnr)
 	end
 
 	if client.name == "ts_ls" then
-		local wk = require("which-key")
-		wk.add({
-			{
-				"<leader>li",
-				function()
-					vim.lsp.buf.execute_command({
-						command = "_typescript.organizeImports",
-						arguments = { vim.fn.expand("%:p") },
-					})
-				end,
-				desc = "TS Organize Imports",
-			},
-		})
+		vim.keymap.set("n", "<leader>li", function()
+			vim.lsp.buf.execute_command({
+				command = "_typescript.organizeImports",
+				arguments = { vim.fn.expand("%:p") },
+			})
+		end, { desc = "TS Organize Imports" })
 	end
 
 	require("lsp_occurence").on_attach(client, bufnr)
@@ -69,46 +61,23 @@ return {
 	-- Since we're not using nvim-lspconfig anymore, this is just a regular setup function
 	setup = function()
 		-- Setup keymaps (from original config)
-		local wk = require("which-key")
-		wk.add({
-			{ "K", vim.lsp.buf.hover, desc = "hover" },
-			{ "gR", vim.lsp.buf.rename, desc = "rename" },
-			{
-				"gh",
-				function()
-					vim.diagnostic.open_float({ source = true })
-				end,
-				desc = "diagnostic float",
-			},
-			{
-				"[e",
-				function()
-					vim.diagnostic.goto_prev({ severity = "Error" })
-				end,
-				desc = "previous diagnostic",
-			},
-			{
-				"]e",
-				function()
-					vim.diagnostic.goto_next({ severity = "Error" })
-				end,
-				desc = "next diagnostic",
-			},
-			{
-				"[gh",
-				function()
-					vim.diagnostic.goto_prev({ severity = "Warn" })
-				end,
-				desc = "previous diagnostic",
-			},
-			{
-				"]gh",
-				function()
-					vim.diagnostic.goto_next({ severity = "Warn" })
-				end,
-				desc = "next diagnostic",
-			},
-		})
+		vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "hover" })
+		vim.keymap.set("n", "gR", vim.lsp.buf.rename, { desc = "rename" })
+		vim.keymap.set("n", "gh", function()
+			vim.diagnostic.open_float({ source = true })
+		end, { desc = "diagnostic float" })
+		vim.keymap.set("n", "[e", function()
+			vim.diagnostic.goto_prev({ severity = "Error" })
+		end, { desc = "previous diagnostic" })
+		vim.keymap.set("n", "]e", function()
+			vim.diagnostic.goto_next({ severity = "Error" })
+		end, { desc = "next diagnostic" })
+		vim.keymap.set("n", "[gh", function()
+			vim.diagnostic.goto_prev({ severity = "Warn" })
+		end, { desc = "previous diagnostic" })
+		vim.keymap.set("n", "]gh", function()
+			vim.diagnostic.goto_next({ severity = "Warn" })
+		end, { desc = "next diagnostic" })
 
 		-- Global configuration for all LSP clients
 		vim.lsp.config("*", {

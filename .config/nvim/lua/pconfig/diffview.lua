@@ -73,11 +73,8 @@ return {
 	event = require("pconfig.gitsigns").event,
 
 	config = function()
-		local wk = require("which-key")
-		wk.add({
-			{ "<leader>gd", ":DiffviewOpen<CR>", desc = "Diffview Open" },
-			{ "<leader>gq", ":tabclose<CR>", desc = "Tab Close" },
-		})
+		vim.keymap.set("n", "<leader>gd", ":DiffviewOpen<CR>", { desc = "Diffview Open" })
+		vim.keymap.set("n", "<leader>gq", ":tabclose<CR>", { desc = "Tab Close" })
 
 		local cb = require("diffview.config").diffview_callback
 

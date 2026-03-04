@@ -1,16 +1,7 @@
-local wk = require("which-key")
-wk.add({
-	name = "notifications",
-	{ "<leader>nd", require("notify").dismiss, desc = "dismiss notifictions", group = "notifications" },
-	{
-		"<leader>nf",
-		function()
-			require("telescope").extensions.notify.notify()
-		end,
-		desc = "show past notifications",
-		group = "notifications",
-	},
-})
+vim.keymap.set("n", "<leader>nd", require("notify").dismiss, { desc = "dismiss notifictions" })
+vim.keymap.set("n", "<leader>nf", function()
+	require("telescope").extensions.notify.notify()
+end, { desc = "show past notifications" })
 
 return {
 	"rcarriga/nvim-notify",

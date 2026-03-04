@@ -1,7 +1,6 @@
 
 return {
 	"robitx/gp.nvim",
-	dependencies = { "folke/which-key.nvim" },
 	keys = { "<leader>z" },
 	config = function()
 		-- VISUAL mode mappings

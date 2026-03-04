@@ -5,7 +5,10 @@
       "WebFetch(domain:neovim.io)",
       "Bash(file:*)",
       "Bash(chmod:*)",
-      "Bash(time bash -i -c exit 2>&1)"
+      "Bash(time bash -i -c exit 2>&1)",
+      "Bash(grep -l \"which.key\\\\|wk.add\\\\|wk.register\" /Users/david/git/dotfiles/.config/nvim/lua/pconfig/*.lua 2>/dev/null | wc -l)",
+      "Bash(cd /Users/david/git/dotfiles/.config/nvim && for f in init.lua lua/pconfig/telescope/global_mappings.lua lua/pconfig/gitsigns.lua lua/pconfig/lsp_config/init.lua lua/pconfig/neogit.lua lua/pconfig/neotest.lua lua/pconfig/iron.lua lua/pconfig/dap.lua lua/pconfig/diffview.lua lua/pconfig/lsp_inlayhints.lua lua/pconfig/treesitter_context.lua lua/pconfig/treehopper.lua lua/pconfig/tmux.lua lua/pconfig/text_case.lua lua/pconfig/ssr.lua lua/pconfig/portal.lua lua/pconfig/notify.lua lua/pconfig/dirbuf.lua lua/pconfig/amharic.lua lua/pconfig/gp.lua; do luac -p \"$f\" 2>&1 && echo \"OK: $f\" || echo \"FAIL: $f\"; done)",
+      "Bash(which nvim && nvim --version | head -1)"
     ],
     "deny": [],
     "ask": []

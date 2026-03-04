@@ -9,14 +9,7 @@ return {
 
 	-- Calling setup is optional.
 	config = function()
-		require("which-key").add({
-			{
-				"<leader>ls",
-				function() require("ssr").open() end,
-				desc = "Structural Search and Replace with Treeesitter",
-				mode = { "n", "x" },
-			},
-		})
+		vim.keymap.set({ "n", "x" }, "<leader>ls", function() require("ssr").open() end, { desc = "Structural Search and Replace with Treeesitter" })
 
 		require("ssr").setup({
 			min_width = 50,

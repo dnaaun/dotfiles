@@ -8,74 +8,35 @@ return {
 		local bracketed_paste = require("iron.fts.common").bracketed_paste
 		local iron = require("iron.core")
 
-		local wk = require("which-key")
-
-		wk.add({
-			{
-				"<leader>rh",
-				function()
-					iron.close_repl(vim.opt.filetype:get())
-				end,
-				desc = "close repl",
-				group = "(iron) repl",
-			},
-			--
-			{
-				"<leader>rg",
-				function()
-					-- iron.repl_restart() just closes
-					local ft = vim.opt.filetype:get()
-					iron.close_repl(ft)
-					iron.repl_for(ft)
-				end,
-				desc = "restart repl",
-				group = "(iron) repl",
-			},
-			{
-				"<leader>rsq",
-				function()
-					iron.send(vim.opt.filetype:get(), { "q" })
-				end,
-				desc = "q",
-			},
-			{
-				"<leader>rs<CR>",
-				function()
-					iron.send(vim.opt.filetype:get(), { "\n" })
-				end,
-				desc = "newline",
-			},
-			{
-				"<leader>rs;",
-				function()
-					iron.send(vim.opt.filetype:get(), { ";" })
-				end,
-				desc = ";",
-			},
-			{
-				"<leader>rm",
-				function()
-					require("invoke_with_text_from_motion").invoke(function(text)
-						iron.send(vim.opt.filetype:get(), require("std2").split_string(text, "\n"))
-					end)
-				end,
-				desc = "send text object",
-			},
-			{
-				"<leader>rf",
-				function()
-					iron.focus_on(vim.opt.filetype:get())
-				end,
-				desc = "focus on repl",
-			},
-			{
-				"<leader>ro",
-				function()
-					iron.repl_for(vim.opt.filetype:get())
-				end,
-				desc = "open repl",
-			},
-		})
+		vim.keymap.set("n", "<leader>rh", function()
+			iron.close_repl(vim.opt.filetype:get())
+		end, { desc = "close repl" })
+		vim.keymap.set("n", "<leader>rg", function()
+			-- iron.repl_restart() just closes
+			local ft = vim.opt.filetype:get()
+			iron.close_repl(ft)
+			iron.repl_for(ft)
+		end, { desc = "restart repl" })
+		vim.keymap.set("n", "<leader>rsq", function()
+			iron.send(vim.opt.filetype:get(), { "q" })
+		end, { desc = "q" })
+		vim.keymap.set("n", "<leader>rs<CR>", function()
+			iron.send(vim.opt.filetype:get(), { "\n" })
+		end, { desc = "newline" })
+		vim.keymap.set("n", "<leader>rs;", function()
+			iron.send(vim.opt.filetype:get(), { ";" })
+		end, { desc = ";" })
+		vim.keymap.set("n", "<leader>rm", function()
+			require("invoke_with_text_from_motion").invoke(function(text)
+				iron.send(vim.opt.filetype:get(), require("std2").split_string(text, "\n"))
+			end)
+		end, { desc = "send text object" })
+		vim.keymap.set("n", "<leader>rf", function()
+			iron.focus_on(vim.opt.filetype:get())
+		end, { desc = "focus on repl" })
+		vim.keymap.set("n", "<leader>ro", function()
+			iron.repl_for(vim.opt.filetype:get())
+		end, { desc = "open repl" })
 
 		local rails_console = {
 			command = { "bundle", "exec", "rails", "console" },

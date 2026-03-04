@@ -36,8 +36,6 @@ return {
 			},
 		})
 
-		require("which-key").add({
-			{ "<leader>tcc", "<cmd>TSContext toggle<cr>", desc = "TSContext toggle" },
-		})
+		vim.keymap.set("n", "<leader>tcc", "<cmd>TSContext toggle<cr>", { desc = "TSContext toggle" })
 	end,
 }

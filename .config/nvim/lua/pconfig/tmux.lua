@@ -29,13 +29,9 @@ return {
 
 		local tmux = require("tmux")
 
-		local wk = require("which-key")
-
-		wk.add({
-			{ "<C-l>", tmux.move_right, desc = "move right", mode = "i" },
-			{ "<C-h>", tmux.move_left, desc = "move left", mode = "i" },
-			{ "<C-j>", tmux.move_down, desc = "move down", mode = "i" },
-			{ "<C-k>", tmux.move_up, desc= "move up", mode = "i" },
-		})
+		vim.keymap.set("i", "<C-l>", tmux.move_right, { desc = "move right" })
+		vim.keymap.set("i", "<C-h>", tmux.move_left, { desc = "move left" })
+		vim.keymap.set("i", "<C-j>", tmux.move_down, { desc = "move down" })
+		vim.keymap.set("i", "<C-k>", tmux.move_up, { desc = "move up" })
 	end,
 }

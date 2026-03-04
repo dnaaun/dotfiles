@@ -3,11 +3,7 @@ return {
 	-- branch = "add-config-to-specify-parser-for-filetypes",
 	-- keys = { { "m", mode = "v" }, { "m", mode = "o" } },
 	config = function()
-		local wk = require("which-key")
-
-		wk.add({
-			{ "m", require("tsht").nodes, desc = "Treehopper Nodes", mode = "o" },
-			{ "m", require("tsht").nodes, desc = "Treehopper Nodes", mode = "x" },
-		})
+		vim.keymap.set("o", "m", require("tsht").nodes, { desc = "Treehopper Nodes" })
+		vim.keymap.set("x", "m", require("tsht").nodes, { desc = "Treehopper Nodes" })
 	end,
 }

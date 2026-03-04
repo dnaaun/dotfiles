@@ -19,7 +19,6 @@ return {
 		-- "<leader>djt",
 		-- "<leader>dh",
 	},
-	dependencies = { "folke/which-key.nvim" },
 	ft = require("consts").dap_enabled_filetypes,
 	config = function()
 		local dap = require("dap")
@@ -227,64 +226,29 @@ return {
 			end,
 		}
 
-		local wk = require("which-key")
-
-		-- method 3
-		wk.add({
-			{
-				"<leader>dr",
-				function()
-					require("dap").restart()
-				end,
-				desc = "restart",
-				group = "+dap (debugging)",
-			},
-			{
-				"<leader>dc",
-				function()
-					require("dap").continue()
-					require("dapui").open()
-				end,
-				desc = "continue",
-				group = "+dap (debugging)",
-			},
-			{
-				"<leader>dh",
-				function()
-					require("dap.ui.widgets").hover()
-				end,
-				desc = "hover info from DAP",
-			},
-			{ "<leader>dp", require("dap").pause, desc = "pause debugging" },
-			{
-				"<leader>dd",
-				function()
-					dap.close()
-					dap.disconnect()
-					require("dapui").close()
-				end,
-				desc = "stop debugging",
-			},
-			{ "<leader>du", require("dap").up, desc = "go up in stack frame without stepping" },
-			{
-				"<leader>dl",
-				require("dap").down,
-				desc = "go lower (down) in stack frame without stepping",
-			},
-			{ ".", require("dap").up, desc = "run until cursor" },
-			{ "<leader>dv", require("dap").step_over, desc = "step over debugger" },
-			{ "<leader>di", require("dap").step_into, desc = "step into debugger" },
-			{ "<leader>do", require("dap").step_out, desc = "step out debugger" },
-			{ "<leader>db", require("dap").toggle_breakpoint, desc = "toggle breakpoint" },
-			{
-				"<leader>dB",
-				function()
-					require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
-				end,
-				desc = "set conditional breakpoint",
-			},
-			{ "<leader>dr", require("dap").repl.open, desc = "toggle debugger repl" },
-		})
+		vim.keymap.set("n", "<leader>dr", function() require("dap").restart() end, { desc = "restart" })
+		vim.keymap.set("n", "<leader>dc", function()
+			require("dap").continue()
+			require("dapui").open()
+		end, { desc = "continue" })
+		vim.keymap.set("n", "<leader>dh", function() require("dap.ui.widgets").hover() end, { desc = "hover info from DAP" })
+		vim.keymap.set("n", "<leader>dp", require("dap").pause, { desc = "pause debugging" })
+		vim.keymap.set("n", "<leader>dd", function()
+			dap.close()
+			dap.disconnect()
+			require("dapui").close()
+		end, { desc = "stop debugging" })
+		vim.keymap.set("n", "<leader>du", require("dap").up, { desc = "go up in stack frame without stepping" })
+		vim.keymap.set("n", "<leader>dl", require("dap").down, { desc = "go lower (down) in stack frame without stepping" })
+		vim.keymap.set("n", ".", require("dap").up, { desc = "run until cursor" })
+		vim.keymap.set("n", "<leader>dv", require("dap").step_over, { desc = "step over debugger" })
+		vim.keymap.set("n", "<leader>di", require("dap").step_into, { desc = "step into debugger" })
+		vim.keymap.set("n", "<leader>do", require("dap").step_out, { desc = "step out debugger" })
+		vim.keymap.set("n", "<leader>db", require("dap").toggle_breakpoint, { desc = "toggle breakpoint" })
+		vim.keymap.set("n", "<leader>dB", function()
+			require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+		end, { desc = "set conditional breakpoint" })
+		vim.keymap.set("n", "<leader>dr", require("dap").repl.open, { desc = "toggle debugger repl" })
 
 		local mapfunc = require("std2").mapfunc
 		mapfunc("v", "<leader>dr", function()

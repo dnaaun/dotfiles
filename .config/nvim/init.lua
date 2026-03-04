@@ -189,51 +189,31 @@ require("lazy").setup({
 -- Setup LSP configuration using vim.lsp.config()
 require("pconfig.lsp_config").setup()
 
-local wk = require("which-key")
+vim.keymap.set("n", "<leader><C-g>", function()
+	-- Get absolute file of current file
+	local file = vim.fn.expand("%:p")
+	-- Copy the above to the system clipboard register
+	vim.fn.setreg("+", file)
+end, { desc = "copy current file path to clipboard register" })
 
-wk.add({
-	{
-		"<leader><C-g>",
-		function()
-			-- Get absolute file of current file
-			local file = vim.fn.expand("%:p")
-			-- Copy the above to the system clipboard register
-			vim.fn.setreg("+", file)
-		end,
-		desc = "copy current file path to clipboard register",
-	},
-})
 -- Neovim win!
 -- I disabled that because (I belive) the which-key key plugin messes up my "gg" movement
 -- because it tries to show a message, but cmdheight=0 prevents it, or something like that.
 vim.o.cmdheight = 1
 
 -- exercute neovim
-wk.add({
-	{
-		"<leader>lr",
-		function()
-			local text = vim.fn.join(require("std2").get_visual_selection_text(0), "\n")
-			vim.fn.luaeval(text)
-		end,
-		desc = "source the visual (hopefully lua code) selection into neovim",
-		mode = "v",
-	},
-})
+vim.keymap.set("v", "<leader>lr", function()
+	local text = vim.fn.join(require("std2").get_visual_selection_text(0), "\n")
+	vim.fn.luaeval(text)
+end, { desc = "source the visual (hopefully lua code) selection into neovim" })
 
-wk.add({
-	{
-		"<leader>lc",
-		function()
-			vim.cmd("nohlsearch")
-			vim.lsp.util.buf_clear_references(0)
-			if pcall(require, "noice") then
-				require("noice").cmd("dismiss")
-			end
-		end,
-		desc = "clear both vim search and LSP reference highlights",
-	},
-})
+vim.keymap.set("n", "<leader>lc", function()
+	vim.cmd("nohlsearch")
+	vim.lsp.util.buf_clear_references(0)
+	if pcall(require, "noice") then
+		require("noice").cmd("dismiss")
+	end
+end, { desc = "clear both vim search and LSP reference highlights" })
 
 vim.cmd("colorscheme " .. require("selected_colorscheme").selected)
 
