@@ -463,5 +463,5 @@ export RIPGREP_CONFIG_PATH=~/.config/ripgrep/config
 
 # jj and watchexec
 watchjj() {
-  jj workspace update-stale && watchexec --on-busy-update=restart --debounce 500ms --shell=none --ignore-nothing --watch ~/git/littlebird/.jj/repo/op_heads -- jj "$@"
+  jj workspace update-stale && watchexec --on-busy-update=restart --debounce 500ms --shell=none --ignore-nothing --watch "$(jj workspace root)/.jj/repo/op_heads" -- jj "$@"
 }
