@@ -26,27 +26,14 @@ _G.ansi_colorize = function()
 	vim.cmd("colorscheme " .. require("selected_colorscheme").selected)
 end
 
-_G.PAGER_MODE = true
+vim.cmd("source ~/.config/nvim/init.lua")
+
+vim.wo.signcolumn = "no"
+vim.wo.number = false
+vim.wo.foldcolumn = "0"
 
 local ansi_once = vim.api.nvim_create_augroup("AnsiOnce", { clear = true })
 vim.api.nvim_create_autocmd("StdinReadPost", {
 	group = ansi_once,
-	callback = function()
-		_G.ansi_colorize()
-
-		-- require("options")
-		-- We don't need to load init.lua anymore, or colorize any more buffers.
-		-- vim.api.nvim_del_augroup_by_id(ansi_once)
-
-		vim.defer_fn(
-			function()
-				vim.cmd("source ~/.config/nvim/init.lua")
-				vim.wo.signcolumn = "no"
-				vim.wo.number = false
-				vim.wo.foldcolumn = "0"
-			end,
-
-			200 -- ms is lowest I can go while having neovim decide
-		)
-	end,
+	callback = _G.ansi_colorize,
 })

@@ -1,13 +1,3 @@
--- I don't know why, but if I don't do the below, the mappings simply
--- dissapear a few seconds after starting vim.
--- Run the above on VeryLazy event.
-vim.api.nvim_create_autocmd({ "BufEnter" }, {
-	group = vim.api.nvim_create_augroup("pconfig_telescope", {}),
-	callback = function()
-		require("pconfig.telescope.global_mappings").map_telescope_bindings()
-	end,
-})
-
 return {
 	"nvim-telescope/telescope.nvim",
 	module = true,

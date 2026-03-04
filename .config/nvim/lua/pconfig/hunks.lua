@@ -1,6 +1,6 @@
 return {
 	"julienvincent/hunk.nvim",
-	cmd = { "DiffEditor" },
+	-- cmd = { "DiffEditor" },
 	dependencies = {
 		"MunifTanjim/nui.nvim",
 		"nvim-mini/mini.icons",

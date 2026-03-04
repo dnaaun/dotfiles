@@ -26,12 +26,10 @@ return {
 				enable_default_keybindings = true,
 			},
 		})
-
 		local tmux = require("tmux")
-
+		vim.keymap.set("i", "<C-k>", tmux.move_top, { desc = "move top" })
 		vim.keymap.set("i", "<C-l>", tmux.move_right, { desc = "move right" })
 		vim.keymap.set("i", "<C-h>", tmux.move_left, { desc = "move left" })
-		vim.keymap.set("i", "<C-j>", tmux.move_down, { desc = "move down" })
-		vim.keymap.set("i", "<C-k>", tmux.move_up, { desc = "move up" })
+		vim.keymap.set("i", "<C-j>", tmux.move_bottom, { desc = "move bottom" })
 	end,
 }

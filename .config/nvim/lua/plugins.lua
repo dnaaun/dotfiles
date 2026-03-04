@@ -32,7 +32,7 @@ plugins_for_non_pager_mode = {
 	{ "hrsh7th/cmp-buffer", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	require("pconfig.luasnip"),
 	require("pconfig.terminal"),
-	require("pconfig.markdown_preview"),
+	-- require("pconfig.markdown_preview"), -- not playing nice with lazier.lua right now
 
 	-- require("pconfig.flutter_tools"), -- don't need it for now.
 	-- require("pconfig.highlight_colors"), -- don't need it for now.
@@ -61,7 +61,7 @@ plugins_for_non_pager_mode = {
 	require("pconfig.iron"),
 	require("pconfig.gitsigns"),
 	require("pconfig.gitlinker"),
-	require("pconfig.auto_session"),
+	-- require("pconfig.auto_session"), -- can't get it to work with lazily.
 	-- Orgmode related
 	require("pconfig.orgmode"),
 	require("pconfig.telescope_orgmode"),
