@@ -1,9 +1,8 @@
-local CODING_SYSTEM_PROMPT =
-	"You are a coding AI assistant. Unless the user explicitly asks a question that, in no way shape or form, can be answered by a code snippet performing what the user asks for, PLEASE PROVIDE YOUR ANSWER  ONLY (I REPEAT, ONLY) IN A MARKDOWN CODE BLOCK, WITH NO OTHER SURROUNDING TEXT. PLEASE ASSUME THIS IS THE CASE UNLESS IT'S CLEAR, BEYOND A SHADOW OF  DOUBT, THAT THE USER WANTS EXPOSITORY/NON-CODE interaction.\n\n"
+
 return {
 	"robitx/gp.nvim",
 	dependencies = { "folke/which-key.nvim" },
-	-- keys = { "<leader>z" },
+	keys = { "<leader>z" },
 	config = function()
 		-- VISUAL mode mappings
 		vim.keymap.set("v", "<leader>zn", ":<C-u>'<,'>GpChatNew<cr>", { desc = "Visual Chat New" })

@@ -24,58 +24,43 @@ plugins_for_non_pager_mode = {
 	require("pconfig.treesitter"),
 	require("pconfig.treehopper"),
 	require("pconfig.telescope_file_browser"),
-	require("pconfig.telescope_ast_grep"),
+	-- require("pconfig.telescope_ast_grep"), -- Don't need it for now.
 	-- LSP config moved to init.lua since it's not a plugin anymore
-	require("pconfig.trouble"),
-	require("pconfig.dap"),
-	require("pconfig.dap_ui"),
+	-- require("pconfig.trouble"), -- don't need it for now.
+	-- require("pconfig.dap"), -- don't need it for now.
+	-- require("pconfig.dap_ui"), -- don't need it for now.
 	{ "hrsh7th/cmp-buffer", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	require("pconfig.luasnip"),
 	require("pconfig.terminal"),
-	require("pconfig.buffer_sticks"),
-	-- require("pconfig.harpoon"),
-	-- require("pconfig.harpoon_lualine"),
 	require("pconfig.markdown_preview"),
-	-- require("pconfig.tint"), -- maybe makes everything slow?
-	-- require("pconfig.origami"),
-	-- require("pconfig.profile"),
-	require("pconfig.flutter_tools"),
-	require("pconfig.highlight_colors"),
-	require("pconfig.gh"),
-	require("pconfig.octo"),
-	require("pconfig.windsurf"),
-	require("pconfig.crates"),
+
+	-- require("pconfig.flutter_tools"), -- don't need it for now.
+	-- require("pconfig.highlight_colors"), -- don't need it for now.
+	-- require("pconfig.gh"), -- don't need it for now.
+	-- require("pconfig.octo"), -- slowing startup
+	-- require("pconfig.crates"), -- don't need it for now.
 	require("pconfig.text_case"),
 	require("pconfig.lint"),
 	{ "hrsh7th/cmp-path", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	{ "hrsh7th/cmp-cmdline", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	{ "f3fora/cmp-spell", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	require("pconfig.conform"),
-	require("pconfig.copilot_cmp"),
 	-- { "rcarriga/cmp-dap", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	require("pconfig.treesitter_context"),
 	{ "saadparwaiz1/cmp_luasnip", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
-	{ "nanotee/sqls.nvim" },
+	-- { "nanotee/sqls.nvim" }, -- don't need it for now.
 	require("pconfig.web_devicons"),
 	require("pconfig.lualine"),
 	require("pconfig.fidget"),
-	require("pconfig.mini_cursorword"),
+	-- require("pconfig.mini_cursorword"), -- don't need it for now.
 	require("pconfig.aerial"),
-	require("pconfig.femaco"),
-	require("pconfig.otter"),
+	-- require("pconfig.femaco"), -- don't need it for now.
+	-- require("pconfig.otter"), -- don't need it for now.
 	require("pconfig.diffview"),
 	require("pconfig.amharic"),
 	require("pconfig.iron"),
-	require("pconfig.neogit"),
 	require("pconfig.gitsigns"),
 	require("pconfig.gitlinker"),
-	{
-		"FabijanZulj/blame.nvim",
-		opts = {
-			blame_options = { "-w" },
-		},
-	},
-
 	require("pconfig.auto_session"),
 	-- Orgmode related
 	require("pconfig.orgmode"),
@@ -85,7 +70,7 @@ plugins_for_non_pager_mode = {
 	require("pconfig.org_bullets"),
 
 	require("pconfig.dressing"),
-	require("pconfig.treesitter_unit"),
+	-- require("pconfig.treesitter_unit"), -- don't need it for now.
 	--
 	-- require("pconfig.dirbuf"),
 	require("pconfig.oil"),
@@ -93,13 +78,11 @@ plugins_for_non_pager_mode = {
 
 	-- require("pconfig.workspace_diagnostics"), -- Slows down pyright a lot
 
-	require("pconfig.difft"),
 	require("pconfig.hunks"),
-	require("pconfig.jj_diffconflicts"),
+	-- require("pconfig.jj_diffconflicts"), -- not using it / it doesn't work.
 	require("pconfig.typescript_tools"),
 
   -- AI coding asistant thingys
-	require("pconfig.codecompanion"),
 	require("pconfig.gp"),
 }
 

@@ -1,5 +1,6 @@
 return {
 	"nvim-orgmode/orgmode",
+  ft = { "org", "orgmode" },
 	config = function()
 		require("orgmode").setup({
 			org_agenda_files = { "~/Library/CloudStorage/Dropbox/notes/org/**/*" },
