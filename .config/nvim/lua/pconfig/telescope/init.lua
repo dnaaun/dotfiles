@@ -1,15 +1,9 @@
+require("pconfig.telescope.global_mappings").map_telescope_bindings()
+
 return {
 	"nvim-telescope/telescope.nvim",
-	module = true,
-	keys = {
-		"<C-a>",
-		"<C-f>",
-		"<leader>f",
-		"-",
-		"<leader>-",
-	},
+  lazy = true,
 	config = function()
-		require("pconfig.telescope.global_mappings").map_telescope_bindings()
 		local telescope = require("telescope")
 
 		telescope.load_extension("fzf")
@@ -17,7 +11,7 @@ return {
 		-- I think this is out of date with ormgmode.nvim
 		-- telescope.load_extension('orgmode')
 
-    -- R-e-enable when re-enabling erial
+		-- R-e-enable when re-enabling erial
 		-- require("telescope").load_extension("aerial")
 
 		telescope.setup({

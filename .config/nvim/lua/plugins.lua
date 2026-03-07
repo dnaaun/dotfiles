@@ -61,7 +61,7 @@ plugins_for_non_pager_mode = {
 	require("pconfig.iron"),
 	require("pconfig.gitsigns"),
 	require("pconfig.gitlinker"),
-	-- require("pconfig.auto_session"), -- can't get it to work with lazily.
+	require("pconfig.auto_session"), -- can't get it to work with lazily.
 	-- Orgmode related
 	require("pconfig.orgmode"),
 	require("pconfig.telescope_orgmode"),

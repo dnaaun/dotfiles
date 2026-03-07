@@ -86,15 +86,20 @@ local map_telescope_bindings = function()
 	vim.keymap.set("n", "<leader>b", function()
 		require("telescope.builtin").buffers({ sort_mru = false })
 	end, { desc = "buffers" })
-	vim.keymap.set("n", "<leader>h", require("telescope.builtin").oldfiles, { desc = "oldfiles" })
+	vim.keymap.set("n", "<leader>h", function() require("telescope.builtin").oldfiles() end, { desc = "oldfiles" })
 	vim.keymap.set("n", "<leader>w", function()
 		require("telescope.builtin").grep_string({ word_match = "-w", debounce = 300 })
 	end, { desc = "grep buffer for string" })
-	vim.keymap.set("n", "<leader>ft", require("telescope.builtin").help_tags, { desc = "help_tags" })
-	vim.keymap.set("n", "<leader>fj", require("telescope.builtin").jumplist, { desc = "jumplist" })
-	vim.keymap.set("n", "<leader>f:", require("telescope.builtin").command_history, { desc = "command_history" })
-	vim.keymap.set("n", "<leader>f/", require("telescope.builtin").current_buffer_fuzzy_find, { desc = "current_buffer_fuzzy_find" })
-	vim.keymap.set("n", "<leader>f.", require("telescope.builtin").resume, { desc = "last telscope invocation" })
+	vim.keymap.set("n", "<leader>ft", function() require("telescope.builtin").help_tags() end, { desc = "help_tags" })
+	vim.keymap.set("n", "<leader>fj", function() require("telescope.builtin").jumplist() end, { desc = "jumplist" })
+	vim.keymap.set("n", "<leader>f:", function() require("telescope.builtin").command_history() end, { desc = "command_history" })
+	vim.keymap.set(
+		"n",
+		"<leader>f/",
+		function() require("telescope.builtin").current_buffer_fuzzy_find() end,
+		{ desc = "current_buffer_fuzzy_find" }
+	)
+	vim.keymap.set("n", "<leader>f.", function() require("telescope.builtin").resume() end, { desc = "last telscope invocation" })
 	-- o for restrict to _O_pen files
 	vim.keymap.set("n", "<leader>foa", function()
 		require("telescope.builtin").live_grep({
@@ -138,8 +143,13 @@ local map_telescope_bindings = function()
 	vim.keymap.set("n", "<leader>fgcc", function()
 		require("telescope.builtin").git_commits()
 	end, { desc = "commits in current branch" })
-	vim.keymap.set("n", "<leader>fgcb", require("telescope.builtin").git_bcommits, { desc = "commits that affect current buffer" })
-	vim.keymap.set("n", "<leader>fgb", require("telescope.builtin").git_branches, { desc = "git branches" })
+	vim.keymap.set(
+		"n",
+		"<leader>fgcb",
+		function() require("telescope.builtin").git_bcommits() end,
+		{ desc = "commits that affect current buffer" }
+	)
+	vim.keymap.set("n", "<leader>fgb", function() require("telescope.builtin").git_branches() end, { desc = "git branches" })
 	vim.keymap.set("n", "<leader>fgd", function()
 		require("telescope.builtin").git_status()
 	end, { desc = "browse diffs and go to file" })

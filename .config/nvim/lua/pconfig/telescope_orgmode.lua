@@ -1,1 +1,1 @@
-return { "nvim-orgmode/telescope-orgmode.nvim" }
+return { "nvim-orgmode/telescope-orgmode.nvim", lazy = true }

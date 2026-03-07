@@ -22,8 +22,6 @@ vim.api.nvim_create_autocmd("UIEnter", {
 
 return {
 	"rmagatti/auto-session",
-	module = "auto-session",
-  cmd = "AutoSession",
 	config = function()
 		vim.api.nvim_exec(
 			[[
@@ -37,7 +35,7 @@ augroup END
 			log_level = "error",
 			auto_save_enabled = false,
 			auto_restore_enabled = false,
-      -- We don't have dap UI right now.
+			-- We don't have dap UI right now.
 			-- pre_save_cmds = {
 			-- 	'lua require("dapui").close()',
 			-- },

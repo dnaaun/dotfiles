@@ -1,31 +1,9 @@
 ---
-session_name: littlebird
-working_dir: ~/git/littlebird_running
+session_name: dotfiles
+working_dir: ~/Library/CloudStorage/Dropbox/notes/org
 windows:
-  - name: "1"
-    working_dir: ~/git/littlebird
-    layout: "b4f3,246x68,0,0,180"
-  - name: "2"
-    working_dir: ~/git/littlebird2
-    layout: "b20f,246x68,0,0[246x34,0,0,181,246x33,0,35,182]"
-    panes:
-      - ~
-      - ~
-  - name: "3"
-    working_dir: ~/git/littlebird3
-    layout: "b4f6,246x68,0,0,183"
-  - name: "4"
-    working_dir: ~/git/littlebird4
-    layout: "ea9b,246x68,0,0{176x68,0,0,184,69x68,177,0[69x34,177,0,190,69x33,177,35,191]}"
-    panes:
-      - ~
-      - ~
-      - ~
-  - name: running
-    layout: "7c5b,246x68,0,0{123x68,0,0[123x34,0,0,185,123x33,0,35,186],122x68,124,0{83x68,124,0,187,38x68,208,0[38x10,208,0,188,38x57,208,11,189]}}"
-    panes:
-      - ~
-      - ~
-      - working_dir: ~/git/littlebird_running2/backend
-      - ~
-      - working_dir: ~/git/littlebird_running2/backend
+  - name: dotfiles
+    working_dir: ~/git/dotfiles
+    layout: "d07d,123x68,0,0,0"
+  - name: org
+    layout: "d07e,123x68,0,0,1"

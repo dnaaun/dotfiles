@@ -1,0 +1,27 @@
+#!/bin/dash
+
+# Export current jj commit to other workspaces
+# Usage: jj-export <workspace-name>...
+# Assumes workspaces live in ~/git/
+
+if [ $# -eq 0 ]; then
+  echo "Usage: jj-export <workspace-name>..."
+  echo ""
+  echo "Current workspaces:"
+  jj workspace list
+  exit 1
+fi
+
+commit_id=$(jj log -r @ --no-graph -T 'commit_id') || exit 1
+desc=$(jj log -r @ --no-graph -T 'description.first_line()' 2>/dev/null)
+
+for name in "$@"; do
+  dir="$HOME/git/$name"
+  if [ ! -d "$dir" ]; then
+    echo "Skipping $name ($dir not found)" >&2
+    continue
+  fi
+  echo "→ $name"
+  jj -R "$dir" workspace update-stale 2>/dev/null
+  jj -R "$dir" new "$commit_id" && echo "  Now on: $desc" || echo "  Failed!" >&2
+done

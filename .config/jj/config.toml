@@ -7,7 +7,7 @@ pager = "nvim_pager"
 diff-formatter = "difft"
 default-command = "log"
 # diff-editor = ["nvim", "-c", "DiffEditor $left $right $output"]
-diff-editor = "hunks_nvim"
+# diff-editor = "hunks_nvim"
 
 [aliases]
 # https://danverbraganza.com/writings/most-frequent-jj-commands
@@ -19,8 +19,8 @@ d = ["diff"]
 
 
 [merge-tools.hunks_nvim]
-program = "nvim"      # Defaults to the name of the tool if not specified
-edit-args = [ "-c", "DiffEditor $left $right $output"]
+# program = "nvim"      # Defaults to the name of the tool if not specified
+# edit-args = [ "-c", "DiffEditor $left $right $output"]
 
 [merge-tools.diffconflicts]
 program = "nvim_pager"
@@ -30,3 +30,7 @@ merge-args = [
 ]
 merge-tool-edits-conflict-markers = true
 
+
+# https://docs.jj-vcs.dev/latest/config/#automatic-tracking-of-bookmark
+[remotes.origin]
+auto-track-bookmarks = "*"

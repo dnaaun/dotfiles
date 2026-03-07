@@ -242,7 +242,8 @@ fi
 
 
 # Aint nobody got time for that (neither does anyone(read: me) have a basic understanding of maintaining a secure system, it seems)
-export HOMEBREW_NO_AUTO_UPDATE=1
+# Actually nvm: codex warnings are annoying enough.
+# export HOMEBREW_NO_AUTO_UPDATE=0
 
 # MacOS has annoying "welcome" messages when I open bash if I don't do this.
 export BASH_SILENCE_DEPRECATION_WARNING=1
@@ -462,5 +463,22 @@ export RIPGREP_CONFIG_PATH=~/.config/ripgrep/config
 
 # jj and watchexec
 watchjj() {
-  jj workspace update-stale && watchexec --on-busy-update=restart --debounce 500ms --shell=none --ignore-nothing --watch "$(jj workspace root)/.jj/repo/op_heads" -- jj "$@"
+  # Opus says: In secondary workspaces, .jj/repo is a file containing a path to
+  # the shared repo store, not a directory itself. So .jj/repo/op_heads doesn't
+  # resolve.
+  jj workspace update-stale &&
+  local jj_dir="$(jj root)/.jj"
+  local repo_path
+  if [ -d "$jj_dir/repo" ]; then
+    repo_path="$jj_dir/repo"
+  else
+    repo_path="$(cat "$jj_dir/repo")"
+  fi
+  watchexec \
+    --on-busy-update=restart \
+    --debounce 500ms \
+    --shell=none \
+    --ignore-nothing \
+    --watch "$repo_path/op_heads" \
+    -- jj "$@"
 }
