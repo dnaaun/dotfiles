@@ -9,6 +9,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 return {
 	"stevearc/oil.nvim",
+	cmd = "Oil",
 	config = function()
 		require("oil").setup({
 			skip_confirm_for_simple_edits = true,
@@ -48,6 +49,5 @@ return {
 			-- Set to false to disable all of the above keymaps
 			use_default_keymaps = true,
 		})
-		vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 	end,
 }
