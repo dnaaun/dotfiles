@@ -61,7 +61,7 @@ return {
 		fmt(escape_curly_braces([[
 \end{nthcolumn}
 \begin{nthcolumn*}{0}
-	\raggedright \small
+	\raggedright \footnotesize
     ]]) .. [[{}
 ]] .. escape_curly_braces([[
 \end{nthcolumn*}

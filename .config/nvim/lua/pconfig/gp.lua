@@ -1,4 +1,3 @@
-
 return {
 	"robitx/gp.nvim",
 	keys = { "<leader>z" },
@@ -35,8 +34,10 @@ return {
 					endpoint = "https://api.openai.com/v1/chat/completions",
 					secret = os.getenv("OPENAI_API_KEY"),
 				},
-
-				-- azure = {...},
+				cerebras = {
+					endpoint = "https://api.cerebras.ai/v1",
+					secret = os.getenv("CEREBRAS_API_KEY"),
+				},
 
 				copilot = {
 					endpoint = "https://api.githubcopilot.com/chat/completions",
@@ -75,16 +76,26 @@ return {
 					command = false,
 					-- string with model name or table with model name and parameters
 					model = { model = "claude-sonnet-4-5-20250929" },
+				-- azure = {...},
 					-- system prompt (use this to specify the persona/role of the AI)
 					system_prompt = require("gp.defaults").chat_system_prompt,
 				},
-				
+
 				{
-					name = "gpt52",
+					name = "gpt54",
 					provider = "openai",
 					chat = true,
 					command = true,
-					model = { model = "gpt-5.2-2025-12-11" },
+					model = { model = "gpt-5.4" },
+					system_prompt = "You're a coding assistant. Lean towards being brief (e.g., providing a code snippet answer only) if the question can at all be answered in a brief way. Don't be afraid to be not brief if the question clearly beckons a wider exploration.",
+				},
+				{
+					name = "glm47",
+					provider = "cerebras",
+					chat = true,
+					command = true,
+					model = { model = "zai-glm-4.7" },
+					model = { model = "gpt-oss-120b" },
 					system_prompt = "You're a coding assistant. Lean towards being brief (e.g., providing a code snippet answer only) if the question can at all be answered in a brief way. Don't be afraid to be not brief if the question clearly beckons a wider exploration.",
 				},
 			},
@@ -92,7 +103,7 @@ return {
 
 		-- I don't know of an official way to set the default agent on startup, so I use
 		-- an undocumented/internal API:
-		require("gp")._state.chat_agent = "gpt52"
+		require("gp")._state.chat_agent = "gpt54"
 
 		-- VISUAL mode mappings
 		-- s, x, v modes are handled the same way by which_key

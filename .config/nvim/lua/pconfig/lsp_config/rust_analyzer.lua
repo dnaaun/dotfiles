@@ -31,7 +31,7 @@ return {
 	settings = {
 		["rust-analyzer"] = {
 			cargo = {
-				features = { "ssr", "hydrate" },
+				-- features = { "ssr", "hydrate" },
 				noDefaultFeatures = false,
 				allFeatures = false,
 			},

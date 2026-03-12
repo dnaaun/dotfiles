@@ -8,7 +8,7 @@
 
 - You avoid newlines for the sake of wrapping in commit messages / PR descriptions.
 
-- If you are asked to fix CI errors, don't squash, don't merge. Let the user do that. Feel free to create a new commit with your changes tho.
+- If you are asked to fix CI errors, don't squash, don't merge. Let the user do that. Feel free to create a new commit with your changes tho. I REPEAT: DO NOT SQUASH. DO NOT PUSH. LET THE USER DO THAT.
 
 - You should always run autoformatting tools that get checked in CI before finalizing your work.
 

@@ -32,7 +32,7 @@ plugins_for_non_pager_mode = {
 	{ "hrsh7th/cmp-buffer", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	require("pconfig.luasnip"),
 	require("pconfig.terminal"),
-	-- require("pconfig.markdown_preview"), -- not playing nice with lazier.lua right now
+	require("pconfig.markdown_preview"), -- not playing nice with lazier.lua right now
 
 	-- require("pconfig.flutter_tools"), -- don't need it for now.
 	-- require("pconfig.highlight_colors"), -- don't need it for now.
@@ -84,6 +84,8 @@ plugins_for_non_pager_mode = {
 
   -- AI coding asistant thingys
 	require("pconfig.gp"),
+
+	-- require("pconfig.twilight"), - meh. I often want to read stuff not close by.
 }
 
 -- Append to plugins if not in pager mode

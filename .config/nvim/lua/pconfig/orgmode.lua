@@ -11,6 +11,7 @@ return {
 			org_start_folded = "showeverything",
 			org_todo_keywords = {
 				"TODO",
+				"INPROGRESS",
 				"|",
 				"DONE",
 				"NOT_DONE",

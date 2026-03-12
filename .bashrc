@@ -463,20 +463,18 @@ export RIPGREP_CONFIG_PATH=~/.config/ripgrep/config
 
 # jj and watchexec
 watchjj() {
-  # Opus says: In secondary workspaces, .jj/repo is a file containing a path to
-  # the shared repo store, not a directory itself. So .jj/repo/op_heads doesn't
-  # resolve.
   jj workspace update-stale &&
   local jj_dir="$(jj root)/.jj"
   local repo_path
   if [ -d "$jj_dir/repo" ]; then
     repo_path="$jj_dir/repo"
   else
-    repo_path="$(cat "$jj_dir/repo")"
+    repo_path="$(cd "$jj_dir" && realpath "$(cat repo)")"
   fi
   watchexec \
     --on-busy-update=restart \
-    --debounce 500ms \
+    --stop-timeout 1 \
+    --debounce 300ms \
     --shell=none \
     --ignore-nothing \
     --watch "$repo_path/op_heads" \

@@ -1,5 +1,6 @@
 #!/bin/dash
 
+
 # Export current jj commit to other workspaces
 # Usage: jj-export <workspace-name>...
 # Assumes workspaces live in ~/git/
@@ -12,8 +13,15 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-commit_id=$(jj log -r @ --no-graph -T 'commit_id') || exit 1
-desc=$(jj log -r @ --no-graph -T 'description.first_line()' 2>/dev/null)
+# Use @- if @ is empty (no changes)
+if [ "$(jj log -r @ --no-graph -T 'empty')" = "true" ]; then
+  rev="@-"
+else
+  rev="@"
+fi
+
+commit_id=$(jj log -r "$rev" --no-graph -T 'commit_id') || exit 1
+desc=$(jj log -r "$rev" --no-graph -T 'description.first_line()' 2>/dev/null)
 
 for name in "$@"; do
   dir="$HOME/git/$name"

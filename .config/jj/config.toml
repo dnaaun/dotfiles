@@ -3,6 +3,7 @@ name = "David Assefa Tofu"
 email = "davidtofu2018@gmail.com"
 
 [ui]
+# pager = [ "less", "-R" ]
 pager = "nvim_pager"
 diff-formatter = "difft"
 default-command = "log"
@@ -34,3 +35,9 @@ merge-tool-edits-conflict-markers = true
 # https://docs.jj-vcs.dev/latest/config/#automatic-tracking-of-bookmark
 [remotes.origin]
 auto-track-bookmarks = "*"
+
+[revsets]
+# Default revset is: present(@) | ancestors(immutable_heads().., 2) | trunk()
+# We subtract empty leaf commits to hide idle workspace working copies (and
+# other empty heads), while keeping the current workspace's @ visible
+log = "(present(@) | ancestors(immutable_heads().., 2) | trunk()) ~ (empty() & heads(all()) & ~@)"
