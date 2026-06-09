@@ -8,13 +8,14 @@ return {
         t = { description = "Task", template = "* TODO %?\n %u" },
         m = { description = "Musings", template = "* No todo. Just express yourself. \n %u \n %?" },
     },
-			org_start_folded = "showeverything",
+			org_startup_folded = "showeverything",
 			org_todo_keywords = {
 				"TODO",
 				"INPROGRESS",
 				"|",
 				"DONE",
 				"NOT_DONE",
+				"POSTPONED",
 			},
 			org_default_notes_file = "~/Library/CloudStorage/Dropbox/notes/org/refile.org",
 			org_agenda_custom_commands = {

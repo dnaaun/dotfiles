@@ -240,10 +240,7 @@ if [[ -f $FZF_COMPLETION_BINDINGS ]]; then
 fi
 
 
-
-# Aint nobody got time for that (neither does anyone(read: me) have a basic understanding of maintaining a secure system, it seems)
-# Actually nvm: codex warnings are annoying enough.
-# export HOMEBREW_NO_AUTO_UPDATE=0
+HOMEBREW_AUTO_UPDATE_SECS=86400
 
 # MacOS has annoying "welcome" messages when I open bash if I don't do this.
 export BASH_SILENCE_DEPRECATION_WARNING=1

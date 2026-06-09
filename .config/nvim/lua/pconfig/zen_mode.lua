@@ -8,7 +8,7 @@ return {
 				tmux = { enabled = true }, -- disables the tmux statusline
 			},
 			window = {
-				width = 0.8,
+				width = 100,
         height = 0.95,
 				backdrop = 1,
 				options = {

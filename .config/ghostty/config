@@ -42,8 +42,9 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 mouse-hide-while-typing = true
-font-family = FiraMono Nerd Font
-font-style = Light
+# font-family = FiraMono Nerd Font
+font-family = JetBrainsMono Nerd Font
+# font-style = Light
 font-style-bold = Bold
 font-style-italic = Medium Italic
 font-style-bold-italic = Bold Italic

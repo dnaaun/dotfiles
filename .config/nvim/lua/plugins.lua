@@ -13,7 +13,7 @@ local plugins = {
 	require("pconfig.telescope_fzf_native"),
 
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
-	-- require("pconfig.auto_dark_mode"), -- suspicion that this is slowing me down. Not sure tho.
+	require("pconfig.auto_dark_mode"), -- suspicion that this is slowing me down. Not sure tho.
 }
 
 -- Append to plugins if not in pager mode
@@ -65,7 +65,7 @@ plugins_for_non_pager_mode = {
 	-- Orgmode related
 	require("pconfig.orgmode"),
 	require("pconfig.telescope_orgmode"),
-	require("pconfig.bullets"),
+	-- require("pconfig.bullets"),
 	-- require("pconfig.autolist"),
 	require("pconfig.org_bullets"),
 
