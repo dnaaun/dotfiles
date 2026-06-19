@@ -56,11 +56,13 @@ local function override_gitsigns_combos()
 end
 
 return {
-	"sindrets/diffview.nvim",
+	"dnaaun/diffview-jj.nvim",
+	dir = vim.fn.expand("~/git/diffview-jj.nvim"),
+	name = "diffview.nvim",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 
-		-- I add gitsigns because I think loading that first helps with
+		-- I add jjsigns because I think loading that first helps with
 		-- overriding the key combos.
 		require("pconfig.gitsigns")[1],
 	},
@@ -69,7 +71,7 @@ return {
 	cmd = { "DiffviewFileHistory", "DiffviewOpen" },
 
 	-- I think I have to do this to make sure that diffview.nvim loads after
-	-- gitsigns.
+	-- jjsigns.
 	event = require("pconfig.gitsigns").event,
 
 	config = function()
