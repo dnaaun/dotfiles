@@ -1,5 +1,7 @@
 return {
-	"ruifm/gitlinker.nvim",
+	"dnaaun/gitlinker.nvim",
+	dir = vim.fn.expand("~/git/gitlinker.nvim"),
+	name = "gitlinker.nvim",
 	dependencies = "nvim-lua/plenary.nvim",
 	keys = {
 		{
