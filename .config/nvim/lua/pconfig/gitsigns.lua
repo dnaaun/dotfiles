@@ -3,6 +3,7 @@ return {
 	dir = vim.fn.expand("~/git/jjsigns.nvim"),
 	name = "jjsigns.nvim",
 	event = "VeryLazy",
+	cmd = "Jjsigns",
 	module = "jjsigns",
 	config = function()
 		vim.keymap.set("n", "]h", function()
