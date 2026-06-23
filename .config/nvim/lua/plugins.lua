@@ -37,7 +37,7 @@ plugins_for_non_pager_mode = {
 	-- require("pconfig.flutter_tools"), -- don't need it for now.
 	-- require("pconfig.highlight_colors"), -- don't need it for now.
 	-- require("pconfig.gh"), -- don't need it for now.
-	-- require("pconfig.octo"), -- slowing startup
+	require("pconfig.octo"), -- slowing startup
 	-- require("pconfig.crates"), -- don't need it for now.
 	require("pconfig.text_case"),
 	require("pconfig.lint"),

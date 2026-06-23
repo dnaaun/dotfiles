@@ -1,7 +1,50 @@
 local default_lsp_telescope_opts = { fname_width = 60 }
+local search_dir = require("pconfig.telescope.search_dir")
+
+---@return string
+local function current_file_dir()
+	local buffer_name = vim.api.nvim_buf_get_name(0)
+	if buffer_name == "" then
+		return vim.uv.cwd()
+	end
+
+	return vim.fn.fnamemodify(buffer_name, ":p:h")
+end
+
+---@return string[]
+local function hidden_arg()
+	return search_dir.hidden_arg()
+end
+
+---@param prefix string
+---@param dir string
+---@return string
+local function current_file_dir_title(prefix, dir)
+	return prefix .. " in " .. vim.fn.fnamemodify(dir, ":~:.")
+end
+
+---@return nil
+local function fd_in_current_file_dir()
+	local dir = current_file_dir()
+	require("telescope.builtin").fd(search_dir.fd_opts(dir, {
+		debounce = 300,
+		prompt_title = current_file_dir_title("fd", dir),
+	}))
+end
+
+---@return nil
+local function live_grep_in_current_file_dir()
+	local dir = current_file_dir()
+	require("telescope.builtin").live_grep(search_dir.live_grep_opts(dir, {
+		debounce = 300,
+		prompt_title = current_file_dir_title("live_grep", dir),
+	}))
+end
 
 --- @param jump_type "jump" | "vsplit" | "split"
 --- @param descriptor_prefix string | nil
+--- @param mapping_prefix string | nil
+--- @return nil
 local function lsp_gotos_with_jump_type(jump_type, descriptor_prefix, mapping_prefix)
 	descriptor_prefix = descriptor_prefix or ""
 	mapping_prefix = mapping_prefix or ""
@@ -61,12 +104,11 @@ local function lsp_gotos_with_jump_type(jump_type, descriptor_prefix, mapping_pr
 	end, { desc = "implementation" })
 end
 
+---@return nil
 local map_telescope_bindings = function()
 	vim.keymap.set("n", "<leader>a", function()
 		require("telescope.builtin").live_grep({
-			additional_args = function()
-				return { "--hidden" }
-			end,
+			additional_args = hidden_arg,
 			debounce = 300,
 		})
 	end, { desc = "live_grep" })
@@ -86,27 +128,32 @@ local map_telescope_bindings = function()
 	vim.keymap.set("n", "<leader>b", function()
 		require("telescope.builtin").buffers({ sort_mru = false })
 	end, { desc = "buffers" })
-	vim.keymap.set("n", "<leader>h", function() require("telescope.builtin").oldfiles() end, { desc = "oldfiles" })
+	vim.keymap.set("n", "<leader>h", function()
+		require("telescope.builtin").oldfiles()
+	end, { desc = "oldfiles" })
 	vim.keymap.set("n", "<leader>w", function()
 		require("telescope.builtin").grep_string({ word_match = "-w", debounce = 300 })
 	end, { desc = "grep buffer for string" })
-	vim.keymap.set("n", "<leader>ft", function() require("telescope.builtin").help_tags() end, { desc = "help_tags" })
-	vim.keymap.set("n", "<leader>fj", function() require("telescope.builtin").jumplist() end, { desc = "jumplist" })
-	vim.keymap.set("n", "<leader>f:", function() require("telescope.builtin").command_history() end, { desc = "command_history" })
-	vim.keymap.set(
-		"n",
-		"<leader>f/",
-		function() require("telescope.builtin").current_buffer_fuzzy_find() end,
-		{ desc = "current_buffer_fuzzy_find" }
-	)
-	vim.keymap.set("n", "<leader>f.", function() require("telescope.builtin").resume() end, { desc = "last telscope invocation" })
+	vim.keymap.set("n", "<leader>ft", function()
+		require("telescope.builtin").help_tags()
+	end, { desc = "help_tags" })
+	vim.keymap.set("n", "<leader>fj", function()
+		require("telescope.builtin").jumplist()
+	end, { desc = "jumplist" })
+	vim.keymap.set("n", "<leader>f:", function()
+		require("telescope.builtin").command_history()
+	end, { desc = "command_history" })
+	vim.keymap.set("n", "<leader>f/", function()
+		require("telescope.builtin").current_buffer_fuzzy_find()
+	end, { desc = "current_buffer_fuzzy_find" })
+	vim.keymap.set("n", "<leader>f.", function()
+		require("telescope.builtin").resume()
+	end, { desc = "last telscope invocation" })
 	-- o for restrict to _O_pen files
 	vim.keymap.set("n", "<leader>foa", function()
 		require("telescope.builtin").live_grep({
 			grep_open_files = true,
-			additional_args = function()
-				return { "--hidden" }
-			end,
+			additional_args = hidden_arg,
 		})
 	end, { desc = "grep through dot files" })
 	-- Repeat the functionality for <leader>b here, cuz the mapping makes sense, I guess.
@@ -118,9 +165,7 @@ local map_telescope_bindings = function()
 		require("telescope.builtin").live_grep({
 			debounce = 300,
 			search_dirs = search_dirs,
-			additional_args = function()
-				return { "--hidden" }
-			end,
+			additional_args = hidden_arg,
 		})
 	end, { desc = "grep through dot files" })
 	vim.keymap.set("n", "<leader>fds", function()
@@ -131,9 +176,7 @@ local map_telescope_bindings = function()
 		local search_dirs = { vim.fn.expand("~/") .. "Library/CloudStorage/Dropbox/notes/org" }
 		require("telescope.builtin").live_grep({
 			search_dirs = search_dirs,
-			additional_args = function()
-				return { "--hidden" }
-			end,
+			additional_args = hidden_arg,
 		})
 	end, { desc = "grep through org files" })
 	vim.keymap.set("n", "<leader>fxs", function()
@@ -143,28 +186,20 @@ local map_telescope_bindings = function()
 	vim.keymap.set("n", "<leader>fgcc", function()
 		require("telescope.builtin").git_commits()
 	end, { desc = "commits in current branch" })
-	vim.keymap.set(
-		"n",
-		"<leader>fgcb",
-		function() require("telescope.builtin").git_bcommits() end,
-		{ desc = "commits that affect current buffer" }
-	)
-	vim.keymap.set("n", "<leader>fgb", function() require("telescope.builtin").git_branches() end, { desc = "git branches" })
+	vim.keymap.set("n", "<leader>fgcb", function()
+		require("telescope.builtin").git_bcommits()
+	end, { desc = "commits that affect current buffer" })
+	vim.keymap.set("n", "<leader>fgb", function()
+		require("telescope.builtin").git_branches()
+	end, { desc = "git branches" })
 	vim.keymap.set("n", "<leader>fgd", function()
 		require("telescope.builtin").git_status()
 	end, { desc = "browse diffs and go to file" })
 	vim.keymap.set("n", "<leader>fh", "<cmd>Telescope harpoon marks<CR>", { desc = "harpoon marks" })
-	vim.keymap.set("n", "<C-s>", function()
-		require("telescope.builtin").fd({ search_dirs = { vim.fn.expand("%:p:h") }, hidden = true })
-	end, { desc = "fd files in cur dir" })
-	vim.keymap.set("n", "<C-a>", function()
-		require("telescope.builtin").live_grep({
-			search_dirs = { vim.fn.expand("%:p:h") },
-			additional_args = function()
-				return { "--hidden" }
-			end,
-		})
-	end, { desc = "live_grep in cur dir" })
+	vim.keymap.set("n", "<C-s>", fd_in_current_file_dir, { desc = "fd files in cur dir" })
+	vim.keymap.set("n", "<C-a>", live_grep_in_current_file_dir, { desc = "live_grep in cur dir" })
+	vim.keymap.set("n", "<leader>fcs", fd_in_current_file_dir, { desc = "fd files in cur dir" })
+	vim.keymap.set("n", "<leader>fca", live_grep_in_current_file_dir, { desc = "live_grep in cur dir" })
 
 	lsp_gotos_with_jump_type("vsplit", "LSP vertically", "gx")
 	lsp_gotos_with_jump_type("split", "LSP horizontally", "gs")
