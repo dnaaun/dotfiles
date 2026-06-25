@@ -68,7 +68,7 @@ return {
 	},
 
 	keys = { "<leader>gd", "<leader>gq" },
-	cmd = { "DiffviewFileHistory", "DiffviewOpen", "DiffviewOpenJj", "JjDiffviewOpen" },
+	cmd = { "DiffviewFileHistory", "DiffviewOpen", "DiffviewOpenJj", "JjDiffviewOpen", "JjDiffviewOpenFrom" },
 
 	-- I think I have to do this to make sure that diffview.nvim loads after
 	-- jjsigns.
@@ -76,14 +76,18 @@ return {
 
 	config = function()
 		vim.keymap.set("n", "<leader>gd", function()
-			require("jjsigns").change_base("heads(::@ & ::main)", true)
-			require("pconfig.jj_diffview").open({ from = "heads(::@ & ::main)" })
+			require("pconfig.jj_diffview").open("heads(::@ & ::main)")
 		end, { desc = "Jj Diffview Open" })
 		vim.keymap.set("n", "<leader>gq", ":tabclose<CR>", { desc = "Tab Close" })
 
 		local cb = require("diffview.config").diffview_callback
 
 		require("diffview").setup({
+			hooks = {
+				diff_buf_read = function()
+					vim.opt_local.diffopt:append({ "iwhiteall", "iblank", "iwhiteeol" })
+				end,
+			},
 			key_bindings = {
 				file_panel = {
 					["<cr>"] = cb("focus_entry"),

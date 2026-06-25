@@ -44,6 +44,12 @@ return {
 		end, { desc = "reset_hunk" })
 		require("jjsigns").setup({
 			diff_opts = {
+				ignore_blank_lines = true,
+				ignore_whitespace = true,
+				ignore_whitespace_change = true,
+				ignore_whitespace_change_at_eol = true,
+			},
+			current_line_blame_opts = {
 				ignore_whitespace = true,
 			},
 		})

@@ -15,7 +15,7 @@ return {
 	},
 	config = function()
 		require("difft").setup({
-			command = "jj diff --no-pager", -- or "GIT_EXTERNAL_DIFF='difft --color=always' git diff"
+			command = "jj diff --no-pager --ignore-all-space", -- or "GIT_EXTERNAL_DIFF='difft --color=always' git diff"
 			layout = "float", -- nil (buffer), "float", or "ivy_taller"
 		})
 	end,
