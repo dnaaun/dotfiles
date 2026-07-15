@@ -52,8 +52,8 @@ font-size = 14
 
 adjust-cell-width = -3.33%
 
-theme = catppuccin-mocha.conf
-# theme = catppuccin-latte.conf
+theme = Catppuccin Mocha
+# theme = Catppuccin Latte
 
 command = /opt/homebrew/bin/bash
 

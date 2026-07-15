@@ -1,5 +1,5 @@
 return {
-	"dnaaun/jjsigns.nvim",
+	-- "dnaaun/jjsigns.nvim",
 	dir = vim.fn.expand("~/git/jjsigns.nvim"),
 	name = "jjsigns.nvim",
 	event = "VeryLazy",
