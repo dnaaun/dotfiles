@@ -40,4 +40,11 @@ auto-track-bookmarks = "*"
 # Default revset is: present(@) | ancestors(immutable_heads().., 2) | trunk()
 # We subtract empty leaf commits to hide idle workspace working copies (and
 # other empty heads), while keeping the current workspace's @ visible
-log = "(present(@) | ancestors(immutable_heads().., 2) | trunk()) ~ (empty() & heads(all()) & ~@)"
+
+[revset-aliases]
+exclude_empty_heads = "~(empty() & heads(all()))"
+exclude_empty_heads_except_current = "~(empty() & heads(all()) & ~@)"
+
+by_me = 'author_email("52462475+dnaaun@users.noreply.github.com") | author_email("davidtofu2018@gmail.com")'
+
+"log()" = "(present(@) | ancestors(immutable_heads().., 2) | trunk())  & non_empty_heads_except_current"
