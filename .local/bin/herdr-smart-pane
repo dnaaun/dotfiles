@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+direction="${1:-}"
+control_key="${2:-}"
+
+case "$direction" in
+  left | right | up | down) ;;
+  *)
+    echo "usage: ${0##*/} <left|right|up|down> <key>" >&2
+    exit 2
+    ;;
+esac
+
+if [[ -z "$control_key" ]]; then
+  echo "usage: ${0##*/} <left|right|up|down> <key>" >&2
+  exit 2
+fi
+
+: "${HERDR_ACTIVE_PANE_ID:?must be run from a Herdr command binding}"
+
+herdr_bin="${HERDR_BIN_PATH:-herdr}"
+process_info="$("$herdr_bin" pane process-info --pane "$HERDR_ACTIVE_PANE_ID")"
+
+if jq -e '
+  .result.process_info.foreground_processes
+  | any(.name | test("^g?(view|n?vim?x?)(diff)?$"; "i"))
+' >/dev/null <<<"$process_info"; then
+  exec "$herdr_bin" pane send-keys "$HERDR_ACTIVE_PANE_ID" "$control_key"
+fi
+
+exec "$herdr_bin" pane focus \
+  --direction "$direction" \
+  --pane "$HERDR_ACTIVE_PANE_ID"

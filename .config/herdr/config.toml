@@ -1,0 +1,93 @@
+# Match the tmux setup in ~/.tmux.conf where Herdr has an equivalent.
+onboarding = false
+
+[theme]
+name = "terminal"
+
+# Nightfox colors from ~/.config/tmux/theme.conf.
+[theme.custom]
+panel_bg = "#131a24"
+surface0 = "#131a24"
+surface1 = "#71839b"
+surface_dim = "#131a24"
+overlay0 = "#71839b"
+overlay1 = "#aeafb0"
+text = "#aeafb0"
+subtext0 = "#71839b"
+accent = "#719cd6"
+blue = "#719cd6"
+
+[terminal]
+# tmux starts `bash --noprofile`; this is Herdr's equivalent.
+default_shell = "bash"
+shell_mode = "non_login"
+new_cwd = "follow"
+
+[keys]
+prefix = "ctrl+p"
+
+# Keep the tmux session/window muscle memory. Herdr workspaces are the closest
+# match for sessions, while the goto picker searches tabs (windows) and panes.
+settings = "prefix+comma"
+workspace_picker = "prefix+s"
+goto = "prefix+w"
+new_workspace = "prefix+shift+s"
+rename_workspace = "prefix+e"
+detach = "prefix+d"
+reload_config = "prefix+r"
+
+new_tab = "prefix+c"
+previous_tab = "prefix+p"
+next_tab = "prefix+n"
+switch_tab = "prefix+1..9"
+
+# Herdr can create panes to the right or down, matching these two tmux binds.
+split_vertical = "prefix+l"
+split_horizontal = "prefix+j"
+
+# The helper preserves tmux's vim-aware direct pane navigation: Ctrl-h/j/k/l
+# reaches Vim when it is foregrounded and changes Herdr panes otherwise.
+focus_pane_left = "prefix+left"
+focus_pane_down = "prefix+down"
+focus_pane_up = "prefix+up"
+focus_pane_right = "prefix+right"
+
+copy_mode = "prefix+["
+edit_scrollback = "prefix+shift+e"
+
+[[keys.command]]
+key = "ctrl+h"
+type = "shell"
+command = "\"$HOME/.local/bin/herdr-smart-pane\" left ctrl+h"
+description = "focus left, or send Ctrl-h to Vim"
+
+[[keys.command]]
+key = "ctrl+j"
+type = "shell"
+command = "\"$HOME/.local/bin/herdr-smart-pane\" down ctrl+j"
+description = "focus down, or send Ctrl-j to Vim"
+
+[[keys.command]]
+key = "ctrl+k"
+type = "shell"
+command = "\"$HOME/.local/bin/herdr-smart-pane\" up ctrl+k"
+description = "focus up, or send Ctrl-k to Vim"
+
+[[keys.command]]
+key = "ctrl+l"
+type = "shell"
+command = "\"$HOME/.local/bin/herdr-smart-pane\" right ctrl+l"
+description = "focus right, or send Ctrl-l to Vim"
+
+[ui]
+mouse_capture = true
+copy_on_select = true
+prompt_new_tab_name = false
+pane_borders = true
+pane_gaps = false
+
+[advanced]
+scrollback_limit_bytes = 10000000
+
+[ui.toast]
+delivery = "system"
