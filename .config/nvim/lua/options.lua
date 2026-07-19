@@ -3,7 +3,7 @@
 
 opt = vim.opt
 --- not filetype-specific, or plugin-specific
-opt.number = true
+opt.number = false
 -- Prevent weird (de-)endentation when writing python/orgmode.
 opt.indentkeys:remove({ ":" })
 opt.indentkeys:remove({ "<:>" })

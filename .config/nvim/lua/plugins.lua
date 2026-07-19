@@ -3,8 +3,6 @@ local plugins = {
 
 	-- require("pconfig.matchup"), -- disabled: major perf bottleneck (see profile.log)
 
-	require("pconfig.tmux"),
-
 	require("pconfig.surround"),
 
 	require("pconfig.zen_mode"),
@@ -15,6 +13,12 @@ local plugins = {
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 	require("pconfig.auto_dark_mode"), -- suspicion that this is slowing me down. Not sure tho.
 }
+
+if vim.env.HERDR_ENV == "1" then
+	require("pconfig.herdr").setup()
+else
+	table.insert(plugins, 2, require("pconfig.tmux"))
+end
 
 -- Append to plugins if not in pager mode
 plugins_for_non_pager_mode = {
@@ -83,7 +87,7 @@ plugins_for_non_pager_mode = {
 	-- require("pconfig.jj_diffconflicts"), -- not using it / it doesn't work.
 	require("pconfig.typescript_tools"),
 
-  -- AI coding asistant thingys
+	-- AI coding asistant thingys
 	require("pconfig.gp"),
 
 	-- require("pconfig.twilight"), - meh. I often want to read stuff not close by.
