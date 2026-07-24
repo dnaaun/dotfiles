@@ -42,9 +42,14 @@ auto-track-bookmarks = "*"
 # other empty heads), while keeping the current workspace's @ visible
 
 [revset-aliases]
-exclude_empty_heads = "~(empty() & heads(all()))"
-exclude_empty_heads_except_current = "~(empty() & heads(all()) & ~@)"
+"common_ancestor_with_main(r)" = "heads(::r & ::main)"
+empty_heads = "empty() & heads(all())"
+empty_heads_except_current = "empty() & heads(all()) & ~@"
 
 by_me = 'author_email("52462475+dnaaun@users.noreply.github.com") | author_email("davidtofu2018@gmail.com")'
 
 "log()" = "(present(@) | ancestors(immutable_heads().., 2) | trunk())  & non_empty_heads_except_current"
+
+[fileset-aliases]
+tests_and_docs = '(glob:"**/*test*.*" | glob:"**/*Tests.swift" | glob:"**/*.md")'
+
