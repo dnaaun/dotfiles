@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <change>"
@@ -7,4 +8,14 @@ fi
 
 change="$1"
 
-jj bookmark list -r "::$change ~ ::main" -T 'json(self)' | jq 'select(has("remote") | not) | .name' -r| xargs -d\\n -n1 -P4 jj git push --ignore-immutable -b
+mapfile -t bookmarks < <(
+    jj log \
+        --no-graph \
+        --reversed \
+        -r "::$change ~ ::main" \
+        -T 'local_bookmarks.map(|bookmark| bookmark.name() ++ "\n").join("")'
+)
+
+for bookmark in "${bookmarks[@]}"; do
+    jj git push --ignore-immutable --bookmark "$bookmark"
+done

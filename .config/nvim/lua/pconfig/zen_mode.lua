@@ -5,11 +5,11 @@ return {
 	config = function()
 		require("zen-mode").setup({
 			plugins = {
-				tmux = { enabled = true }, -- disables the tmux statusline
+				tmux = { enabled = false },
 			},
 			window = {
 				width = 100,
-        height = 0.95,
+				height = 0.95,
 				backdrop = 1,
 				options = {
 					signcolumn = "no",

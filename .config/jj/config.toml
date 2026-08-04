@@ -48,7 +48,11 @@ empty_heads_except_current = "empty() & heads(all()) & ~@"
 
 by_me = 'author_email("52462475+dnaaun@users.noreply.github.com") | author_email("davidtofu2018@gmail.com")'
 
-"log()" = "(present(@) | ancestors(immutable_heads().., 2) | trunk())  & non_empty_heads_except_current"
+the_usual = "(present(@) | ancestors(immutable_heads().., 2) | trunk())  & ~empty_heads_except_current"
+
+to_squash = 'subject(regex:"^TO SQUASH")'
+
+"log()" = "the_usual"
 
 [fileset-aliases]
 tests_and_docs = '(glob:"**/*test*.*" | glob:"**/*Tests.swift" | glob:"**/*.md")'

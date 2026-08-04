@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -ne 1 ]]; then
+    printf 'Usage: %s REVSET\n' "${0##*/}" >&2
+    exit 2
+fi
+
+selected_revset_input=$1
+selected_change_ids=$(jj log \
+    --no-graph \
+    --template 'change_id ++ "\n"' \
+    --revisions "$selected_revset_input")
+
+if [[ -z "$selected_change_ids" ]]; then
+    printf 'The revset selected no commits\n' >&2
+    exit 0
+fi
+
+selected_change_revset=
+while IFS= read -r change_id; do
+    [[ -z "$change_id" ]] && continue
+    if [[ -n "$selected_change_revset" ]]; then
+        selected_change_revset+=" | "
+    fi
+    selected_change_revset+="change_id($change_id)"
+done <<< "$selected_change_ids"
+
+merge_change_ids=$(jj log \
+    --no-graph \
+    --template 'change_id ++ "\n"' \
+    --revisions "($selected_change_revset) & merges()")
+if [[ -n "$merge_change_ids" ]]; then
+    printf 'Cannot squash merge commits selected by %s:\n%s' \
+        "$selected_revset_input" "$merge_change_ids" >&2
+    exit 1
+fi
+
+root_change_ids=$(jj log \
+    --no-graph \
+    --template 'change_id ++ "\n"' \
+    --revisions "($selected_change_revset) & root()")
+if [[ -n "$root_change_ids" ]]; then
+    printf 'Cannot squash the repository root commit:\n%s' \
+        "$root_change_ids" >&2
+    exit 1
+fi
+
+while true; do
+    leaf_change_ids=$(jj log \
+        --no-graph \
+        --template 'change_id ++ "\n"' \
+        --revisions "heads($selected_change_revset)")
+    leaf_change_id=${leaf_change_ids%%$'\n'*}
+
+    [[ -z "$leaf_change_id" ]] && break
+
+    jj squash \
+        --revision "$leaf_change_id" \
+        --use-destination-message
+done

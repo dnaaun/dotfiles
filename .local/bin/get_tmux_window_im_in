@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ -n "${TMUX_PANE:-}" ]]; then
+    pane_id="$TMUX_PANE"
+else
+    current_tty=$(tty)
+    pane_id=$(tmux list-panes -a -F "#{pane_id} #{pane_tty}" | awk -v tty="$current_tty" '$2 == tty { print $1; exit }')
+fi
+
+if [[ -z "$pane_id" ]]; then
+    printf 'Could not identify the current tmux pane\n' >&2
+    exit 1
+fi
+
+tmux display-message -p -t "$pane_id" '#{window_index}'

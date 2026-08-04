@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+readonly WORKING_BORDER_STYLE='fg=#719cd6'
+readonly READY_BORDER_STYLE='fg=#a6e3a1'
+readonly DESKTOP_NOTIFIER='/Users/david/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient'
+
+set_tmux_border_style() {
+    local border_style="$1"
+    local active_border_style="$2"
+
+    [[ -n "${TMUX_PANE:-}" ]] || return 0
+
+    tmux set-option -p -t "$TMUX_PANE" pane-border-style "$border_style" || true
+    tmux set-option -p -t "$TMUX_PANE" pane-active-border-style "$active_border_style" || true
+}
+
+clear_tmux_border_style() {
+    [[ -n "${TMUX_PANE:-}" ]] || return 0
+
+    tmux set-option -p -t "$TMUX_PANE" -u pane-border-style || true
+    tmux set-option -p -t "$TMUX_PANE" -u pane-active-border-style || true
+}
+
+case "${1:-}" in
+    reset)
+        clear_tmux_border_style
+        ;;
+    working)
+        set_tmux_border_style "$WORKING_BORDER_STYLE" "$WORKING_BORDER_STYLE"
+        ;;
+    ready)
+        set_tmux_border_style "$READY_BORDER_STYLE" "$READY_BORDER_STYLE"
+        ;;
+    *)
+        set_tmux_border_style "$READY_BORDER_STYLE" "$READY_BORDER_STYLE"
+        if [[ -x "$DESKTOP_NOTIFIER" ]]; then
+            "$DESKTOP_NOTIFIER" turn-ended "$@" >/dev/null 2>&1 &
+        fi
+        ;;
+esac

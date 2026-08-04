@@ -49,6 +49,10 @@ opt.laststatus = 3
 -- Have a thin line separating the splits
 vim.cmd([[highlight WinSeparator guifg=None guifg=#aaa]])
 
+-- Wrap how I want it
+opt.wrap = true
+opt.linebreak = true
+
 local g = vim.g
 
 g.loaded_matchparen = 1

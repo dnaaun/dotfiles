@@ -1,10 +1,24 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <change>"
+    echo "Usage: $0 <revset>" >&2
     exit 1
 fi
 
-change="$1"
+revset="$1"
+changes="$(jj log -r "$revset" --no-graph -T 'commit_id ++ "\n"')"
 
-jj bookmark create "dt/$(jj log -r $change --no-graph -T description | head -1 | sed 's/[^a-zA-Z]/_/g')" -r "$change"
+while IFS= read -r change; do
+    [ -n "$change" ] || continue
+
+    description="$(
+        jj log -r "$change" --no-graph -T 'description.first_line()'
+    )"
+    bookmark_name="$(
+        printf '%s' "$description" | sed 's/[^a-zA-Z]/_/g'
+    )"
+
+    jj bookmark create "dt/$bookmark_name" -r "$change"
+done <<< "$changes"
