@@ -30,7 +30,7 @@ prefix = "ctrl+p"
 # match for sessions, while the goto picker searches tabs (windows) and panes.
 settings = "prefix+comma"
 workspace_picker = "prefix+s"
-goto = "prefix+w"
+goto = "ctrl+s"
 new_workspace = "prefix+shift+s"
 rename_workspace = "prefix+e"
 detach = "prefix+d"
