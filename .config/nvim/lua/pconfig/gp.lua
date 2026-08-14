@@ -76,11 +76,18 @@ return {
 					command = false,
 					-- string with model name or table with model name and parameters
 					model = { model = "claude-sonnet-4-5-20250929" },
-				-- azure = {...},
+					-- azure = {...},
 					-- system prompt (use this to specify the persona/role of the AI)
 					system_prompt = require("gp.defaults").chat_system_prompt,
 				},
-
+				{
+					name = "luna",
+					provider = "openai",
+					chat = true,
+					command = true,
+					model = { model = "gpt-5.6-luna" },
+					system_prompt = "You're a coding assistant. Lean towards being brief (e.g., providing a code snippet answer only) if the question can at all be answered in a brief way. Don't be afraid to be not brief if the question clearly beckons a wider exploration.",
+				},
 				{
 					name = "gpt54",
 					provider = "openai",
@@ -103,7 +110,7 @@ return {
 
 		-- I don't know of an official way to set the default agent on startup, so I use
 		-- an undocumented/internal API:
-		require("gp")._state.chat_agent = "gpt54"
+		require("gp")._state.chat_agent = "luna"
 
 		-- VISUAL mode mappings
 		-- s, x, v modes are handled the same way by which_key

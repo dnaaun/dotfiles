@@ -28,7 +28,7 @@ prefix = "ctrl+p"
 
 # Keep the tmux session/window muscle memory. Herdr workspaces are the closest
 # match for sessions, while the goto picker searches tabs (windows) and panes.
-settings = "prefix+comma"
+settings = "prefix+shift+comma"
 workspace_picker = "prefix+s"
 goto = "ctrl+s"
 new_workspace = "prefix+shift+s"
@@ -37,6 +37,7 @@ detach = "prefix+d"
 reload_config = "prefix+r"
 
 new_tab = "prefix+c"
+rename_tab = "prefix+comma"
 previous_tab = "prefix+p"
 next_tab = "prefix+n"
 switch_tab = "prefix+1..9"
