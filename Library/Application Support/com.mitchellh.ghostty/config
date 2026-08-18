@@ -42,15 +42,11 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 mouse-hide-while-typing = true
-# font-family = FiraMono Nerd Font
-font-family = JetBrainsMono Nerd Font
-# font-style = Light
-font-style-bold = Bold
-font-style-italic = Medium Italic
-font-style-bold-italic = Bold Italic
-font-size = 14
+font-family = JetBrainsMonoNL NFM
+font-style = Regular
+font-size = 13
 
-adjust-cell-width = -3.33%
+adjust-cell-width = -3.32%
 
 theme = Catppuccin Mocha
 # theme = Catppuccin Latte
@@ -60,3 +56,5 @@ command = /opt/homebrew/bin/bash
 window-decoration = none
 
 confirm-close-surface = false
+
+cursor-style = block
