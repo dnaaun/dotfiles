@@ -1,5 +1,63 @@
 local M = {}
 
+-- https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests
+local SEARCH_COMPLETIONS = {
+	"assignee:",
+	"assignee:@me",
+	"author:",
+	"author:@me",
+	"base:",
+	"closed:",
+	"commenter:",
+	"commenter:@me",
+	"comments:",
+	"created:",
+	"draft:false",
+	"draft:true",
+	"head:",
+	"in:body",
+	"in:comments",
+	"in:title",
+	"interactions:",
+	"involves:",
+	"involves:@me",
+	"is:closed",
+	"is:merged",
+	"is:open",
+	"is:unmerged",
+	"label:",
+	"language:",
+	"linked:issue",
+	"mentions:",
+	"mentions:@me",
+	"merged:",
+	"milestone:",
+	"no:assignee",
+	"no:label",
+	"no:milestone",
+	"no:project",
+	"project:",
+	"reactions:",
+	"review:approved",
+	"review:changes_requested",
+	"review:none",
+	"review:required",
+	"review-involves:",
+	"review-involves:@me",
+	"review-requested:",
+	"review-requested:@me",
+	"reviewed-by:",
+	"reviewed-by:@me",
+	"status:failure",
+	"status:pending",
+	"status:success",
+	"team-review-requested:",
+	"team-review-requested-user:",
+	"team:",
+	"updated:",
+	"user-review-requested:@me",
+}
+
 local function notify(message, level)
 	vim.schedule(function()
 		vim.notify(message, level, { title = "JjReviewPR" })
@@ -49,6 +107,67 @@ local function resolve_jj_repo(callback)
 			})
 		end)
 	end)
+end
+
+local function local_completions()
+	local bookmarks = vim.system({
+		"jj",
+		"bookmark",
+		"list",
+		"--ignore-working-copy",
+		"-T",
+		'name ++ "\\n"',
+	}, { cwd = vim.fn.getcwd(), text = true }):wait()
+
+	local completions = {}
+	if bookmarks.code == 0 then
+		for _, bookmark in ipairs(vim.split(trim(bookmarks.stdout), "\n", { plain = true, trimempty = true })) do
+			table.insert(completions, "base:" .. bookmark)
+			table.insert(completions, "head:" .. bookmark)
+		end
+	end
+
+	local remotes = vim.system({ "jj", "git", "remote", "list" }, { cwd = vim.fn.getcwd(), text = true }):wait()
+	if remotes.code == 0 then
+		local user_qualifiers = {
+			"assignee:",
+			"author:",
+			"commenter:",
+			"involves:",
+			"mentions:",
+			"review-involves:",
+			"review-requested:",
+			"reviewed-by:",
+			"team-review-requested-user:",
+		}
+		local seen_owners = {}
+		for url in remotes.stdout:gmatch("%S+") do
+			local owner = url:match("[:/]([^/:]+)/[^/]+%.git$") or url:match("[:/]([^/:]+)/[^/]+$")
+			if owner and not seen_owners[owner] then
+				seen_owners[owner] = true
+				for _, qualifier in ipairs(user_qualifiers) do
+					table.insert(completions, qualifier .. owner)
+				end
+			end
+		end
+	end
+	return completions
+end
+
+local function complete_search(arg_lead)
+	local negative = vim.startswith(arg_lead, "-")
+	local lead = negative and arg_lead:sub(2) or arg_lead
+	local candidates = vim.list_extend(vim.deepcopy(SEARCH_COMPLETIONS), local_completions())
+	local matches = {}
+
+	for _, candidate in ipairs(candidates) do
+		if vim.startswith(candidate, lead) then
+			table.insert(matches, negative and "-" .. candidate or candidate)
+		end
+	end
+
+	table.sort(matches)
+	return matches
 end
 
 local function fetch_prs(repo, search, callback)
@@ -276,6 +395,7 @@ function M.setup()
 	vim.api.nvim_create_user_command("JjReviewPR", function(opts)
 		M.open(opts.args)
 	end, {
+		complete = complete_search,
 		desc = "Select an open GitHub PR matching an optional search and review it with jj diffview",
 		nargs = "*",
 	})
