@@ -51,7 +51,7 @@ local function resolve_jj_repo(callback)
 	end)
 end
 
-local function fetch_prs(repo, callback)
+local function fetch_prs(repo, search, callback)
 	local env = vim.tbl_extend("force", vim.fn.environ(), { GIT_DIR = repo.git_dir })
 	local fields = table.concat({
 		"number",
@@ -64,7 +64,7 @@ local function fetch_prs(repo, callback)
 		"headRefOid",
 	}, ",")
 
-	run({
+	local args = {
 		"gh",
 		"pr",
 		"list",
@@ -74,7 +74,12 @@ local function fetch_prs(repo, callback)
 		"1000",
 		"--json",
 		fields,
-	}, { cwd = repo.root, env = env, text = true }, function(result)
+	}
+	if search ~= "" then
+		vim.list_extend(args, { "--search", search })
+	end
+
+	run(args, { cwd = repo.root, env = env, text = true }, function(result)
 		if result.code ~= 0 then
 			callback(nil, command_error("gh pr list", result))
 			return
@@ -249,14 +254,15 @@ local function open_picker(repo, prs)
 		:find()
 end
 
-function M.open()
+function M.open(search)
+	search = search or ""
 	resolve_jj_repo(function(repo, err)
 		if err then
 			notify(err, vim.log.levels.ERROR)
 			return
 		end
 
-		fetch_prs(repo, function(prs, fetch_err)
+		fetch_prs(repo, search, function(prs, fetch_err)
 			if fetch_err then
 				notify(fetch_err, vim.log.levels.ERROR)
 				return
@@ -267,8 +273,11 @@ function M.open()
 end
 
 function M.setup()
-	vim.api.nvim_create_user_command("JjReviewPR", M.open, {
-		desc = "Select an open GitHub PR and review it with jj diffview",
+	vim.api.nvim_create_user_command("JjReviewPR", function(opts)
+		M.open(opts.args)
+	end, {
+		desc = "Select an open GitHub PR matching an optional search and review it with jj diffview",
+		nargs = "*",
 	})
 end
 
