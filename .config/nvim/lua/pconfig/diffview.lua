@@ -61,6 +61,7 @@ return {
 	name = "diffview.nvim",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
+		"nvim-telescope/telescope.nvim",
 
 		-- I add jjsigns because I think loading that first helps with
 		-- overriding the key combos.
@@ -68,13 +69,15 @@ return {
 	},
 
 	keys = { "<leader>gd", "<leader>gq" },
-	cmd = { "JjDiffviewFileHistory", "JjDiffviewOpen" },
+	cmd = { "JjDiffviewFileHistory", "JjDiffviewOpen", "JjReviewPR" },
 
 	-- I think I have to do this to make sure that diffview.nvim loads after
 	-- jjsigns.
 	event = require("pconfig.gitsigns").event,
 
 	config = function()
+		require("jj_review_pr").setup()
+
 		vim.keymap.set("n", "<leader>gd", function()
 			require("diffview").open({ "--from=heads(::@ & ::main)" })
 		end, { desc = "Jj Diffview Open" })
