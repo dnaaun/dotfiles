@@ -475,5 +475,6 @@ watchjj() {
     --shell=none \
     --ignore-nothing \
     --watch "$repo_path/op_heads" \
-    -- jj "$@"
+    -- jj log "$@" \
+    --ignore-working-copy # Codex suggested that not having this is at the root of "unexpected error from commit backend caused by object <hash> of type commit not found"
 }

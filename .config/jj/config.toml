@@ -52,7 +52,7 @@ the_usual = "(present(@) | ancestors(immutable_heads().., 2) | trunk())  & ~empt
 
 to_squash = 'subject(regex:"^TO SQUASH")'
 
-"log()" = "the_usual"
+"log()" = "the_usual & (by_me | ::main)"
 
 [fileset-aliases]
 tests_and_docs = '(glob:"**/*test*.*" | glob:"**/*Tests.swift" | glob:"**/*.md")'

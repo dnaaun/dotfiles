@@ -16,15 +16,16 @@ I, personally, use jj for VCS (unlike the rest of my team, and many of the instr
 
 - Don't attempt to run `git mv` in a jj workspace. It won't work.
 
-## (Avoiding) changing history
+## (Avoiding) changing history (for the most part)
 - You should prefer `jj new` (and if necessary, doing `jj squash` afterwards) instead of `jj edit`.
 - If asked to fix conflicts, DO NOT SQUASH, OR GOD FORBID, PUSH, UNLESS THE USER EXPLICITLY ASKS YOU TOO. Just fix the conflicts in a new commit (if not already on an empty one) on top of the conflicted change. Then yield to the user.
 - You should avoid newlines simply for the sake of wrapping in commit messages / PR descriptions.
 - If you are asked to fix CI errors, don't squash, don't merge. Let the user do that. Feel free to create a new commit with your changes tho. I REPEAT: DO NOT SQUASH. DO NOT PUSH. LET THE USER DO THAT.
 - You should always run autoformatting tools that get checked in CI before finalizing your work.
 
-# "TO SQUASH" commits
+### "TO SQUASH" commits
 - Unless the user explicitly says otherwise, if you want to amend something in a previous commit, create a commit titled "TO SQUASH (agent N): <blah blah blah>", where "N" is the value of `get_tmux_window_im_in` (a small helper script I have for you in PATH already) (each tmux pane corresponds to an agent in my workflow).
+- It is totally fine to insert TO SQUASH commits that are not leaf commits, even if that means you are technically rewriting history, because it's super easy to recover history: I'd just drop the TO SQUASH commits.
 
 # Commit messages
 Be sure that your commit message _title_ ascribes to the backend _PR_ title CI check that we have, since, as you'll read below, it might eventually become a PR title.
@@ -40,3 +41,8 @@ If the conversation doesn't already specify, the PRs are supposed to be created 
 The PR description and title should be taken from the description and title of the first commit in the PR (verbatim), except for any "release notes" kind of section that we have checked in CI, that you can _add_. 
 
 Do ignore all other repo-wide instructions about how to create PRs and structure them.
+
+# New coding guidelines
+I'm working on new coding guidelines in the bookmark dt/chore_backend___new_coding_guidelines.
+
+I never want to submit a PR that contains that work, as of now. But, intermittently, I'll basically work off of that bookmark. If I ever ask you to push stuff, make sure that bookmark is not in the history. You can do something like `jj rebase -s 'roots(::@ & ~::dt/chore_backend___new_coding_guidelines)' -d main` before pushing, and then after pushing, restore it via `jj rebase -s 'roots(::@ & ~::main)' -d dt/chore_backend___new_coding_guidelines`.

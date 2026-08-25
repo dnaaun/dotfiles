@@ -88,7 +88,7 @@ plugins_for_non_pager_mode = {
 	require("pconfig.typescript_tools"),
 
 	-- AI coding asistant thingys
-	require("pconfig.gp"),
+	require("pconfig.gp"), -- Let's see if sidekick.nvim can replace this.
 
 	-- require("pconfig.twilight"), - meh. I often want to read stuff not close by.
 }
