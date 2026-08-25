@@ -1,6 +1,7 @@
 from __future__ import annotations
 import re
 import os
+import shutil
 from pathlib import Path
 from typing import Generator, List, Optional
 
@@ -71,7 +72,14 @@ def setup_symlink(
 ) -> Optional[Path]:
     resolved_from = base / from_
     resolved_to = to / from_
-    if resolved_to.exists():
+    should_copy = from_.parts[:2] == (".codex", "skills")
+    replacing_skill_symlink = should_copy and resolved_to.is_symlink()
+    if replacing_skill_symlink:
+        if verbose:
+            print(f"Replacing skill symlink {resolved_to} with a copy.")
+        if not dry_run:
+            resolved_to.unlink()
+    if resolved_to.exists() and not replacing_skill_symlink:
         if force:
             os.unlink(resolved_to)
             if verbose:
@@ -80,11 +88,15 @@ def setup_symlink(
             if verbose:
                 print(f"Warning: not setting up {resolved_to} because target exists.")
             return None
-    print(f"{resolved_from} => {resolved_to}")
+    operation = "copy" if should_copy else "symlink"
+    print(f"{resolved_from} => {resolved_to} ({operation})")
     if not dry_run:
         if not resolved_to.parent.exists():
             os.makedirs(resolved_to.parent)
-        os.symlink(resolved_from, resolved_to)
+        if should_copy:
+            shutil.copy2(resolved_from, resolved_to)
+        else:
+            os.symlink(resolved_from, resolved_to)
     return resolved_to
 
 if __name__ == "__main__":
