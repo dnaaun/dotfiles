@@ -40,9 +40,14 @@ auto-track-bookmarks = "*"
 # Default revset is: present(@) | ancestors(immutable_heads().., 2) | trunk()
 # We subtract empty leaf commits to hide idle workspace working copies (and
 # other empty heads), while keeping the current workspace's @ visible
+log = "the_usual & (by_me | ::main)"
 
 [revset-aliases]
 "common_ancestor_with_main(r)" = "heads(::r & ::main)"
+
+"until_main(r)" = "common_ancestor_with_main(r)+::r"
+"root_off_main(r)" = "roots(common_ancestor_with_main(r)+::r)"
+
 empty_heads = "empty() & heads(all())"
 empty_heads_except_current = "empty() & heads(all()) & ~@"
 
@@ -51,8 +56,6 @@ by_me = 'author_email("52462475+dnaaun@users.noreply.github.com") | author_email
 the_usual = "(present(@) | ancestors(immutable_heads().., 2) | trunk())  & ~empty_heads_except_current"
 
 to_squash = 'subject(regex:"^TO SQUASH")'
-
-"log()" = "the_usual & (by_me | ::main)"
 
 [fileset-aliases]
 tests_and_docs = '(glob:"**/*test*.*" | glob:"**/*Tests.swift" | glob:"**/*.md")'

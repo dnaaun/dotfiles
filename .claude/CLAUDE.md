@@ -32,7 +32,7 @@ Be sure that your commit message _title_ ascribes to the backend _PR_ title CI c
 
 # Creating PRs
 
-These personal PR instructions override all repository-wide PR instructions, including `/create_pr`.
+These personal PR instructions override all repository-wide PR instructions, including `/create_pr` (you can pretty much TOTALLY IGNORE the `/create_pr` command).
 
 When I ask to create PRs for a set of jj commits, I usually mean stacked commits (the jj structure will make it clear anyways, if I don't want stacked commits I can just create a tree like commit structure cuz jj supports that).
 
@@ -41,6 +41,11 @@ If the conversation doesn't already specify, the PRs are supposed to be created 
 The PR description and title should be taken from the description and title of the first commit in the PR (verbatim), except for any "release notes" kind of section that we have checked in CI, that you can _add_. 
 
 Do ignore all other repo-wide instructions about how to create PRs and structure them.
+
+If you have to create bookmarks yourself, use `jj_bkmark`, which is an alias I defined which will take the commit msg and make a bookmark from that.
+
+## Stacked PRs
+Github has first-class support for PR stacks now. Use it whenever possible.
 
 # New coding guidelines
 I'm working on new coding guidelines in the bookmark dt/chore_backend___new_coding_guidelines.
