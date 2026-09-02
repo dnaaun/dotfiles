@@ -31,7 +31,6 @@
 	defaultBranch = main
 [core]
 	compression = 0
-	excludesFile = /Users/davidat/.gitignore_global
 	quotepath = off
 [diff "jupyternotebook"]
 	command = git-nbdiffdriver diff
