@@ -91,6 +91,8 @@ plugins_for_non_pager_mode = {
 	require("pconfig.gp"), -- Let's see if sidekick.nvim can replace this.
 
 	-- require("pconfig.twilight"), - meh. I often want to read stuff not close by.
+
+	require("pconfig.render_markdown"),
 }
 
 -- Append to plugins if not in pager mode

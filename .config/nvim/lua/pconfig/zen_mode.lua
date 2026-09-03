@@ -8,7 +8,7 @@ return {
 				tmux = { enabled = false },
 			},
 			window = {
-				width = 100,
+				width = 0.8,
 				height = 0.95,
 				backdrop = 1,
 				options = {
