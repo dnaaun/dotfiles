@@ -1,0 +1,480 @@
+#!/usr/bin/env -S cargo +nightly -Zscript --quiet
+---
+[package]
+name = "jj_pr"
+edition = "2024"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive", "env"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+---
+//! Create (or edit) a GitHub PR for a single jj revision.
+//!
+//! 1. Resolve `-r` to exactly one revision.
+//! 2. If it has no bookmark, run `jj_bkmark` on it.
+//! 3. The base is the closest bookmarked ancestor.
+//! 4. Open nvim to edit "<title>\n\n<body>" (body prefilled with pull_request_template.md).
+//! 5. Create the PR, or edit the existing open PR with the same head+base.
+//!
+//! All `gh` invocations run with GIT_DIR=$(jj git root) so this works in jj workspaces.
+
+use std::env;
+use std::ffi::OsStr;
+use std::fs;
+use std::path::{Path, PathBuf};
+use std::process::{Command, Stdio};
+
+use anyhow::{Context, Result, anyhow, bail, ensure};
+use clap::Parser;
+use serde::Deserialize;
+
+const SCISSORS: &str = "# ------------------------ >8 ------------------------";
+
+#[derive(Parser, Debug)]
+#[command(about = "Create or edit a GitHub PR for one jj revision")]
+struct Args {
+    /// Revset that must resolve to exactly one revision (the PR head).
+    #[arg(short, long)]
+    revision: String,
+
+    /// Push head and base bookmarks (via `jj git push`) before talking to GitHub.
+    #[arg(short, long)]
+    push: bool,
+
+    /// Create the PR as a draft (ignored when editing an existing PR).
+    #[arg(short, long)]
+    draft: bool,
+
+    /// Editor to use (defaults to nvim).
+    #[arg(long, env = "JJ_PR_EDITOR", default_value = "nvim")]
+    editor: String,
+}
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+struct Pr {
+    number: u64,
+    url: String,
+    title: String,
+    body: String,
+    base_ref_name: String,
+    head_ref_name: String,
+}
+
+fn run(cmd: &mut Command) -> Result<String> {
+    let rendered = format!("{cmd:?}");
+    let out = cmd
+        .stderr(Stdio::inherit())
+        .output()
+        .with_context(|| format!("failed to spawn {rendered}"))?;
+    ensure!(out.status.success(), "command failed ({}): {rendered}", out.status);
+    Ok(String::from_utf8(out.stdout)?)
+}
+
+fn jj(args: &[&str]) -> Result<String> {
+    run(Command::new("jj").args(args))
+}
+
+fn jj_log(revset: &str, template: &str) -> Result<String> {
+    jj(&["log", "--no-graph", "-r", revset, "-T", template])
+}
+
+fn lines(s: &str) -> Vec<String> {
+    s.lines()
+        .map(str::trim)
+        .filter(|l| !l.is_empty())
+        .map(String::from)
+        .collect()
+}
+
+fn gh(git_dir: &Path, args: &[&str]) -> Result<String> {
+    run(Command::new("gh").env("GIT_DIR", git_dir).args(args))
+}
+
+fn resolve_single(revset: &str) -> Result<String> {
+    let commits = lines(&jj_log(revset, r#"commit_id ++ "\n""#)?);
+    match commits.as_slice() {
+        [c] => Ok(c.clone()),
+        [] => bail!("revset {revset:?} resolved to no revisions"),
+        many => bail!(
+            "revset {revset:?} must resolve to exactly one revision, got {}",
+            many.len()
+        ),
+    }
+}
+
+const BOOKMARKS_TEMPLATE: &str = r#"local_bookmarks.map(|b| b.name() ++ "\n").join("")"#;
+
+fn local_bookmarks(commit: &str) -> Result<Vec<String>> {
+    Ok(lines(&jj_log(commit, BOOKMARKS_TEMPLATE)?))
+}
+
+fn pick_bookmark(what: &str, bookmarks: &[String]) -> Result<String> {
+    match bookmarks {
+        [b] => Ok(b.clone()),
+        [b, ..] => {
+            eprintln!(
+                "note: {what} has several bookmarks ({}); using {b}",
+                bookmarks.join(", ")
+            );
+            Ok(b.clone())
+        }
+        [] => bail!("{what} has no bookmark"),
+    }
+}
+
+fn head_bookmark(commit: &str) -> Result<String> {
+    let mut bookmarks = local_bookmarks(commit)?;
+    if bookmarks.is_empty() {
+        eprintln!("no bookmark on {commit}; running jj_bkmark");
+        run(Command::new("jj_bkmark").arg(commit))?;
+        bookmarks = local_bookmarks(commit)?;
+    }
+    pick_bookmark("head revision", &bookmarks)
+}
+
+fn base_bookmark(commit: &str) -> Result<String> {
+    let revset = format!("heads(::({commit})- & bookmarks())");
+    let bases = lines(&jj_log(&revset, r#"commit_id ++ "\n""#)?);
+    let base = match bases.as_slice() {
+        [b] => b,
+        [] => bail!("no bookmarked ancestor of {commit} found"),
+        many => bail!(
+            "ambiguous base: {} bookmarked ancestors are heads of ::{commit}-: {}",
+            many.len(),
+            many.join(", ")
+        ),
+    };
+    pick_bookmark("base revision", &local_bookmarks(base)?)
+}
+
+fn git_remote() -> Result<String> {
+    let remotes: Vec<String> = lines(&jj(&["git", "remote", "list"])?)
+        .into_iter()
+        .filter_map(|l| l.split_whitespace().next().map(String::from))
+        .collect();
+    if remotes.iter().any(|r| r == "origin") {
+        return Ok("origin".into());
+    }
+    remotes
+        .first()
+        .cloned()
+        .ok_or_else(|| anyhow!("no git remotes configured"))
+}
+
+fn revset_nonempty(revset: &str) -> Result<bool> {
+    Ok(!lines(&jj_log(revset, r#"commit_id ++ "\n""#)?).is_empty())
+}
+
+/// The head must be pushed at exactly its local commit; the base only needs to exist on the
+/// remote (we never want to force-push trunk from here).
+fn ensure_pushed(head: &str, base: &str, remote: &str, push: bool) -> Result<()> {
+    let mut stale = Vec::new();
+    let head_synced =
+        format!(r#"bookmarks(exact:"{head}") & remote_bookmarks(exact:"{head}", remote=exact:"{remote}")"#);
+    if !revset_nonempty(&head_synced)? {
+        stale.push(head);
+    }
+    let base_exists = format!(r#"remote_bookmarks(exact:"{base}", remote=exact:"{remote}")"#);
+    if !revset_nonempty(&base_exists)? {
+        stale.push(base);
+    }
+    if stale.is_empty() {
+        return Ok(());
+    }
+    if !push {
+        bail!(
+            "bookmark(s) not up to date on {remote}: {}. Push them (e.g. jj_push) or rerun with --push",
+            stale.join(", ")
+        );
+    }
+    let mut cmd = Command::new("jj");
+    cmd.args(["git", "push", "--ignore-immutable", "--remote", remote]);
+    for b in &stale {
+        cmd.args(["--bookmark", b]);
+    }
+    cmd.stdout(Stdio::inherit());
+    run(&mut cmd)?;
+    Ok(())
+}
+
+#[derive(Deserialize, Debug, Clone)]
+struct Stack {
+    number: u64,
+    size: u64,
+}
+
+#[derive(Deserialize, Debug)]
+struct BasePr {
+    number: u64,
+    stack: Option<Stack>,
+}
+
+/// The open PR whose head is `branch`, if any, together with the GitHub stack it belongs to.
+fn pr_for_branch(git_dir: &Path, branch: &str) -> Result<Option<BasePr>> {
+    let name_with_owner = gh(
+        git_dir,
+        &["repo", "view", "--json", "nameWithOwner", "-q", ".nameWithOwner"],
+    )?;
+    let (owner, repo) = name_with_owner
+        .trim()
+        .split_once('/')
+        .context("unexpected repo name from gh")?;
+    let query = "query($owner:String!,$repo:String!,$branch:String!){\
+        repository(owner:$owner,name:$repo){\
+          pullRequests(headRefName:$branch, states:OPEN, first:10){\
+            nodes { number stack { number size } } } } }";
+    let out = gh(
+        git_dir,
+        &[
+            "api",
+            "graphql",
+            "-f",
+            &format!("query={query}"),
+            "-F",
+            &format!("owner={owner}"),
+            "-F",
+            &format!("repo={repo}"),
+            "-F",
+            &format!("branch={branch}"),
+            "-q",
+            ".data.repository.pullRequests.nodes",
+        ],
+    )?;
+    let mut prs: Vec<BasePr> = serde_json::from_str(&out)?;
+    if prs.len() > 1 {
+        eprintln!("note: several open PRs have head {branch}; using #{}", prs[0].number);
+    }
+    Ok(prs.drain(..).next())
+}
+
+fn pr_number_from_url(url: &str) -> Result<u64> {
+    url.trim_end_matches('/')
+        .rsplit('/')
+        .next()
+        .and_then(|n| n.parse().ok())
+        .with_context(|| format!("could not parse PR number from {url:?}"))
+}
+
+fn find_template(workspace_root: &Path) -> Option<PathBuf> {
+    for dir in ["", ".github", "docs"] {
+        let Ok(entries) = fs::read_dir(workspace_root.join(dir)) else {
+            continue;
+        };
+        for entry in entries.flatten() {
+            let name = entry.file_name();
+            let name = name.to_string_lossy();
+            if name.eq_ignore_ascii_case("pull_request_template.md") {
+                return Some(entry.path());
+            }
+        }
+    }
+    None
+}
+
+fn commit_description(commit: &str) -> Result<(String, String)> {
+    let desc = jj_log(commit, "description")?;
+    let mut it = desc.splitn(2, '\n');
+    let title = it.next().unwrap_or("").trim().to_string();
+    let body = it.next().unwrap_or("").trim().to_string();
+    Ok((title, body))
+}
+
+fn edit_in_editor(editor: &str, initial: &str, help: &str) -> Result<Option<(String, String)>> {
+    let path = env::temp_dir().join(format!("jj_pr_{}.md", std::process::id()));
+    fs::write(&path, format!("{initial}\n{SCISSORS}\n{help}"))?;
+
+    let status = Command::new(editor)
+        .arg(&path)
+        .stdin(Stdio::inherit())
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit())
+        .status()
+        .with_context(|| format!("failed to launch editor {editor:?}"))?;
+    let edited = fs::read_to_string(&path)?;
+    let _ = fs::remove_file(&path);
+    if !status.success() {
+        eprintln!("editor exited with {status}; aborting");
+        return Ok(None);
+    }
+
+    let content = edited.split(SCISSORS).next().unwrap_or("");
+    let mut it = content.splitn(2, '\n');
+    let title = it.next().unwrap_or("").trim().to_string();
+    let body = it.next().unwrap_or("").trim().to_string();
+    if title.is_empty() {
+        eprintln!("empty title; aborting");
+        return Ok(None);
+    }
+    Ok(Some((title, body)))
+}
+
+fn main() {
+    if let Err(e) = real_main() {
+        eprintln!("error: {e:#}");
+        std::process::exit(1);
+    }
+}
+
+fn real_main() -> Result<()> {
+    let args = Args::parse();
+
+    let git_dir = PathBuf::from(jj(&["git", "root"])?.trim());
+    let workspace_root = PathBuf::from(jj(&["workspace", "root"])?.trim());
+
+    let head_commit = resolve_single(&args.revision)?;
+    let head = head_bookmark(&head_commit)?;
+    let base = base_bookmark(&head_commit)?;
+    ensure!(head != base, "head and base are both {head}");
+    eprintln!("head: {head}\nbase: {base}");
+
+    let remote = git_remote()?;
+    ensure_pushed(&head, &base, &remote, args.push)?;
+
+    let existing: Vec<Pr> = serde_json::from_str(&gh(
+        &git_dir,
+        &[
+            "pr",
+            "list",
+            "--state",
+            "open",
+            "--head",
+            &head,
+            "--json",
+            "number,url,title,body,baseRefName,headRefName",
+        ],
+    )?)?;
+    let same_base = existing
+        .iter()
+        .find(|pr| pr.base_ref_name == base && pr.head_ref_name == head);
+    if same_base.is_none() {
+        if let Some(pr) = existing.first() {
+            bail!(
+                "open PR #{} ({}) already has head {head} but base {:?} (wanted {base:?}); not touching it",
+                pr.number,
+                pr.url,
+                pr.base_ref_name
+            );
+        }
+    }
+
+    // When creating: if the base branch's own PR is part of a GitHub stack, append the new PR to it.
+    let base_stack = match same_base {
+        Some(_) => None,
+        None => match pr_for_branch(&git_dir, &base)? {
+            Some(BasePr {
+                number,
+                stack: Some(stack),
+            }) => {
+                eprintln!(
+                    "base PR #{number} is in stack #{} (size {}); will append",
+                    stack.number, stack.size
+                );
+                Some(stack)
+            }
+            Some(BasePr { number, stack: None }) => {
+                eprintln!("base PR #{number} is not in a GitHub stack; not linking");
+                None
+            }
+            None => None,
+        },
+    };
+
+    let help = match same_base {
+        Some(pr) => format!("# Editing PR #{} ({})\n", pr.number, pr.url),
+        None => format!(
+            "# Creating PR: {head} -> {base}{}{}\n",
+            if args.draft { " (draft)" } else { "" },
+            match &base_stack {
+                Some(stack) => format!(", appended to stack #{}", stack.number),
+                None => String::new(),
+            }
+        ),
+    };
+    let help = format!(
+        "{help}# First line is the title, the rest (after a blank line) is the body.\n\
+         # Everything from the scissors line down is discarded. Exit non-zero (:cq) to abort.\n"
+    );
+
+    let initial = match same_base {
+        Some(pr) => format!("{}\n\n{}\n", pr.title, pr.body),
+        None => {
+            let template = match find_template(&workspace_root) {
+                Some(p) => fs::read_to_string(&p).with_context(|| format!("reading {}", p.display()))?,
+                None => String::new(),
+            };
+            // Commits in the PR, newest (head) first.
+            let titles = lines(&jj_log(
+                &format!("{base}..{head_commit}"),
+                r#"description.first_line() ++ "\n""#,
+            )?);
+            let (title, prelude) = if titles.len() == 1 {
+                commit_description(&head_commit)?
+            } else {
+                (
+                    String::new(),
+                    titles.iter().map(|t| format!("- {t}")).collect::<Vec<_>>().join("\n"),
+                )
+            };
+            let body = [prelude.as_str(), template.trim()]
+                .into_iter()
+                .filter(|s| !s.is_empty())
+                .collect::<Vec<_>>()
+                .join("\n\n");
+            format!("{title}\n\n{body}\n")
+        }
+    };
+
+    let Some((title, body)) = edit_in_editor(&args.editor, &initial, &help)? else {
+        std::process::exit(1);
+    };
+
+    let body_path = env::temp_dir().join(format!("jj_pr_body_{}.md", std::process::id()));
+    fs::write(&body_path, &body)?;
+    let body_file: &OsStr = body_path.as_os_str();
+    let body_file = body_file.to_str().context("temp path is not utf-8")?;
+
+    let result = match same_base {
+        Some(pr) => {
+            let number = pr.number.to_string();
+            gh(
+                &git_dir,
+                &["pr", "edit", &number, "--title", &title, "--body-file", body_file],
+            )
+            .map(|_| pr.url.clone())
+        }
+        None => {
+            let mut argv = vec![
+                "pr",
+                "create",
+                "--head",
+                &head,
+                "--base",
+                &base,
+                "--title",
+                &title,
+                "--body-file",
+                body_file,
+            ];
+            if args.draft {
+                argv.push("--draft");
+            }
+            gh(&git_dir, &argv).map(|out| out.trim().to_string())
+        }
+    };
+    let _ = fs::remove_file(&body_path);
+    let url = result?;
+    println!("{url}");
+
+    if let Some(stack) = base_stack {
+        let pr_number = pr_number_from_url(&url)?;
+        run(Command::new("gh")
+            .env("GIT_DIR", &git_dir)
+            .args(["stack", "link", &stack.number.to_string(), &pr_number.to_string()])
+            .stdout(Stdio::inherit()))?;
+        eprintln!("linked PR #{pr_number} onto stack #{}", stack.number);
+    }
+    Ok(())
+}
