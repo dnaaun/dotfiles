@@ -1,61 +1,102 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env -S cargo +nightly -Zscript --quiet
+---
+[package]
+name = "jj_squash_onto_parents"
+edition = "2024"
 
-if [[ $# -ne 1 ]]; then
-    printf 'Usage: %s REVSET\n' "${0##*/}" >&2
-    exit 2
-fi
+[dependencies]
+anyhow = "1"
+---
+//! Squash every commit selected by REVSET into its parent, keeping the parent's message.
+//!
+//! One `jj log` (which snapshots the working copy) lists the selection in topological order,
+//! children before parents, so squashing in that order is always leaf-first. Merge commits and
+//! the root commit are rejected up front. Total: 1 + N jj invocations.
 
-selected_revset_input=$1
-selected_change_ids=$(jj log \
-    --no-graph \
-    --template 'change_id ++ "\n"' \
-    --revisions "$selected_revset_input")
+use std::process::{Command, Stdio};
 
-if [[ -z "$selected_change_ids" ]]; then
-    printf 'The revset selected no commits\n' >&2
-    exit 0
-fi
+use anyhow::{Context, Result, bail, ensure};
 
-selected_change_revset=
-while IFS= read -r change_id; do
-    [[ -z "$change_id" ]] && continue
-    if [[ -n "$selected_change_revset" ]]; then
-        selected_change_revset+=" | "
-    fi
-    selected_change_revset+="change_id($change_id)"
-done <<< "$selected_change_ids"
+struct Change {
+    change_id: String,
+    parents: usize,
+    is_root: bool,
+}
 
-merge_change_ids=$(jj log \
-    --no-graph \
-    --template 'change_id ++ "\n"' \
-    --revisions "($selected_change_revset) & merges()")
-if [[ -n "$merge_change_ids" ]]; then
-    printf 'Cannot squash merge commits selected by %s:\n%s' \
-        "$selected_revset_input" "$merge_change_ids" >&2
-    exit 1
-fi
+fn main() {
+    if let Err(e) = real_main() {
+        eprintln!("error: {e:#}");
+        std::process::exit(1);
+    }
+}
 
-root_change_ids=$(jj log \
-    --no-graph \
-    --template 'change_id ++ "\n"' \
-    --revisions "($selected_change_revset) & root()")
-if [[ -n "$root_change_ids" ]]; then
-    printf 'Cannot squash the repository root commit:\n%s' \
-        "$root_change_ids" >&2
-    exit 1
-fi
+fn real_main() -> Result<()> {
+    let args: Vec<String> = std::env::args().skip(1).collect();
+    let [revset] = args.as_slice() else {
+        eprintln!("Usage: jj_squash_onto_parents REVSET");
+        std::process::exit(2);
+    };
 
-while true; do
-    leaf_change_ids=$(jj log \
-        --no-graph \
-        --template 'change_id ++ "\n"' \
-        --revisions "heads($selected_change_revset)")
-    leaf_change_id=${leaf_change_ids%%$'\n'*}
+    let out = Command::new("jj")
+        .args(["log", "--no-graph", "-r", revset, "-T"])
+        .arg(r#"change_id ++ "\x1f" ++ parents.len() ++ "\x1f" ++ root ++ "\n""#)
+        .stderr(Stdio::inherit())
+        .output()
+        .context("failed to spawn jj")?;
+    ensure!(out.status.success(), "jj log failed ({})", out.status);
 
-    [[ -z "$leaf_change_id" ]] && break
+    let mut changes = Vec::new();
+    for line in String::from_utf8(out.stdout)?
+        .lines()
+        .filter(|l| !l.is_empty())
+    {
+        let [change_id, parents, is_root] = line.split('\x1f').collect::<Vec<_>>()[..] else {
+            bail!("unexpected jj log line: {line:?}");
+        };
+        changes.push(Change {
+            change_id: change_id.to_string(),
+            parents: parents.parse().context("parents.len()")?,
+            is_root: is_root == "true",
+        });
+    }
 
-    jj squash \
-        --revision "$leaf_change_id" \
-        --use-destination-message
-done
+    if changes.is_empty() {
+        eprintln!("The revset selected no commits");
+        return Ok(());
+    }
+    let merges: Vec<&str> = changes
+        .iter()
+        .filter(|c| c.parents > 1)
+        .map(|c| c.change_id.as_str())
+        .collect();
+    if !merges.is_empty() {
+        bail!(
+            "Cannot squash merge commits selected by {revset:?}:\n{}",
+            merges.join("\n")
+        );
+    }
+    if let Some(root) = changes.iter().find(|c| c.is_root) {
+        bail!(
+            "Cannot squash the repository root commit:\n{}",
+            root.change_id
+        );
+    }
+
+    for change in &changes {
+        let status = Command::new("jj")
+            .args([
+                "squash",
+                "--revision",
+                &change.change_id,
+                "--use-destination-message",
+            ])
+            .status()
+            .context("failed to spawn jj squash")?;
+        ensure!(
+            status.success(),
+            "jj squash {} failed ({status})",
+            change.change_id
+        );
+    }
+    Ok(())
+}

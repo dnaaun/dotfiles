@@ -12,12 +12,16 @@ serde_json = "1"
 ---
 //! Create (or edit) a GitHub PR for a single jj revision.
 //!
-//! 1. Resolve `-r` to exactly one revision.
-//! 2. If it has no bookmark, run `jj_bkmark` on it.
-//! 3. The base is the closest bookmarked ancestor.
-//! 4. Open nvim to edit "<title>\n\n<body>" (body prefilled with pull_request_template.md).
-//! 5. Create the PR, or edit the existing open PR with the same head+base.
+//! 1. Resolve `-r` to exactly one revision (the head). The base is the closest bookmarked
+//!    ancestor. Head, base and every commit in between are loaded with ONE `jj log` call.
+//! 2. If the head has no bookmark, create `dt/<slugified title>` (same scheme as `jj_bkmark`).
+//! 3. Push head/base bookmarks if they are out of date on the remote.
+//! 4. Look up the open PRs for head and base with ONE GraphQL query.
+//! 5. Open nvim to edit "<title>\n\n<body>" (body prefilled with pull_request_template.md).
+//! 6. Create the PR, or edit the existing open PR with the same head+base.
 //!
+//! Only the first `jj` call snapshots the working copy; every other one passes
+//! `--ignore-working-copy`, which is the expensive part of a `jj` invocation in a big repo.
 //! All `gh` invocations run with GIT_DIR=$(jj git root) so this works in jj workspaces.
 
 use std::env;
@@ -39,10 +43,6 @@ struct Args {
     #[arg(short, long)]
     revision: String,
 
-    /// Push head and base bookmarks (via `jj git push`) before talking to GitHub.
-    #[arg(short, long)]
-    push: bool,
-
     /// Create the PR as a draft (ignored when editing an existing PR).
     #[arg(short, long)]
     draft: bool,
@@ -52,33 +52,29 @@ struct Args {
     editor: String,
 }
 
-#[derive(Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-struct Pr {
-    number: u64,
-    url: String,
-    title: String,
-    body: String,
-    base_ref_name: String,
-    head_ref_name: String,
-}
-
 fn run(cmd: &mut Command) -> Result<String> {
     let rendered = format!("{cmd:?}");
     let out = cmd
         .stderr(Stdio::inherit())
         .output()
         .with_context(|| format!("failed to spawn {rendered}"))?;
-    ensure!(out.status.success(), "command failed ({}): {rendered}", out.status);
+    ensure!(
+        out.status.success(),
+        "command failed ({}): {rendered}",
+        out.status
+    );
     Ok(String::from_utf8(out.stdout)?)
 }
 
-fn jj(args: &[&str]) -> Result<String> {
+/// A `jj` call that snapshots the working copy. Use exactly once, before anything else.
+fn jj_snapshot(args: &[&str]) -> Result<String> {
     run(Command::new("jj").args(args))
 }
 
-fn jj_log(revset: &str, template: &str) -> Result<String> {
-    jj(&["log", "--no-graph", "-r", revset, "-T", template])
+/// A `jj` call that skips the working-copy snapshot. Safe for reads and for operations that
+/// do not touch the working-copy commit (bookmark create, git push).
+fn jj(args: &[&str]) -> Result<String> {
+    run(Command::new("jj").arg("--ignore-working-copy").args(args))
 }
 
 fn lines(s: &str) -> Vec<String> {
@@ -93,22 +89,110 @@ fn gh(git_dir: &Path, args: &[&str]) -> Result<String> {
     run(Command::new("gh").env("GIT_DIR", git_dir).args(args))
 }
 
-fn resolve_single(revset: &str) -> Result<String> {
-    let commits = lines(&jj_log(revset, r#"commit_id ++ "\n""#)?);
-    match commits.as_slice() {
-        [c] => Ok(c.clone()),
-        [] => bail!("revset {revset:?} resolved to no revisions"),
-        many => bail!(
-            "revset {revset:?} must resolve to exactly one revision, got {}",
-            many.len()
-        ),
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+enum Role {
+    Head,
+    Base,
+    Mid,
+}
+
+#[derive(Debug)]
+struct Rev {
+    role: Role,
+    commit_id: String,
+    local_bookmarks: Vec<String>,
+    /// `name@remote` for every remote bookmark pointing at exactly this commit.
+    remote_bookmarks: Vec<String>,
+    description: String,
+}
+
+impl Rev {
+    fn title(&self) -> &str {
+        self.description.lines().next().unwrap_or("").trim()
+    }
+
+    fn body(&self) -> &str {
+        self.description
+            .split_once('\n')
+            .map(|(_, b)| b.trim())
+            .unwrap_or("")
     }
 }
 
-const BOOKMARKS_TEMPLATE: &str = r#"local_bookmarks.map(|b| b.name() ++ "\n").join("")"#;
+/// Escape a revset so it can be embedded inside a template string literal.
+fn template_str(s: &str) -> String {
+    s.replace('\\', "\\\\").replace('"', "\\\"")
+}
 
-fn local_bookmarks(commit: &str) -> Result<Vec<String>> {
-    Ok(lines(&jj_log(commit, BOOKMARKS_TEMPLATE)?))
+/// Head, base, and everything in between, in `jj log` order (children before parents), from a
+/// single `jj log`. This is the one call that snapshots the working copy.
+fn load_revs(revision: &str) -> Result<Vec<Rev>> {
+    let base_revset = format!("heads(::({revision})- & bookmarks())");
+    // `::head & base::` is the PR's commits plus the base itself; if there is no bookmarked
+    // ancestor that term is empty and we still get the head back so we can report it.
+    let revset = format!("({revision}) | (::({revision}) & ({base_revset})::)");
+    let template = format!(
+        concat!(
+            r#"if(self.contained_in("{head}"), "head", if(self.contained_in("{base}"), "base", "mid"))"#,
+            r#" ++ "\x1f" ++ commit_id"#,
+            r#" ++ "\x1f" ++ local_bookmarks.map(|b| b.name()).join("\x1e")"#,
+            r#" ++ "\x1f" ++ remote_bookmarks.map(|b| b.name() ++ "@" ++ b.remote()).join("\x1e")"#,
+            r#" ++ "\x1f" ++ description ++ "\0""#,
+        ),
+        head = template_str(revision),
+        base = template_str(&base_revset),
+    );
+    let out = jj_snapshot(&["log", "--no-graph", "-r", &revset, "-T", &template])?;
+
+    let mut revs = Vec::new();
+    for record in out.split('\0').filter(|r| !r.is_empty()) {
+        let fields: Vec<&str> = record.splitn(5, '\x1f').collect();
+        let [role, commit_id, local, remote, description] = fields.as_slice() else {
+            bail!("unexpected jj log record: {record:?}");
+        };
+        let role = match *role {
+            "head" => Role::Head,
+            "base" => Role::Base,
+            "mid" => Role::Mid,
+            other => bail!("unexpected role {other:?}"),
+        };
+        let split = |s: &str| -> Vec<String> {
+            s.split('\x1e')
+                .filter(|s| !s.is_empty())
+                .map(String::from)
+                .collect()
+        };
+        revs.push(Rev {
+            role,
+            commit_id: commit_id.to_string(),
+            local_bookmarks: split(local),
+            remote_bookmarks: split(remote),
+            description: description.to_string(),
+        });
+    }
+
+    let count = |role| revs.iter().filter(|r| r.role == role).count();
+    match count(Role::Head) {
+        1 => {}
+        0 => bail!("revset {revision:?} resolved to no revisions"),
+        n => bail!("revset {revision:?} must resolve to exactly one revision, got {n}"),
+    }
+    match count(Role::Base) {
+        1 => {}
+        0 => bail!("no bookmarked ancestor of {revision:?} found"),
+        n => {
+            let bases: Vec<&str> = revs
+                .iter()
+                .filter(|r| r.role == Role::Base)
+                .map(|r| r.commit_id.as_str())
+                .collect();
+            bail!(
+                "ambiguous base: {n} bookmarked ancestors are heads of ::({revision})-: {}",
+                bases.join(", ")
+            );
+        }
+    }
+    Ok(revs)
 }
 
 fn pick_bookmark(what: &str, bookmarks: &[String]) -> Result<String> {
@@ -125,79 +209,144 @@ fn pick_bookmark(what: &str, bookmarks: &[String]) -> Result<String> {
     }
 }
 
-fn head_bookmark(commit: &str) -> Result<String> {
-    let mut bookmarks = local_bookmarks(commit)?;
-    if bookmarks.is_empty() {
-        eprintln!("no bookmark on {commit}; running jj_bkmark");
-        run(Command::new("jj_bkmark").arg(commit))?;
-        bookmarks = local_bookmarks(commit)?;
-    }
-    pick_bookmark("head revision", &bookmarks)
-}
-
-fn base_bookmark(commit: &str) -> Result<String> {
-    let revset = format!("heads(::({commit})- & bookmarks())");
-    let bases = lines(&jj_log(&revset, r#"commit_id ++ "\n""#)?);
-    let base = match bases.as_slice() {
-        [b] => b,
-        [] => bail!("no bookmarked ancestor of {commit} found"),
-        many => bail!(
-            "ambiguous base: {} bookmarked ancestors are heads of ::{commit}-: {}",
-            many.len(),
-            many.join(", ")
-        ),
-    };
-    pick_bookmark("base revision", &local_bookmarks(base)?)
-}
-
-fn git_remote() -> Result<String> {
-    let remotes: Vec<String> = lines(&jj(&["git", "remote", "list"])?)
-        .into_iter()
-        .filter_map(|l| l.split_whitespace().next().map(String::from))
+/// Same scheme as `jj_bkmark`: `dt/<first description line, non-letters replaced by _>`.
+fn bookmark_name_for(head: &Rev) -> Result<String> {
+    let slug: String = head
+        .title()
+        .chars()
+        .map(|c| if c.is_ascii_alphabetic() { c } else { '_' })
         .collect();
-    if remotes.iter().any(|r| r == "origin") {
-        return Ok("origin".into());
+    ensure!(
+        !slug.is_empty(),
+        "{} has an empty description; cannot derive a bookmark name",
+        head.commit_id
+    );
+    Ok(format!("dt/{slug}"))
+}
+
+fn head_bookmark(head: &Rev) -> Result<String> {
+    if head.local_bookmarks.is_empty() {
+        let name = bookmark_name_for(head)?;
+        eprintln!("no bookmark on {}; creating {name}", head.commit_id);
+        jj(&["bookmark", "create", &name, "-r", &head.commit_id])?;
+        return Ok(name);
     }
-    remotes
-        .first()
+    pick_bookmark("head revision", &head.local_bookmarks)
+}
+
+struct Remote {
+    name: String,
+    owner: String,
+    repo: String,
+}
+
+/// Prefer `origin`; otherwise the first remote. Owner/repo are parsed from the URL so we never
+/// need `gh repo view` (a network round trip).
+fn git_remote() -> Result<Remote> {
+    let remotes: Vec<(String, String)> = lines(&jj(&["git", "remote", "list"])?)
+        .into_iter()
+        .filter_map(|l| {
+            let mut it = l.split_whitespace();
+            Some((it.next()?.to_string(), it.next()?.to_string()))
+        })
+        .collect();
+    let (name, url) = remotes
+        .iter()
+        .find(|(n, _)| n == "origin")
+        .or_else(|| remotes.first())
         .cloned()
-        .ok_or_else(|| anyhow!("no git remotes configured"))
+        .ok_or_else(|| anyhow!("no git remotes configured"))?;
+    // Handles git@github.com:owner/repo.git, ssh://git@github.com/owner/repo.git,
+    // https://github.com/owner/repo(.git), and bare github.com/owner/repo.
+    let trimmed = url.trim_end_matches('/').trim_end_matches(".git");
+    let mut segs = trimmed.rsplit(['/', ':']).filter(|s| !s.is_empty());
+    let (repo, owner) = (segs.next(), segs.next());
+    let (Some(repo), Some(owner)) = (repo, owner) else {
+        bail!("could not parse owner/repo from remote url {url:?}");
+    };
+    Ok(Remote {
+        name,
+        owner: owner.to_string(),
+        repo: repo.to_string(),
+    })
 }
 
 fn revset_nonempty(revset: &str) -> Result<bool> {
-    Ok(!lines(&jj_log(revset, r#"commit_id ++ "\n""#)?).is_empty())
+    Ok(!lines(&jj(&[
+        "log",
+        "--no-graph",
+        "-r",
+        revset,
+        "-T",
+        r#"commit_id ++ "\n""#,
+    ])?)
+    .is_empty())
 }
 
-/// The head must be pushed at exactly its local commit; the base only needs to exist on the
-/// remote (we never want to force-push trunk from here).
-fn ensure_pushed(head: &str, base: &str, remote: &str, push: bool) -> Result<()> {
+/// Push whichever of head/base is out of date on the remote. The head must be pushed at exactly
+/// its local commit; the base only needs to exist on the remote (we never want to force-push
+/// trunk from here).
+fn ensure_pushed(
+    head_rev: &Rev,
+    head: &str,
+    base_rev: &Rev,
+    base: &str,
+    remote: &str,
+) -> Result<()> {
     let mut stale = Vec::new();
-    let head_synced =
-        format!(r#"bookmarks(exact:"{head}") & remote_bookmarks(exact:"{head}", remote=exact:"{remote}")"#);
-    if !revset_nonempty(&head_synced)? {
+    if !head_rev
+        .remote_bookmarks
+        .iter()
+        .any(|b| b == &format!("{head}@{remote}"))
+    {
         stale.push(head);
     }
-    let base_exists = format!(r#"remote_bookmarks(exact:"{base}", remote=exact:"{remote}")"#);
-    if !revset_nonempty(&base_exists)? {
+    // Fast path: the remote bookmark points at the base commit itself (the usual case for a
+    // synced trunk). Otherwise ask jj whether it exists anywhere.
+    let base_on_commit = base_rev
+        .remote_bookmarks
+        .iter()
+        .any(|b| b == &format!("{base}@{remote}"));
+    if !base_on_commit
+        && !revset_nonempty(&format!(
+            r#"remote_bookmarks(exact:"{base}", remote=exact:"{remote}")"#
+        ))?
+    {
         stale.push(base);
     }
     if stale.is_empty() {
         return Ok(());
     }
-    if !push {
-        bail!(
-            "bookmark(s) not up to date on {remote}: {}. Push them (e.g. jj_push) or rerun with --push",
-            stale.join(", ")
-        );
-    }
+    eprintln!(
+        "pushing out-of-date bookmark(s) to {remote}: {}",
+        stale.join(", ")
+    );
     let mut cmd = Command::new("jj");
-    cmd.args(["git", "push", "--ignore-immutable", "--remote", remote]);
+    cmd.args([
+        "--ignore-working-copy",
+        "git",
+        "push",
+        "--ignore-immutable",
+        "--remote",
+        remote,
+    ]);
     for b in &stale {
         cmd.args(["--bookmark", b]);
     }
     cmd.stdout(Stdio::inherit());
     run(&mut cmd)?;
     Ok(())
+}
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+struct Pr {
+    number: u64,
+    url: String,
+    title: String,
+    body: String,
+    base_ref_name: String,
+    head_ref_name: String,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -212,19 +361,26 @@ struct BasePr {
     stack: Option<Stack>,
 }
 
-/// The open PR whose head is `branch`, if any, together with the GitHub stack it belongs to.
-fn pr_for_branch(git_dir: &Path, branch: &str) -> Result<Option<BasePr>> {
-    let name_with_owner = gh(
-        git_dir,
-        &["repo", "view", "--json", "nameWithOwner", "-q", ".nameWithOwner"],
-    )?;
-    let (owner, repo) = name_with_owner
-        .trim()
-        .split_once('/')
-        .context("unexpected repo name from gh")?;
-    let query = "query($owner:String!,$repo:String!,$branch:String!){\
+#[derive(Deserialize, Debug)]
+struct Nodes<T> {
+    nodes: Vec<T>,
+}
+
+#[derive(Deserialize, Debug)]
+struct RepoPrs {
+    /// Open PRs whose head is our head bookmark.
+    head: Nodes<Pr>,
+    /// Open PRs whose head is our base bookmark (to find the GitHub stack to append to).
+    base: Nodes<BasePr>,
+}
+
+/// One round trip: open PRs for both the head and the base branch.
+fn lookup_prs(git_dir: &Path, remote: &Remote, head: &str, base: &str) -> Result<RepoPrs> {
+    let query = "query($owner:String!,$repo:String!,$head:String!,$base:String!){\
         repository(owner:$owner,name:$repo){\
-          pullRequests(headRefName:$branch, states:OPEN, first:10){\
+          head: pullRequests(headRefName:$head, states:OPEN, first:10){\
+            nodes { number url title body baseRefName headRefName } }\
+          base: pullRequests(headRefName:$base, states:OPEN, first:10){\
             nodes { number stack { number size } } } } }";
     let out = gh(
         git_dir,
@@ -233,21 +389,19 @@ fn pr_for_branch(git_dir: &Path, branch: &str) -> Result<Option<BasePr>> {
             "graphql",
             "-f",
             &format!("query={query}"),
-            "-F",
-            &format!("owner={owner}"),
-            "-F",
-            &format!("repo={repo}"),
-            "-F",
-            &format!("branch={branch}"),
+            "-f",
+            &format!("owner={}", remote.owner),
+            "-f",
+            &format!("repo={}", remote.repo),
+            "-f",
+            &format!("head={head}"),
+            "-f",
+            &format!("base={base}"),
             "-q",
-            ".data.repository.pullRequests.nodes",
+            ".data.repository",
         ],
     )?;
-    let mut prs: Vec<BasePr> = serde_json::from_str(&out)?;
-    if prs.len() > 1 {
-        eprintln!("note: several open PRs have head {branch}; using #{}", prs[0].number);
-    }
-    Ok(prs.drain(..).next())
+    Ok(serde_json::from_str(&out)?)
 }
 
 fn pr_number_from_url(url: &str) -> Result<u64> {
@@ -272,14 +426,6 @@ fn find_template(workspace_root: &Path) -> Option<PathBuf> {
         }
     }
     None
-}
-
-fn commit_description(commit: &str) -> Result<(String, String)> {
-    let desc = jj_log(commit, "description")?;
-    let mut it = desc.splitn(2, '\n');
-    let title = it.next().unwrap_or("").trim().to_string();
-    let body = it.next().unwrap_or("").trim().to_string();
-    Ok((title, body))
 }
 
 fn edit_in_editor(editor: &str, initial: &str, help: &str) -> Result<Option<(String, String)>> {
@@ -321,65 +467,75 @@ fn main() {
 fn real_main() -> Result<()> {
     let args = Args::parse();
 
+    // First jj call: snapshots the working copy and loads everything we need about the commits.
+    let revs = load_revs(&args.revision)?;
+    let head_rev = revs
+        .iter()
+        .find(|r| r.role == Role::Head)
+        .expect("validated");
+    let base_rev = revs
+        .iter()
+        .find(|r| r.role == Role::Base)
+        .expect("validated");
+
     let git_dir = PathBuf::from(jj(&["git", "root"])?.trim());
     let workspace_root = PathBuf::from(jj(&["workspace", "root"])?.trim());
 
-    let head_commit = resolve_single(&args.revision)?;
-    let head = head_bookmark(&head_commit)?;
-    let base = base_bookmark(&head_commit)?;
+    let head = head_bookmark(head_rev)?;
+    let base = pick_bookmark("base revision", &base_rev.local_bookmarks)?;
     ensure!(head != base, "head and base are both {head}");
     eprintln!("head: {head}\nbase: {base}");
 
     let remote = git_remote()?;
-    ensure_pushed(&head, &base, &remote, args.push)?;
+    ensure_pushed(head_rev, &head, base_rev, &base, &remote.name)?;
 
-    let existing: Vec<Pr> = serde_json::from_str(&gh(
-        &git_dir,
-        &[
-            "pr",
-            "list",
-            "--state",
-            "open",
-            "--head",
-            &head,
-            "--json",
-            "number,url,title,body,baseRefName,headRefName",
-        ],
-    )?)?;
+    let prs = lookup_prs(&git_dir, &remote, &head, &base)?;
+    let existing = &prs.head.nodes;
     let same_base = existing
         .iter()
         .find(|pr| pr.base_ref_name == base && pr.head_ref_name == head);
-    if same_base.is_none() {
-        if let Some(pr) = existing.first() {
-            bail!(
-                "open PR #{} ({}) already has head {head} but base {:?} (wanted {base:?}); not touching it",
-                pr.number,
-                pr.url,
-                pr.base_ref_name
-            );
-        }
+    if let (None, Some(pr)) = (same_base, existing.first()) {
+        bail!(
+            "open PR #{} ({}) already has head {head} but base {:?} (wanted {base:?}); not touching it",
+            pr.number,
+            pr.url,
+            pr.base_ref_name
+        );
     }
 
     // When creating: if the base branch's own PR is part of a GitHub stack, append the new PR to it.
     let base_stack = match same_base {
         Some(_) => None,
-        None => match pr_for_branch(&git_dir, &base)? {
-            Some(BasePr {
-                number,
-                stack: Some(stack),
-            }) => {
+        None => {
+            let mut base_prs = prs.base.nodes.iter();
+            let base_pr = base_prs.next();
+            if let (Some(first), Some(_)) = (base_pr, base_prs.next()) {
                 eprintln!(
-                    "base PR #{number} is in stack #{} (size {}); will append",
-                    stack.number, stack.size
+                    "note: several open PRs have head {base}; using #{}",
+                    first.number
                 );
-                Some(stack)
             }
-            Some(BasePr { number, stack: None }) => {
-                eprintln!("base PR #{number} is not in a GitHub stack; not linking");
-                None
+            match base_pr {
+                Some(BasePr {
+                    number,
+                    stack: Some(stack),
+                }) => {
+                    eprintln!(
+                        "base PR #{number} is in stack #{} (size {}); will append",
+                        stack.number, stack.size
+                    );
+                    Some(stack.clone())
+                }
+                Some(BasePr {
+                    number,
+                    stack: None,
+                }) => {
+                    eprintln!("base PR #{number} is not in a GitHub stack; not linking");
+                    None
+                }
+                None => None,
             }
-            None => None,
-        },
+        }
     };
 
     let help = match same_base {
@@ -402,20 +558,23 @@ fn real_main() -> Result<()> {
         Some(pr) => format!("{}\n\n{}\n", pr.title, pr.body),
         None => {
             let template = match find_template(&workspace_root) {
-                Some(p) => fs::read_to_string(&p).with_context(|| format!("reading {}", p.display()))?,
+                Some(p) => {
+                    fs::read_to_string(&p).with_context(|| format!("reading {}", p.display()))?
+                }
                 None => String::new(),
             };
-            // Commits in the PR, newest (head) first.
-            let titles = lines(&jj_log(
-                &format!("{base}..{head_commit}"),
-                r#"description.first_line() ++ "\n""#,
-            )?);
-            let (title, prelude) = if titles.len() == 1 {
-                commit_description(&head_commit)?
+            // Commits in the PR, newest (head) first — already in log order.
+            let in_pr: Vec<&Rev> = revs.iter().filter(|r| r.role != Role::Base).collect();
+            let (title, prelude) = if in_pr.len() == 1 {
+                (head_rev.title().to_string(), head_rev.body().to_string())
             } else {
                 (
                     String::new(),
-                    titles.iter().map(|t| format!("- {t}")).collect::<Vec<_>>().join("\n"),
+                    in_pr
+                        .iter()
+                        .map(|r| format!("- {}", r.title()))
+                        .collect::<Vec<_>>()
+                        .join("\n"),
                 )
             };
             let body = [prelude.as_str(), template.trim()]
@@ -441,7 +600,15 @@ fn real_main() -> Result<()> {
             let number = pr.number.to_string();
             gh(
                 &git_dir,
-                &["pr", "edit", &number, "--title", &title, "--body-file", body_file],
+                &[
+                    "pr",
+                    "edit",
+                    &number,
+                    "--title",
+                    &title,
+                    "--body-file",
+                    body_file,
+                ],
             )
             .map(|_| pr.url.clone())
         }
@@ -472,7 +639,12 @@ fn real_main() -> Result<()> {
         let pr_number = pr_number_from_url(&url)?;
         run(Command::new("gh")
             .env("GIT_DIR", &git_dir)
-            .args(["stack", "link", &stack.number.to_string(), &pr_number.to_string()])
+            .args([
+                "stack",
+                "link",
+                &stack.number.to_string(),
+                &pr_number.to_string(),
+            ])
             .stdout(Stdio::inherit()))?;
         eprintln!("linked PR #{pr_number} onto stack #{}", stack.number);
     }

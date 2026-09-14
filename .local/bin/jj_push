@@ -1,22 +1,4 @@
 #!/usr/bin/env bash
+# Push every bookmark between main and CHANGE (default @) in a single jj invocation.
 set -euo pipefail
-
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <change>" >&2
-    exit 1
-fi
-
-change="$1"
-
-bookmarks="$(
-    jj log \
-        --no-graph \
-        --reversed \
-        -r "::$change ~ ::main" \
-        -T 'local_bookmarks.map(|bookmark| bookmark.name() ++ "\n").join("")'
-)"
-
-while IFS= read -r bookmark; do
-    [ -n "$bookmark" ] || continue
-    jj git push --ignore-immutable --bookmark "$bookmark"
-done <<< "$bookmarks"
+exec jj git push --ignore-immutable --revisions "::${1:-@} ~ ::main"

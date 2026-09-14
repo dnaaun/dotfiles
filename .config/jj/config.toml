@@ -16,6 +16,8 @@ tug- = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@-"]
 tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@"]
 
 drop = ["abandon"]
+# jj push 'until_main(@)' — one process, no bash loop (see also jj_push).
+push = ["git", "push", "--ignore-immutable", "--revisions"]
 d = ["diff"]
 
 
