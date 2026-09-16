@@ -563,8 +563,8 @@ fn real_main() -> Result<()> {
                 }
                 None => String::new(),
             };
-            // Commits in the PR, newest (head) first — already in log order.
-            let in_pr: Vec<&Rev> = revs.iter().filter(|r| r.role != Role::Base).collect();
+            // Commits in the PR, oldest first (log order is children-first, so reverse it).
+            let in_pr: Vec<&Rev> = revs.iter().rev().filter(|r| r.role != Role::Base).collect();
             let (title, prelude) = if in_pr.len() == 1 {
                 (head_rev.title().to_string(), head_rev.body().to_string())
             } else {
