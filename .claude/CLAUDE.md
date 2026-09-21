@@ -16,6 +16,8 @@ I, personally, use jj for VCS (unlike the rest of my team, and many of the instr
 
 - Don't attempt to run `git mv` in a jj workspace. It won't work.
 
+- Whenever you're done with a commit, do `jj new` on top of it so that I don't accidentally clobber your work.
+
 ## (Avoiding) changing history (for the most part)
 - You should prefer `jj new` (and if necessary, doing `jj squash` afterwards) instead of `jj edit`.
 - If asked to fix conflicts, DO NOT SQUASH, OR GOD FORBID, PUSH, UNLESS THE USER EXPLICITLY ASKS YOU TOO. Just fix the conflicts in a new commit (if not already on an empty one) on top of the conflicted change. Then yield to the user.
