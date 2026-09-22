@@ -1,0 +1,52 @@
+name: jj-gh-review.nvim
+
+on:
+  push:
+    paths:
+      - "neovim_plugins/jj-gh-review.nvim/**"
+      - ".github/workflows/jj-gh-review.yml"
+  pull_request:
+    paths:
+      - "neovim_plugins/jj-gh-review.nvim/**"
+      - ".github/workflows/jj-gh-review.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: neovim_plugins/jj-gh-review.nvim
+
+jobs:
+  check:
+    name: typecheck / format / test (${{ matrix.neovim }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        neovim: ["v0.11.6", "stable"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: ${{ matrix.neovim }}
+
+      - name: Cache tools
+        uses: actions/cache@v4
+        with:
+          path: neovim_plugins/jj-gh-review.nvim/deps
+          key: jj-gh-review-deps-${{ runner.os }}-${{ hashFiles('neovim_plugins/jj-gh-review.nvim/Makefile') }}
+
+      - name: Type check (emmylua_check)
+        run: make typecheck
+
+      - name: Format check (stylua)
+        run: make format-check
+
+      - name: Offline tests
+        run: make test

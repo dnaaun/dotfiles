@@ -43,6 +43,7 @@ plugins_for_non_pager_mode = {
 	-- require("pconfig.gh"), -- don't need it for now.
 	require("pconfig.octo"), -- slowing startup
 	require("pconfig.gh_review"),
+	require("pconfig.jj_gh_review"), -- local: neovim_plugins/jj-gh-review.nvim
 	-- require("pconfig.crates"), -- don't need it for now.
 	require("pconfig.text_case"),
 	require("pconfig.lint"),

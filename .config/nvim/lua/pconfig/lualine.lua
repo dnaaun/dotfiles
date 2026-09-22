@@ -46,6 +46,17 @@ return {
 					function()
 						return require("codeium.virtual_text").status_string()
 					end,
+					{
+						-- GitHub PR review status (jj-gh-review.nvim). Empty until a
+						-- review is opened, and never forces the plugin to load.
+						function()
+							local review = package.loaded["jj_gh_review"]
+							return review and review.statusline() or ""
+						end,
+						cond = function()
+							return package.loaded["jj_gh_review"] ~= nil
+						end,
+					},
 					"harpoon2",
 					"filetype",
 				},
