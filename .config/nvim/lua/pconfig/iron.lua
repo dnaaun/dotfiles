@@ -3,38 +3,38 @@ vim.g.iron_map_defaults = false
 
 return {
 	"hkupty/iron.nvim",
-	keys = { "<leader>r" },
+	keys = { "<leader>i" },
 	config = function()
 		local bracketed_paste = require("iron.fts.common").bracketed_paste
 		local iron = require("iron.core")
 
-		vim.keymap.set("n", "<leader>rh", function()
+		vim.keymap.set("n", "<leader>ih", function()
 			iron.close_repl(vim.opt.filetype:get())
 		end, { desc = "close repl" })
-		vim.keymap.set("n", "<leader>rg", function()
+		vim.keymap.set("n", "<leader>ig", function()
 			-- iron.repl_restart() just closes
 			local ft = vim.opt.filetype:get()
 			iron.close_repl(ft)
 			iron.repl_for(ft)
 		end, { desc = "restart repl" })
-		vim.keymap.set("n", "<leader>rsq", function()
+		vim.keymap.set("n", "<leader>isq", function()
 			iron.send(vim.opt.filetype:get(), { "q" })
 		end, { desc = "q" })
-		vim.keymap.set("n", "<leader>rs<CR>", function()
+		vim.keymap.set("n", "<leader>is<CR>", function()
 			iron.send(vim.opt.filetype:get(), { "\n" })
 		end, { desc = "newline" })
-		vim.keymap.set("n", "<leader>rs;", function()
+		vim.keymap.set("n", "<leader>is;", function()
 			iron.send(vim.opt.filetype:get(), { ";" })
 		end, { desc = ";" })
-		vim.keymap.set("n", "<leader>rm", function()
+		vim.keymap.set("n", "<leader>im", function()
 			require("invoke_with_text_from_motion").invoke(function(text)
 				iron.send(vim.opt.filetype:get(), require("std2").split_string(text, "\n"))
 			end)
 		end, { desc = "send text object" })
-		vim.keymap.set("n", "<leader>rf", function()
+		vim.keymap.set("n", "<leader>if", function()
 			iron.focus_on(vim.opt.filetype:get())
 		end, { desc = "focus on repl" })
-		vim.keymap.set("n", "<leader>ro", function()
+		vim.keymap.set("n", "<leader>io", function()
 			iron.repl_for(vim.opt.filetype:get())
 		end, { desc = "open repl" })
 
@@ -169,14 +169,14 @@ return {
 			},
 
 			keymaps = {
-				visual_send = "<leader>r",
-				send_file = "<leader>ra",
-				send_line = "<leader>rr",
-				cr = "<leader>r<cr>",
-				interrupt = "<leader>ri",
-				exit = "<leader>rq",
-				clear = "<leader>rc",
-				send_mark = "<leader>r.",
+				visual_send = "<leader>i",
+				send_file = "<leader>ia",
+				send_line = "<leader>ir",
+				cr = "<leader>i<cr>",
+				interrupt = "<leader>ii",
+				exit = "<leader>iq",
+				clear = "<leader>ic",
+				send_mark = "<leader>i.",
 			},
 		})
 	end,
