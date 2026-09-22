@@ -1,0 +1,67 @@
+================================================================================
+Top-level multi-line string
+================================================================================
+# name: test_text
+  '''
+  first line
+  
+  third line, after a blank one
+  '''
+# ---
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (snapshot
+    (name_marker
+      name: (snapshot_name))
+    value: (multiline_string
+      (multiline_string_content))
+    (divider)))
+
+================================================================================
+Empty multi-line string
+================================================================================
+# name: test_text
+  '''
+  '''
+# ---
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (snapshot
+    (name_marker
+      name: (snapshot_name))
+    value: (multiline_string)
+    (divider)))
+
+================================================================================
+Nested multi-line string, with quotes and markers inside
+================================================================================
+# name: test_text
+  dict({
+    'text': '''
+      <system>with 'quotes', "double" and ''' inside
+      # name: not a marker
+      ''',
+    'after': 1,
+  })
+# ---
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (snapshot
+    (name_marker
+      name: (snapshot_name))
+    value: (dict
+      type: (type_name)
+      (pair
+        key: (string)
+        value: (multiline_string
+          (multiline_string_content)))
+      (pair
+        key: (string)
+        value: (number)))
+    (divider)))

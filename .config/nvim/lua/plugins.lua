@@ -26,6 +26,7 @@ plugins_for_non_pager_mode = {
 	{ "hrsh7th/cmp-nvim-lsp", dependencies = "hrsh7th/nvim-cmp", event = require("pconfig.cmp").event },
 	{ "itchyny/vim-qfedit" },
 	require("pconfig.treesitter"),
+	require("pconfig.tree_sitter_ambr"), -- local: neovim_plugins/tree-sitter-ambr
 	require("pconfig.treehopper"),
 	require("pconfig.telescope_file_browser"),
 	-- require("pconfig.telescope_ast_grep"), -- Don't need it for now.

@@ -1,0 +1,183 @@
+================================================================================
+Strings, with quotes, escapes, commas and colons inside
+================================================================================
+# name: test_strings
+  dict({
+    'plain': 'value',
+    'dq': "it's",
+    'escaped': 'a\'b, c',
+    'colon: in key': 'colon: in value',
+    'trailing, comma': 'ends with comma,',
+    'empty': '',
+  })
+# ---
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (snapshot
+    (name_marker
+      name: (snapshot_name))
+    value: (dict
+      type: (type_name)
+      (pair
+        key: (string)
+        value: (string))
+      (pair
+        key: (string)
+        value: (string))
+      (pair
+        key: (string)
+        value: (string))
+      (pair
+        key: (string)
+        value: (string))
+      (pair
+        key: (string)
+        value: (string))
+      (pair
+        key: (string)
+        value: (string)))
+    (divider)))
+
+================================================================================
+Numbers, booleans, None and the recursion marker
+================================================================================
+# name: test_scalars
+  list([
+    42,
+    -7,
+    3.14,
+    -3.5e-10,
+    1e+100,
+    inf,
+    -inf,
+    nan,
+    123456789012345678901234567890123456789012345678901234567890,
+    True,
+    False,
+    None,
+    …,
+  ])
+# ---
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (snapshot
+    (name_marker
+      name: (snapshot_name))
+    value: (list
+      type: (type_name)
+      (number)
+      (number)
+      (number)
+      (number)
+      (number)
+      (number)
+      (number)
+      (number)
+      (number)
+      (boolean)
+      (boolean)
+      (none)
+      (ellipsis))
+    (divider)))
+
+================================================================================
+Arbitrary reprs are plain values, even with commas, parens and brackets
+================================================================================
+# name: test_reprs
+  dict({
+    'obj': <Foo object at 0x1234>,
+    'dataclass': Point(x=1, y=2),
+    'datetime': datetime.datetime(2024, 1, 1, tzinfo=datetime.timezone.utc),
+    'enum': <Color.RED: 1>,
+    'uuid': UUID('12345678-1234-5678-1234-567812345678'),
+    'weird_comma': Weird(a,),
+    'str_plus': 'a' + 'b',
+    'bare': something,
+    'num_then_text': 1 apple,
+    'bracket': [not a container],
+    'brace': {not: a container},
+    'assign': x=1 y=2,
+  })
+# ---
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (snapshot
+    (name_marker
+      name: (snapshot_name))
+    value: (dict
+      type: (type_name)
+      (pair
+        key: (string)
+        value: (plain))
+      (pair
+        key: (string)
+        value: (plain))
+      (pair
+        key: (string)
+        value: (plain))
+      (pair
+        key: (string)
+        value: (plain))
+      (pair
+        key: (string)
+        value: (plain))
+      (pair
+        key: (string)
+        value: (plain))
+      (pair
+        key: (string)
+        value: (plain))
+      (pair
+        key: (string)
+        value: (plain))
+      (pair
+        key: (string)
+        value: (plain))
+      (pair
+        key: (string)
+        value: (plain))
+      (pair
+        key: (string)
+        value: (plain))
+      (pair
+        key: (string)
+        value: (plain)))
+    (divider)))
+
+================================================================================
+Top-level scalars
+================================================================================
+# name: test_str
+  'hello'
+# ---
+# name: test_plain
+  <Foo object at 0x1234>
+# ---
+# name: test_hash
+  #not-a-marker
+# ---
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (snapshot
+    (name_marker
+      name: (snapshot_name))
+    value: (string)
+    (divider))
+  (snapshot
+    (name_marker
+      name: (snapshot_name))
+    value: (plain)
+    (divider))
+  (snapshot
+    (name_marker
+      name: (snapshot_name))
+    value: (plain)
+    (divider)))

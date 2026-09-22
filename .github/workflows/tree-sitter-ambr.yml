@@ -1,0 +1,41 @@
+name: tree-sitter-ambr
+
+on:
+  push:
+    paths:
+      - "neovim_plugins/tree-sitter-ambr/**"
+      - ".github/workflows/tree-sitter-ambr.yml"
+  pull_request:
+    paths:
+      - "neovim_plugins/tree-sitter-ambr/**"
+      - ".github/workflows/tree-sitter-ambr.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: neovim_plugins/tree-sitter-ambr
+
+jobs:
+  test:
+    name: generate / test / compile
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: tree-sitter/setup-action/cli@v2
+        with:
+          tree-sitter-ref: v0.26.7
+
+      - name: Generated parser is up to date
+        run: make check-generated
+
+      - name: Corpus tests
+        run: make test
+
+      - name: Compile with warnings as errors
+        run: make compile

@@ -168,7 +168,17 @@ return {
 			include_match_words = false,
 		}
 
-		local ensure_installed = { "tsx", "html", "lua", "ruby", "python", "rust", "markdown" }
+		-- Local grammar for syrupy .ambr snapshot files; see pconfig.tree_sitter_ambr
+		-- for the queries. `files` are compiled straight from that directory.
+		require("nvim-treesitter.parsers").get_parser_configs().ambr = {
+			install_info = {
+				url = vim.fn.expand("~/git/dotfiles/neovim_plugins/tree-sitter-ambr"),
+				files = { "src/parser.c", "src/scanner.c" },
+			},
+			filetype = "ambr",
+		}
+
+		local ensure_installed = { "tsx", "html", "lua", "ruby", "python", "rust", "markdown", "ambr" }
 
 		-- treesitter playground taht shows you the nodes
 		local playground = {

@@ -1,0 +1,9 @@
+# Build artifacts. src/parser.c and friends are committed on purpose so that
+# nvim-treesitter can compile the parser without the tree-sitter CLI.
+*.so
+*.dylib
+*.wasm
+*.o
+build/
+node_modules/
+log.html

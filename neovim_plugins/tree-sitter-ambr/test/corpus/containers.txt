@@ -1,0 +1,173 @@
+================================================================================
+Empty containers
+================================================================================
+# name: test_empty
+  dict({
+    'dict': dict({
+    }),
+    'list': list([
+    ]),
+    'tuple': tuple(
+    ),
+  })
+# ---
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (snapshot
+    (name_marker
+      name: (snapshot_name))
+    value: (dict
+      type: (type_name)
+      (pair
+        key: (string)
+        value: (dict
+          type: (type_name)))
+      (pair
+        key: (string)
+        value: (list
+          type: (type_name)))
+      (pair
+        key: (string)
+        value: (tuple
+          type: (type_name))))
+    (divider)))
+
+================================================================================
+Every container kind, nested
+================================================================================
+# name: test_nested
+  dict({
+    'list': list([
+      tuple(
+        1,
+        'two',
+      ),
+      set({
+        'a',
+      }),
+      frozenset({
+        1,
+        2,
+      }),
+      Point(
+        x=1,
+        y=Inner(
+          z=None,
+        ),
+      ),
+      generator(
+        1,
+      ),
+    ]),
+  })
+# ---
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (snapshot
+    (name_marker
+      name: (snapshot_name))
+    value: (dict
+      type: (type_name)
+      (pair
+        key: (string)
+        value: (list
+          type: (type_name)
+          (tuple
+            type: (type_name)
+            (number)
+            (string))
+          (set
+            type: (type_name)
+            (string))
+          (set
+            type: (type_name)
+            (number)
+            (number))
+          (object
+            type: (type_name)
+            (attribute
+              name: (attribute_name)
+              value: (number))
+            (attribute
+              name: (attribute_name)
+              value: (object
+                type: (type_name)
+                (attribute
+                  name: (attribute_name)
+                  value: (none)))))
+          (tuple
+            type: (type_name)
+            (number)))))
+    (divider)))
+
+================================================================================
+Non-string dict keys; a key with a custom repr degrades to a bare plain element
+================================================================================
+# name: test_keys
+  dict({
+    1: 'int',
+    None: 'none',
+    True: 'bool',
+    tuple(
+      1,
+      2,
+    ): 'tuple',
+    <Key object>: 'plain',
+  })
+# ---
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (snapshot
+    (name_marker
+      name: (snapshot_name))
+    value: (dict
+      type: (type_name)
+      (pair
+        key: (number)
+        value: (string))
+      (pair
+        key: (none)
+        value: (string))
+      (pair
+        key: (boolean)
+        value: (string))
+      (pair
+        key: (tuple
+          type: (type_name)
+          (number)
+          (number))
+        value: (string))
+      (plain))
+    (divider)))
+
+================================================================================
+Custom dict and list subclasses keep their type name
+================================================================================
+# name: test_subclasses
+  OrderedDict({
+    'a': MyList([
+      1,
+    ]),
+  })
+# ---
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (snapshot
+    (name_marker
+      name: (snapshot_name))
+    value: (dict
+      type: (type_name)
+      (pair
+        key: (string)
+        value: (list
+          type: (type_name)
+          (number))))
+    (divider)))

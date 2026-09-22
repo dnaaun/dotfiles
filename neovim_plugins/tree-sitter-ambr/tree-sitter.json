@@ -1,0 +1,30 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "ambr",
+      "camelcase": "Ambr",
+      "title": "Amber snapshot",
+      "scope": "source.ambr",
+      "path": ".",
+      "file-types": ["ambr"],
+      "highlights": "queries/ambr/highlights.scm",
+      "injection-regex": "^ambr$"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Tree-sitter grammar for syrupy .ambr snapshot files",
+    "authors": [{ "name": "David Assefa Tofu" }],
+    "links": { "repository": "https://github.com/dnaaun/dotfiles" }
+  },
+  "bindings": {
+    "c": false,
+    "go": false,
+    "node": false,
+    "python": false,
+    "rust": false,
+    "swift": false
+  }
+}
