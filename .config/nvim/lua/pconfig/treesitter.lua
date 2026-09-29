@@ -1,42 +1,38 @@
+-- nvim-treesitter `main` branch: it only manages parser/query installation and
+-- ships queries. Highlighting, folding, and injections come from Neovim itself,
+-- so the old module system (`nvim-treesitter.configs`) is gone. See :h
+-- nvim-treesitter for the commands (:TSInstall, :TSUpdate, :TSLog, ...).
+local ensure_installed = {
+	"tsx",
+	"html",
+	"lua",
+	"ruby",
+	"python",
+	"rust",
+	"markdown",
+	"markdown_inline",
+	"sql",
+	"swift",
+	"ambr",
+}
+
+-- Local grammar for syrupy .ambr snapshot files; see pconfig.tree_sitter_ambr
+-- for the queries. `path` makes nvim-treesitter compile straight from that
+-- directory. The parsers table is reloaded on :TSUpdate, so this has to be
+-- (re-)applied from the `User TSUpdate` autocmd as well as up front.
+local function register_ambr()
+	require("nvim-treesitter.parsers").ambr = {
+		install_info = {
+			path = vim.fn.expand("~/git/dotfiles/neovim_plugins/tree-sitter-ambr"),
+		},
+	}
+end
+
 return {
 	"nvim-treesitter/nvim-treesitter",
-	run = ":TSUpdate",
-	event = "VeryLazy",
-	init = function()
-		-- The frozen `master` branch registers its predicates/directives with
-		-- `{ all = false }`, asking for a single TSNode per capture. Neovim 0.12
-		-- dropped that option and always hands over a TSNode[], so handlers like
-		-- `set-lang-from-info-string!` (used for every markdown fenced code block)
-		-- blow up with "attempt to call method 'range' (a nil value)". Until we
-		-- migrate to the `main` branch, give those handlers the old view of `match`.
-		if vim.fn.has("nvim-0.12") == 0 then
-			return
-		end
-		local query = vim.treesitter.query
-		local function legacy_match(match)
-			return setmetatable({}, {
-				__index = function(_, id)
-					local nodes = match[id]
-					if type(nodes) == "table" then
-						return nodes[#nodes]
-					end
-					return nodes
-				end,
-			})
-		end
-		for _, name in ipairs({ "add_predicate", "add_directive" }) do
-			local orig = query[name]
-			query[name] = function(pname, handler, opts)
-				if type(opts) == "table" and opts.all == false then
-					local inner = handler
-					handler = function(match, ...)
-						return inner(legacy_match(match), ...)
-					end
-				end
-				return orig(pname, handler, opts)
-			end
-		end
-	end,
+	branch = "main",
+	lazy = false, -- main does not support lazy-loading
+	build = ":TSUpdate",
 	config = function()
 		vim.treesitter.language.register("tsx", {
 			"javascript",
@@ -52,195 +48,21 @@ return {
 			"latex",
 		})
 
-		local textsubjects = {
-			enable = false,
-			prev_selection = "<C-CR>", -- (Optional) keymap to select the previous selection
-			keymaps = {
-				["<CR>"] = "textsubjects-smart",
-				[";"] = "textsubjects-container-outer",
-				["i;"] = "textsubjects-container-inner",
-			},
-		}
+		local group = vim.api.nvim_create_augroup("pconfig_treesitter", { clear = true })
 
-		-- Various Treesitter modules config
-		local highlight = {
-			enable = true,
-			disable = {
-				-- "org"
-			},
-		}
-		local indent = {
-			enable = false,
-			disable = {
-				"ruby",
-			},
-		}
-		-- requires https://github.com/nvim-treesitter/nvim-treesitter-refactor
-		local refactor = {
-			highlight_definitions = { enable = false },
-			--highlight_current_scope = { enable = true },
-		}
-		-- requires https://github.com/nvim-treesitter/nvim-treesitter-textobjects ( or some
-		-- link like that)
-		local textobjects = {
-			select = {
-				enable = true,
-				keymaps = {
-					-- You can use the capture groups defined in textobjects.scm
-					["af"] = "@function.outer",
-					["if"] = "@function.inner",
-					["a{"] = "@class.outer",
-					["i{"] = "@class.inner",
-					["ak"] = "@comment.outer",
-					["ib"] = "@block.inner",
-					["ab"] = "@block.outer",
-					["ic"] = "@call.inner",
-					["ac"] = "@call.outer",
-					["ii"] = "@conditional.inner", -- i for *i*f statement
-					["ai"] = "@conditional.outer",
-					["il"] = "@loop.inner",
-					["al"] = "@loop.outer",
-					["ip"] = "@parameter.inner",
-					["ap"] = "@parameter.outer",
-					["is"] = "@scopename.inner",
-					-- ["at"] = "@statement.outer", -- I never use it, and it conflicts with "a tag".
-				},
-			},
-			move = {
-				enable = true,
-				set_jumps = true, -- whether to set jumps in the jumplist
-				-- disabled ]t, ]T, etc because we want to use it for vim-test/vim-ultest
-				goto_next_start = {
-					-- I'm using syntax_tree_surfer, so no need to do this.
-					["]f"] = "@function.outer",
-					["]{"] = "@class.outer",
-					["]k"] = "@comment.outer",
-					["]b"] = "@block.outer",
-					["]c"] = "@call.outer",
-					["]i"] = "@conditional.outer",
-					["]l"] = "@loop.outer",
-					["]p"] = "@parameter.inner",
-				},
-				goto_next_end = { -- Note that @class.outer is missing
-					-- I'm using syntax_tree_surfer, so no need to do this.
-					["]F"] = "@function.outer",
-					["]}"] = "@class.outer",
-					["]K"] = "@comment.outer",
-					["]B"] = "@block.outer",
-					["]C"] = "@call.outer",
-					["]I"] = "@conditional.outer",
-					["]L"] = "@loop.outer",
-					["]P"] = "@parameter.inner",
-					["]T"] = "@statement.outer",
-				},
-				goto_previous_start = {
-					-- I'm using syntax_tree_surfer, so no need to do this.
-					["[f"] = "@function.outer",
-					["[{"] = "@class.outer",
-					["[k"] = "@comment.outer",
-					["[b"] = "@block.outer",
-					["[c"] = "@call.outer",
-					["[i"] = "@conditional.outer",
-					["[l"] = "@loop.outer",
-					["[p"] = "@parameter.outer",
-					["[t"] = "@statement.outer",
-				},
-				goto_previous_end = { -- Note that @class.outer is missing
-					-- I'm using syntax_tree_surfer, so no need to do this.
-					["[F"] = "@function.outer",
-					["[}"] = "@class.outer",
-					["[K"] = "@comment.outer",
-					["[B"] = "@block.outer",
-					["[C"] = "@call.outer",
-					["[I"] = "@conditional.outer",
-					["[L"] = "@loop.outer",
-					["[P"] = "@parameter.outer",
-					["[T"] = "@statement.outer",
-				},
-			},
-			lsp_interop = {
-				enable = true,
-				border = "none",
-				peek_definition_code = {
-					["<leader>ld"] = "@function.outer",
-					["<leader>lD"] = "@class.outer",
-				},
-			},
-		}
+		vim.api.nvim_create_autocmd("User", { group = group, pattern = "TSUpdate", callback = register_ambr })
+		register_ambr()
 
-		local incremental_selection = {
-			enable = false,
-			disable = function(_, buf)
-				-- Disable for markdown files because I want to use <CR> in my GPT plugin for
-				-- "send", and incremental selection interferes with that.
-				if vim.bo[buf].filetype == "markdown" then
-					return true
-				end
+		-- Async, and a no-op for parsers that are already installed.
+		require("nvim-treesitter").install(ensure_installed)
 
-				if vim.bo[buf].filetype == "tex" then
-					return true -- Doesn't work for tex
-				end
-
-				-- Otherwise, it interferes with "command-line window"
-				if vim.fn.getbufvar(buf, "&buftype") == "nofile" then
-					return true
-				end
+		-- Highlighting for every buffer whose filetype has an installed parser
+		-- (what the old `highlight = { enable = true }` module did).
+		vim.api.nvim_create_autocmd("FileType", {
+			group = group,
+			callback = function(args)
+				pcall(vim.treesitter.start, args.buf)
 			end,
-			keymaps = {
-				init_selection = "<CR>",
-				node_incremental = "<CR>",
-				--scope_incremental = "<CR>",
-				node_decremental = "g<CR>",
-			},
-		}
-
-		local matchup = { -- vim-matchup experimental support for treesitter
-			enable = true,
-
-			-- Matchcup is indispensible, but it's slow, so I'll disable as
-			-- much as I can the features apart from "jump to matching tag".
-			disable_virtual_text = true,
-			include_match_words = false,
-		}
-
-		-- Local grammar for syrupy .ambr snapshot files; see pconfig.tree_sitter_ambr
-		-- for the queries. `files` are compiled straight from that directory.
-		require("nvim-treesitter.parsers").get_parser_configs().ambr = {
-			install_info = {
-				url = vim.fn.expand("~/git/dotfiles/neovim_plugins/tree-sitter-ambr"),
-				files = { "src/parser.c", "src/scanner.c" },
-			},
-			filetype = "ambr",
-		}
-
-		local ensure_installed = { "tsx", "html", "lua", "ruby", "python", "rust", "markdown", "ambr" }
-
-		-- treesitter playground taht shows you the nodes
-		local playground = {
-			enable = true,
-		}
-
-		local rainbow = {
-			enable = true,
-			-- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
-			extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
-			max_file_lines = nil, -- Do not enable for files with more than n lines, int
-			-- colors = {}, -- table of hex strings
-			-- termcolors = {} -- table of colour name strings
-		}
-
-		require("nvim-treesitter.configs").setup({
-			ensure_installed = ensure_installed,
-			highlight = highlight,
-			indent = indent,
-			refactor = refactor,
-			textobjects = textobjects,
-			-- textsubjects = textsubjects,
-			incremental_selection = incremental_selection,
-			-- matchup = matchup,
-			playground = playground,
-			rainbow = rainbow,
-			ensure_installed = ensure_installed,
 		})
 
 		vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
