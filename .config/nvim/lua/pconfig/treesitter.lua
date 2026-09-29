@@ -2,6 +2,41 @@ return {
 	"nvim-treesitter/nvim-treesitter",
 	run = ":TSUpdate",
 	event = "VeryLazy",
+	init = function()
+		-- The frozen `master` branch registers its predicates/directives with
+		-- `{ all = false }`, asking for a single TSNode per capture. Neovim 0.12
+		-- dropped that option and always hands over a TSNode[], so handlers like
+		-- `set-lang-from-info-string!` (used for every markdown fenced code block)
+		-- blow up with "attempt to call method 'range' (a nil value)". Until we
+		-- migrate to the `main` branch, give those handlers the old view of `match`.
+		if vim.fn.has("nvim-0.12") == 0 then
+			return
+		end
+		local query = vim.treesitter.query
+		local function legacy_match(match)
+			return setmetatable({}, {
+				__index = function(_, id)
+					local nodes = match[id]
+					if type(nodes) == "table" then
+						return nodes[#nodes]
+					end
+					return nodes
+				end,
+			})
+		end
+		for _, name in ipairs({ "add_predicate", "add_directive" }) do
+			local orig = query[name]
+			query[name] = function(pname, handler, opts)
+				if type(opts) == "table" and opts.all == false then
+					local inner = handler
+					handler = function(match, ...)
+						return inner(legacy_match(match), ...)
+					end
+				end
+				return orig(pname, handler, opts)
+			end
+		end
+	end,
 	config = function()
 		vim.treesitter.language.register("tsx", {
 			"javascript",
@@ -31,7 +66,7 @@ return {
 		local highlight = {
 			enable = true,
 			disable = {
-        -- "org"
+				-- "org"
 			},
 		}
 		local indent = {
