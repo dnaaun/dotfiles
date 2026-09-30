@@ -12,7 +12,7 @@ serde_json = "1"
 ---
 //! Create (or edit) a GitHub PR for a single jj revision.
 //!
-//! 1. Resolve `-r` to exactly one revision (the head). The base is the closest bookmarked
+//! 1. Resolve the revision argument to exactly one revision (the head). The base is the closest bookmarked
 //!    ancestor. Head, base and every commit in between are loaded with ONE `jj log` call.
 //! 2. If the head has no bookmark, create `dt/<slugified title>` (same scheme as `jj_bkmark`).
 //! 3. Push head/base bookmarks if they are out of date on the remote.
@@ -40,7 +40,6 @@ const SCISSORS: &str = "# ------------------------ >8 ------------------------";
 #[command(about = "Create or edit a GitHub PR for one jj revision")]
 struct Args {
     /// Revset that must resolve to exactly one revision (the PR head).
-    #[arg(short, long)]
     revision: String,
 
     /// Create the PR as a draft (ignored when editing an existing PR).
