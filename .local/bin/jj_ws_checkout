@@ -10,20 +10,17 @@ clap = { version = "4", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 ---
-//! Check out a GitHub PR (or plain branch) in its own jj workspace.
+//! Check out a GitHub PR (or plain branch) in the current jj workspace.
 //!
 //! 1. Resolve the specifier with `gh pr view`, so anything gh takes works: `123`, `#123`, a PR URL,
 //!    a branch name, `owner:branch`. If gh finds no PR and the specifier looks like a branch name,
 //!    fall back to treating it as a plain branch on the remote.
 //! 2. `jj git fetch` just that branch from the remote whose owner/repo matches the PR.
-//! 3. Create a workspace next to the default workspace (`<repo>-pr<N>`, or `<repo>-<branch>` for
-//!    a plain branch) whose working-copy commit sits on top of `<branch>@<remote>`. If a workspace
-//!    with that name already exists, `jj new` onto the freshly fetched branch in it instead.
-//! 4. Print the workspace root on stdout (everything else goes to stderr), so
-//!    `cd "$(jj_ws_checkout 123)"` works.
+//! 3. `jj new` on top of the local bookmark (fetch keeps it in sync with the remote unless you
+//!    moved it yourself), or on top of `<branch>@<remote>` if there is no local bookmark.
 //!
-//! Every jj call passes `--ignore-working-copy` except `workspace add` (jj refuses it there) and
-//! the `jj new` that moves an existing target workspace.
+//! The fetch and the final `jj new` snapshot the working copy (fetch may rewrite @'s ancestors,
+//! `jj new` has to update the files); the read-only calls pass `--ignore-working-copy`.
 //! All `gh` invocations run with GIT_DIR=$(jj git root) so this works from jj workspaces.
 
 use std::path::{Path, PathBuf};
@@ -34,15 +31,11 @@ use clap::Parser;
 use serde::Deserialize;
 
 #[derive(Parser, Debug)]
-#[command(about = "Check out a GitHub PR or branch in its own jj workspace")]
+#[command(about = "Check out a GitHub PR or branch in the current jj workspace")]
 struct Args {
     /// Anything `gh pr view` accepts (number, #number, URL, branch, owner:branch), or a branch name
     /// that has no PR.
     spec: String,
-
-    /// Workspace name (also the directory name). Defaults to `<repo>-pr<N>` / `<repo>-<branch>`.
-    #[arg(long)]
-    name: Option<String>,
 }
 
 fn run(cmd: &mut Command) -> Result<String> {
@@ -172,16 +165,15 @@ fn looks_like_branch(spec: &str) -> bool {
         && !spec.chars().all(|c| c.is_ascii_digit())
 }
 
-fn slug(s: &str) -> String {
-    s.chars()
-        .map(|c| {
-            if c.is_ascii_alphanumeric() || matches!(c, '-' | '.') {
-                c
-            } else {
-                '_'
-            }
-        })
-        .collect()
+fn commit_ids(revset: &str) -> Result<Vec<String>> {
+    Ok(lines(&jj(&[
+        "log",
+        "--no-graph",
+        "-r",
+        revset,
+        "-T",
+        r#"commit_id ++ "\n""#,
+    ])?))
 }
 
 fn main() {
@@ -231,96 +223,47 @@ fn real_main() -> Result<()> {
         None => bail!("no PR found for {:?}", args.spec),
     };
 
-    jj(&[
+    run(Command::new("jj").args([
         "git",
         "fetch",
         "--remote",
         &remote.name,
         "--branch",
         &format!("exact:{branch}"),
-    ])?;
-    let remote_bookmark = format!(
-        "remote_bookmarks(exact:{}, remote=exact:{})",
-        quote(&branch),
-        quote(&remote.name)
-    );
-    let commit = match lines(&jj(&[
-        "log",
-        "--no-graph",
-        "-r",
-        &remote_bookmark,
-        "-T",
-        r#"commit_id ++ "\n""#,
-    ])?)
-    .as_slice()
-    {
-        [c] => c.clone(),
-        [] => bail!(
-            "{branch}@{} does not exist{}",
-            remote.name,
-            match &pr {
-                Some(pr) => format!(
-                    " (PR #{} is {}; was the branch deleted?)",
-                    pr.number, pr.state
+    ]))?;
+
+    let local = commit_ids(&format!("bookmarks(exact:{})", quote(&branch)))?;
+    let (target, commit) = match local.as_slice() {
+        [c] => (branch.clone(), c.clone()),
+        [] => {
+            let target = format!("{branch}@{}", remote.name);
+            let remote_bookmark = format!(
+                "remote_bookmarks(exact:{}, remote=exact:{})",
+                quote(&branch),
+                quote(&remote.name)
+            );
+            match commit_ids(&remote_bookmark)?.as_slice() {
+                [c] => (target, c.clone()),
+                [] => bail!(
+                    "{target} does not exist{}",
+                    match &pr {
+                        Some(pr) => format!(
+                            " (PR #{} is {}; was the branch deleted?)",
+                            pr.number, pr.state
+                        ),
+                        None => String::new(),
+                    }
                 ),
-                None => String::new(),
+                many => bail!("{target} is conflicted ({})", many.join(", ")),
             }
-        ),
+        }
         many => bail!(
-            "{branch}@{} is conflicted ({})",
-            remote.name,
+            "local bookmark {branch} is conflicted ({}); resolve it first",
             many.join(", ")
         ),
     };
 
-    let name = args.name.unwrap_or_else(|| match &pr {
-        Some(pr) => format!("{}-pr{}", remote.repo, pr.number),
-        None => format!("{}-{}", remote.repo, slug(&branch)),
-    });
-    let existing = lines(&jj(&["workspace", "list", "-T", r#"name ++ "\n""#])?);
-    let root = if existing.contains(&name) {
-        let root = PathBuf::from(jj(&["workspace", "root", "--name", &name])?.trim());
-        eprintln!(
-            "workspace {name} already exists at {}; moving it onto {branch}@{}",
-            root.display(),
-            remote.name
-        );
-        // Not --ignore-working-copy: snapshot that workspace's edits and update its files.
-        run(Command::new("jj")
-            .arg("-R")
-            .arg(&root)
-            .args(["new", &commit]))?;
-        root
-    } else {
-        // Put new workspaces next to the default one (fall back to next to the current one).
-        let anchor = if existing.iter().any(|w| w == "default") {
-            jj(&["workspace", "root", "--name", "default"])?
-        } else {
-            jj(&["workspace", "root"])?
-        };
-        let parent = Path::new(anchor.trim())
-            .parent()
-            .context("workspace root has no parent directory")?;
-        let root = parent.join(&name);
-        ensure!(
-            !root.exists(),
-            "{} already exists but is not workspace {name}; pass --name",
-            root.display()
-        );
-        let root_str = root.to_str().context("workspace path is not utf-8")?;
-        run(Command::new("jj").args([
-            "workspace",
-            "add",
-            "--name",
-            &name,
-            "-r",
-            &commit,
-            root_str,
-        ]))?;
-        root
-    };
-
-    eprintln!("workspace {name}: {branch}@{} checked out", remote.name);
-    println!("{}", root.display());
+    eprintln!("checking out {target}");
+    run(Command::new("jj").args(["new", &commit]))?;
     Ok(())
 }
