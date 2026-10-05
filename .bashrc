@@ -478,3 +478,10 @@ watchjj() {
     -- jj log "$@" \
     --ignore-working-copy # Codex suggested that not having this is at the root of "unexpected error from commit backend caused by object <hash> of type commit not found"
 }
+
+# --- percuss (~/git/percuss): Flutter + Android toolchain ---
+export PATH="$HOME/development/flutter/bin:$PATH"
+# Only needed for Android builds:
+export JAVA_HOME=/opt/homebrew/opt/openjdk@17
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
