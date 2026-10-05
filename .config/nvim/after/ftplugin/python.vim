@@ -3,7 +3,6 @@
 
 set textwidth=88 " Google Styleguide
 set formatoptions-=t
-set nowrap " Black to do formatting, don't wrap lines
 set expandtab
 set tabstop=4 " show existing tab with 2 spaces width
 set softtabstop=4

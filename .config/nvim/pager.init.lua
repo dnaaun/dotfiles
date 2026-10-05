@@ -25,8 +25,6 @@ vim.wo.signcolumn = "no"
 vim.wo.number = false
 vim.wo.foldcolumn = "0"
 vim.bo.modifiable = true
-vim.wo.wrap = false
-vim.go.wrap = false
 local ansi_once = vim.api.nvim_create_augroup("AnsiOnce", { clear = true })
 vim.api.nvim_create_autocmd("StdinReadPost", {
 	group = ansi_once,

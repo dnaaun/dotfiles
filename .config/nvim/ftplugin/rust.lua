@@ -1,5 +1,4 @@
 vim.opt_local.formatoptions = {}
-vim.opt_local.wrap = false
 
 -- Set omnifunc
 -- vim.opt_local.omnifunc=ale#completion#OmniFunc
