@@ -62,7 +62,7 @@ to_squash = 'subject(regex:"^TO SQUASH")'
 "after_bookmark(x)" = 'heads(bookmarks() & (::x ~ x))+::x'
 
 [fileset-aliases]
-tests_and_docs = '(glob:"**/*test*.*" | glob:"**/*Tests.swift" | glob:"**/*.md")'
+tests_and_docs = '(glob:"**/tests/**" | glob:"**/*test*.*" | glob:"**/*Tests.swift" | glob:"**/*.md")'
 
 [templates]
 duplicate_description = '''
