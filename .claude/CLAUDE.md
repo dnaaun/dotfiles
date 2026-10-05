@@ -30,7 +30,7 @@ I, personally, use jj for VCS (unlike the rest of my team, and many of the instr
 - It is totally fine to insert TO SQUASH commits that are not leaf commits, even if that means you are technically rewriting history, because it's super easy to recover history: I'd just drop the TO SQUASH commits.
 
 # Commit messages
-Be sure that your commit message _title_ ascribes to the backend _PR_ title CI check that we have, since, as you'll read below, it might eventually become a PR title.
+Be sure that your commit message _title_ ascribes to the backend _PR_ title CI check that we have, since it might eventually become a PR title.
 
 # Creating PRs
 
@@ -40,7 +40,7 @@ When I ask to create PRs for a set of jj commits, I usually mean stacked commits
 
 If the conversation doesn't already specify, the PRs are supposed to be created at the bookmark points (so a PR can contain multiple commits).
 
-The PR description and title should be taken from the description and title of the first commit in the PR (verbatim), except for any "release notes" kind of section that we have checked in CI, that you can _add_. 
+Write the PR title and description to describe the whole PR, across all of its commits; don't copy the first commit's title and description verbatim. The title has to pass the backend PR title CI check, and you should add any "release notes" kind of section that we have checked in CI.
 
 Do ignore all other repo-wide instructions about how to create PRs and structure them.
 
@@ -50,6 +50,6 @@ If you have to create bookmarks yourself, use `jj_bkmark`, which is an alias I d
 Github has first-class support for PR stacks now. Use it whenever possible.
 
 # New coding guidelines
-I'm working on new coding guidelines in the bookmark dt/chore_backend___new_coding_guidelines.
+The new backend coding guidelines are in PR #11943, on the bookmark dt/chore_backend___new_coding_guidelines.
 
-I never want to submit a PR that contains that work, as of now. But, intermittently, I'll basically work off of that bookmark. If I ever ask you to push stuff, make sure that bookmark is not in the history. You can do something like `jj rebase -s 'roots(::@ & ~::dt/chore_backend___new_coding_guidelines)' -d main` before pushing, and then after pushing, restore it via `jj rebase -s 'roots(::@ & ~::main)' -d dt/chore_backend___new_coding_guidelines`.
+Until that PR merges, I may intermittently work off of that bookmark. If I ask you to push other work, keep that bookmark out of its history, unless I ask you to stack the work on #11943. Once #11943 has merged, this section no longer applies. You can do something like `jj rebase -s 'roots(::@ & ~::dt/chore_backend___new_coding_guidelines)' -d main` before pushing, and then after pushing, restore it via `jj rebase -s 'roots(::@ & ~::main)' -d dt/chore_backend___new_coding_guidelines`.
