@@ -1,0 +1,326 @@
+#!/usr/bin/env -S cargo +nightly -Zscript --quiet
+---
+[package]
+name = "jj_ws_checkout"
+edition = "2024"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+---
+//! Check out a GitHub PR (or plain branch) in its own jj workspace.
+//!
+//! 1. Resolve the specifier with `gh pr view`, so anything gh takes works: `123`, `#123`, a PR URL,
+//!    a branch name, `owner:branch`. If gh finds no PR and the specifier looks like a branch name,
+//!    fall back to treating it as a plain branch on the remote.
+//! 2. `jj git fetch` just that branch from the remote whose owner/repo matches the PR.
+//! 3. Create a workspace next to the default workspace (`<repo>-pr<N>`, or `<repo>-<branch>` for
+//!    a plain branch) whose working-copy commit sits on top of `<branch>@<remote>`. If a workspace
+//!    with that name already exists, `jj new` onto the freshly fetched branch in it instead.
+//! 4. Print the workspace root on stdout (everything else goes to stderr), so
+//!    `cd "$(jj_ws_checkout 123)"` works.
+//!
+//! Every jj call passes `--ignore-working-copy` except `workspace add` (jj refuses it there) and
+//! the `jj new` that moves an existing target workspace.
+//! All `gh` invocations run with GIT_DIR=$(jj git root) so this works from jj workspaces.
+
+use std::path::{Path, PathBuf};
+use std::process::{Command, Stdio};
+
+use anyhow::{Context, Result, anyhow, bail, ensure};
+use clap::Parser;
+use serde::Deserialize;
+
+#[derive(Parser, Debug)]
+#[command(about = "Check out a GitHub PR or branch in its own jj workspace")]
+struct Args {
+    /// Anything `gh pr view` accepts (number, #number, URL, branch, owner:branch), or a branch name
+    /// that has no PR.
+    spec: String,
+
+    /// Workspace name (also the directory name). Defaults to `<repo>-pr<N>` / `<repo>-<branch>`.
+    #[arg(long)]
+    name: Option<String>,
+}
+
+fn run(cmd: &mut Command) -> Result<String> {
+    let rendered = format!("{cmd:?}");
+    let out = cmd
+        .stderr(Stdio::inherit())
+        .output()
+        .with_context(|| format!("failed to spawn {rendered}"))?;
+    ensure!(
+        out.status.success(),
+        "command failed ({}): {rendered}",
+        out.status
+    );
+    Ok(String::from_utf8(out.stdout)?)
+}
+
+/// A `jj` call that neither snapshots nor updates the current workspace's working copy.
+fn jj(args: &[&str]) -> Result<String> {
+    run(Command::new("jj").arg("--ignore-working-copy").args(args))
+}
+
+fn lines(s: &str) -> Vec<String> {
+    s.lines()
+        .map(str::trim)
+        .filter(|l| !l.is_empty())
+        .map(String::from)
+        .collect()
+}
+
+/// Escape a string so it can be embedded inside a revset/template string literal.
+fn quote(s: &str) -> String {
+    format!("\"{}\"", s.replace('\\', "\\\\").replace('"', "\\\""))
+}
+
+#[derive(Debug)]
+struct Remote {
+    name: String,
+    owner: String,
+    repo: String,
+}
+
+/// Every configured remote, with owner/repo parsed from its URL. Handles git@github.com:owner/repo.git,
+/// ssh://git@github.com/owner/repo.git, https://github.com/owner/repo(.git), and bare github.com/owner/repo.
+fn git_remotes() -> Result<Vec<Remote>> {
+    let mut remotes = Vec::new();
+    for line in lines(&jj(&["git", "remote", "list"])?) {
+        let mut it = line.split_whitespace();
+        let (Some(name), Some(url)) = (it.next(), it.next()) else {
+            continue;
+        };
+        let trimmed = url.trim_end_matches('/').trim_end_matches(".git");
+        let mut segs = trimmed.rsplit(['/', ':']).filter(|s| !s.is_empty());
+        let (Some(repo), Some(owner)) = (segs.next(), segs.next()) else {
+            continue;
+        };
+        remotes.push(Remote {
+            name: name.to_string(),
+            owner: owner.to_string(),
+            repo: repo.to_string(),
+        });
+    }
+    ensure!(!remotes.is_empty(), "no git remotes configured");
+    Ok(remotes)
+}
+
+#[derive(Deserialize, Debug)]
+struct HeadRepo {
+    #[serde(rename = "nameWithOwner")]
+    name_with_owner: String,
+}
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+struct Pr {
+    number: u64,
+    url: String,
+    title: String,
+    state: String,
+    head_ref_name: String,
+    is_cross_repository: bool,
+    head_repository: Option<HeadRepo>,
+}
+
+impl Pr {
+    /// (owner, repo) of the PR's base repository, from https://github.com/<owner>/<repo>/pull/<n>.
+    fn base_repo(&self) -> Result<(&str, &str)> {
+        let mut segs = self.url.trim_end_matches('/').rsplit('/').skip(2);
+        let (Some(repo), Some(owner)) = (segs.next(), segs.next()) else {
+            bail!("could not parse owner/repo from PR url {:?}", self.url);
+        };
+        Ok((owner, repo))
+    }
+}
+
+/// `Ok(None)` when gh ran fine but found no PR for the specifier.
+fn gh_pr_view(git_dir: &Path, spec: &str) -> Result<Option<Pr>> {
+    let out = Command::new("gh")
+        .env("GIT_DIR", git_dir)
+        .args([
+            "pr",
+            "view",
+            spec,
+            "--json",
+            "number,url,title,state,headRefName,isCrossRepository,headRepository",
+        ])
+        .output()
+        .context("failed to spawn gh")?;
+    if out.status.success() {
+        return Ok(Some(serde_json::from_slice(&out.stdout)?));
+    }
+    let stderr = String::from_utf8_lossy(&out.stderr);
+    if stderr.contains("no pull requests found") {
+        return Ok(None);
+    }
+    bail!(
+        "gh pr view {spec:?} failed ({}): {}",
+        out.status,
+        stderr.trim()
+    );
+}
+
+/// Branch names can't contain ':' (that's `owner:branch`), and numbers / URLs are PR specifiers.
+fn looks_like_branch(spec: &str) -> bool {
+    !spec.is_empty()
+        && !spec.contains(':')
+        && !spec.starts_with('#')
+        && !spec.chars().all(|c| c.is_ascii_digit())
+}
+
+fn slug(s: &str) -> String {
+    s.chars()
+        .map(|c| {
+            if c.is_ascii_alphanumeric() || matches!(c, '-' | '.') {
+                c
+            } else {
+                '_'
+            }
+        })
+        .collect()
+}
+
+fn main() {
+    if let Err(e) = real_main() {
+        eprintln!("error: {e:#}");
+        std::process::exit(1);
+    }
+}
+
+fn real_main() -> Result<()> {
+    let args = Args::parse();
+
+    let git_dir = PathBuf::from(jj(&["git", "root"])?.trim());
+    let remotes = git_remotes()?;
+
+    let pr = gh_pr_view(&git_dir, &args.spec)?;
+    let (branch, remote) = match &pr {
+        Some(pr) => {
+            if pr.is_cross_repository {
+                bail!(
+                    "PR #{} comes from the fork {}; fetching fork branches isn't supported",
+                    pr.number,
+                    pr.head_repository
+                        .as_ref()
+                        .map_or("<deleted repository>", |r| r.name_with_owner.as_str())
+                );
+            }
+            let (owner, repo) = pr.base_repo()?;
+            let remote = remotes
+                .iter()
+                .find(|r| r.owner.eq_ignore_ascii_case(owner) && r.repo.eq_ignore_ascii_case(repo))
+                .ok_or_else(|| anyhow!("no remote points at {owner}/{repo} (PR {})", pr.url))?;
+            eprintln!(
+                "PR #{} [{}] {}\n  {}",
+                pr.number, pr.state, pr.title, pr.url
+            );
+            (pr.head_ref_name.clone(), remote)
+        }
+        None if looks_like_branch(&args.spec) => {
+            let remote = remotes
+                .iter()
+                .find(|r| r.name == "origin")
+                .unwrap_or(&remotes[0]);
+            eprintln!("no PR found for {:?}; treating it as a branch", args.spec);
+            (args.spec.clone(), remote)
+        }
+        None => bail!("no PR found for {:?}", args.spec),
+    };
+
+    jj(&[
+        "git",
+        "fetch",
+        "--remote",
+        &remote.name,
+        "--branch",
+        &format!("exact:{branch}"),
+    ])?;
+    let remote_bookmark = format!(
+        "remote_bookmarks(exact:{}, remote=exact:{})",
+        quote(&branch),
+        quote(&remote.name)
+    );
+    let commit = match lines(&jj(&[
+        "log",
+        "--no-graph",
+        "-r",
+        &remote_bookmark,
+        "-T",
+        r#"commit_id ++ "\n""#,
+    ])?)
+    .as_slice()
+    {
+        [c] => c.clone(),
+        [] => bail!(
+            "{branch}@{} does not exist{}",
+            remote.name,
+            match &pr {
+                Some(pr) => format!(
+                    " (PR #{} is {}; was the branch deleted?)",
+                    pr.number, pr.state
+                ),
+                None => String::new(),
+            }
+        ),
+        many => bail!(
+            "{branch}@{} is conflicted ({})",
+            remote.name,
+            many.join(", ")
+        ),
+    };
+
+    let name = args.name.unwrap_or_else(|| match &pr {
+        Some(pr) => format!("{}-pr{}", remote.repo, pr.number),
+        None => format!("{}-{}", remote.repo, slug(&branch)),
+    });
+    let existing = lines(&jj(&["workspace", "list", "-T", r#"name ++ "\n""#])?);
+    let root = if existing.contains(&name) {
+        let root = PathBuf::from(jj(&["workspace", "root", "--name", &name])?.trim());
+        eprintln!(
+            "workspace {name} already exists at {}; moving it onto {branch}@{}",
+            root.display(),
+            remote.name
+        );
+        // Not --ignore-working-copy: snapshot that workspace's edits and update its files.
+        run(Command::new("jj")
+            .arg("-R")
+            .arg(&root)
+            .args(["new", &commit]))?;
+        root
+    } else {
+        // Put new workspaces next to the default one (fall back to next to the current one).
+        let anchor = if existing.iter().any(|w| w == "default") {
+            jj(&["workspace", "root", "--name", "default"])?
+        } else {
+            jj(&["workspace", "root"])?
+        };
+        let parent = Path::new(anchor.trim())
+            .parent()
+            .context("workspace root has no parent directory")?;
+        let root = parent.join(&name);
+        ensure!(
+            !root.exists(),
+            "{} already exists but is not workspace {name}; pass --name",
+            root.display()
+        );
+        let root_str = root.to_str().context("workspace path is not utf-8")?;
+        run(Command::new("jj").args([
+            "workspace",
+            "add",
+            "--name",
+            &name,
+            "-r",
+            &commit,
+            root_str,
+        ]))?;
+        root
+    };
+
+    eprintln!("workspace {name}: {branch}@{} checked out", remote.name);
+    println!("{}", root.display());
+    Ok(())
+}
