@@ -48,8 +48,3 @@ If you have to create bookmarks yourself, use `jj_bkmark`, which is an alias I d
 
 ## Stacked PRs
 Github has first-class support for PR stacks now. Use it whenever possible.
-
-# New coding guidelines
-The new backend coding guidelines are in PR #11943, on the bookmark dt/chore_backend___new_coding_guidelines.
-
-Until that PR merges, I may intermittently work off of that bookmark. If I ask you to push other work, keep that bookmark out of its history, unless I ask you to stack the work on #11943. Once #11943 has merged, this section no longer applies. You can do something like `jj rebase -s 'roots(::@ & ~::dt/chore_backend___new_coding_guidelines)' -d main` before pushing, and then after pushing, restore it via `jj rebase -s 'roots(::@ & ~::main)' -d dt/chore_backend___new_coding_guidelines`.
