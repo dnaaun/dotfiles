@@ -31,7 +31,7 @@ local M = {}
 ---@field format_thread nil|fun(thread: JjGhReviewThread): string|[string, string][] custom ghost text
 ---@field use_pending_review boolean batch new comments into a pending review (submit later)
 ---@field jj_new boolean run `jj new <pr head>` when a review is opened
----@field diffview_cmd string|false command to run once the working copy is prepared
+---@field diffview_cmd string|false command to run once the working copy is prepared; `{base}` becomes the commit GitHub diffs the PR against
 ---@field float JjGhReviewFloatConfig
 ---@field open_quickfix boolean open the quickfix window in `list()`
 ---@field retry_seconds JjGhReviewRetryConfig backoff for failed syncs
@@ -73,7 +73,7 @@ M.defaults = {
 	format_thread = nil,
 	use_pending_review = true,
 	jj_new = true,
-	diffview_cmd = "JjDiffviewOpen --from 'common_ancestor_with_main(@)'",
+	diffview_cmd = "JjDiffviewOpen --from {base}",
 	float = {
 		border = "rounded",
 		min_width = 40,

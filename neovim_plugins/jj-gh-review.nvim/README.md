@@ -27,7 +27,9 @@ Design principles:
 1. show cached threads for that specifier (if any), then resolve the PR with `gh pr view`,
 2. `jj git fetch --branch <head>` if the head commit is unknown locally,
 3. `jj new <head commit>` unless the working copy already is an empty change on top of it,
-4. run the configured diff view command (default `JjDiffviewOpen --from 'common_ancestor_with_main(@)'`),
+4. run the configured diff view command (default `JjDiffviewOpen --from {base}`, where `{base}` is the
+   commit GitHub diffs the PR against, so stacked PRs show only their own changes; the base
+   branch is fetched first if that commit is unknown locally),
 5. fetch the review threads and render ghost text in every buffer showing a reviewed file.
 
 Comments on the `RIGHT` side (PR head) attach to working-copy files. Comments on the

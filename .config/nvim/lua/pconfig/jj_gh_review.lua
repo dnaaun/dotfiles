@@ -31,10 +31,7 @@ return {
 		{ "<leader>rq", review("close"), desc = "Review: end session (clear ghost text)" },
 	},
 	config = function()
-		require("jj_gh_review").setup({
-			-- `common_ancestor_with_main` is a revset alias from .config/jj/config.toml
-			diffview_cmd = "JjDiffviewOpen --from 'common_ancestor_with_main(@)'",
-		})
+		require("jj_gh_review").setup()
 
 		-- Buffer-local mappings inside the floating thread/comment buffers.
 		vim.api.nvim_create_autocmd("User", {

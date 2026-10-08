@@ -247,6 +247,65 @@ local base_target = check(marks.buffer_target(diff_buf), "base diffview buffer n
 check(base_target.side == "LEFT", "non-head commit should be the LEFT side")
 
 ------------------------------------------------------------------------------
+-- `{base}` in the diffview command becomes the fork point of the PR's base and
+-- head, fetching the base branch first when its commit is unknown locally
+------------------------------------------------------------------------------
+
+local util = require("jj_gh_review.util")
+local config = require("jj_gh_review.config")
+local jj = require("jj_gh_review.jj")
+local real_run = util.run
+local fork_point = "f0f0f0f0f0f0f0f0"
+local base_fetched = false
+
+--- Fake `jj`: knows the head commit, and the base commit only after a fetch of `main`.
+---@param args string[]
+---@param _opts vim.SystemOpts|nil
+---@param cb fun(result: JjGhReviewRunResult)
+util.run = function(args, _opts, cb)
+	---@type JjGhReviewRunResult
+	local result = { code = 1, stdout = "", stderr = "unknown revision" }
+	if args[2] == "git" and args[3] == "fetch" then
+		base_fetched = base_fetched or args[5] == "main"
+		result = { code = 0, stdout = "", stderr = "" }
+	elseif args[2] == "log" then
+		local revset = args[6] or ""
+		local found = nil
+		if revset == session.pr.headRefOid or (base_fetched and revset == session.pr.baseRefOid) then
+			found = revset
+		elseif vim.startswith(revset, "fork_point(") then
+			found = fork_point
+		end
+		if found then
+			result = { code = 0, stdout = found .. "\n", stderr = "" }
+		end
+	end
+	vim.schedule(function()
+		cb(result)
+	end)
+end
+
+---@type string|nil
+local opened_with = nil
+vim.api.nvim_create_user_command("FakeDiff", function(ctx)
+	opened_with = ctx.args
+end, { nargs = "*" })
+config.options.diffview_cmd = "FakeDiff --from {base}"
+session.diffview_opened = nil
+local prepared = false
+jj.prepare(session, function(err)
+	check(not err, "prepare failed: " .. tostring(err))
+	prepared = true
+end)
+vim.wait(500, function()
+	return prepared
+end)
+util.run = real_run
+check(prepared, "prepare did not finish")
+check(base_fetched, "base branch was not fetched")
+check(opened_with == "--from " .. fork_point, "diffview opened with: " .. tostring(opened_with))
+
+------------------------------------------------------------------------------
 -- Quickfix list and teardown
 ------------------------------------------------------------------------------
 
