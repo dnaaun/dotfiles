@@ -264,7 +264,11 @@ function M.create_pending_review(repo, pr, callback)
 		if err or not data then
 			return callback(nil, err or "empty response")
 		end
-		callback(data.data.addPullRequestReview.pullRequestReview.id)
+		local review_id = vim.tbl_get(data, "data", "addPullRequestReview", "pullRequestReview", "id")
+		if not review_id then
+			return callback(nil, "GitHub returned no review")
+		end
+		callback(review_id)
 	end)
 end
 
@@ -275,6 +279,14 @@ end
 ---@field start_line integer|nil
 ---@field side "LEFT"|"RIGHT"
 ---@field start_side "LEFT"|"RIGHT"|nil
+
+--- GitHub answers a new thread on a line outside the PR's diff with
+--- `thread: null` and no error, so that is the likely cause.
+---@param thread JjGhReviewNewThread
+---@return string
+local function no_thread_error(thread)
+	return string.format("GitHub did not create the thread; is %s:%d inside the PR's diff?", thread.path, thread.line)
+end
 
 --- Post a single-comment review immediately (no pending review).
 ---@param repo JjGhReviewRepo
@@ -304,9 +316,20 @@ function M.add_immediate_thread(repo, pr, thread, callback)
 		if err or not data then
 			return callback(nil, err or "empty response")
 		end
-		local review = data.data.addPullRequestReview.pullRequestReview
-		local node = review.comments.nodes[1] and review.comments.nodes[1].pullRequestThread
-		callback(node and M.normalize_thread(node) or nil)
+		local node = vim.tbl_get(
+			data,
+			"data",
+			"addPullRequestReview",
+			"pullRequestReview",
+			"comments",
+			"nodes",
+			1,
+			"pullRequestThread"
+		)
+		if not node then
+			return callback(nil, no_thread_error(thread))
+		end
+		callback(M.normalize_thread(node))
 	end)
 end
 
@@ -337,7 +360,11 @@ function M.add_thread(repo, review_id, thread, callback)
 		if err or not data then
 			return callback(nil, err or "empty response")
 		end
-		callback(M.normalize_thread(data.data.addPullRequestReviewThread.thread))
+		local node = vim.tbl_get(data, "data", "addPullRequestReviewThread", "thread")
+		if not node then
+			return callback(nil, no_thread_error(thread))
+		end
+		callback(M.normalize_thread(node))
 	end)
 end
 
@@ -366,7 +393,11 @@ function M.reply(repo, thread_id, review_id, body, callback)
 		if err or not data then
 			return callback(nil, err or "empty response")
 		end
-		callback(M.normalize_thread(data.data.addPullRequestReviewThreadReply.comment.pullRequestThread))
+		local node = vim.tbl_get(data, "data", "addPullRequestReviewThreadReply", "comment", "pullRequestThread")
+		if not node then
+			return callback(nil, "GitHub returned no reply (was the thread deleted?)")
+		end
+		callback(M.normalize_thread(node))
 	end)
 end
 
@@ -387,7 +418,11 @@ function M.update_comment(repo, comment_id, body, callback)
 		if err or not data then
 			return callback(nil, err or "empty response")
 		end
-		callback(data.data.updatePullRequestReviewComment.pullRequestReviewComment)
+		local comment = vim.tbl_get(data, "data", "updatePullRequestReviewComment", "pullRequestReviewComment")
+		if not comment then
+			return callback(nil, "GitHub returned no comment (was it deleted?)")
+		end
+		callback(comment)
 	end)
 end
 
@@ -428,7 +463,11 @@ function M.set_resolved(repo, thread_id, resolved, callback)
 		if err or not data then
 			return callback(nil, err or "empty response")
 		end
-		callback(data.data[mutation].thread)
+		local thread = vim.tbl_get(data, "data", mutation, "thread")
+		if not thread then
+			return callback(nil, "GitHub returned no thread (was it deleted?)")
+		end
+		callback(thread)
 	end)
 end
 
@@ -454,7 +493,11 @@ function M.submit_review(repo, review_id, event, body, callback)
 		if err or not data then
 			return callback(nil, err or "empty response")
 		end
-		callback(data.data.submitPullRequestReview.pullRequestReview)
+		local review = vim.tbl_get(data, "data", "submitPullRequestReview", "pullRequestReview")
+		if not review then
+			return callback(nil, "GitHub returned no review")
+		end
+		callback(review)
 	end)
 end
 

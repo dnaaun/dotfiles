@@ -12,6 +12,7 @@ local state = require("jj_gh_review.state")
 local marks = require("jj_gh_review.marks")
 local ui = require("jj_gh_review.ui")
 local gh = require("jj_gh_review.gh")
+local real_add_thread = gh.add_thread
 R.setup({ cache_dir = tmp .. "/cache", jj_new = false, diffview_cmd = false })
 
 ---@param condition any
@@ -304,6 +305,95 @@ util.run = real_run
 check(prepared, "prepare did not finish")
 check(base_fetched, "base branch was not fetched")
 check(opened_with == "--from " .. fork_point, "diffview opened with: " .. tostring(opened_with))
+
+------------------------------------------------------------------------------
+-- GitHub answers a thread on a line outside the diff with `thread: null` and
+-- no error; that must come back as an error, not a crash
+------------------------------------------------------------------------------
+
+--- Fake `gh`: GitHub's answer to a thread on a line outside the diff.
+---@param _args string[]
+---@param _opts vim.SystemOpts|nil
+---@param cb fun(result: JjGhReviewRunResult)
+util.run = function(_args, _opts, cb)
+	vim.schedule(function()
+		cb({ code = 0, stdout = '{"data":{"addPullRequestReviewThread":{"thread":null}}}', stderr = "" })
+	end)
+end
+---@type string|nil
+local null_thread_err = nil
+real_add_thread(session.repo, "PRR_fake", { path = "src/a.lua", body = "x", line = 5, side = "RIGHT" }, function(_, err)
+	null_thread_err = err
+end)
+vim.wait(500, function()
+	return null_thread_err ~= nil
+end)
+util.run = real_run
+check(
+	null_thread_err and null_thread_err:find("src/a.lua:5", 1, true),
+	"null thread not reported as an error: " .. tostring(null_thread_err)
+)
+
+------------------------------------------------------------------------------
+-- A Lua error while syncing fails the op instead of wedging the queue
+------------------------------------------------------------------------------
+
+local sync = require("jj_gh_review.sync")
+local working_add_thread = gh.add_thread
+
+--- Queue a new thread and wait until its op either synced or failed.
+---@return JjGhReviewOp|nil op the op, still queued, when it failed
+local function add_and_wait()
+	sync.add_thread({ path = "src/a.lua", body = "x", line = 4 })
+	vim.wait(500, function()
+		local op = session.queue[1]
+		return op == nil or op.error ~= nil
+	end)
+	return session.queue[1]
+end
+
+--- Error inside the sync callback: answer with a thread that has no comments list.
+---@param _repo JjGhReviewRepo
+---@param _review_id string
+---@param _thread JjGhReviewNewThread
+---@param cb fun(thread: JjGhReviewThread|nil, err: string|nil)
+gh.add_thread = function(_repo, _review_id, _thread, cb)
+	vim.schedule(function()
+		cb(vim.json.decode('{"id": "PRRT_unusable"}'))
+	end)
+end
+local failed_async = check(add_and_wait(), "op vanished after a callback error")
+check(failed_async.error and failed_async.attempts == 1, "callback error not recorded on the op")
+check(sync.drop_failed() == 1, "failed op not droppable")
+
+--- Error thrown synchronously while the executor runs.
+---@param _repo JjGhReviewRepo
+---@param _review_id string
+---@param _thread JjGhReviewNewThread
+---@param _cb fun(thread: JjGhReviewThread|nil, err: string|nil)
+gh.add_thread = function(_repo, _review_id, _thread, _cb)
+	error("boom")
+end
+local failed_sync = check(add_and_wait(), "op vanished after a synchronous error")
+check(failed_sync.error and failed_sync.error:find("boom", 1, true), "synchronous error not recorded on the op")
+check(sync.drop_failed() == 1, "failed op not droppable")
+
+--- The queue still runs afterwards.
+---@param repo JjGhReviewRepo
+---@param review_id string
+---@param new_thread JjGhReviewNewThread
+---@param cb fun(thread: JjGhReviewThread|nil, err: string|nil)
+gh.add_thread = function(repo, review_id, new_thread, cb)
+	working_add_thread(repo, review_id, new_thread, function(remote)
+		if remote then
+			remote.id = "PRRT_after_failure"
+		end
+		cb(remote)
+	end)
+end
+check(add_and_wait() == nil, "queue still wedged after failures")
+check(state.find_thread("PRRT_after_failure"), "thread after failures not adopted")
+gh.add_thread = working_add_thread
 
 ------------------------------------------------------------------------------
 -- Quickfix list and teardown

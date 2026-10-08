@@ -185,6 +185,20 @@ end
 
 ---@alias JjGhReviewExecutor fun(session: JjGhReviewSession, op: JjGhReviewOp, done: fun(err: string|nil))
 
+--- Wrap an executor's async callback so a Lua error in it fails the op instead
+--- of leaving the queue waiting forever for `done`.
+---@param done fun(err: string|nil)
+---@param fn fun(...: any)
+---@return fun(...: any)
+local function protect(done, fn)
+	return function(...)
+		local ok, err = pcall(fn, ...)
+		if not ok then
+			done("internal error: " .. tostring(err))
+		end
+	end
+end
+
 ---@type table<string, JjGhReviewExecutor>
 local executors = {}
 
@@ -204,27 +218,40 @@ executors.add_thread = function(session, op, done)
 		start_side = op.start_side,
 	}
 	if not config.options.use_pending_review then
-		gh.add_immediate_thread(session.repo, pr, payload, function(remote, err)
-			if err then
-				return done(err)
-			end
-			adopt_thread(session, local_thread, remote)
-			done(nil)
-		end)
+		gh.add_immediate_thread(
+			session.repo,
+			pr,
+			payload,
+			protect(done, function(remote, err)
+				if err then
+					return done(err)
+				end
+				adopt_thread(session, local_thread, remote)
+				done(nil)
+			end)
+		)
 		return
 	end
-	ensure_review(session, function(review_id, err)
-		if err or not review_id then
-			return done(err or "no pending review")
-		end
-		gh.add_thread(session.repo, review_id, payload, function(remote, err2)
-			if err2 then
-				return done(err2)
+	ensure_review(
+		session,
+		protect(done, function(review_id, err)
+			if err or not review_id then
+				return done(err or "no pending review")
 			end
-			adopt_thread(session, local_thread, remote)
-			done(nil)
+			gh.add_thread(
+				session.repo,
+				review_id,
+				payload,
+				protect(done, function(remote, err2)
+					if err2 then
+						return done(err2)
+					end
+					adopt_thread(session, local_thread, remote)
+					done(nil)
+				end)
+			)
 		end)
-	end)
+	)
 end
 
 executors.reply = function(session, op, done)
@@ -234,15 +261,21 @@ executors.reply = function(session, op, done)
 	end
 	local thread = state.find_thread(thread_id)
 	local review_id = config.options.use_pending_review and session.pending_review_id or nil
-	gh.reply(session.repo, thread_id, review_id, op.body or "", function(remote, err)
-		if err then
-			return done(err)
-		end
-		if thread then
-			adopt_reply(session, thread, remote, op.local_id)
-		end
-		done(nil)
-	end)
+	gh.reply(
+		session.repo,
+		thread_id,
+		review_id,
+		op.body or "",
+		protect(done, function(remote, err)
+			if err then
+				return done(err)
+			end
+			if thread then
+				adopt_reply(session, thread, remote, op.local_id)
+			end
+			done(nil)
+		end)
+	)
 end
 
 executors.edit = function(session, op, done)
@@ -250,16 +283,21 @@ executors.edit = function(session, op, done)
 	if not comment_id or util.is_local_id(comment_id) then
 		return done("comment not yet created on GitHub")
 	end
-	gh.update_comment(session.repo, comment_id, op.body or "", function(_, err)
-		if err then
-			return done(err)
-		end
-		local comment = state.find_comment(comment_id)
-		if comment then
-			comment.syncing = nil
-		end
-		done(nil)
-	end)
+	gh.update_comment(
+		session.repo,
+		comment_id,
+		op.body or "",
+		protect(done, function(_, err)
+			if err then
+				return done(err)
+			end
+			local comment = state.find_comment(comment_id)
+			if comment then
+				comment.syncing = nil
+			end
+			done(nil)
+		end)
+	)
 end
 
 executors.delete = function(session, op, done)
@@ -268,9 +306,13 @@ executors.delete = function(session, op, done)
 		-- Never made it to GitHub; nothing to delete remotely.
 		return done(nil)
 	end
-	gh.delete_comment(session.repo, comment_id, function(_, err)
-		done(err)
-	end)
+	gh.delete_comment(
+		session.repo,
+		comment_id,
+		protect(done, function(_, err)
+			done(err)
+		end)
+	)
 end
 
 executors.resolve = function(session, op, done)
@@ -278,16 +320,21 @@ executors.resolve = function(session, op, done)
 	if not thread_id or util.is_local_id(thread_id) then
 		return done("thread not yet created on GitHub")
 	end
-	gh.set_resolved(session.repo, thread_id, op.resolved == true, function(_, err)
-		if err then
-			return done(err)
-		end
-		local thread = state.find_thread(thread_id)
-		if thread then
-			thread.syncing = nil
-		end
-		done(nil)
-	end)
+	gh.set_resolved(
+		session.repo,
+		thread_id,
+		op.resolved == true,
+		protect(done, function(_, err)
+			if err then
+				return done(err)
+			end
+			local thread = state.find_thread(thread_id)
+			if thread then
+				thread.syncing = nil
+			end
+			done(nil)
+		end)
+	)
 end
 
 executors.submit = function(session, op, done)
@@ -299,33 +346,43 @@ executors.submit = function(session, op, done)
 
 	---@param review_id string
 	local function submit(review_id)
-		gh.submit_review(session.repo, review_id, event, op.body, function(_, err)
-			if err then
-				return done(err)
-			end
-			if session.pending_review_id == review_id then
-				session.pending_review_id = nil
-			end
-			for _, thread in ipairs(session.threads) do
-				for _, comment in ipairs(thread.comments) do
-					if comment.pending and comment.mine then
-						comment.pending = false
+		gh.submit_review(
+			session.repo,
+			review_id,
+			event,
+			op.body,
+			protect(done, function(_, err)
+				if err then
+					return done(err)
+				end
+				if session.pending_review_id == review_id then
+					session.pending_review_id = nil
+				end
+				for _, thread in ipairs(session.threads) do
+					for _, comment in ipairs(thread.comments) do
+						if comment.pending and comment.mine then
+							comment.pending = false
+						end
 					end
 				end
-			end
-			done(nil)
-		end)
+				done(nil)
+			end)
+		)
 	end
 	if session.pending_review_id then
 		submit(session.pending_review_id)
 		return
 	end
-	gh.create_pending_review(session.repo, pr, function(review_id, err)
-		if err or not review_id then
-			return done(err or "could not create review")
-		end
-		submit(review_id)
-	end)
+	gh.create_pending_review(
+		session.repo,
+		pr,
+		protect(done, function(review_id, err)
+			if err or not review_id then
+				return done(err or "could not create review")
+			end
+			submit(review_id)
+		end)
+	)
 end
 
 --- Retry `process()` after an exponentially growing delay.
@@ -392,7 +449,17 @@ function M.process()
 			step()
 			return
 		end
-		executor(session, op, function(err)
+		local finished = false
+		---@param err string|nil
+		local function done(err)
+			-- A protected callback may report an error after `done` already ran.
+			if finished then
+				if err then
+					util.notify(string.format("Error after %s synced: %s", op.kind, err), vim.log.levels.ERROR)
+				end
+				return
+			end
+			finished = true
 			if not state.is_active(session) then
 				running = false
 				return
@@ -411,7 +478,11 @@ function M.process()
 			persist(session)
 			state.set_phase("syncing", string.format("%d queued", #session.queue))
 			step()
-		end)
+		end
+		local ok, err = pcall(executor, session, op, done)
+		if not ok then
+			done("internal error: " .. tostring(err))
+		end
 	end
 	step()
 end
