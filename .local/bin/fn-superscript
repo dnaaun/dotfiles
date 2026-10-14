@@ -1,0 +1,16 @@
+#!/bin/sh
+# Build the native Unicode helper on demand; keep generated binaries out of git.
+set -eu
+source_file="$HOME/.local/share/fn-superscripts/main.swift"
+cache_dir="${XDG_CACHE_HOME:-$HOME/Library/Caches}/fn-superscripts"
+binary="$cache_dir/fn-superscript"
+if [ ! -x "$binary" ] || [ "$source_file" -nt "$binary" ]; then
+    mkdir -p "$cache_dir"
+    temporary=$(mktemp "$cache_dir/fn-superscript.XXXXXX")
+    trap 'rm -f "$temporary"' EXIT HUP INT TERM
+    /usr/bin/xcrun swiftc -O "$source_file" -o "$temporary"
+    chmod 755 "$temporary"
+    mv -f "$temporary" "$binary"
+    trap - EXIT HUP INT TERM
+fi
+exec "$binary" "$@"
