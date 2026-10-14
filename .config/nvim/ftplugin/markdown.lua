@@ -25,25 +25,6 @@ end, { buffer = true })
 -- Setup otter.nvim
 -- require("otter").activate(nil, true, true, nil)
 
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = "*.md",
-	callback = function()
-		if string.match(vim.fn.expand("%:p"), "/gp/chats") then
-			vim.keymap.set("n", "<CR>", ":<C-u>GpChatRespond<CR>", { buffer = true, desc = "send to GPT (gp.nvim)" })
-		else
-			vim.keymap.set(
-				"n",
-				"<CR>",
-				-- Hope to use <leader>t as a leader for many treeistter related things, which this
-				-- is in that the code fence is detected via treesitter "language injection"
-				function()
-					require("femaco.edit").edit_code_block()
-				end,
-				{ buffer = true, desc = "edit code block" }
-			)
-		end
-	end,
-})
 
 -- Nice for folding code blocks
 vim.opt_local.foldmethod="expr"

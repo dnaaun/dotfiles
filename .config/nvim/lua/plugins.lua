@@ -61,7 +61,6 @@ plugins_for_non_pager_mode = {
 	require("pconfig.fidget"),
 	-- require("pconfig.mini_cursorword"), -- don't need it for now.
 	require("pconfig.aerial"),
-	-- require("pconfig.femaco"), -- don't need it for now.
 	-- require("pconfig.otter"), -- don't need it for now.
 	require("pconfig.diffview"),
 	require("pconfig.amharic"),
