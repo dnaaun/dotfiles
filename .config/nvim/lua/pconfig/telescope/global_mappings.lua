@@ -41,7 +41,7 @@ local function live_grep_in_current_file_dir()
 	}))
 end
 
---- @param jump_type "jump" | "vsplit" | "split"
+--- @param jump_type "jump" | "vsplit"
 --- @param descriptor_prefix string | nil
 --- @param mapping_prefix string | nil
 --- @return nil
@@ -202,7 +202,6 @@ local map_telescope_bindings = function()
 	vim.keymap.set("n", "<leader>fca", live_grep_in_current_file_dir, { desc = "live_grep in cur dir" })
 
 	lsp_gotos_with_jump_type("vsplit", "LSP vertically", "gx")
-	lsp_gotos_with_jump_type("split", "LSP horizontally", "gs")
 	lsp_gotos_with_jump_type("jump", "LSP ", "g")
 end
 
