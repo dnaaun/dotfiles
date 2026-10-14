@@ -40,11 +40,13 @@ When I ask to create PRs for a set of jj commits, I usually mean stacked commits
 
 If the conversation doesn't already specify, the PRs are supposed to be created at the bookmark points (so a PR can contain multiple commits).
 
-Write the PR title and description to describe the whole PR, across all of its commits; don't copy the first commit's title and description verbatim. The title has to pass the backend PR title CI check, and you should add any "release notes" kind of section that we have checked in CI.
+The title has to pass the backend PR title CI check, and you should add any "release notes" kind of section that we have checked in CI.
 
-Do ignore all other repo-wide instructions about how to create PRs and structure them.
+Do ignore all other repo-wide instructions about how to create PRs and write descriptions for them.
 
 If you have to create bookmarks yourself, use `jj_bkmark`, which is an alias I defined which will take the commit msg and make a bookmark from that.
+
+Channel Blaise Pascal: spend time making PR and commit descriptions shorter. Omit details that are obvious consequences of anything else that will already be mentioned.
 
 ## Stacked PRs
 Github has first-class support for PR stacks now. Use it whenever possible.
