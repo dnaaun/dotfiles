@@ -485,3 +485,31 @@ export PATH="$HOME/development/flutter/bin:$PATH"
 export JAVA_HOME=/opt/homebrew/opt/openjdk@17
 export ANDROID_HOME="$HOME/Library/Android/sdk"
 export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+
+# <<< littlebird wt
+wt() {
+  if [ "${1:-}" = "-" ]; then
+    if [ -z "${_WT_PREV:-}" ]; then
+      echo "No previous worktree." >&2
+      return 1
+    fi
+    local prev="$_WT_PREV"
+    export _WT_PREV="$PWD"
+    cd "$prev"
+    return
+  fi
+  local scripts_dir
+  scripts_dir="$(git worktree list --porcelain | head -1 | sed 's/worktree //')/scripts"
+  local result
+  result="$(bash "$scripts_dir/worktree/wt.sh" "$@")" || return $?
+  if [ -n "$result" ] && [ -d "$result" ]; then
+    export _WT_PREV="$PWD"
+    cd "$result"
+  elif [ -n "$result" ]; then
+    echo "$result"
+  fi
+}
+# >>> littlebird wt
+
+# Hermes Agent command
+case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH" ;; esac
