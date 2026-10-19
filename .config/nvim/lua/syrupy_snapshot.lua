@@ -5,16 +5,11 @@
 ---@field filename string
 ---@field lnum integer
 
---- Syrupy's name for the test enclosing the cursor, e.g. `TestFoo.test_bar`.
+--- Syrupy's name for the test enclosing `node`, e.g. `TestFoo.test_bar`.
+---@param node TSNode|nil
+---@param source integer|string buffer or file contents `node` was parsed from
 ---@return string|nil
-local function test_name_at_cursor()
-	local parser = vim.treesitter.get_parser(0, "python", { error = false })
-	if not parser then
-		return nil
-	end
-	-- get_node() sees nothing until the buffer has been parsed at least once.
-	parser:parse()
-	local node = vim.treesitter.get_node()
+local function test_name_of(node, source)
 	---@type string[]
 	local parts = {}
 	local found_test = false
@@ -22,7 +17,7 @@ local function test_name_at_cursor()
 		local type = node:type()
 		if type == "function_definition" or type == "class_definition" then
 			local name_node = node:field("name")[1]
-			local name = name_node and vim.treesitter.get_node_text(name_node, 0) or ""
+			local name = name_node and vim.treesitter.get_node_text(name_node, source) or ""
 			if type == "function_definition" and vim.startswith(name, "test_") then
 				-- Outermost test_ function wins, so drop anything nested inside it.
 				parts = { name }
@@ -34,6 +29,17 @@ local function test_name_at_cursor()
 		node = node:parent()
 	end
 	return found_test and table.concat(parts, ".") or nil
+end
+
+---@return string|nil
+local function test_name_at_cursor()
+	local parser = vim.treesitter.get_parser(0, "python", { error = false })
+	if not parser then
+		return nil
+	end
+	-- get_node() sees nothing until the buffer has been parsed at least once.
+	parser:parse()
+	return test_name_of(vim.treesitter.get_node(), 0)
 end
 
 --- Whether `snapshot_name` belongs to `test_name` (`test_x`, `test_x[param]`, `test_x.1`).
@@ -134,6 +140,60 @@ local function goto_snapshot()
 	end
 end
 
+--- Name of the `.ambr` snapshot enclosing the cursor, e.g. `TestFoo.test_bar[param].1`.
+---@return string|nil
+local function snapshot_name_at_cursor()
+	local parser = vim.treesitter.get_parser(0, "ambr", { error = false })
+	if not parser then
+		return nil
+	end
+	parser:parse()
+	local node = vim.treesitter.get_node()
+	while node and node:type() ~= "snapshot" do
+		node = node:parent()
+	end
+	local name_marker = node and node:named_child(0)
+	local name_node = name_marker and name_marker:field("name")[1]
+	return name_node and vim.trim(vim.treesitter.get_node_text(name_node, 0)) or nil
+end
+
+---@return nil
+local function goto_test()
+	local snapshot_name = snapshot_name_at_cursor()
+	if not snapshot_name then
+		vim.notify("Cursor is not inside a snapshot", vim.log.levels.WARN)
+		return
+	end
+	-- Strip the `.1` index first: the `[param]` can itself contain dots.
+	local test_name = snapshot_name:gsub("%.%d+$", ""):gsub("%[.*%]$", "")
+
+	local snapshot_file = vim.api.nvim_buf_get_name(0)
+	local test_file = vim.fn.fnamemodify(snapshot_file, ":h:h")
+		.. "/"
+		.. vim.fn.fnamemodify(snapshot_file, ":t:r")
+		.. ".py"
+	if not vim.uv.fs_stat(test_file) then
+		vim.notify("No test file at " .. test_file, vim.log.levels.WARN)
+		return
+	end
+
+	local source = table.concat(vim.fn.readfile(test_file), "\n")
+	local root = vim.treesitter.get_string_parser(source, "python"):parse()[1]:root()
+	local query = vim.treesitter.query.parse("python", "(function_definition) @fn")
+	for _, node in query:iter_captures(root, source) do
+		if test_name_of(node, source) == test_name then
+			local row = node:range()
+			vim.cmd("normal! m'")
+			vim.cmd.edit(vim.fn.fnameescape(test_file))
+			vim.api.nvim_win_set_cursor(0, { row + 1, 0 })
+			vim.cmd("normal! zt")
+			return
+		end
+	end
+	vim.notify("No " .. test_name .. " in " .. vim.fn.fnamemodify(test_file, ":~:."), vim.log.levels.WARN)
+end
+
 return {
 	goto_snapshot = goto_snapshot,
+	goto_test = goto_test,
 }
