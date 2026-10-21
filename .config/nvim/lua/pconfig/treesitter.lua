@@ -13,6 +13,7 @@ local ensure_installed = {
 	"markdown_inline",
 	"sql",
 	"swift",
+	"yaml",
 	"ambr",
 }
 

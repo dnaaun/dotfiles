@@ -55,6 +55,6 @@ that it is up to date).
 
 Registered in `.config/nvim/lua/pconfig/treesitter.lua` as a local parser;
 the queries in `queries/ambr/` (highlights, folds, indents, `context.scm`
-for nvim-treesitter-context, and injections that highlight each snapshot's
-value with the Python grammar) are picked up because this directory is on the
+for nvim-treesitter-context, and injections that highlight container values
+with the Python grammar and YAML-looking `'''` strings with the YAML one) are picked up because this directory is on the
 runtimepath as a lazy.nvim plugin.
