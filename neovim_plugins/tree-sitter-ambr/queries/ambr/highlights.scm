@@ -24,11 +24,14 @@
   "="
 ] @punctuation.delimiter
 
-; Entries
-(pair
+; Entries. The priority keeps keys from being repainted as plain strings by
+; the Python injection (injections.scm).
+((pair
   key: (string) @property)
-(attribute
+  (#set! priority 105))
+((attribute
   name: (attribute_name) @property)
+  (#set! priority 105))
 
 ; Scalars
 (string) @string
