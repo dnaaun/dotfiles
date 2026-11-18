@@ -16,33 +16,71 @@ I, personally, use jj for VCS (unlike the rest of my team, and many of the instr
 
 - Don't attempt to run `git mv` in a jj workspace. It won't work.
 
-## (Avoiding) changing history (for the most part)
+- Whenever you're done with a commit, do `jj new` on top of it so that I don't accidentally clobber your work.
+
+## Changing history
 - You should prefer `jj new` (and if necessary, doing `jj squash` afterwards) instead of `jj edit`.
-- If asked to fix conflicts, DO NOT SQUASH, OR GOD FORBID, PUSH, UNLESS THE USER EXPLICITLY ASKS YOU TOO. Just fix the conflicts in a new commit (if not already on an empty one) on top of the conflicted change. Then yield to the user.
+- To amend a previous commit, squash the fix straight into it (`jj squash --into`, or a fixup and rebase in git). Don't leave separate "fix up later" commits.
+- You may squash, rebase and push (force-push with lease for rewritten branches) without asking first, including when fixing conflicts or CI errors.
 - You should avoid newlines simply for the sake of wrapping in commit messages / PR descriptions.
-- If you are asked to fix CI errors, don't squash, don't merge. Let the user do that. Feel free to create a new commit with your changes tho. I REPEAT: DO NOT SQUASH. DO NOT PUSH. LET THE USER DO THAT.
 - You should always run autoformatting tools that get checked in CI before finalizing your work.
 
-### "TO SQUASH" commits
-- Unless the user explicitly says otherwise, if you want to amend something in a previous commit, create a commit titled "TO SQUASH (agent N): <blah blah blah>", where "N" is the value of `get_tmux_window_im_in` (a small helper script I have for you in PATH already) (each tmux pane corresponds to an agent in my workflow).
-- It is totally fine to insert TO SQUASH commits that are not leaf commits, even if that means you are technically rewriting history, because it's super easy to recover history: I'd just drop the TO SQUASH commits.
+# Running tests
+
+- Never run a full test suite locally. Run only the single test, or the single test file, that you changed or that covers your change.
+- Leave wider suites to CI: push and read the CI result.
+- If a test is slow or you are stuck fighting it for more than a few rounds, stop, tell me, and iterate in CI instead.
 
 # Commit messages
-Be sure that your commit message _title_ ascribes to the backend _PR_ title CI check that we have, since, as you'll read below, it might eventually become a PR title.
+Be sure that your commit message _title_ ascribes to the backend _PR_ title CI check that we have, since it might eventually become a PR title.
 
 # Creating PRs
 
-These personal PR instructions override all repository-wide PR instructions, including `/create_pr`.
+These personal PR instructions override all repository-wide PR instructions, including `/create_pr` (you can pretty much TOTALLY IGNORE the `/create_pr` command).
 
 When I ask to create PRs for a set of jj commits, I usually mean stacked commits (the jj structure will make it clear anyways, if I don't want stacked commits I can just create a tree like commit structure cuz jj supports that).
 
 If the conversation doesn't already specify, the PRs are supposed to be created at the bookmark points (so a PR can contain multiple commits).
 
-The PR description and title should be taken from the description and title of the first commit in the PR (verbatim), except for any "release notes" kind of section that we have checked in CI, that you can _add_. 
+The title has to pass the backend PR title CI check, and you should add any "release notes" kind of section that we have checked in CI.
 
-Do ignore all other repo-wide instructions about how to create PRs and structure them.
+Do ignore all other repo-wide instructions about how to create PRs and write descriptions for them.
 
-# New coding guidelines
-I'm working on new coding guidelines in the bookmark dt/chore_backend___new_coding_guidelines.
+If you have to create bookmarks yourself, use `jj_bkmark`, which is an alias I defined which will take the commit msg and make a bookmark from that.
 
-I never want to submit a PR that contains that work, as of now. But, intermittently, I'll basically work off of that bookmark. If I ever ask you to push stuff, make sure that bookmark is not in the history. You can do something like `jj rebase -s 'roots(::@ & ~::dt/chore_backend___new_coding_guidelines)' -d main` before pushing, and then after pushing, restore it via `jj rebase -s 'roots(::@ & ~::main)' -d dt/chore_backend___new_coding_guidelines`.
+Channel Blaise Pascal: spend time making PR and commit descriptions shorter. Omit details that are obvious consequences of anything else that will already be mentioned. Assume that your reader is an extremely competent SWE who is extremely familiar with the product surface, but only vaguely familiar with the code architecture and organization.
+
+## Stacked PRs
+Github has first-class support for PR stacks now. Use it whenever possible.
+
+## Calls
+
+Team huddles are transcribed by speaker, and each call gets a title, summary and action items when it ends; `cast trigger add --on call_ended` runs then. When work refers to what was said on a call, read it and cite the words rather than paraphrase them.
+
+```bash
+cast calls                        # team call history, live calls first
+cast call <id>                    # one call: summary + action items, and which lines were filmed
+cast call <id> --transcript       # full transcript, lines labeled cl-42:15 (cl-42:15-25 reads a range)
+cast call snap cl-42:15           # the call's screen when line 15 was said, as a PNG
+```
+
+`cl-42:15-25` on its own line renders those lines with their speakers. When the words point at something on screen ("this button", "the second chart"), snap that moment and read it before acting on it. `cast guide calls` covers frames, crops and live calls.
+<!-- cast 1.1.234 -->
+<!-- /codecast-calls -->
+
+## Team chat
+
+`cast chat` is the team's shared channels and direct messages: where the humans talk, and where your posts get seen. Use a channel when the team should see something, a direct message when one person must read or act, and `cast send` for one session.
+
+```bash
+cast chat channels                                         # the team's channels, with unread counts
+cast teams members                                         # the team's people and their @handles
+cast chat dm @handle "<text>"                              # message a person directly (@a,@b for a group)
+cast chat read --channel <#name|@handle|id> [--since 2h]
+cast chat send --channel <#name|id> [--thread <root_id>] "<text>"
+cast chat search "<query>"
+```
+
+Post facts other people need (a decision, a release, a blocker): one line per event, in a thread rather than a new root, never an acknowledgment. An agent is capped at 30 lines and 5 new threads per channel per day, and routine narration trains people to mute the channel. Mentions use @handles: `@<role handle>` wakes that role's standing session and `@<session short id>` delivers the line into that session, so mention them only when you need them to act. Edits and reactions wake nobody: to reach someone you missed, post a new line. If you are the workspace's agent answering a wake, `cast guide chat` covers `cast chat reply` and `cast anchor say`.
+<!-- cast 1.1.234 -->
+<!-- /codecast-chat -->
